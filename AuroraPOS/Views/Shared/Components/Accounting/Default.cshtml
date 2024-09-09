@@ -1,0 +1,709 @@
+﻿
+
+<div class="modal fade" id="listaccount" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Accounting List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body m-1">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-account" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Account</a>
+					</div>
+					<div class="col-12">
+
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="account-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Action"]</th>
+										<th>@ViewLocalizer["Description"] </th>
+										<th>@ViewLocalizer["Type"] </th>
+										<th>@ViewLocalizer["Number"]</th>
+										<th>@ViewLocalizer["Credit / Debit"]</th>
+										<th>@ViewLocalizer["Status"]</th>
+										
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-account" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editaccount" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="category-modal-title">@ViewLocalizer["Add/Edit Account"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body m-3">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Description"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="account-desc" class="select ">
+										<option>Choose description</option>
+									</select>
+								</div>
+								<div class="col-lg-2 col-sm-2 col-2 ps-0">
+									<div class="add-icon">
+										<a id="add-account-desc" href="javascript:void(0);">
+											<img src="/vendor/img/icons/plus1.svg" alt="img">
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Type"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="account-type" class="select ">
+										<option>Choose type</option>
+									</select>
+								</div>
+								<div class="col-lg-2 col-sm-2 col-2 ps-0">
+									<div class="add-icon">
+										<a id="add-account-type" href="javascript:void(0);">
+											<img src="/vendor/img/icons/plus1.svg" alt="img">
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Number"]<span class="manitory">*</span></label>
+							<input id="account-number" type="text">
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 pb-3">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Credit or Debit"]</label>
+							<select id="account-creditordebit" class="select">
+								<option value="0"> @ViewLocalizer["Credit"]</option>
+								<option value="1"> @ViewLocalizer["Debit"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 pb-3">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="account-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					
+					
+				</div>
+				<div class="col-lg-12 col-sm-12 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Defaults"]<span class="manitory">*</span></label>
+						<select id="account-defaults" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+							<option value="3">Article</option>
+							<option value="4">Supplier</option>
+							<option value="5">Client</option>
+							<option value="6">Tax</option>
+							<option value="7">Propina</option>
+							<option value="8">Payment Method</option>
+							<option value="9">Waste</option>
+							<option value="11">Discount</option>
+							<option value="12">Void Reason</option>
+							<option value="14">Delivery Zone</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-account" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Account Description Modal -->
+<div class="modal fade" id="editaccountdesc" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Accounting Description"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body m-3">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Description"]<span class="manitory">*</span></label>
+							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+								<div class="input-group">
+									<span class="input-group-text" id="accountdesc-id" data-id="">ID</span>
+									<input id="accountdesc-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+								</div>
+								<button id="edit-accountdesc" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="accountdesc-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Description"]</th>
+										<th>@ViewLocalizer["Action"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-accountdesc" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Account Type Modal -->
+<div class="modal fade" id="editaccounttype" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Accounting Type"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body m-3">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Type"]<span class="manitory">*</span></label>
+							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+								<div class="input-group">
+									<span class="input-group-text" id="accounttype-id" data-id="">ID</span>
+									<input id="accounttype-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+								</div>
+								<button id="edit-accounttype" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="accounttype-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Type"]</th>
+										<th>@ViewLocalizer["Action"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-accounttype" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		LoadAccountDescription();
+		LoadAccountType();
+		LoadAccount();
+
+		SelectAccountDescription();
+		SelectAccountType();
+	})
+
+	$("body").on("click", "#add-account-desc", function () {
+		$("#accountdesc-name").val("");
+		$("#accountdesc-id").data("id", 0);
+		$("#accountdesc-id").text("ID: " );
+
+		$("#editaccountdesc").modal("show");
+	});
+
+	$("body").on("click", "#add-account-type", function () {
+		$("#accounttype-name").val("");
+		$("#accounttype-id").data("id", 0);
+		$("#accounttype-id").text("ID: ");
+
+		$("#editaccounttype").modal("show");
+	});
+
+	$("body").on("click", "#add-account", function () {
+		EditAccount();
+	});
+
+	$("body").on("click", "#edit-accountdesc", function () {
+		var name = $("#accountdesc-name").val();
+		if (!name || name == "") {
+			toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var data = {
+			ID: $("#accountdesc-id").data("id"),
+			Name: name,
+		}
+
+		$.ajax({
+			url: "/Setting/EditAccountDescription",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					LoadAccountDescription();
+					$("#accountdesc-name").val("");
+					$("#accountdesc-id").data("id", 0);
+					$("#accountdesc-id").text("ID: ");
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The name should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update the brand."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	});
+
+	$("body").on("click", "#edit-accounttype", function () {
+		var name = $("#accounttype-name").val();
+		if (!name || name == "") {
+			toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var data = {
+			ID: $("#accounttype-id").data("id"),
+			Name: name,
+		}
+
+		$.ajax({
+			url: "/Setting/EditAccountType",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					LoadAccountType();
+					$("#accounttype-name").val("");
+					$("#accounttype-id").data("id", 0);
+					$("#accounttype-id").text("ID: ");
+
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The name should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update the brand."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	});
+
+	$("body").on("click", "#edit-account", function () {
+		var desc = parseInt($("#account-desc").val());
+		if (!desc) {
+			toastr.warning("@ViewLocalizer["Please choose the description."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var type = parseInt($("#account-type").val());
+		if (!type) {
+			toastr.warning("@ViewLocalizer["Please choose the type."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var number = $("#account-number").val();
+		if (!number || number == "") {
+			toastr.warning("@ViewLocalizer["Please input the number."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+        var cd = parseInt($("#account-creditordebit").val())
+		var isActive = $("#account-status").val() == "1";
+		var id = parseInt($("#editaccount").data("id"));
+		if (!id) id = 0;
+		var defaults = $("#account-defaults").val();
+
+		var data = {
+			ID: id,
+			DescriptionID: desc,
+			TypeID: type,
+			Number: number,
+			CreditOrDebit: cd,
+			IsActive: isActive,
+			Defaults: defaults
+		}
+
+		$.ajax({
+			url: "/Setting/EditAccount",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					LoadAccount();
+					$("#editaccount").modal("hide");
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The name should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	});
+
+	$("body").on("click", ".add-accounting-item", function () {
+		var other = $(this).data("other");
+		$("#listaccount").data("other", other);
+		$("#listaccount").modal("show");
+	});
+
+	$("body").on("click", ".delete-accounting-item", function () {
+		$(this).closest("tr").remove();
+	});
+
+	function LoadAccountDescription() {
+		$("#accountdesc-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"paging": false,
+			"destroy": true,
+			"ajax": {
+				"url": "/Setting/GetAccountDescriptionList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"order": [[0, 'asc']],
+			"columns": [
+
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{
+					'data': 'action', 'name': 'action', "orderable": "false",
+					render: function (data, type, row) {
+						return "<div class='d-flex align-items-center'><span class='me-3 d-inline-block'  onclick='EditAccountDescription(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></span><span class='me-3 icons-box d-inline-block'  onclick='SelectAccountDescription(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></span></div>";
+					},
+				},
+			]
+		});
+
+	}
+
+	function LoadAccountType() {
+		$("#accounttype-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"paging": false,
+			"destroy": true,
+			"ajax": {
+				"url": "/Setting/GetAccountTypeList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"order": [[0, 'asc']],
+			"columns": [
+
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{
+					'data': 'action', 'name': 'action', "orderable": "false",
+					render: function (data, type, row) {
+						return "<div class='d-flex align-items-center'><span class='me-3 d-inline-block' onclick='EditAccountType(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></span><span class='me-3 icons-box d-inline-block' onclick='SelectAccountType(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></span></div>";
+					},
+				},
+			]
+		});
+	}
+
+	function LoadAccount() {
+		$("#account-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"paging": false,
+			"destroy": true,
+			"ajax": {
+				"url": "/Setting/GetAccountList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"order": [[0, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action', "orderable": "false",
+					render: function (data, type, row) {
+						return "<div class='d-flex align-items-center'><span class='me-3 d-inline-block'  onclick='EditAccount(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></span><span class='me-3 icons-box d-inline-block'  onclick='SelectAccount(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></span></div>";
+					},
+				},
+				{ "data": "description", "name": "description", "autoWidth": true },
+				{ "data": "type", "name": "type", "autoWidth": true },
+				{ "data": "number", "name": "number", "autoWidth": true },
+				{ "data": "creditDebitStr", "name": "creditDebitStr", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+			]
+		});
+	}
+
+	function SelectAccountDescription(desc) {
+		$.ajax({
+			url: "/Setting/GetAllAccountDescription",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#account-desc").empty();
+				$("#account-desc").append("<option value='0' selected>Choose description</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#account-desc").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				if (desc) {
+					$("#account-desc").val(desc.id).change();
+				}
+				else {
+					$("#account-desc").val(0).change();
+				}
+
+				$("#account-desc").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#editaccountdesc").modal("hide");
+	}
+
+	function SelectAccountType(type) {
+		$.ajax({
+			url: "/Setting/GetAllAccountType",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#account-type").empty();
+				$("#account-type").append("<option value='0' selected>Choose type</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#account-type").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				if (type) {
+					$("#account-type").val(type.id).change();
+				}
+				else {
+					$("#account-type").val(0).change();
+				}
+
+				$("#account-type").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#editaccounttype").modal("hide");
+	}
+
+	function SelectAccount(account) {
+		var other = $("#listaccount").data("other");
+		if (!other) other = "";
+
+		var existing = false;
+		var index = 0;
+		$(`#accounting-list${other} tr`).each(function () {
+			index++;
+			var type = parseInt($(this).data("type"))
+			var id = parseInt($(this).data("id"))
+			if (type == account.typeID || id == account.id) {
+				existing = true;
+			}
+		});
+
+		if (!existing) {
+			var html = `<tr data-id='${account.id}' data-type='${account.typeID}'><td>${account.description}</td><td><div class="">${account.type}</div></td>
+												<td><div class="">
+														${account.number}
+												</div>
+												</td>
+											<td>
+												<div class="remove-btn">
+													<span class="delete-accounting-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></span>
+												</div>
+											</td></tr>`
+			$("#accounting-list" + other).append(html);
+
+			$("#listaccount").modal("hide");
+		}
+
+	}
+
+	function EditAccountDescription(desc) {
+		$("#accountdesc-name").val(desc.name);
+		$("#accountdesc-id").data("id", desc.id);
+		$("#accountdesc-id").text("ID: " + desc.id);
+	}
+
+	function EditAccountType(type) {
+		$("#accounttype-name").val(type.name);
+		$("#accounttype-id").data("id", type.id);
+		$("#accounttype-id").text("ID: " + type.id);
+	}
+
+	function EditAccount(account) {
+		if (account) {
+			$("#editaccount").data("id", account.id);
+			$("#account-desc").val(account.descriptionID).change();
+			$("#account-type").val(account.typeID).change();
+			$("#account-number").val(account.number);
+			$("#account-creditordebit").val(account.creditOrDebit).change();
+			if (account.isActive) {
+				$("#account-status").val("1").change();
+			}
+			else {
+				$("#account-status").val("0").change();
+			}
+			$("#account-defaults").val(account.defaults).change();
+		}
+		else {
+			$("#editaccount").data("id", 0);
+			$("#account-desc").val("").change();
+			$("#account-type").val("").change();
+			$("#account-number").val("");
+			$("#account-creditordebit").val(0);
+			$("#account-status").val("1").change();
+			$("#account-defaults").val("").change();
+		}
+
+		$("#editaccount").modal("show");
+	}
+
+	function GetAccountItems(target, item, other) {
+		var data = {
+			Target: target,
+			ItemID: item
+		}
+		if (!other) other = "";
+		$.ajax({
+			url: "/Setting/GetAccountItem",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data) {
+					$("#accounting-list" + other).empty();
+					for (var i = 0; i < data.length; i++) {
+						var item = data[i];
+
+						var html = `<tr data-id='${item.account.id}' data-type='${item.account.accountType.id}'><td>${item.account.accountDescription.name}</td><td><div class="">${item.account.accountType.name}</div></td>
+										<td><div class="">
+												${item.account.number}
+										</div>
+										</td>
+									<td>
+										<div class="remove-btn">
+											<a href="javascript:void(0);" class="delete-accounting-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</div>
+									</td></tr>`
+						$("#accounting-list" + other).append(html);
+					}
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function SaveAccountItems(target, item, callback, other) {
+		if (!other) other = "";
+		var items = [];
+		var index = 0;
+		$(`#accounting-list${other} tr`).each(function () {
+			index++;
+			var id = parseInt($(this).data("id"))
+			var d = {
+				Order: index,
+				AccountID: id
+			}
+			items.push(d);
+		});
+
+
+		var data = {
+			Target: target,
+			ItemID: item,
+			Accounts: items
+		}
+
+		$.ajax({
+			url: "/Setting/SaveAccountItems",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0 ) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+</script>

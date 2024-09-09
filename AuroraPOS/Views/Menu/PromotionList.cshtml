@@ -1,0 +1,117 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Promotion List"]</h4>
+		<h6>@ViewLocalizer["Manage your Promotions"]</h6>
+	</div>
+	<div class="page-btn">
+		<a id="add-station-modal" href="/Menu/AddPromotion" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Promotion"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="promotion-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Amount"] </th>
+						<th>@ViewLocalizer["Amount Type"]</th>			
+						<th>@ViewLocalizer["Recurring"]</th>			
+						<th>@ViewLocalizer["Status"]</th>
+
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+				
+		$("#promotion-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetPromotionList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='/Menu/AddPromotion?promotionID=" +row.id+ "'   ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeletePromotion('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "amount", "name": "amount", "autoWidth": true },
+				{ "data": "amountType", "name": "amountType", "autoWidth": true },
+				{ "data": "recurring", "name": "recurring", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+	});
+	
+	function DeletePromotion(id)
+	{	
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the promotion?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonText: "@ViewLocalizer["Close"]",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Menu/DeletePromotion?promotionID=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#promotion-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the promotion."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					}
+				});
+			}
+		});
+	}
+</script>

@@ -1,0 +1,204 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Alfa Software">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Login - ALFA POS</title>
+
+    @* <link rel="manifest" href="/manifest.json"> *@
+     <link rel="manifest" href="/Account/createmanifest?station=@ViewBag.Station"> 
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
+
+    <!-- Toatr CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+    <!-- Main CSS -->
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/vendor/css/style.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body class="account-page" style="background-color:#000;">
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper" style="background-color: #000">
+        <img class="logo-panel " src="~/vendor/img/logo-circle-04.png" />
+
+        <div class="panel">
+            <div style=" ">
+                <div id="input-pin" class="d-flex justify-content-center" data-value="" style="height:100px; padding-left:14px;">
+                    <div class="display-pin"></div>
+                    <div class="display-pin"></div>
+                    <div class="display-pin"></div>
+                    <div class="display-pin"></div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div>
+                    <div class="pin" data-num="1" style="">1
+                    </div>
+                    <div class="pin" data-num="4" style="">4
+                    </div>
+                    <div class="pin" data-num="7" style="">7
+                    </div>
+                    <div class="pin" data-num="" style="">*
+                    </div>
+                </div>
+                <div>
+                    <div class="pin" data-num="2" style="">2
+                    </div>
+                    <div class="pin" data-num="5" style="">5
+                    </div>
+                    <div class="pin" data-num="8" style="">8
+                    </div>
+                    <div class="pin" data-num="0" style="">0
+                    </div>
+                </div>
+                <div>
+                    <div class="pin" data-num="3" style="">3
+                    </div>
+                    <div class="pin" data-num="6" style="">6
+                    </div>
+                    <div class="pin" data-num="9" style="">9
+                    </div>
+                    <div class="pin" data-num="del" style="">DEL
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Main Wrapper -->
+    <!-- jQuery -->
+    <script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="~/vendor/js/feather.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/js/jquery.mask.js"></script>
+    <!-- Custom JS -->
+    <script src="~/vendor/js/script.js"></script>
+
+
+    <!-- Mask JS -->
+    <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+    <script src="~/vendor/plugins/toastr/toastr.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            ShowLoader();
+        })
+        $("body").on("keydown", function (e) {
+            var code = e.keyCode || e.which;
+
+            if (code == 8)
+                AddValue("del");
+
+            if (code < 58 && code > 47) {
+                AddValue("" + (code - 48));
+            }
+            if (code < 106 && code > 95) {
+                AddValue("" + (code - 96));
+            }
+        });
+        $("body").on("click", ".pin", function () {
+            var val = $(this).data("num");
+            AddValue(val);
+        });
+        $("#cancel-pin").click(function () {
+            $("#input-pin").data("value", "");
+            UpdateDisplay();
+        });
+
+        function SubmitResult() {
+            var pin = $("#input-pin").data("value");
+            if (pin.length < 4) return;
+            var username = '@ViewBag.Station';
+            if (username) {
+                //localStorage.setItem("StationID", @ViewBag.Station);
+            }
+            else {
+                username = '@ViewBag.Station' //localStorage.getItem("StationID");
+            }
+            var data = {
+                Username: username,
+                Password: pin
+            };
+            ShowLoader();
+            $.ajax({
+                url: "/Account/POSLogin",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+
+                        $.ajax({
+                        url: "/Setting/GetDiaTrabajo",
+				            type: "GET",
+				            success: function (data, textStatus, jqXHR) {
+                                if (data == null) {
+                                    document.location.replace("/POS/WorkDay");
+                                } else {
+                                    document.location.replace("/POS/Station");
+                                }
+				            },
+				            error: function (jqXHR, textStatus, errorThrown) {
+					            toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				            }
+			            });
+
+                        //document.location.replace("/POS/Station");
+                        return false;
+                    }
+                    else if (data.status = 1) {
+                        toastr.error("@ViewLocalizer["Wrong pin was inputed."]", {})
+                    }
+                    else if (data.status = 2) {
+                        toastr.error("@ViewLocalizer["You can't access to the POS. Please contact with administrator."]", {})
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["Failed to login."]", {})
+                    }
+                    HideLoader();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    HideLoader();
+                }
+            });
+        }
+
+
+    </script>
+
+</body>
+</html>
+

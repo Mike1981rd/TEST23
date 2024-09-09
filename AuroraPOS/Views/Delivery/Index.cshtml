@@ -1,0 +1,579 @@
+﻿@{
+    Layout = "_LayoutVacio";
+    var reasons = (List<CancelReason>)ViewBag.CancelReasons;
+    var branchs = (List<t_sucursal>)ViewBag.Branchs;
+    var filterbranch = 0;
+    if (ViewBag.FilterBranch != null)
+    {
+        filterbranch = (int)ViewBag.FilterBranch;
+    }
+}
+
+<div class="row">
+    <div class="card delivery-card">
+        <div class="card-body">
+            <div class="row">
+                <div class="d-flex delivery-filter">
+                    <div class="form-group col-2 mx-3">
+                        <label>@ViewLocalizer["Fecha"] </label>
+                        <input id="delivery-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Now.ToString("dd-MM-yyyy")">
+                    </div>
+                    <div class="form-group col-2 mx-3">
+                        <label>@ViewLocalizer["Sucursal"] </label>
+
+
+                        <input type="hidden" id="delivery-branch" value="@ViewBag.SucursalActual" />
+                        <div style="padding:6px">@ViewBag.SucursalActual</div>
+
+                        @*<select id="delivery-branch" class="select ">
+                            <option value=0>Selecciona una sucursal</option>
+                            @foreach (var b in branchs)
+                            { 
+                                if (filterbranch == b.ID)
+                                {
+                                    <option value="@b.ID" selected>@b.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                               
+                            }
+                        </select>*@
+                    </div>
+                    <div class="form-group col-6 mx-3 mt-3">
+                        <button class="btn btn-deliver button8 active">Todos</button>
+                        <button class="btn btn-deliver button8" data-value="0">Nuevo</button>
+                        <button class="btn btn-deliver button8" data-value="1">En Ruta</button>
+                        <button class="btn btn-deliver button8" data-value="2">Entregado</button>
+                        <button class="btn btn-deliver button8" data-value="3">Cerrado</button>
+                    </div>
+
+                    <div class="col-2 mx-3">
+                        <button id="go-pos" class="btn button1">@ViewLocalizer["POS"]</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card delivery-card" style="margin: 0px; padding: 0px; ">
+        <div class="card-body" style="margin: 0px;padding: 0px;">
+
+            <div id="resultado">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Carrier Modal -->
+<div class="modal fade" id="editcarrier" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="printerchannel-modal-title">@ViewLocalizer["Asignar Repartidor"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Dirección"]</label>
+                            <div id="delivery-address1" style="color: #9a9999; font-size: 12px;"></div>
+
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Dirección Complementaria"]</label>
+                            <div id="delivery-address2" style="color: #9a9999; font-size: 12px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Comentarios"]</label>
+                            <div id="delivery-comments" style="color: #9a9999; font-size: 12px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Repartidor"]<span class="manitory">*</span></label>
+                            <div id="delivery-carrier" class="d-flx">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-carrier" type="button" class="btn btn-submit">@ViewLocalizer["Asignar"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancelar"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelitemmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="group-modal-title">@ViewLocalizer["Void Order"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group p-5">
+                    <label>@ViewLocalizer["Void Reason"]</label>
+                    <select id="void-reason" class="select mx-2">
+                        @foreach (var reason in reasons)
+                        {
+                            <option value="@reason.ID" selected>@reason.Reason</option>
+                        }
+                    </select>
+                    <input type="hidden" id="order-id" value="" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="void-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="promesapagomodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="group-modal-title">@ViewLocalizer["Promesa de pago"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group p-5">
+                    <label>@ViewLocalizer["Monto"]</label>
+                    <input id="promesa-pago-monto" type="number" class="form-control" value="">
+                    <input type="hidden" id="promesa_pago-order-id" value="" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="promesa-pago-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(".btn-deliver").click(function () {
+        $(".btn-deliver").removeClass("active");
+        $(this).addClass("active");
+        GetData();
+    })
+
+    $(".void-button").click(function () {        
+        var orderId = $(this).data("id");
+        $("#order-id").val(orderId);
+    });
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+        GetData();
+
+        setInterval(function () {
+            GetData();
+        }, 60 * 1000);
+
+
+
+    });
+
+    function GetData() {
+
+        var status = $(".btn-deliver.active").data("value");
+        var branch = $("#delivery-branch").val();
+        var data = {
+            inicio: $("#delivery-date").val(),
+            status: status,
+
+        }
+
+        $.ajax({
+            url: "/Delivery/GetDeliveryList?fecha=" + $("#delivery-date").val() + "&status=" + status + "&branch=" + branch,
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+
+                $("#resultado").html(data);
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+    function BindDelivery() {
+        $(".deliveryheader").unbind("click");
+        $(".deliveryheader").click(function () {
+            var trDetail = $(this).data('detail'); //getter
+            if ($("#" + trDetail).hasClass("mostrando")) {
+                $("#" + trDetail).hide("slow");
+                $("#" + trDetail).removeClass("mostrando");
+            } else {
+                $("#" + trDetail).show("slow");
+                $("#" + trDetail).addClass("mostrando");
+            }
+
+        });
+
+        $(".set-carrier").unbind("click");
+        $(".set-carrier").click(function () {
+
+            $.ajax({
+                url: "/Delivery/GetDelivery?Id=" + $(this).data("id"),
+                type: "POST",
+                success: function (response, textStatus, jqXHR) {
+                    if (response.status == 0) {
+                        $("#delivery-address1").html(response.data.address1);
+                        $("#delivery-address2").html(response.data.addres2);
+                        $("#delivery-comments").html(response.data.comments);
+
+                        if (response.data.deliveryCarrierID) {
+
+                            $("#delivery-carrier").data("id", response.data.deliveryCarrierID);
+                            $(".select-carrier").each(function () {
+                                var id = parseInt($(this).data("id"));
+                                if (id == response.data.deliveryCarrierID) $(this).addClass("active");
+                                else $(this).removeClass("active");
+                            })
+                        } else {
+                            $(".select-carrier").removeClass("active");
+                            $("#delivery-carrier").val("id", 0);
+                        }
+
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+            $("#editcarrier").data("id", $(this).data("id"));
+            $("#editcarrier").modal("show");
+        });
+
+        $("#edit-carrier").unbind("click");
+        $("#edit-carrier").click(function () {
+
+            var id = $("#editcarrier").data("id");
+            var carrierid = $("#delivery-carrier").data("id");
+
+            if (!carrierid || carrierid == "") {
+                toastr.warning("@ViewLocalizer["Favor de seleccionar el repartidor."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+                return;
+            }
+
+            var data = {
+                Id: id,
+                CarrierId: carrierid
+            }
+
+            $.ajax({
+                url: "/Delivery/EditCarrier",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+
+                        $("#editcarrier").modal("hide");
+
+                        GetData();
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        });
+
+        $(".delivered").unbind("click");
+        $(".delivered").click(function () {
+
+            $.ajax({
+                url: "/Delivery/MarkAsDelivered?Id=" + $(this).data("id"),
+                type: "POST",
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+
+                        GetData();
+                    }
+                    else {
+
+                            toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+
+
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        });
+
+        $(".closed").unbind("click");
+        $(".closed").click(function () {
+
+            $.ajax({
+                url: "/Delivery/MarkAsClosed?Id=" + $(this).data("id"),
+                type: "POST",
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+
+                        GetData();
+                    }
+                    else {
+                        if (data.status == 3) {
+                            toastr.error("@ViewLocalizer["No se puede cerrar, la cuenta no esta saldada."]", {})
+                        } else {
+                            toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        });
+
+        $("#delivery-date").unbind("dp.change");
+        $('#delivery-date').on('dp.change', function (e) {
+            GetData();
+
+        })
+        $('#delivery-branch').change(function (e) {
+            GetData();
+        })
+
+        $("#delivery-status").unbind("change");
+        $('#delivery-status').on('change', function () {
+            GetData();
+            // Obtener el texto seleccionado
+            var selectedText = $("#delivery-status option:selected").text();
+
+            // Actualizar el texto del campo de estado
+            $("#delivery-status").siblings(".select2-container").find(".select2-selection__rendered").text(selectedText);
+        });
+
+        SelectCarrier();
+
+    }
+
+    function SelectCarrier() {
+        $.ajax({
+            url: "/Setting/GetActiveDeliveryCarrierList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                //Delivery
+                $("#delivery-carrier").empty();
+                
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    var html = ` <button class='select-carrier w-25 m-3 btn button2' data-id='${d.id}'>${d.name}</button>`;
+                    $("#delivery-carrier").append(html);
+                }              
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listvoucher").modal("hide");
+    }
+
+    $("#void-submit").click(function () {
+
+        var reasonId = parseInt($("#void-reason").val())
+        console.log(reasonId);
+        var orderId = parseInt($("#order-id").val());
+        var data = {
+            OrderId: orderId,
+            ReasonId: reasonId
+        };
+        console.log(data);
+        $.ajax({
+            url: "/POS/VoidOrder",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                window.location.replace("/POS/Station");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $("#promesa-pago-submit").click(function () {
+
+        var monto = $("#promesa-pago-monto").val();        
+        var orderId = parseInt($("#promesa_pago-order-id").val());
+        var data = {
+            OrderId: orderId,
+            PromesaPago: monto
+        };
+        console.log(data);
+        $.ajax({
+            url: "/POS/UpdateOrderPromesaPago",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                var seleccion = "#orden-" + orderId;
+
+                $(seleccion).find(".lbl-promesa-pago-monto").html("Promesa de pago $" + data.monto.toFixed(2));
+                $(seleccion).find(".lbl-promesa-pago-devuelto").html("Devolver $" + data.devuelto.toFixed(2));
+                $(seleccion).find(".lbl-promesa-pago-monto").show();
+                $(seleccion).find(".lbl-promesa-pago-devuelto").show();                
+
+                $("#promesapagomodal").modal("hide");
+                
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $("#go-pos").click(function () {
+            window.location.replace("/POS/Station");
+        })
+        // Agregar opción adicional al campo de selección
+
+        // Datos de las zonas
+        var zonas = [
+            { id: 1, nombre: "Zona centro" },
+            { id: 3, nombre: "Zona lejana" },
+            { id: 4, nombre: "Zona foranea" }
+        ];
+
+        $("body").on("click", ".btn-reordersubmit", function () {
+
+			var orderId = parseInt($(this).data("id"));
+
+            var dividerNum = 0;
+            ShowLoader();
+            $.ajax({
+                url: "/POS/PrintOrder?OrderID=" + orderId + "&DivideNum=" + dividerNum,
+                type: "POST",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        //LoadOrderItems();
+                    }
+                    HideLoader();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        })
+
+
+
+
+        // // Obtén una referencia al select
+        // var selectZona = document.getElementById("customer-zone");
+
+        // // Genera las opciones del select
+        // zonas.forEach(function (zona) {
+        //     var option = document.createElement("option");
+        //     option.value = zona.id;
+        //     option.textContent = zona.nombre;
+        //     selectZona.appendChild(option);
+        // });
+
+        // var saveChangesBtn = document.getElementById("save-changes-btn");
+
+        // // Agrega un evento de clic al botón "Save Changes"
+        // saveChangesBtn.addEventListener("click", function () {
+        //     // Obtén el nuevo ID de la zona seleccionado
+        //     var zonaSelect = document.getElementById("customer-zone");
+        //     var nuevoIdZona = zonaSelect.value;
+
+        //     // Obtén la nueva dirección de entrega ingresada
+        //     var direccionInput = document.getElementById("edit-address-input");
+        //     var nuevaDireccion = direccionInput.value;
+
+        //     // Realiza la lógica de guardar los datos en el servidor
+        //     guardarDatos(nuevoIdZona, nuevaDireccion);
+        // });
+
+        // Función para guardar los datos en el servidor
+        function guardarDatos(idZona, direccion) {
+            // Crea un objeto con los datos a enviar
+            var datos = {
+                ZoneId: idZona,
+                Address1: direccion,
+                // Otros datos necesarios para la solicitud
+            };
+
+            // Realiza la solicitud AJAX utilizando jQuery
+            $.ajax({
+                url: '/Delivery/EditDelivery',
+                type: 'POST',
+                data: JSON.stringify(datos),
+                contentType: 'application/json',
+                success: function (response) {
+                    // Maneja la respuesta del servidor
+                    if (response.status === 0) {
+                        console.log('Datos guardados exitosamente');
+                        console.log('Costo:', response.cost);
+                        console.log('Tiempo:', response.time);
+                    } else {
+                        console.error('Error al guardar los datos');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error en la solicitud:', error);
+                }
+            });
+        }
+    });
+
+
+    $("body").on("click", '.select-carrier', function () {
+        $(".select-carrier").removeClass("active");
+        $(this).addClass("active");
+        $("#delivery-carrier").data("id", $(this).data("id"));
+    })
+
+</script>

@@ -1,0 +1,271 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var installedPrinters = (List<string>)ViewBag.Printers;
+}
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Printers"]</h4>
+        <h6>@ViewLocalizer["Manage Printers"]</h6>
+    </div>
+    <div class="page-btn">
+        <a id="add-printer" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer"]</a>
+    </div>
+</div>
+<!-- /product list -->
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="printer-list" class="table">
+                <thead>
+                    <tr>
+                        <th>@ViewLocalizer["Action"]</th>
+                        <th>@ViewLocalizer["Name"]</th>
+                        <th>@ViewLocalizer["Model"]</th>
+                        <th>@ViewLocalizer["Physical Routes"]</th>
+                        <th>@ViewLocalizer["Status"]</th>
+                       
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- edit Modal -->
+<div class="modal fade" id="editprinter" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="printer-modal-title">@ViewLocalizer["Edit Printer"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <input id="eprinter-name" type="text" required>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Model"]<span class="manitory">*</span></label>
+                            <input id="eprinter-model" type="text" required>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Physical Routes"]</label>
+                            <select id="eprinter-route" class="select">
+                                <option value="">@ViewLocalizer["Choose Physical Printer"]</option>
+                                @foreach (var p in installedPrinters)
+                                {
+                                    <option value="@p.ToString()"> @p.ToString()</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Status"]</label>
+                            <select id="eprinter-status" class="select">
+                                <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="test-printer" type="button" class="btn btn-submit btn-secondary">@ViewLocalizer["Test"]</button>
+                <button id="edit-printer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#test-printer").click(function () {
+        var printername = $("#eprinter-route").val();
+
+        var data = {
+            Printer: printername
+        }
+
+        $.ajax({
+            url: "/Setting/TestPrinter",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    printertable.draw();
+                    $("#editprinter").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    var printertable = $("#printer-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Setting/GetPrinterList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3' href='javascript:void(0);' onclick='EditPrinter(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeletePrinter('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+                },
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "model", "name": "model", "autoWidth": true },
+            { "data": "physicalName", "name": "physicalName", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'isActive',
+                render: function (data, type, row) {
+                    if (row.isActive) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                    }
+                    else {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
+           
+        ]
+    });
+
+    $("#add-printer").click(function () {
+        $("#eprinter-name").val("");
+        $("#eprinter-model").val("");
+        $("#eprinter-route").val("");
+
+        $("#eprinter-status").val(1).change();
+        $(".printer-modal-title").html("@ViewLocalizer["Add Printer"]");
+        $("#editprinter").data("id", 0);
+        $("#editprinter").modal("show");
+    });
+
+    function EditPrinter(printer) {
+        $("#eprinter-name").val(printer.name);
+        $("#eprinter-model").val(printer.model);
+        $("#eprinter-route").val(printer.physicalName).change();
+        if (printer.isActive) {
+            $("#eprinter-status").val(1).change();
+        }
+        else {
+            $("#eprinter-status").val(0).change();
+        }
+        $(".printer-modal-title").html("@ViewLocalizer["Edit Printer"]");
+        $("#editprinter").data("id", printer.id);
+        $("#editprinter").modal("show");
+    }
+
+    $("#edit-printer").click(function () {
+        var printerName = $("#eprinter-name").val();
+        if (!printerName || printerName == "") {
+            toastr.warning("@ViewLocalizer["Please input the printer name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var physicalName = $("#eprinter-route").val();
+        if (!physicalName || physicalName == "") {
+            toastr.warning("@ViewLocalizer["Please select the printer."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var model = $("#eprinter-model").val();
+        if (!model || model == "") {
+            toastr.warning("@ViewLocalizer["Invalid model value!"]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var active = $("#eprinter-status").val()
+        var data = {
+            ID: $("#editprinter").data("id"),
+            Name: printerName,
+            Model: model,
+            PhysicalName: physicalName,
+            IsActive: active == "1"
+        }
+
+        $.ajax({
+            url: "/Setting/EditPrinter",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    printertable.draw();
+                    $("#editprinter").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function DeletePrinter(id) {
+
+        Swal.fire({
+            title: "@ViewLocalizer["Are you sure to delete the printer?"]",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+            cancelButtonText: "@ViewLocalizer["Cancel"]",
+            confirmButtonClass: "btn btn-primary",
+            cancelButtonClass: "btn btn-danger ml-1",
+            buttonsStyling: !1,
+        }).then(function (t) {
+            if (t.value) {
+                $.ajax({
+                    url: "/Setting/DeletePrinter?printerId=" + id,
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0) {
+                            printertable.draw();
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to delete the printer."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                });
+            }
+
+        });
+
+    }
+
+
+
+</script>

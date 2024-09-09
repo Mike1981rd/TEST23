@@ -1,0 +1,182 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var printerChannels = (List<PrinterChannel>)ViewBag.PrinterChannels;
+	var branchs = (List<t_sucursal>)ViewBag.Branchs;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Serving Size"]</h4>
+	</div>
+	<div class="page-btn">
+		<a id="add-servingsize-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Serving Size"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="servingsize-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Description"] </th>
+						<th>@ViewLocalizer["Status"] </th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="addservingsize" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Serving Size"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<input id="servingsize-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						</div>
+					</div>
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Description"]</label>
+							<input id="servingsize-desc" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12 pb-3">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="servingsize-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-servingsize" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+
+		$("#add-servingsize-modal").click(function () {
+			EditServingSize()
+		});
+
+		$("#edit-servingsize").click(function () {
+			var name = $("#servingsize-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var desc = $("#servingsize-desc").val();
+			var active = $("#servingsize-status").val() == "1";
+			var data = {
+				ID: $("#addservingsize").data("id"),
+				Name: name,
+				Description: desc,
+				IsActive: active,
+			}
+
+			$.ajax({
+				url: "/Menu/EditServingSize",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#servingsize-list").DataTable().draw();
+						$("#addservingsize").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the serving size."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+		var stationtable = $("#servingsize-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetServingSizeList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick='EditServingSize(" + JSON.stringify(row) + ")'; ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "id", "name": "id", "autoWidth": true },
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "description", "name": "description", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+	});
+
+	function EditServingSize(model) {
+
+		if (model) {
+			
+			$("#addservingsize").data("id", model.id);
+			$("#servingsize-name").val(model.name);
+			$("#servingsize-desc").val(model.description);
+		}
+		else {
+			$("#addservingsize").data("id", 0);
+			$("#servingsize-name").val("");
+			$("#servingsize-desc").val("");
+		}
+
+		$("#addservingsize").modal("show");
+	}
+
+</script>

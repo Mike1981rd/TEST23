@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Action" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Choose Date" xml:space="preserve">
+    <value>Elija Fecha</value>
+  </data>
+  <data name="Choose source table and order" xml:space="preserve">
+    <value>Elija la mesa de origen y ordene</value>
+  </data>
+  <data name="Choose target table" xml:space="preserve">
+    <value>Elija la mesa de destino</value>
+  </data>
+  <data name="Choose the order" xml:space="preserve">
+    <value>Elige el orden</value>
+  </data>
+  <data name="Choose the target" xml:space="preserve">
+    <value>Elige el objetivo</value>
+  </data>
+  <data name="Close Drawer" xml:space="preserve">
+    <value>Cuadre de Caja</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Cliente</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="Date From" xml:space="preserve">
+    <value>Fecha de</value>
+  </data>
+  <data name="Date To" xml:space="preserve">
+    <value>Fecha hasta</value>
+  </data>
+  <data name="Discrepancy" xml:space="preserve">
+    <value>Diferencia</value>
+  </data>
+  <data name="Discrepancy Tip" xml:space="preserve">
+    <value>Diferencia en Propina</value>
+  </data>
+  <data name="Expected Tip" xml:space="preserve">
+    <value>Propina Esperada</value>
+  </data>
+  <data name="Expected Value" xml:space="preserve">
+    <value>Valor esperado</value>
+  </data>
+  <data name="Grand Total" xml:space="preserve">
+    <value>Gran total</value>
+  </data>
+  <data name="ID #" xml:space="preserve">
+    <value>ID #</value>
+  </data>
+  <data name="Invalid person number." xml:space="preserve">
+    <value>Número de persona no válido.</value>
+  </data>
+  <data name="Modify Invoice" xml:space="preserve">
+    <value>Modificar</value>
+  </data>
+  <data name="Money" xml:space="preserve">
+    <value>Dinero</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>Mover</value>
+  </data>
+  <data name="Move Table" xml:space="preserve">
+    <value>Mover Mesa</value>
+  </data>
+  <data name="My Table" xml:space="preserve">
+    <value>Mi mesa</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opciones</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Pagado</value>
+  </data>
+  <data name="Please select correct tables." xml:space="preserve">
+    <value>Seleccione las mesas correctas.</value>
+  </data>
+  <data name="Please transfer the existing open tables." xml:space="preserve">
+    <value>Por favor transfiera las mesas abiertas existentes.</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Cantidad</value>
+  </data>
+  <data name="Refund the Order" xml:space="preserve">
+    <value>Reembolsar el pedido</value>
+  </data>
+  <data name="Reprint" xml:space="preserve">
+    <value>Reimpresión</value>
+  </data>
+  <data name="Reprint the Order" xml:space="preserve">
+    <value>Reimprimir la Orden</value>
+  </data>
+  <data name="Set Person Number" xml:space="preserve">
+    <value>Establecer número de persona</value>
+  </data>
+  <data name="Source Table" xml:space="preserve">
+    <value>Mesa de origen</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Target Table" xml:space="preserve">
+    <value>Mesa Destino</value>
+  </data>
+  <data name="There are no orders to give." xml:space="preserve">
+    <value>No hay órdenes que dar.</value>
+  </data>
+  <data name="There was an error in processing the request." xml:space="preserve">
+    <value>Hubo un error al procesar la solicitud.</value>
+  </data>
+  <data name="Tip" xml:space="preserve">
+    <value>Propina</value>
+  </data>
+  <data name="To Go Order" xml:space="preserve">
+    <value>Para Llevar</value>
+  </data>
+  <data name="To Go Orders" xml:space="preserve">
+    <value>Ordenes</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Funciones</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Totals" xml:space="preserve">
+    <value>Totales</value>
+  </data>
+  <data name="Transfer Table" xml:space="preserve">
+    <value>Transferir Mesa</value>
+  </data>
+  <data name="Transfer Tables" xml:space="preserve">
+    <value>Transferir Mesas</value>
+  </data>
+  <data name="Waiter" xml:space="preserve">
+    <value>Mesero</value>
+  </data>
+  <data name="Wrong pin was inputed." xml:space="preserve">
+    <value>Se ingresó el pin incorrecto.</value>
+  </data>
+  <data name="Deliveries" xml:space="preserve">
+    <value>Ordenes</value>
+  </data>
+  <data name="Reservation" xml:space="preserve">
+    <value>Reservaciones</value>
+  </data>
+  <data name="Close The Day" xml:space="preserve">
+    <value>Cierre del Dia</value>
+  </data>
+  <data name="Give Over Table" xml:space="preserve">
+    <value>Transferir mis mesas</value>
+  </data>
+</root>

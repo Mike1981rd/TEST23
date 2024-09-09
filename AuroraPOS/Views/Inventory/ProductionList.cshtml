@@ -1,0 +1,234 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Production List"]</h4>
+		<h6>@ViewLocalizer["Manage your production"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Inventory/AddProduction" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Production"]</a>
+	</div>
+</div>
+
+
+<!-- /product list -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="table-top">
+				<div class="search-set">
+					<div class="search-path">
+						<a class="btn btn-filter" id="filter_search">
+							<img src="/vendor/img/icons/filter.svg" alt="img">
+							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+						</a>
+					</div>
+					<div class="search-input">
+						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
+					</div>
+				</div>
+				<div class="wordset">
+					<ul>
+						<li>
+							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+						</li>
+						@*<li>
+							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+						</li>*@
+					</ul>
+				</div>
+			</div>
+			<!-- /Filter -->
+			<div class="card" id="filter_inputs">
+				<div class="card-body pb-0">
+					<div class="row">
+						
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Warehouse"] </label>
+								<select id="filter-warehouse" class="select">
+								</select>
+							</div>
+						</div>
+					
+					</div>
+				</div>
+			</div>
+			<!-- /Filter -->
+			<div class="table-responsive">
+				<table id="production-list" class="table">
+					<thead>
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["ID"] </th>
+							<th>@ViewLocalizer["Warehouse"] </th>
+							<th>@ViewLocalizer["Sub Recipe"] </th>
+							<th>@ViewLocalizer["Qty"]</th>
+							<th>@ViewLocalizer["Unit"]</th>
+							<th>@ViewLocalizer["Status"]</th>
+							
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /product list -->
+
+
+<script>	
+
+	$(document).ready(function () {
+		LoadWarehouse();
+
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterProduction()
+		});
+
+		$("#filter-warehouse").change(function () {
+			FilterProduction()
+		});
+
+		$("#filter_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#filter-warehouse").val("").change();
+			}
+
+		});
+
+		$(".btn-excel").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var warehouse = $("#filter-warehouse").val();
+
+			$.ajax({
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				url: "/Inventory/DownloadProductionExcel?search=" + searchText + "&warehouse=" + warehouse,
+				success: function (d) {
+					if (d.status == 0) {
+						var link = document.createElement('a');
+						link.href = d.result;
+						link.download = 'Productions_@DateTime.Today.ToString("dd-MM-yyyy")' + ".csv";
+						link.dispatchEvent(new MouseEvent('click'));
+					}
+					else {
+						toastr.error(d.message, {})
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+
+			});
+		});
+
+		$(".btn-pdf").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var warehouse = $("#filter-warehouse").val();
+
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DownloadProductionPDF?search=" + searchText + "&warehouse=" + warehouse,
+				success: function (data) {
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+
+	})
+
+	var productiontable = $("#production-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Inventory/GetProductionList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='/Inventory/AddProduction?productionID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "id", "name": "id", "autoWidth": true },
+			{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+			{ "data": "subRecipeName", "name": "subRecipeName", "autoWidth": true },
+			{ "data": "qty", "name": "qty", "autoWidth": true },
+			{ "data": "unitName", "name": "unitName", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'status',
+				render: function (data, type, row) {
+					if (row.status == 1) {
+						return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+					}					
+					else if (row.status == 2) {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+					}
+					else if (row.status == 3) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Completed"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			
+		]
+	});
+
+	function LoadWarehouse() {
+
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-warehouse").empty();
+				$("#filter-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#filter-warehouse").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+	}
+
+	function FilterProduction () {
+		var searchText = $("#filter-searchtext").val();
+		var warehouse = $("#filter-warehouse").val();
+
+		productiontable.columns(0).search(searchText);
+		productiontable.columns(1).search(warehouse);
+
+		productiontable.draw();
+	}
+
+</script>

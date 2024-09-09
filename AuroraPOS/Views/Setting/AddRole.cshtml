@@ -1,0 +1,153 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model RoleViewModel
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Add/Edit Role"]</h4>
+		<h6>@ViewLocalizer["Manage roles"]</h6>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-4 col-sm-6 col-12">
+				<input type="hidden" id="role-id" value="@Model.Role.ID" />
+				<div class="form-group">
+					<label>@ViewLocalizer["Role Name"]<span class="manitory">*</span></label>
+					<input type="text" class="form-control" aria-describedby="basic-addon1" id="role-name" value="@Model.Role.RoleName" required><br />
+				</div>
+			</div>
+			<div class="col-lg-4 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Priority"]<span class="manitory">*</span></label>
+                    <input type="text" class="form-control" aria-describedby="basic-addon1" id="role-priority" value="@Model.Role.Priority" required onkeypress="return onlyNumberKey(event)">
+				</div>
+			</div>
+		</div>
+        <h6 class="p-2">@ViewLocalizer["Permissions"]</h6>
+        <div class="accordion pb-3" id="accordionPanelsStayOpenExample">
+            @foreach(var q in Model.PermissionGroups)
+            {
+                <div class="accordion-item">
+                    <h2 class="accordion-header" >
+                        <button class="accordion-button  collapsed" type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-@q.Name.Replace(" ", "_")" aria-controls="panelsStayOpen-@q.Name.Replace(" ", "_")">
+                            @q.Name                            
+                        </button>
+                        
+                    </h2>
+                    <div id="panelsStayOpen-@q.Name.Replace(" ", "_")" class="accordion-collapse collapse" >
+                        <div class="accordion-body group-body">
+                            <div class="form-check form-switch">
+                                @if(q.IsSelected)
+                                {
+                                    <input class="form-check-input group-all" type="checkbox" role="switch" checked>
+                                }
+                                else
+                                {
+                                    <input class="form-check-input group-all" type="checkbox" role="switch">
+                                }
+                                <label class="form-check-label" >ALL</label>
+                            </div>
+                            @foreach(var p in q.Permissions)
+                            {
+                                <div class="form-check form-switch mx-4">
+                                    @if (p.IsSelected)
+                                    {
+                                        <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch"  checked>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch">
+                                    }
+                                    
+                                    <label class="form-check-label" >@p.Name</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+                      
+        </div>
+		<div class="row">
+			<div class="col-lg-12">
+				<a id="submit" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
+				<a id="cancel" href="/Setting/Roles" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".group-all").change(function() {
+            var sel = $(this).prop("checked");
+
+            $(this).closest(".group-body").find(".permission-item").each(function() {
+                $(this).prop("checked", sel);
+            })
+        })
+
+        $(".permission-item").change(function () {
+            var sel = $(this).prop("checked");
+            if (!sel)
+            {
+                $(this).closest(".group-body").find(".group-all").prop("checked", false);
+            }
+        });
+
+        $("#submit").click(function() {
+            var permissions = [];
+            $(".permission-item").each(function() {
+                var sel = $(this).prop("checked")
+                if (sel)
+                {
+                    var id = parseInt($(this).data("id"));
+                    permissions.push(id);
+                }
+            });
+
+            var name = $("#role-name").val();
+            if (!name || name == "") {
+                toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+                return;
+            }
+            var priority = parseInt($("#role-priority").val());
+            if (!priority) priority = 0;
+            var id = parseInt($("#role-id").val());
+            var data = {
+                ID: id,
+                RoleName: name,
+                Priority: priority,
+                PermissionIds : permissions
+            }
+
+            $.ajax({
+                url: "/Setting/EditRole",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        toastr.success("@ViewLocalizer["The role was updated successfully."]", {})
+                        
+                    }
+                    else if (data.status == 2) {
+                        toastr.error("@ViewLocalizer["The user with same username already exists. Please confirm or check if the one exists."]", {})
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        });
+    })
+</script>

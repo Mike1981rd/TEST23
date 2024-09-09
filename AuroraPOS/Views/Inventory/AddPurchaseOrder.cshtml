@@ -1,0 +1,1542 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var orderStatus = (PurchaseOrderStatus)ViewBag.Status;
+}
+<div class="content">
+    <div class="page-header">
+        <div class="page-title">
+            <h4>@ViewLocalizer["Add/Update Purchase Order"]</h4>
+
+        </div>
+        <div class="page-btn">
+            <h5 id="purchase-id" data-id="@ViewBag.PurchaseOrderID"></h5>
+            @if (orderStatus == PurchaseOrderStatus.Pending)
+            {
+                <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
+            }
+            else if (orderStatus == PurchaseOrderStatus.Ordered)
+            {
+                <span class='badges bg-lightpurple'>@ViewLocalizer["Ordered"]</span>
+            }
+            else if (orderStatus == PurchaseOrderStatus.Cancelled)
+            {
+                <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
+            }
+            else if (orderStatus == PurchaseOrderStatus.Received)
+            {
+                <span class='badges bg-lightgreen'>@ViewLocalizer["Received"]</span>
+            }
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Supplier"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="purchase-supplier" class="select">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-supplier-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Warehouse"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="purchase-warehouse" class="select">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["NCF"]</label>
+                        <input id="purchase-ncf" min="11" max="13" type="text">
+                        <span class="form-text text-muted">11 ~ 13 digits | eg. 123133122221</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Terms"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="purchase-terms" class="select">
+                                    <option value="Contado">Contado</option>
+                                    <option value="Consignacion">Consignacion</option>
+                                    <option value="Credito">Credito</option>
+                                    <option value="Produccion">Produccion</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Order Date"] </label>
+                        <div class="input-groupicon">
+                            <input id="purchase-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-4 col-4 px-3">
+                        <div class="">
+                            <a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">@ViewLocalizer["Add Item"] </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="purchase-item" class="table">
+                        <thead style=" ">
+                            <tr>
+                                <th>@ViewLocalizer["Article"]</th>
+                                <th>@ViewLocalizer["Brand"]</th>
+                                <th style="max-width:100px;">@ViewLocalizer["Qty"]    </th>
+                                <th>@ViewLocalizer["Unit"]	</th>
+                                <th>@ViewLocalizer["Price"]	</th>
+                                <th>
+                                    <div>
+                                        @ViewLocalizer["Discount"]
+                                        <select id="item-discountunit">
+                                            <option selected value="%">%</option>
+                                            <option value="$">$</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>@ViewLocalizer["Total"]</th>
+                                <th>@ViewLocalizer["Tax"]</th>
+                                <th>@ViewLocalizer["Imported"]</th>
+                                <th>@ViewLocalizer["Tax Amount"]</th>
+                                <th class="text-end">@ViewLocalizer["Net Total"]	</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="item-list">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 float-md-right">
+                    <div class="total-order">
+                        <ul>
+                            <li>
+                                <h4>@ViewLocalizer["Base Taxable"]</h4>
+                                <h5 id="po-basetaxable">$ 0.00</h5>
+                            </li>
+                            <li>
+                                <h4>@ViewLocalizer["Extra Amount"]</h4>
+                                <h5 id="po-extent">$ 0.00</h5>
+                            </li>
+                            <li>
+                                <h4>@ViewLocalizer["Shipping"]</h4>
+                                <h5 id="po-shipping">$ 0.00</h5>
+                            </li>
+                            <li>
+                                <h4>@ViewLocalizer["Discount"]	</h4>
+                                <h5 id="po-discount">$ 0.00</h5>
+                            </li>
+                            <li>
+                                <h4>@ViewLocalizer["Sub Total"]</h4>
+                                <h5 id="po-subtotal">$ 0.00</h5>
+                            </li>
+                            <li>
+                                <h4>@ViewLocalizer["Tax"]</h4>
+                                <h5 id="po-tax">$ 0.00</h5>
+                            </li>
+                            <li class="total">
+                                <h4>@ViewLocalizer["Net Total"]</h4>
+                                <h5 id="po-total">$ 0.00</h5>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>
+                            @ViewLocalizer["Discount"]
+                            <select id="item-discountunit-total">
+                                <option selected value="%">%</option>
+                                <option value="$">$</option>
+                            </select>
+                        </label>
+                        <input id="order-discount" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Shipping"]</label>
+                        <input id="order-shipping" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Tax"]</label>
+                        <select id="shipping-tax" class="select">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12 table-responsive mb-3">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>@ViewLocalizer["Tax Name"]</th>
+                                    <th>@ViewLocalizer["Tax"] (%)</th>
+                                    <th>@ViewLocalizer["Value"]</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tax-result-table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Description"]</label>
+                        <textarea id="purchase-description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    @if (orderStatus == PurchaseOrderStatus.Pending)
+                    {
+                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
+                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                        <button id="purchase-cancel2" class="btn btn-default btn-danger">Cancel</button>
+                    }
+                    else if (orderStatus == PurchaseOrderStatus.Ordered)
+                    {
+                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                        <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
+                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                    }
+                    else if (orderStatus == PurchaseOrderStatus.Cancelled)
+                    {
+                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                    }
+                    else if (orderStatus == PurchaseOrderStatus.None)
+                    {
+                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+
+                    }
+                    else if (orderStatus == PurchaseOrderStatus.Received)
+                    {
+                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                    }
+                    <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Article Modal -->
+@{
+    @await Component.InvokeAsync("ArticleList", new { })
+}
+<!-- Supplier Modal -->
+@{
+    @await Component.InvokeAsync("AddSupplier", new {  })
+}
+<!-- Warehouse Modal -->
+@{
+    @await Component.InvokeAsync("AddWarehouse", new {  })
+}
+
+<script>
+    function UpdateOrderStatus(status, porderID) {
+        var data = {
+            ID: porderID,
+            Status: status
+        }
+        $.ajax({
+            url: "/Inventory/UpdatePurchaseOrderStatus",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    location.replace("/Inventory/PurchaseOrderList");
+                }
+                else if (data.status == 2) {
+                    toastr.warning("@ViewLocalizer["You need to fill in the NCF to receive."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to update the status."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function MakeNonEditable() {
+        $("body").find("input").prop("disabled", true);
+        $("body").find("select").prop("disabled", true);
+        $("body").find("a").addClass("a-disabled");
+        $("#purchase-description").prop("disabled", true);
+        $("#purchase-return").removeClass("a-disabled");
+        $("#purchase-report").removeClass("a-disabled");
+    }
+
+    function SubmitPurchaseOrder(OrderStatus) {
+        var supplierId = parseInt($("#purchase-supplier").val());
+        if (!supplierId) supplierId = 0;
+
+        var warehosueId = parseInt($("#purchase-warehouse").val());
+        if (!warehosueId) warehosueId = 0;
+
+        var ncf = $("#purchase-ncf").val();
+        var taxes = [];
+        var isTaxable = $("#purchase-supplier option:selected").data("tax");
+        var term = $("#purchase-terms").val();
+        var dt = $("#purchase-date").val();
+        var shipping = parseFloat($("#order-shipping").val());
+        if (!shipping) shipping = 0;
+
+        var status = parseInt($("#purchase-status").val());
+        var description = $("#purchase-description").val();
+        var discountType = $("#item-discountunit").val();
+        var discountTypeTotal = $("#item-discountunit-total").val();
+        var orderDiscount = parseFloat($("#order-discount").val());
+        if (!orderDiscount) orderDiscount = 0;
+
+        var currentOrderDiscount = orderDiscount;
+        var discountPercent = 0;
+        var discountAmount = 0;
+        var discountTotal = 0;
+
+        if (discountTypeTotal == "%")
+        {
+            discountPercent = orderDiscount;
+        }
+        else
+        {
+            discountAmount = orderDiscount;
+        }
+
+        var allSubTotal = 0;
+        var allTotal = 0;
+        var allTax = 0;
+        var allTaxable = 0;
+        var allExtento = 0;
+        var allDiscount = 0;
+        var items = [];
+        var itemsmod= [];
+        $("#item-list tr").each(function (i, e) {
+            // qty
+            var qty = parseFloat($(this).find(".item-qty").val());
+            if (!qty) {
+                qty = 0;
+                $(this).find(".item-qty").val("");
+            }
+            else {
+                $(this).find(".item-qty").val(qty);
+            }
+
+            var unitCost = parseFloat($(this).find(".item-payunit option:selected").data("cost"));
+            if (!unitCost) unitCost = 0.00;
+            // price
+            var itemPrice = parseFloat($(this).find(".item-price").val());
+            if (!itemPrice || itemPrice == 0) {
+                itemPrice = 0;
+                $(this).find(".item-price").val("");
+            }
+            else {
+                $(this).find(".item-price").val(itemPrice);
+            }
+
+            // discount
+            var discount = 0;
+            var discount = parseFloat($(this).find(".item-discount").val());
+            if (!discount) discount = 0.00;
+
+            var currentDiscount = discount;
+
+            // tax
+            var taxValue = parseFloat($(this).find(".item-tax option:selected").data("taxvalue"));
+            if (!taxValue) taxValue = 0.00;
+
+            var subTotal = qty * itemPrice;
+
+            var taxable = subTotal * 100 / (100 + taxValue);
+
+            var subvalue = 0;
+            if (!isTaxable) {
+                if (orderDiscount && orderDiscount > 0) {
+                    var unitDiscount = $("#item-discountunit-total").val();
+                    if (unitDiscount == "%") {
+                        discount = subTotal * orderDiscount / 100;  // G2
+                    }
+                }
+                else {
+                    var unitDiscount = $("#item-discountunit").val();
+                    if (unitDiscount == "%") {
+                        discount = subTotal * discount / 100;  // G2
+                    }
+                }
+                subvalue = subTotal - discount;
+            }
+            else {
+                if (orderDiscount && orderDiscount > 0) {
+                    var unitDiscount = $("#item-discountunit-total").val();
+                    if (unitDiscount == "%") {
+                        discount = taxable * orderDiscount / 100;  // G2
+                    }
+                }
+                else {
+                    var unitDiscount = $("#item-discountunit").val();
+                    if (unitDiscount == "%") {
+                        discount = taxable * discount / 100;  // G2
+                    }
+                }
+
+                subvalue = taxable - discount;
+            }
+
+            var taxAmount = (taxable - discount) * taxValue / 100;
+            if (!isTaxable) {
+                taxAmount = subvalue * taxValue / 100;
+            }
+
+            var total = subvalue + taxAmount;
+            if (isTaxable) {
+                allSubTotal += taxable - discount + taxAmount
+            }
+            else {
+                allSubTotal += subTotal - discount + taxAmount
+            }
+
+            allTotal += total;
+            allTax += taxAmount;
+            if (taxAmount > 0) {
+                var taxname = $(this).find(".item-tax option:selected").data("taxname")
+                var isNew = true;
+                for (var i = 0; i < taxes.length; i++) {
+                    if (taxes[i].taxName == taxname) {
+                        taxes[i].taxAmount += taxAmount;
+                        isNew = false;
+                    }
+                }
+                if (isNew) {
+                    taxes.push({
+                        taxName: taxname,
+                        taxValue: taxValue,
+                        taxAmount: taxAmount
+                    })
+                }
+
+            }
+            if (taxValue > 0) {
+                if (isTaxable) {
+                    allTaxable += taxable;
+                }
+                else {
+                    allTaxable += subTotal;
+                }
+
+            }
+            else {
+                if (isTaxable) {
+                    allExtento += taxable;
+                }
+                else {
+                    allExtento += subTotal;
+                }
+
+            }
+
+            allDiscount += discount;
+
+            var articleId = parseInt($(this).data("id"));
+            if (!articleId) articleId = 0;
+
+            var itemId = parseInt($(this).data("itemid"));
+            if (!itemId) itemId = 0;
+
+            var unitId = parseInt($(this).find(".item-payunit option:selected").data("id"));
+            if (!unitId) unitId = 0;
+
+            var taxId = parseInt($(this).find(".item-tax").val());
+            if (!taxId) taxId = 0;
+
+            var item = {
+                ItemID: itemId,
+                ArticleID: articleId,
+                QTY: qty,
+                UnitNum: unitId,
+                UnitPrice: itemPrice,
+                DiscountAmount: currentDiscount,
+                TaxID: taxId
+            }
+              var item2 = {
+                ItemID: itemId,
+                ArticleID: articleId,
+                UnitPrice: itemPrice,
+            }
+            itemsmod.push(item2); 
+            items.push(item);
+        });
+
+        var articulosJSON = JSON.stringify(itemsmod);
+        var orderIdd = parseInt($("#purchase-id").data("id"));
+        localStorage.setItem(orderIdd, articulosJSON);
+
+        var shipping = parseFloat($("#order-shipping").val());
+        if (!shipping) {
+            shipping = 0;
+        }
+        else {
+            var shippingTaxValue = parseFloat($("#shipping-tax option:selected").data("taxvalue"));
+            if (shippingTaxValue && shippingTaxValue > 0) {
+                var shippingTax = shipping * shippingTaxValue / 100;
+                allTax += shippingTax;
+                var taxname = $("#shipping-tax option:selected").data("taxname")
+                var isNew = true;
+                for (var i = 0; i < taxes.length; i++) {
+                    if (taxes[i].taxName == taxname) {
+                        taxes[i].taxAmount += shippingTax;
+                        isNew = false;
+                    }
+                }
+                if (isNew) {
+                    taxes.push({
+                        taxName: taxname,
+                        taxValue: shippingTaxValue,
+                        taxAmount: shippingTax
+                    })
+                }
+
+            }
+        }
+        allSubTotal = allTaxable + allExtento + shipping - allDiscount;
+        allTotal = allSubTotal + allTax;
+
+        var porderID = parseInt($("#purchase-id").data("id"));
+        if (!porderID) porderID = 0;
+        var data = {
+            PurchaseOrderId: porderID,
+            SupplierID: supplierId,
+            WarehouseID: warehosueId,
+            NCF: ncf,
+            Term: term,
+            Shipping: shipping,
+            Description: description,
+            DiscountType: discountType,
+            DiscountTypeTotal: discountTypeTotal,
+            DiscountAmount: discountAmount,
+            DiscountPercent: discountPercent,
+            DiscountTotal : allDiscount,
+            Items: items,
+            Discount: currentOrderDiscount,
+            SubTotal: allSubTotal,
+            TaxTotal: allTax,
+            Total: allTotal,
+            OrderStatus: OrderStatus
+
+        }
+        $.ajax({
+            url: "/Inventory/EditPurchaseOrder",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    UpdateOrderStatus(OrderStatus, data.id)
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["The NCF should be unique."]", {})
+                }
+                else if (data.status == 3) {
+                    toastr.error("@ViewLocalizer["The NCF should be input because the supplier is formal."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to update the purchase order."]", {})
+                }
+                isRunning = false;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    var isRunning = false;
+    $(document).ready(function () {
+        $("#purchase-send").click(function () {
+            if (isRunning) return;
+            isRunning = true;
+            SubmitPurchaseOrder(2);
+        });
+
+        $("#purchase-cancel").click(function () {
+            if (isRunning) return;
+            isRunning = true;
+            SubmitPurchaseOrder(3);
+        });
+
+        $("#purchase-receive").click(function () {
+             if (isRunning) return;
+            isRunning = true;
+            SubmitPurchaseOrder(4);
+        });
+        $("#purchase-report").click(function () {
+            $.ajax({
+                url: "/Inventory/DownloadPurchaseOrderReport?PurchaseOrderID=" + @ViewBag.PurchaseOrderID,
+                type: "POST",
+                success: function (d, textStatus, jqXHR) {
+                    if (d.status == 0) {
+                        window.open(d.url, '_blank');
+                    }
+                    else {
+                        toastr.error(d.message, {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        });
+        $("#purchase-submit").click(function () {
+             if (isRunning) return;
+            isRunning = true;
+            SubmitPurchaseOrder(1);
+        });
+
+        $.ajax({
+            url: "/Setting/GetActiveTaxList?type=2",
+            type: "POST",
+            success: function (data1, textStatus, jqXHR) {
+                var element = $("#shipping-tax");
+                element.empty();
+                for (var i = 0; i < data1.length; i++) {
+                    var d = data1[i];
+                    element.append("<option data-taxvalue='" + d.taxValue + "' data-taxname='" + d.taxName + "'  value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        // supplier
+        SelectSupplier();
+
+        // warehouse
+
+        $("#add-warehouse-modal").click(function () {
+            $("#listwarehouse").modal("show");
+        });
+
+        $("#add-warehouse").click(function () {
+
+            $("#ew-name").val("");
+
+            $("#ew-email").val("");
+            $("#ew-phone").val("");
+            $("#ew-status").val("1").change();
+            $(".warehouse-modal-title").html("@ViewLocalizer["Add Warehouse"]");
+            $("#editwarehouse").data("id", 0);
+            $("#editwarehouse").modal("show");
+        });
+
+        var warehousetable = $("#warehouse-list").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Inventory/GetWarehouseList",
+                "type": "POST",
+                "datatype": "json"
+            },
+            'select': {
+                'style': 'multi'
+            },
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50],
+            "order": [[1, 'asc']],
+            "columns": [
+                { "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+                { "data": "email", "name": "email", "autoWidth": true },
+                { "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
+                {
+                    'data': 'status', 'name': 'isActive',
+                    render: function (data, type, row) {
+                        if (row.isActive) {
+                            return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                        }
+                        else {
+                            return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                        }
+                    },
+                    "autoWidth": true
+                },
+                {
+                    'data': 'action', 'name': 'action',
+                    render: function (data, type, row) {
+                        return "<div class='d-flex align-items-center'><a class='icon me-3 d-inline-block' href='javascript:void(0);' onclick='EditWarehouse(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectWarehouse(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+                    },
+                },
+            ]
+        });
+
+        // article
+        $("#add-article-modal").click(function () {
+            var supplier = $("#purchase-supplier").val();
+            if (!supplier || supplier == "") {
+                toastr.warning("@ViewLocalizer["Please select the supplier."]", {})
+                return;
+            }
+            $("#article-purchase-supplier").val($("#purchase-supplier").val()).change();
+            $("#listarticle").modal("show");
+        });
+
+        // initialize
+        if (@ViewBag.PurchaseOrderID != 0) {
+            var articulos;
+            $.ajax({
+                url: "/Inventory/GetPurchaseOrder?purchaseOrderID=" + @ViewBag.PurchaseOrderID,
+                type: "GET",
+                success: function (data, textStatus, jqXHR) {
+                    if (data) {
+                        $("#purchase-id").data("id", data.id);
+                        $("#purchase-id").text("ID #00" + data.id);
+
+                        SelectSupplier(data.supplier);
+                        SelectWarehouse(data.warehouse);
+
+                        $("#purchase-ncf").val(data.ncf);
+                        $("#purchase-terms").val(data.term).change();
+                        $("#order-shipping").val(data.shipping)
+                        $("#order-discount").val(data.discount)
+                        $("#purchase-description").val(data.description)
+                        if (data.isDiscountPercent) {
+                            $("#item-discountunit-total").val("%");
+                        }
+                        else {
+                            $("#item-discountunit-total").val("$");
+                        }
+                        if (data.isDiscountPercentItems) {
+                            $("#item-discountunit").val("%")
+                        }
+                        else{
+                            $("#item-discountunit").val("$")
+                        }
+                        var idor = data.id;
+                        var articulosJSON = localStorage.getItem(idor);
+                        if (articulosJSON) {
+                            articulos = JSON.parse(articulosJSON);
+                        }
+                        if(articulos == null){
+                            for (var i = 0; i < data.items.length; i++) {
+                                var item = data.items[i];
+
+                                $.ajax({
+                                    url: "/Inventory/GetPurchaseOrderItem?itemID=" + item.id,
+                                    type: "GET",
+                                    success: function (data1, textStatus, jqXHR) {
+                                        if (data1) {
+                                            var html = `
+                                        <tr class="article-item" data-id="${data1.item.id}" data-itemid="${data1.id}">
+                                            <td>
+                                                ${data1.item.name}
+                                            </td>
+                                            <td>
+                                                ${data1.item.brand.name}
+                                            </td>
+                                            <td>
+                                                <input class="item-qty form-control form-control-sm" placeholder="0" value="${data1.qty}" onkeypress="return onlyDecimalKey(event)" type="text" />
+                                            </td>
+                                            <td>
+                                                <div class=" select-container">
+                                                    <select class="item-payunit form-control form-control-sm">
+                                                        <option value="">@ViewLocalizer["Choose unit"]</option>
+                                                        `
+                                            for (var i = 0; i < data1.item.items.length; i++) {
+                                                var item = data1.item.items[i];
+                                                if (item.number == data1.unitNum) {
+                                                    html += `<option selected value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                                                }
+                                                else {
+                                                    html += `<option value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                                                }
+
+                                            }
+                                            html += `	</select>
+                                                    </div>
+                                            </td>
+                                            <td>
+                                                <input class="item-price form-control form-control-sm" placeholder="0" value="${data1.unitCost}" onkeypress="return onlyDecimalKey(event)" type="text" />
+                                            </td>
+
+                                                <td><input class="item-discount   form-control form-control-sm" placeholder="0.00" value="${data1.discount}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+                                            <td>
+                                                <label class="item-subtotal"></lable>
+                                            </td>
+
+                                            <td>
+                                                <div class=" select-container">
+                                                    <select class="item-tax form-control form-control-sm">
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td class="item-dd text-end">$0</td>
+                                            <td class="item-taxcost text-end">$0</td>
+                                            <td class="item-total text-end">$0</td>
+                                                <td>
+                                                    <a class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                                </td>
+                                            </tr>
+                                `;
+                                            $("#item-list").append(html);
+
+                                            var ntr = $("#item-list tr").last();
+                                            $.ajax({
+                                                url: "/Setting/GetActiveTaxList?type=2",
+                                                type: "POST",
+                                                success: function (data2, textStatus, jqXHR) {
+                                                    var element = ntr.find(".item-tax");
+                                                    element.empty();
+                                                    for (var i = 0; i < data2.length; i++) {
+                                                        var d = data2[i];
+                                                        if (data1.tax && data1.tax.id == d.id) {
+                                                            element.append("<option selected data-taxname='" + d.taxName + "' data-taxvalue='" + d.taxValue + "' data-id='" + d.id + "' value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                                                        }
+                                                        else {
+                                                            element.append("<option data-taxname='" + d.taxName + "'  data-taxvalue='" + d.taxValue + "'  value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                                                        }
+
+                                                    }
+                                                    UpdateItems();
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                                                }
+                                            });
+
+
+
+
+                                        }
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                                    }
+                                });
+                            }
+                        }else{
+                           for (var i = 0; i < data.items.length; i++) {
+    var item = data.items[i];
+
+    // Verificar si el artículo actual tiene una versión modificada en 'articulos'
+    var articuloModificado = articulos.find(function(articulo) {
+        return articulo.id === item.id;
+    });
+
+    if (articuloModificado) {
+        // El artículo actual tiene una versión modificada en 'articulos'
+        // Asignar el nuevo precio al campo 'data1.unitCost'
+        item.unitCost = articuloModificado.precio;
+    }
+
+    $.ajax({
+        url: "/Inventory/GetPurchaseOrderItem?itemID=" + item.id,
+        type: "GET",
+        success: function (data1, textStatus, jqXHR) {
+            if (data1) {
+                var html = `
+                <tr class="article-item" data-id="${data1.item.id}" data-itemid="${data1.id}">
+                    <td>
+                        ${data1.item.name}
+                    </td>
+                    <td>
+                        ${data1.item.brand.name}
+                    </td>
+                    <td>
+                        <input class="item-qty form-control form-control-sm" placeholder="0" value="${data1.qty}" onkeypress="return onlyDecimalKey(event)" type="text" />
+                    </td>
+                    <td>
+                        <div class=" select-container">
+                            <select class="item-payunit form-control form-control-sm">
+                                    <option value="">>@ViewLocalizer["Choose unit"]</option>
+                                `
+                for (var i = 0; i < data1.item.items.length; i++) {
+                    var item = data1.item.items[i];
+                    if (item.number == data1.unitNum) {
+                        html += `<option selected value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                    }
+                    else {
+                        html += `<option value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                    }
+
+                }
+                html += `	</select>
+                            </div>
+                    </td>
+                    <td>
+                        <input class="item-price form-control form-control-sm" placeholder="0" value="${data1.unitCost}" onkeypress="return onlyDecimalKey(event)" type="text" />
+                    </td>
+
+                        <td><input class="item-discount   form-control form-control-sm" placeholder="0.00" value="${data1.discount}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+                    <td>
+                        <label class="item-subtotal"></lable>
+                    </td>
+
+                    <td>
+                        <div class=" select-container">
+                            <select class="item-tax form-control form-control-sm">
+                            </select>
+                        </div>
+                    </td>
+                    <td class="item-dd text-end">$0</td>
+                    <td class="item-taxcost text-end">$0</td>
+                    <td class="item-total text-end">$0</td>
+                        <td>
+                            <a class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                        </td>
+                    </tr>
+        `;
+                $("#item-list").append(html);
+
+                var ntr = $("#item-list tr").last();
+                $.ajax({
+                    url: "/Setting/GetActiveTaxList?type=2",
+                    type: "POST",
+                    success: function (data2, textStatus, jqXHR) {
+                        var element = ntr.find(".item-tax");
+                        element.empty();
+                        for (var i = 0; i < data2.length; i++) {
+                            var d = data2[i];
+                            if (data1.tax && data1.tax.id == d.id) {
+                                element.append("<option selected data-taxname='" + d.taxName + "' data-taxvalue='" + d.taxValue + "' data-id='" + d.id + "' value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                            }
+                            else {
+                                element.append("<option data-taxname='" + d.taxName + "'  data-taxvalue='" + d.taxValue + "'  value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                            }
+                        }
+                        UpdateItems();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+        }
+    });
+}
+
+                        }
+                        
+
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+
+        }
+        else {
+            SelectSupplier();
+            SelectWarehouse();
+        }
+
+    });
+
+    $("body").on("click", "a.delete-item", function () {
+        $(this).closest("tr").remove();
+        UpdateItems();
+    });
+
+    $("body").on("change", ".item-qty", function () {
+        UpdateItems();
+    });
+    $("body").on("change", ".item-price", function () {
+        $(this).data("changed", true);
+        UpdateItems();
+    });
+    $("body").on("change", ".item-payunit", function () {
+        var unitCost = parseFloat($(this).find("option:selected").data("cost"));
+        if (!unitCost) unitCost = 0.00;
+
+        if (!$(this).closest("tr").find(".item-price").data("changed")) {
+            $(this).closest("tr").find(".item-price").val(unitCost);
+        }
+
+
+        UpdateItems();
+    });
+
+    $("body").on("change", ".item-discount", function () {
+        var hasValue = false;
+        $("body").find(".item-discount").each(function () {
+            var val = $(this).val();
+            if (val && val > 0) {
+                hasValue = true;
+            }
+        })
+        if (hasValue) {
+            $("#order-discount").val("");
+            $("#order-discount").prop("readonly", true);
+        }
+        else {
+            $("#order-discount").val("");
+            $("#order-discount").prop("readonly", false);
+        }
+
+        UpdateItems();
+    });
+
+    $("body").on("change", ".item-tax", function () {
+        UpdateItems();
+    });
+
+    $("body").on("change", "#order-shipping", function () {
+        UpdateItems();
+    });
+
+    $("body").on("change", "#shipping-tax", function () {
+        UpdateItems();
+    });
+
+    $("body").on("change", "#item-discountunit", function () {
+        UpdateItems();
+    });
+
+    $("body").on("change", "#item-discountunit-total", function () {
+        UpdateItems();
+    });
+
+    $("body").on("change", "#order-discount", function () {
+        var val = parseFloat($(this).val());
+        if (val) {
+            $("body").find(".item-discount").each(function () {
+                $(this).val("");
+                $(this).prop("readonly", true);
+            })
+            UpdateItems();
+        }
+        else {
+            $("body").find(".item-discount").each(function () {
+                $(this).val("");
+                $(this).prop("readonly", false);
+            })
+            UpdateItems();
+        }
+
+    });
+    // supplier functions
+    function SelectSupplier(supplier) {
+        $.ajax({
+            url: "/Inventory/GetAllActiveSuppliers",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#purchase-supplier").empty();
+                $("#purchase-supplier").append("<option value='' selected>@ViewLocalizer["Choose supplier"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#purchase-supplier").append("<option data-tax=" + d.isTaxIncluded + " data-ncf=" + d.isFormalSupplier + " value='" + d.id + "'>" + d.name + "</option>")
+                }
+                $("#purchase-supplier").select2();
+                if (supplier) {
+                    $("#purchase-supplier").val(supplier.id).change();
+                }
+                else {
+                    $("#purchase-supplier").val('').change();
+                }
+
+                // article supplier
+                $("#article-purchase-supplier").empty();
+                $("#article-purchase-supplier").append("<option value='0' selected>@ViewLocalizer["All Supplier"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#article-purchase-supplier").append("<option value='" + d.id + "'>" + d.name + "</option>")
+                }
+                $("#article-purchase-supplier").select2();
+                if (supplier) {
+                    $("#article-purchase-supplier").val(supplier.id).change();
+                }
+                else {
+                    $("#article-purchase-supplier").val('').change();
+                }
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listsupplier").modal("hide");
+    }
+
+    // warehosue functions
+    function SelectWarehouse(warehouse) {
+        if (warehouse && !warehouse.isActive) {
+            toastr.error("@ViewLocalizer["This warehouse is inactive."]", {})
+            return;
+        }
+        $.ajax({
+            url: "/Inventory/GetAllActiveWarehouses",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#purchase-warehouse").empty();
+                $("#purchase-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#purchase-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+                }
+                $("#purchase-warehouse").select2();
+                if (warehouse) {
+                    $("#purchase-warehouse").val(warehouse.id).change();
+                }
+                else {
+                    $("#purchase-warehouse").val('').change();
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listwarehouse").modal("hide");
+    }
+
+    $("#edit-warehouse").click(function () {
+        var warehouseName = $("#ew-name").val();
+        var email = $("#ew-email").val();
+        var phone = $("#ew-phone").val();
+
+        if (!warehouseName || !email || !phone) {
+            toastr.warning("@ViewLocalizer["Please fill in the inputs."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var active = $("#ew-status").val()
+        var data = {
+            ID: $("#editwarehouse").data("id"),
+            WarehouseName: warehouseName,
+            Email: email,
+            PhoneNumber: phone,
+            IsActive: active == "1"
+        }
+
+        $.ajax({
+            url: "/Inventory/EditWarehouse",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#warehouse-list").DataTable().draw();
+                    $("#editwarehouse").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to update the warehouse."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+    });
+
+    function EditWarehouse(w) {
+        $("#ew-name").val(w.warehouseName);
+
+        $("#ew-email").val(w.email);
+        $("#ew-phone").val(w.phoneNumber);
+        if (w.isActive) {
+            $("#ew-status").val("1").change();
+        }
+        else {
+            $("#ew-status").val("0").change();
+        }
+        $(".warehouse-modal-title").html("@ViewLocalizer["Edit Warehouse"]");
+        $("#editwarehouse").data("id", w.id);
+        $("#editwarehouse").modal("show");
+    }
+
+    // add item
+    function SelectArticle(article) {
+        if (!article.isActive) {
+            toastr.error("@ViewLocalizer["The article is inactive."]", {})
+            return;
+        }
+        var supplierId = $("#purchase-supplier").val();
+        $.ajax({
+            url: "/Inventory/GetArticleForPurchaseOrder?articleID=" + article.id + "&supplierId=" + supplierId,
+            type: "GET",
+            success: function (ret, textStatus, jqXHR) {
+                if (ret) {
+                    var data = ret.article;
+                    var brand = '';
+                    if (data.brand)
+                        brand = data.brand.name;
+                    var html = `
+                            <tr class="article-item" data-id="${data.id}" data-itemid="">
+                                <td>
+                                    ${data.name}
+                                </td>
+                                <td>${brand}</td>
+                                <td>
+                                    <input class="item-qty form-control form-control-sm" placeholder="0" value="1" onkeypress="return onlyDecimalKey(event)" type="text" />
+                                </td>
+                                <td>
+                                    <div class=" select-container">
+                                        <select class="item-payunit form-control form-control-sm">
+                                            <option value="0">@ViewLocalizer["Choose unit"]</option>
+                                        `
+                    for (var i = 0; i < data.items.length; i++) {
+                        var item = data.items[i];
+                        if (item.number == data.defaultUnitNum) {
+                            html += `<option selected value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                        }
+                        else {
+                            html += `<option value="${item.id}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+                        }
+                    }
+                    html += `	</select>
+                                    </div>
+                                </td>
+                                <td>  <input class="item-price form-control form-control-sm" placeholder="0.00" value="0" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+
+                                            <td><input class="item-discount   form-control form-control-sm" placeholder="0.00" value="" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+                                            <td><label class="item-subtotal"></lable></td>
+
+                                            <td>
+                                                <div class=" select-container">
+                                                    <select class="item-tax form-control form-control-sm">
+                                                    </select>
+                                                </div>
+                                            </td>
+                                             <td class="item-dd text-end"></td>
+                                            <td class="item-taxcost text-end">$0</td>
+                                            <td class="item-total text-end">$0</td>
+                                            <td>
+                                                <a class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                            </td>
+                                        </tr>
+                            `;
+                    $("#item-list").append(html);
+                    $("#item-list").last().find(".item-payunit").change();
+                    var ntr = $("#item-list tr").last();
+                    $.ajax({
+                        url: "/Setting/GetActiveTaxList?type=2",
+                        type: "POST",
+                        success: function (data1, textStatus, jqXHR) {
+                            var element = ntr.find(".item-tax");
+                            element.empty();
+                            for (var i = 0; i < data1.length; i++) {
+                                var d = data1[i];
+                                if (data.tax && data.tax.id == d.id) {
+                                    element.append("<option selected data-taxname='" + d.taxName + "'  data-taxvalue='" + d.taxValue + "' data-id='" + d.id + "' value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                                }
+                                else {
+                                    element.append("<option data-taxname='" + d.taxName + "'  data-taxvalue='" + d.taxValue + "'  value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
+                                }
+                                UpdateItems();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                        }
+                    });
+
+                    //$.ajax({
+                    //    url: "/Inventory/GetLastPrice",
+                    //    type: "POST",
+                    //    success: function (data1, textStatus, jqXHR) {
+                    //        if (data1.status == 0) {
+                    //            var element = ntr.find(".item-payunit");
+                    //            element.val(data1.unitID).change();
+                    //        }
+                    //    },
+                    //    error: function (jqXHR, textStatus, errorThrown) {
+                    //        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    //    }
+                    //});
+
+                   // UpdateItems();
+                    $("#listarticle").modal("hide");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function UpdateItems() {
+        var allSubTotal = 0;
+        var allTotal = 0;
+        var allTax = 0;
+        var allTaxable = 0;
+        var allExtento = 0;
+        var allDiscount = 0;
+        $("#tax-result-table").empty();
+        var taxes = [];
+        var isTaxable = $("#purchase-supplier option:selected").data("tax");
+
+
+        var orderDiscount = parseFloat($("#order-discount").val());
+
+
+        $("#item-list tr").each(function (i, e) {
+            // qty
+            var qty = parseFloat($(this).find(".item-qty").val());
+            if (!qty) {
+                qty = 0;
+                $(this).find(".item-qty").val("");
+            }
+            else {
+                $(this).find(".item-qty").val(qty);
+            }
+
+            var unitCost = parseFloat($(this).find(".item-payunit option:selected").data("cost"));
+            if (!unitCost) unitCost = 0.00;
+            // price
+            var itemPrice = parseFloat($(this).find(".item-price").val());
+            if (!itemPrice || itemPrice == 0) {
+                itemPrice = 0;
+                $(this).find(".item-price").val("");
+            }
+            else {
+                $(this).find(".item-price").val(itemPrice);
+            }
+
+            // discount
+            var discount = 0;
+            var discount = parseFloat($(this).find(".item-discount").val());
+            if (!discount) discount = 0.00;
+
+
+            // tax
+            var taxValue = parseFloat($(this).find(".item-tax option:selected").data("taxvalue"));
+            if (!taxValue) taxValue = 0.00;
+
+            var subTotal = qty * itemPrice;
+
+            var taxable = subTotal * 100 / (100 + taxValue);
+
+
+            var subvalue = 0;
+            if (!isTaxable) {
+                if (orderDiscount) {
+                    if (orderDiscount == 0) {
+                        discount = 0;
+                    } else {
+                        var unitDiscount = $("#item-discountunit-total").val();
+                        if (unitDiscount == "%") {
+                            discount = subTotal * orderDiscount / 100;  // G2
+                        }
+                    }
+
+                }
+                else {
+                    var unitDiscount = $("#item-discountunit").val();
+                    if (unitDiscount == "%") {
+                        discount = subTotal * discount / 100;  // G2
+                    }
+                }
+                subvalue = subTotal - discount;
+            }
+            else {
+                if (orderDiscount) {
+                    if (orderDiscount == 0) {
+                        discount = 0;
+                    } else {
+                        var unitDiscount = $("#item-discountunit-total").val();
+                        if (unitDiscount == "%") {
+                            discount = taxable * orderDiscount / 100;  // G2
+                        }
+                    }
+
+                }
+                else {
+                    var unitDiscount = $("#item-discountunit").val();
+                    if (unitDiscount == "%") {
+                        discount = taxable * discount / 100;  // G2
+                    }
+                }
+
+                subvalue = taxable - discount;
+            }
+            $(this).find(".item-subtotal").text(numberWithCommas(subvalue.toFixed(2)));
+
+            $(this).find(".item-dd").text(numberWithCommas(subvalue.toFixed(2)));
+
+            var taxAmount = (taxable - discount) * taxValue / 100;
+            if (!isTaxable) {
+                taxAmount = subvalue * taxValue / 100;
+            }
+
+            $(this).find(".item-taxcost").text(numberWithCommas(taxAmount.toFixed(2)));
+
+            var total = subvalue + taxAmount;
+            $(this).find(".item-total").text(numberWithCommas(total.toFixed(2)));
+            if (isTaxable) {
+                allSubTotal += taxable - discount + taxAmount
+            }
+            else {
+                allSubTotal += subTotal - discount + taxAmount
+            }
+
+            allTotal += total;
+            allTax += taxAmount;
+            if (taxAmount > 0) {
+                var taxname = $(this).find(".item-tax option:selected").data("taxname")
+                var isNew = true;
+                for (var i = 0; i < taxes.length; i++) {
+                    if (taxes[i].taxName == taxname) {
+                        taxes[i].taxAmount += taxAmount;
+                        isNew = false;
+                    }
+                }
+                if (isNew) {
+                    taxes.push({
+                        taxName: taxname,
+                        taxValue: taxValue,
+                        taxAmount: taxAmount
+                    })
+                }
+
+            }
+            if (taxValue > 0) {
+                if (isTaxable) {
+                    allTaxable += taxable;
+                }
+                else {
+                    allTaxable += subTotal;
+                }
+
+            }
+            else {
+                if (isTaxable) {
+                    allExtento += taxable;
+                }
+                else {
+                    allExtento += subTotal;
+                }
+
+            }
+
+            allDiscount += discount;
+
+        });
+
+
+
+        var shipping = parseFloat($("#order-shipping").val());
+        if (!shipping) {
+            shipping = 0;
+        }
+        else {
+            var shippingTaxValue = parseFloat($("#shipping-tax option:selected").data("taxvalue"));
+            if (shippingTaxValue && shippingTaxValue > 0) {
+                var shippingTax = shipping * shippingTaxValue / 100;
+                allTax += shippingTax;
+                var taxname = $("#shipping-tax option:selected").data("taxname")
+                var isNew = true;
+                for (var i = 0; i < taxes.length; i++) {
+                    if (taxes[i].taxName == taxname) {
+                        taxes[i].taxAmount += shippingTax;
+                        isNew = false;
+                    }
+                }
+                if (isNew) {
+                    taxes.push({
+                        taxName: taxname,
+                        taxValue: shippingTaxValue,
+                        taxAmount: shippingTax
+                    })
+                }
+
+            }
+        }
+
+
+        allSubTotal = allTaxable + allExtento + shipping - allDiscount;
+        allTotal = allSubTotal + allTax;
+
+        $("#po-basetaxable").text("$ " + numberWithCommas(allTaxable.toFixed(2)));
+        $("#po-extent").text("$ " + numberWithCommas(allExtento.toFixed(2)));
+        $("#po-shipping").text("$ " + numberWithCommas(shipping.toFixed(2)));
+        $("#po-discount").text("$ " + numberWithCommas(allDiscount.toFixed(2)));
+        $("#po-subtotal").text("$ " + numberWithCommas(allSubTotal.toFixed(2)));
+        $("#po-tax").text("$ " + numberWithCommas(allTax.toFixed(2)));
+        $("#po-total").text("$ " + numberWithCommas(allTotal.toFixed(2)));
+
+
+        for (var ii = 0; ii < taxes.length; ii++) {
+            var tax = taxes[ii];
+            $("#tax-result-table").append(`
+                    <tr>
+                        <td>${tax.taxName}</td>
+                        <td>${tax.taxValue}</td>
+                            <td>${numberWithCommas(tax.taxAmount.toFixed(2))}</td>
+                    </tr>
+                `)
+        }
+
+        if ('@ViewBag.Status' == "Received") {
+            MakeNonEditable();
+        }
+    }
+    function containsTax(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i].taxName === obj) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    $('#purchase-cancel2').click(function () {
+        // Obtener el ID de la orden de compra a eliminar
+        var purchaseOrderId = "@ViewBag.PurchaseOrderID"; // Reemplaza este valor con el ID correcto
+
+        UpdateOrderStatus(3, purchaseOrderId)
+    });
+</script>

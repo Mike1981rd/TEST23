@@ -1,0 +1,1141 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var taxes = (List<Tax>)ViewBag.Taxes;
+}
+
+<style>
+	.filter-row {
+		display: flex; /* Usa flexbox para alinear elementos en la misma fila */
+		justify-content: space-between; /* Distribuye los elementos uniformemente a lo largo del contenedor */
+		margin-bottom: 20px; /* Espacio inferior para separar de la tabla */
+	}
+
+		.filter-row input,
+		.filter-row button {
+			flex: 1; /* Los campos de entrada y el botón ocuparán el mismo espacio */
+			margin-right: 10px; /* Espacio entre los elementos */
+		}
+
+		.filter-row button {
+			flex: 0 0 auto; /* El botón no debe crecer ni encogerse */
+		}
+
+</style>
+<div class="page-header">
+	<div class="page-title">
+		<h4>Clientes</h4>
+		<h6>@ViewLocalizer["Manage your customers"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="javascript:void(0);" class="btn btn-added" onclick="AddCustomer()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Customer"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+		<div class="table-top">
+			<div class="search-set">
+				<div class="search-path">
+					<a class="btn btn-filter" id="filter_search">
+						<img src="/vendor/img/icons/filter.svg" alt="img">
+						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+					</a>
+				</div>
+				<div class="search-input">
+					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+					<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
+				</div>
+			</div>
+			<div class="wordset">
+				<ul>
+					<li>
+						<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					</li>
+					@*<li>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+					</li>*@
+				</ul>
+			</div>
+		</div>
+		<div class="table-responsive">
+			<table id="customer-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Avatar"] </th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Status"] </th>
+						<th>@ViewLocalizer["Phone"] </th>
+						<th>@ViewLocalizer["Email"]</th>
+						<th>@ViewLocalizer["RNC"]</th>
+						<th>@ViewLocalizer["Balance"]</th>
+						<th>@ViewLocalizer["Address"]</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Customer"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+							<input id="customer-rnc" type="text"  class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+							<input id="customer-phone" type="text" class="form-control phone_format" required>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+							<input id="customer-email" type="text"  class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-8 col-sm-8 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Address"]</label>
+							<input id="customer-address1" type="text" class="form-control" required>
+						</div>
+					</div>					
+					<div class="col-lg-4 col-sm-4 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["City"]</label>
+							<input id="customer-city" type="text" class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-2 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Limit of Credit"]</label>
+							<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-2 col-sm-2 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Credit Days"]</label>
+							<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-3 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Balance"]</label>
+							<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+
+						</div>
+					</div>
+
+					<div class="col-lg-2 col-sm-2 col-12">
+						<div class="form-group">
+							<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
+						</div>
+					</div>
+					<div class="col-lg-2 col-sm-2 col-12">
+						<div class="form-group">
+							<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Comprobantes"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="customer-voucher" class="select ">
+										<option value="">Choose comprobantes</option>
+									
+
+									</select>
+								</div>
+								<div class="col-lg-2 col-sm-2 col-2 ps-0">
+									<div class="add-icon">
+										<a id="add-voucher-modal" href="javascript:void(0);">
+											<img src="/vendor/img/icons/plus1.svg" alt="img">
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
+							<select id="customer-zone" class="select ">
+								<option value="">Zonas</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group mb-2">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="customer-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group px-3">
+							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+								<h6 class="text-left pr-5">@ViewLocalizer["Avatar"]</h6>
+								<div class="del-unit text-danger">
+									<a class="del-photo " href="javascript:void(0);">
+										<img src="/vendor/img/icons/minus.svg" alt="img">
+									</a>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-4 col-4">
+									<img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+								</div>
+								<div class="col-sm-8 col-8 image-upload" style="height: 100%">
+									<input id="imgInpProduct" type="file" name="Files" accept="image/*">
+									<div class="image-uploads">
+										<img src="~/vendor/img/icons/upload.svg" alt="img">
+										<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row py-1">
+						<div class="col-lg-12 col-sm-12 col-12">
+							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+								<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+								<div class="add-unit">
+									<a class="add-accounting-item" href="javascript:void(0);">
+										<img src="/vendor/img/icons/plus1.svg" alt="img">
+									</a>
+								</div>
+							</div>
+							<table class="table reordertable">
+								<thead>
+									<tr>
+										<td>
+											@ViewLocalizer["Name"]
+										</td>
+										<td>
+											@ViewLocalizer["Type"]
+										</td>
+										<td>
+											@ViewLocalizer["Number"]
+										</td>
+										<td>
+											@ViewLocalizer["Action"]
+										</td>
+								</thead>
+								<tbody id="accounting-list">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-customer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="cxcmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Movimientos de CxC's"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="filter-row">
+					<!-- Campo de filtro por fecha inicial -->
+					<input type="date" id="start-date" class="form-control">
+
+					<!-- Campo de filtro por fecha final -->
+					<input type="date" id="end-date" class="form-control">
+
+					<!-- Campo de filtro por ID de orden -->
+					<input type="text" id="order-id" placeholder="ID de Trans." class="form-control">
+
+					<!-- Botón para aplicar filtros -->
+					<button id="apply-filters" class="btn btn-submit">Aplicar filtros</button>
+				</div>
+
+				<div class="table-responsive">
+					<table id="cxc-list" class="table" style="overflow-x: hidden;">
+						<thead>
+							<tr>
+								<th>@ViewLocalizer["Type"] </th>
+								<th>@ViewLocalizer["CXC"] </th>
+								<th>@ViewLocalizer["ID Trans."] </th>
+								<th>@ViewLocalizer["Date"] </th>
+								<th>@ViewLocalizer["Amount"] </th>
+								<th>@ViewLocalizer["Method"]</th>
+								<th>@ViewLocalizer["Payment Type"]</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="cxcdetalle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Estado de Cuentas x Cobrar"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					<table id="cxc-list-movimientos" class="table" style="overflow-x: hidden;">
+						<thead>
+							<tr>
+								<th>@ViewLocalizer["CXC"] </th>
+								<th>@ViewLocalizer["Fecha"] </th>
+								<th>@ViewLocalizer["Vence"] </th>
+								<th>@ViewLocalizer["Días vencimiento"] </th>
+								<th>@ViewLocalizer["Monto"] </th>
+								<th>@ViewLocalizer["Abono"]</th>
+								<th>@ViewLocalizer["Balance"]</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="listvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Recipe List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-voucher" href="javascript:void(0);" onclick="AddVoucher()" class="btn btn-adds"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Recipe"]</a>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="voucher-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Action"] </th>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["Class"] </th>
+										<th>@ViewLocalizer["Reorder"] </th>
+										<th>@ViewLocalizer["Sequence"] </th>
+										<th>@ViewLocalizer["Require RNC"] </th>
+										<th>@ViewLocalizer["Status"] </th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Voucher"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Prefix"]</label>
+							<input id="voucher-class" type="text" class="form-control">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Sequence"]</label>
+							<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12  pt-2">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Require RNC"]</label>
+							<select id="voucher-requirernc" class="select">
+								<option value="1"> @ViewLocalizer["Yes"]</option>
+								<option value="0"> @ViewLocalizer["No"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-12 col-sm-12 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Tax exempt"]</label>
+							<select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in taxes)
+								{
+									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-6 pt-2">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="voucher-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="modal-footer">
+				<button id="edit-voucher" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@{
+	@await Component.InvokeAsync("Accounting", new { })
+}
+
+<script>
+
+	function formatDate(date) {
+		// Obtener el día, mes y año
+		var day = date.getDate();
+		var month = date.getMonth() + 1; // Se agrega 1 porque los meses comienzan desde 0
+		var year = date.getFullYear().toString().slice(-2); // Obtener solo los últimos dos dígitos del año
+
+		// Agregar ceros iniciales si es necesario
+		if (day < 10) {
+			day = '0' + day;
+		}
+		if (month < 10) {
+			month = '0' + month;
+		}
+
+		// Devolver la fecha formateada
+		return day + '/' + month + '/' + year;
+	}
+
+	function formatDateForInput(date) {
+		// Obtener el año, mes y día de la fecha
+		var year = date.getFullYear();
+		var month = (date.getMonth() + 1).toString().padStart(2, '0'); // El mes se incrementa en 1 porque los meses en JavaScript son de 0 a 11
+		var day = date.getDate().toString().padStart(2, '0');
+
+		// Retorna la fecha formateada en formato "AAAA-MM-DD"
+		return year + '-' + month + '-' + day;
+	}
+
+	// Esta función suma días a una fecha y retorna la nueva fecha
+	function addDaysToDate(date, days) {
+		var result = new Date(date);
+		result.setDate(result.getDate() + parseInt(days));
+		return result;
+	}
+
+	function calculateDaysBetweenDates(startDate, endDate) {
+		const oneDay = 24 * 60 * 60 * 1000; // milisegundos en un día
+		const startDateObj = new Date(startDate);
+		const endDateObj = new Date(endDate);
+
+		const differenceInTime = startDateObj.getTime()- endDateObj.getTime();
+		const differenceInDays = Math.round(differenceInTime / oneDay);
+
+		return differenceInDays;
+	}
+
+
+	$(document).ready(function () {
+
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterCustomer()
+		});
+		$(".btn-detalle").click(function () {
+			$("#cxcdetalle").modal("show");
+			$("#addcustomer").modal("hide");
+
+			// Obtener el nombre del cliente
+			var customerName = $("#customer-name").val();
+			var days = $("#customer-days").val();
+			// Limpiar la tabla antes de agregar los nuevos datos
+			$('#cxc-list-movimientos').DataTable().destroy();
+			$('#cxc-list-movimientos').DataTable().clear().draw();
+			$.ajax({
+				url: "/Setting/GetCxCList3",
+				type: "POST",
+				dataType: "json",
+				data: { customerName: customerName },
+				success: function (response) {
+					if (response && Array.isArray(response) && response.length > 0) {
+						var totalAmount = 0;
+						var totalTemporaryDifference = 0;
+						var totalBalance = 0;
+
+						response.forEach(function (item) {
+							console.log(item);
+							var balance = item.beforeBalance + item.temporaryDifference; // Calculamos el balance
+							// Solo proceder si el balance es diferente de 0
+							if (balance !== 0) {
+								var formattedDate = formatDateForInput(new Date(item.paymentDate));
+								var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+								var adjustedDate = addDaysToDate(new Date(item.paymentDate), days); // Suma días
+								var formattedAdjustedDate = formatDateForInput(adjustedDate); // Formatea la nueva fecha
+								var today = new Date();
+								var daysBetween = calculateDaysBetweenDates(today, adjustedDate);
+
+								var row = [
+									item.id,
+									formattedDate,
+									formattedAdjustedDate,
+									daysBetween,
+									item.beforeBalance.toFixed(2),
+									item.temporaryDifference.toFixed(2),
+									item.afterBalance.toFixed(2),
+								];
+
+								$('#cxc-list-movimientos').DataTable().row.add(row).draw();
+
+								// Acumulamos los totales solo para los ítems incluidos
+								totalAmount += item.beforeBalance;
+								totalTemporaryDifference += item.temporaryDifference;
+								totalBalance += item.afterBalance;
+							}
+						});
+
+						// Verificar si se agregó al menos una fila para decidir si mostrar los totales
+						if (totalBalance !== 0) {
+							$('#cxc-list-movimientos').DataTable().row.add([
+								'Totales',
+								'',
+								'',
+								'',
+								totalAmount.toFixed(2),
+								totalTemporaryDifference.toFixed(2),
+								totalBalance.toFixed(2)
+							]).draw();
+						}
+					} else {
+						$('#cxc-list-movimientos').DataTable().row.add(['Sin CxC disponibles', '', '', '', '', '', '']).draw();
+						console.error("La respuesta no tiene la estructura esperada.");
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("Error en la petición AJAX:", error);
+				}
+			});
+
+		});
+
+		$(".btn-movimientos").click(function () {
+			$("#cxcmodal").modal("show");
+			$("#addcustomer").modal("hide");
+
+			// Obtener el nombre del cliente
+			var customerName = $("#customer-name").val();
+			var customerId = $("#addcustomer").data("id");
+			// Limpiar la tabla antes de agregar los nuevos datos
+			$('#cxc-list').DataTable().destroy();
+			$('#cxc-list').DataTable().clear().draw();
+			// Realizar la petición AJAX para obtener los datos de CxC
+			$("#apply-filters").click(function () {
+				var startDate = $("#start-date").val();
+				var endDate = $("#end-date").val();
+				var orderId = $("#order-id").val();
+
+				console.log(startDate);
+				// Filtrar la tabla DataTable por fecha y ID de orden
+				var table = $('#cxc-list').DataTable();
+				table.columns(3).search(startDate).draw(); // Filtrar por fecha en la cuarta columna
+				table.columns(3).search(endDate).draw();// Filtrar por fecha en la cuarta columna
+				table.columns(2).search(orderId).draw(); // Filtrar por ID de orden en la tercera columna
+			});
+			$.ajax({
+				url: "/Setting/GetCxCList2",
+				type: "POST",
+				dataType: "json",
+				data: { cliente: customerId },
+				success: function (response) {
+					// Verificar si la respuesta contiene datos válidos
+					if (response && Array.isArray(response) && response.length > 0) {
+
+
+						// Agregar los datos a la tabla
+						response.forEach(function (item) {
+							console.log(item);
+							var formattedDate = formatDateForInput(new Date(item.paymentDate));
+							var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+							var transactionType = item.referenceId === 0 ? 'CXC' : SaldadoCXC(response, item.referenceId) ? 'Saldo' : 'Abono';
+							var row = [
+								transactionType,
+								idToShow,
+								item.id,
+								formattedDate,
+								item.amount,
+								item.method,
+								item.paymentType,
+							];
+							$('#cxc-list').DataTable().row.add(row).draw();
+						});
+					} else {
+						$('#cxc-list').DataTable().row.add(['Sin CxC disponibles', '', '', '', '', '', '']).draw();
+						console.error("La respuesta no tiene la estructura esperada.");
+					}
+				},
+				error: function (xhr, status, error) {
+
+					console.error("Error en la petición AJAX:", error);
+				}
+			});
+		});
+
+        function SaldadoCXC(response , CxcId) {
+			var cxctotal = 0;
+            var cxcabonado = 0;
+			response.forEach(function (item) {
+				if (item.id == CxcId || item.referenceId == CxcId) {
+					if (item.referenceId === 0) {
+						cxctotal = item.amount;
+					} else {
+                        cxcabonado = cxcabonado + item.amount;
+                    }
+				}				
+			});
+
+			if (cxctotal == cxcabonado) {
+				return true;
+			} else {
+				return false
+			}
+		}
+
+
+		SelectVoucher();
+		SelectZones();
+		
+
+		$("#edit-customer").click(function () {
+			var name = $("#customer-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var phone = $("#customer-phone").val();
+			
+			var email = $("#customer-email").val();
+			var address = $("#customer-address1").val();
+			var city = $("#customer-city").val();
+			var rnc = $("#customer-rnc").val();
+			var limit = parseFloatCorrect($("#customer-limit").val())
+			var balance = parseFloatCorrect($("#customer-balance").val())
+			var days = parseInt($("#customer-days").val())
+			if (!days) days = 0;
+			var voucher = parseInt($("#customer-voucher").val())
+			if (!voucher) voucher = 0;
+			var photo = $("#productimg").data("avatar");
+			var zone = parseInt($("#customer-zone").val())
+			var active = $("#customer-status").val()
+			var id = parseInt($("#addcustomer").data("id"))
+			var data = {
+				ID : id,
+				RNC: rnc,
+				Name : name,
+				Phone: phone, 
+				Email : email,
+				Address1 : address,
+				City : city,
+				CreditLimit : limit,
+				CreditDays : days,
+				Balance: balance,
+				Avatar : photo,
+				VoucherId: voucher,
+				DeliveryZoneID: zone,
+				IsActive: active == "1"
+			}
+
+			$.ajax({
+				url: "/Setting/EditCustomer",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json;',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						SaveAccountItems(5, data.id, function () {
+							$("#customer-list").DataTable().draw();
+							$("#addcustomer").modal("hide");
+						})						
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The customer with same contact info already exists. Please confirm or check if the one exists."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+
+		});
+
+		$(".del-photo").click(function () {
+			$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+			$("#productimg").data("avatar", "");
+			$("#imgInpProduct").val("")
+		})
+
+		$("#imgInpProduct").change(function () {
+			readProductBackURL(this);
+		});
+
+		$("#add-voucher-modal").click(function () {
+			$("#listvoucher").modal("show");
+		})
+	})
+
+	function readProductBackURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#productimg').attr('src', e.target.result);
+				$("#productimg").data("avatar", e.target.result);
+			}
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+	function AddCustomer() {
+		$("#customer-name").val("");
+		$("#customer-rnc").val("");
+		$("#customer-phone").val("");
+		$("#customer-email").val("");
+		$("#customer-address1").val("");
+		$("#customer-city").val("");
+		$("#customer-limit").val("");
+		$("#customer-days").val("");
+		$("#customer-balance").val("");
+		$("#customer-voucher").val(0).change();
+		$("#customer-zone").val(0).change();
+		$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+		$("#productimg").data("avatar", "");
+		$("#customer-status").val(1).change();
+		GetAccountItems(5, 0)
+		$("#addcustomer").data("id", 0);
+		$("#addcustomer").modal("show");
+	}
+
+	function EditCustomer(id) {
+		$.ajax({
+			url: "/Setting/GetCustomer?customerId=" + id,
+			type: "POST",
+			success: function (customer, textStatus, jqXHR) {
+				if (customer) {
+					$("#customer-name").val(customer.name);
+					$("#customer-rnc").val(customer.rnc);
+					$("#customer-phone").val(customer.phone);
+					$("#customer-email").val(customer.email);
+					$("#customer-address1").val(customer.address1);
+					$("#customer-city").val(customer.city);
+					$("#customer-limit").val(numberWithCommas(customer.creditLimit.toFixed(2)));
+					$("#customer-days").val(customer.creditDays);
+					$("#customer-balance").val(numberWithCommas(customer.balance.toFixed(2)));
+					if (customer.voucher) {
+						$("#customer-voucher").val(customer.voucher.id).change();
+					} else {
+						$("#customer-voucher").val(0).change();
+					}
+					if (customer.isActive) {
+						$("#customer-status").val(1).change();
+					}
+					else {
+						$("#customer-status").val(0).change();
+					}
+					$("#customer-zone").val(customer.deliveryZoneID).change();
+					if (customer.avatar == "") {
+						$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+					} else {
+						$("#productimg").attr("src", customer.avatar);
+					}
+					$("#productimg").data("avatar", customer.avatar);
+					GetAccountItems(5, customer.id)
+					$("#addcustomer").data("id", customer.id);
+					$("#addcustomer").modal("show");
+
+					// Actualizar el balance con el totalAmount
+					$.ajax({
+						url: "/Setting/GetCxCList",
+						type: "POST",
+						dataType: "json",
+						data: { customerName: customer.name },
+						success: function (response) {
+							if (response && Array.isArray(response) && response.length > 0) {
+								var totalAmount = response.reduce((acc, cur) => acc + cur.temporaryDifference, 0);
+								totalAmount = totalAmount.toFixed(2);
+								$("#customer-balance").val(totalAmount);
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error("Error en la petición AJAX:", error);
+						}
+					});
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+
+
+	// voucher
+	function SelectVoucher(voucher) {
+		$.ajax({
+			url: "/Setting/GetActiveVoucherList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#customer-voucher").empty();
+				$("#customer-voucher").append("<option value='' selected>@ViewLocalizer["Choose recipe"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#customer-voucher").append("<option value='" + d.id + "' >" + d.name + "</option>")
+				}
+				$("#customer-voucher").select2();
+				if (voucher) {
+					$("#customer-voucher").val(voucher.id).change();
+				}
+				else {
+					$("#customer-voucher").val(0).change();
+				}
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#listvoucher").modal("hide");
+	}
+
+	function AddVoucher() {
+		$("#voucher-name").val("");
+		$("#voucher-class").val("");
+		$("#voucher-taxes").val("").change();
+		$("#voucher-sequence").val(1).change();
+		$("#voucher-requirernc").val(0).change();
+		$("#voucher-status").val(1).change();
+		$("#addvoucher").data("id", 0);
+
+		$("#addvoucher").modal("show");
+	}
+
+	$("#voucher-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"filter": true, // this is for disable filter (search box)
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Setting/GetVouchers",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"paging": false,
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<div class='d-flex align-items-center'><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditVoucher(" + row.id + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectVoucher(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+				},
+			},
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{ "data": "class", "name": "class", "autoWidth": true },
+			{ "data": "reorder", "name": "reorder", "autoWidth": true },
+			{ "data": "secuencia", "name": "secuencia", "autoWidth": true },
+			{ "data": "isRequireRNC", "name": "isRequireRNC", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+					}
+					else {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			
+		]
+	});
+
+	function EditVoucher(id) {
+		$.ajax({
+			url: "/Setting/GetVoucher?voucherId=" + id,
+			type: "POST",
+			success: function (voucher, textStatus, jqXHR) {
+				if (voucher) {
+					$("#voucher-name").val(voucher.name)
+					$("#voucher-class").val(voucher.class)
+					
+					$("#voucher-sequence").val(voucher.secuencia)
+					if (voucher.isRequireRNC) {
+						$("#voucher-requirernc").val(1).change();
+					}
+					else {
+						$("#voucher-requirernc").val(0).change();
+					}
+					var taxes = [];
+					if (voucher.taxes) {
+						for (var i = 0; i < voucher.taxes.length; i++) {
+							taxes.push("" + voucher.taxes[i].id);
+						}
+						$("#voucher-taxes").val(taxes).change();
+					}
+					else {
+						$("#voucher-taxes").val("").change();
+					}
+
+					if (voucher.isActive) {
+						$("#voucher-status").val(1).change();
+					}
+					else {
+						$("#voucher-status").val(0).change();
+					}
+					$("#addvoucher").data("id", voucher.id)
+
+					$("#addvoucher").modal("show");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+	$("#edit-voucher").click(function () {
+		var name = $("#voucher-name").val();
+		if (!name || name == "") {
+			toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+
+		var id = parseInt($("#addvoucher").data("id"));
+		var cls = $("#voucher-class").val();
+		var reorder = parseFloatCorrect($("#voucher-reorder").val());
+		var seq = parseInt($("#voucher-sequence").val());
+
+		var data = {
+			ID: id,
+			Name: name,
+			Class: cls,
+			TaxeIDs: $("#voucher-taxes").val(),
+			Secuencia: seq,
+			IsRequireRNC: $("#voucher-requirernc").val() == "1",
+			IsActive: $("#voucher-status").val() == "1",
+		};
+
+		$.ajax({
+			url: "/Setting/EditVoucher",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					$("#voucher-list").DataTable().draw();
+					$("#addvoucher").modal("hide");
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The name and amount should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	})
+
+	function SelectZones() {
+		$.ajax({
+			url: "/Setting/GetActiveDeliveryZoneList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				//Delivery
+				$("#delivery-zone").empty();
+				$("#delivery-zone").append("<option value='' selected>@ViewLocalizer["Choose Zone"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#delivery-zone").append("<option value='" + d.id + "' >" + d.name + "</option>")
+				}
+				$("#delivery-zone").select2();
+
+				$("#delivery-zone").val(0).change();
+
+
+				//Customer
+				$("#customer-zone").empty();
+				$("#customer-zone").append("<option value='' selected>@ViewLocalizer["Choose Zone"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#customer-zone").append("<option value='" + d.id + "' >" + d.name + "</option>")
+				}
+				$("#customer-zone").select2();
+
+				$("#customer-zone").val(0).change();
+
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#listvoucher").modal("hide");
+	}
+
+	var customertable = $("#customer-list").DataTable({
+		"processing": true,
+		"serverSide": true,
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false,
+		"ajax": {
+			"url": "/Setting/GetCustomers",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 50,
+		"lengthMenu": [50, 75, 100],
+		"order": [[2, 'desc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='javascript:void(0);'  onclick=EditCustomer('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{
+				'data': 'avatar', 'name': 'avatar',
+				render: function (data, type, row) {
+					if (!row.avatar) {
+						return "";
+					}
+					else {
+						return "<img src='" + row.avatar + "' alt = 'avatar' style='max-height:40px; max-width:40px;' >";
+					}
+				},
+				"autoWidth": true
+			},
+
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+					}
+					else {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			{ "data": "phone", "name": "phone", "autoWidth": true },
+			{ "data": "email", "name": "email", "autoWidth": true },
+			{ "data": "rnc", "name": "rnc", "autoWidth": true },		
+			{
+				"data": "balance", "name": "balance", "autoWidth": true,
+				render: function (data, type, row) {
+					return numberWithCommas(row.balance.toFixed(2));
+				},
+			},
+			{ "data": "address1", "name": "address1", "autoWidth": true },
+		]
+	});
+
+	function FilterCustomer() {
+		var searchText = $("#filter-searchtext").val();
+		
+		customertable.columns(0).search(searchText);
+		
+		customertable.draw();
+	}
+</script>

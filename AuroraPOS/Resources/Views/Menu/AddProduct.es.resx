@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Action" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="Add Question" xml:space="preserve">
+    <value>Agregar pregunta</value>
+  </data>
+  <data name="Add Smart Button" xml:space="preserve">
+    <value>Agregar botón inteligente</value>
+  </data>
+  <data name="Add/Update Product" xml:space="preserve">
+    <value>Añadir/Actualizar Producto</value>
+  </data>
+  <data name="After Text" xml:space="preserve">
+    <value>Después del texto</value>
+  </data>
+  <data name="After/Before" xml:space="preserve">
+    <value>Después antes</value>
+  </data>
+  <data name="After/Before Text" xml:space="preserve">
+    <value>Después/Antes del Texto</value>
+  </data>
+  <data name="Answers" xml:space="preserve">
+    <value>Respuestas</value>
+  </data>
+  <data name="Apply Price" xml:space="preserve">
+    <value>Aplicar precio</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="Background Color" xml:space="preserve">
+    <value>Color de fondo</value>
+  </data>
+  <data name="Barcode" xml:space="preserve">
+    <value>Código de barras</value>
+  </data>
+  <data name="Before or After" xml:space="preserve">
+    <value>Antes o después</value>
+  </data>
+  <data name="Before Text" xml:space="preserve">
+    <value>Antes del texto</value>
+  </data>
+  <data name="Brand" xml:space="preserve">
+    <value>Marca</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="Change Price" xml:space="preserve">
+    <value>Cambio de precio</value>
+  </data>
+  <data name="Choose category" xml:space="preserve">
+    <value>Elegir la categoría</value>
+  </data>
+  <data name="Create Product" xml:space="preserve">
+    <value>Crear producto</value>
+  </data>
+  <data name="Drag and drop a file to upload" xml:space="preserve">
+    <value>Arrastra y suelta un archivo para cargar</value>
+  </data>
+  <data name="Edit Question" xml:space="preserve">
+    <value>Editar pregunta</value>
+  </data>
+  <data name="Edit Smart Button" xml:space="preserve">
+    <value>Editar botón inteligente</value>
+  </data>
+  <data name="Edit SmartButton" xml:space="preserve">
+    <value>Editar botón inteligente</value>
+  </data>
+  <data name="Failed to add/update the smart button." xml:space="preserve">
+    <value>No se pudo agregar/actualizar el botón inteligente.</value>
+  </data>
+  <data name="Failed to add/update." xml:space="preserve">
+    <value>No se pudo agregar/actualizar.</value>
+  </data>
+  <data name="Failed to update the product." xml:space="preserve">
+    <value>Error al actualizar el producto.</value>
+  </data>
+  <data name="Fixed Price" xml:space="preserve">
+    <value>Precio fijo</value>
+  </data>
+  <data name="Forced Question" xml:space="preserve">
+    <value>Pregunta forzada</value>
+  </data>
+  <data name="Free Choice" xml:space="preserve">
+    <value>Numero de Opciones Gratis</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>Inactivo</value>
+  </data>
+  <data name="Invalid Barcode. The other product have same barcode." xml:space="preserve">
+    <value>Código de barras no válido. El otro producto tiene el mismo código de barras.</value>
+  </data>
+  <data name="Maximun Answers" xml:space="preserve">
+    <value>Respuestas máximas</value>
+  </data>
+  <data name="Minimum Answers" xml:space="preserve">
+    <value>Respuestas mínimas</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Optional Modifier" xml:space="preserve">
+    <value>Modificador opcional</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="Please input the name." xml:space="preserve">
+    <value>Por favor ingrese el nombre.</value>
+  </data>
+  <data name="Please select the category." xml:space="preserve">
+    <value>Seleccione la categoría.</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Precio</value>
+  </data>
+  <data name="Price Type" xml:space="preserve">
+    <value>Tipo de precio</value>
+  </data>
+  <data name="Printer Channels" xml:space="preserve">
+    <value>Canales de impresora</value>
+  </data>
+  <data name="Printer Name" xml:space="preserve">
+    <value>Nombre de la impresora</value>
+  </data>
+  <data name="Prod. Cost Barcode" xml:space="preserve">
+    <value>Costo Pantalla Barcode</value>
+  </data>
+  <data name="Prod. Cost Restaurant" xml:space="preserve">
+    <value>% de Costo</value>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>Cantidad</value>
+  </data>
+  <data name="Question List" xml:space="preserve">
+    <value>Lista de preguntas</value>
+  </data>
+  <data name="Questions and Modifiers" xml:space="preserve">
+    <value>Preguntas y Modificadores</value>
+  </data>
+  <data name="Regular Price" xml:space="preserve">
+    <value>Precio regular</value>
+  </data>
+  <data name="Roll Price" xml:space="preserve">
+    <value>Rodar Precio</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
+  <data name="Smart Button List" xml:space="preserve">
+    <value>Lista de botones inteligentes</value>
+  </data>
+  <data name="Smart Buttons" xml:space="preserve">
+    <value>Botones inteligentes</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Sub Category" xml:space="preserve">
+    <value>Subcategoría</value>
+  </data>
+  <data name="Sub Recipe List" xml:space="preserve">
+    <value>Lista de Sub Recetas</value>
+  </data>
+  <data name="Sub Total" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Taxes" xml:space="preserve">
+    <value>Impuestos</value>
+  </data>
+  <data name="Text Color" xml:space="preserve">
+    <value>Color de texto</value>
+  </data>
+  <data name="The article is inactive." xml:space="preserve">
+    <value>El artículo está inactivo.</value>
+  </data>
+  <data name="The question already exist." xml:space="preserve">
+    <value>La pregunta ya existe.</value>
+  </data>
+  <data name="The subrecipe is inactive." xml:space="preserve">
+    <value>La subreceta está inactiva.</value>
+  </data>
+  <data name="There was an error in processing the request." xml:space="preserve">
+    <value>Hubo un error al procesar la solicitud.</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Unit" xml:space="preserve">
+    <value>Unidad</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+</root>

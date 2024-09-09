@@ -1,0 +1,1051 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var printerChannels = (List<PrinterChannel>)ViewBag.PrinterChannels;
+	var branchs = (List<t_sucursal>)ViewBag.Branchs;
+	var groups = (List<Group>)ViewBag.Groups;
+	var canadd = (bool)ViewBag.CanAdd;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Station List"]</h4>
+		<h6>@ViewLocalizer["Manage your Stations"]</h6>
+	</div>
+	@if (canadd)
+	{
+		<div class="page-btn">
+			<a id="add-station-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Station"]</a>
+		</div>
+	}
+
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="station-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Menu"] </th>
+						<th>@ViewLocalizer["Status"]</th>
+						
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="addstation" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Station"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">ID</span>
+                                <input id="station-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Price"]<span class="manitory">*</span></label>
+                            <select id="station-price" class="select">
+                                <option value="1">Price 1</option>
+                                <option value="2">Price 2</option>
+                                <option value="3">Price 3</option>
+                                <option value="4">Price 4</option>
+                                <option value="5">Price 5</option>
+                                <option value="6">Price 6</option>
+                                <option value="7">Price 7</option>
+                                <option value="8">Price 8</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Menu"]</label>
+                            <select id="station-menu" class="select">
+                            </select>
+                        </div>
+                    </div>
+                 
+
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Status"]</label>
+                            <select id="station-status" class="select">
+                                <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Sales Mode"]</label>
+                            <select id="station-mode" class="select">
+                                <option value="0"> @ViewLocalizer["Restaurant"]</option>
+                                <option value="1"> @ViewLocalizer["Barcode"]</option>
+                                <option value="2"> @ViewLocalizer["Kiosk"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Print Copy"]<span class="manitory">*</span></label>
+                            <input id="station-printcopy" type="number" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Sucursal"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="station-branch" class="select ">
+                                        <option>@ViewLocalizer["Choose sucursal"]</option>
+                                        @foreach (var b in branchs)
+                                        {
+                                            <option value="@b.ID">@b.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                    <div class="add-icon">
+                                        <a id="add-branch" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
+                            <select id="imprimir-precuenta-delivery" class="select">
+                                <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Precio Delivery"]</label>
+                            <select id="delivery-price" class="select">
+                                <option value="">Ninguno</option>
+                                <option value="1">Price 1</option>
+                                <option value="2">Price 2</option>
+                                <option value="3">Price 3</option>
+                                <option value="4">Price 4</option>
+                                <option value="5">Price 5</option>
+                                <option value="6">Price 6</option>
+                                <option value="7">Price 7</option>
+                                <option value="8">Price 8</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Delivery Prepare Type Default"]</label>
+                            <select id="prepare-type-default" class="select">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left"> @ViewLocalizer["Areas"]</h6>
+                            <div class="add-unit">
+                                <a class="add-area" href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table reordertable">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        @ViewLocalizer["Name"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Price"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Action"]
+                                    </td>
+                            </thead>
+                            <tbody id="station-areas">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12 pt-5">
+                        <label>@ViewLocalizer["Printer Setup"]</label>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>@ViewLocalizer["Channel"]</th>
+                                        <th>@ViewLocalizer["Default"]</th>
+                                        <th>@ViewLocalizer["Printer"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="printerchannel-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center py-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Warehouse"]</h6>
+							<div class="add-unit">
+								<a class="add-warehouse" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Group"]
+									</td>
+									<td>
+										@ViewLocalizer["Warehouse"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="station-warehouses">
+							</tbody>
+						</table>
+					</div>
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-station" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Branch Modal -->
+<div class="modal fade" id="editbranch" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Sucursal"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Sucursal name"]<span class="manitory">*</span></label>
+							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+								<div class="input-group">
+									<span class="input-group-text" id="branch-id" data-id="">ID</span>
+									<input id="branch-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+								</div>
+								<button id="edit-branch" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="branch-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Sucursal name"]</th>
+										<th>@ViewLocalizer["Action"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-branch" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Question Modal-->
+<div class="modal fade" id="listareas" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Area List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="area-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Action"]</th>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["Status"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="addgroupwarehouse" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Warehouses by Group"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="row">
+						<div class="col-lg-6 col-sm-6 col-12 pb-3">
+							<div class="form-group">
+								<label>@ViewLocalizer["Group"]</label>
+								<select id="station-group" class="select">
+									<option value="">@ViewLocalizer["Choose Group"]</option>
+									@foreach (var g in groups)
+									{
+										<option value="@g.ID">@g.GroupName</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12 pb-3">
+							<div class="form-group mb-0">
+								<label>@ViewLocalizer["Warehouse"]</label>
+								<select id="station-warehouse1" class="select">
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="add-group-submit" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		LoadMenu();
+		LoadWarehouse();
+		LoadPreparetypes();
+
+		$(".reordertable tbody").sortable();
+
+		$(".add-area").click(function () {
+			$("#listareas").modal("show");
+		})
+		$(".add-warehouse").click(function () {
+			$("#addgroupwarehouse").modal("show");
+		})
+
+		// question list
+		var arealisttable = $("#area-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetAreas",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectArea(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></a>";
+					},
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+
+		$("#add-station-modal").click(function(){
+			EditStation(0)
+		});
+
+		$("#edit-station").click(function(){
+			var name = $("#station-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var price = parseInt($("#station-price").val());
+            var deliveryprice = parseInt($("#delivery-price").val());
+
+			var menu = parseInt($("#station-menu").val());
+		
+            var preparetypedefault = parseInt($("#prepare-type-default").val());
+            
+
+			var mode = parseInt($("#station-mode").val());
+			var typeofsale = "";
+			var business = "";
+			var active = $("#station-status").val() == "1";
+            var imprimirprecuentadelivery = $("#imprimir-precuenta-delivery").val() == "1";
+			var printcopy = parseInt($("#station-printcopy").val());
+			var branch = parseInt($("#station-branch").val());
+			if (!printcopy) printcopy = 0;
+			var channels = [];
+			$("#printerchannel-list tr").each(function () {
+				var cid = parseInt($(this).find(".channel-id").data("id"));
+				var pid = parseInt($(this).find(".printer").val());
+
+				var dc = {
+					PrinterChannelID: cid,
+					PrinterID: pid
+				}
+				channels.push(dc);
+			})
+
+			var areas = [];
+			var index = 0;
+			$("#station-areas tr").each(function () {
+				var aid = parseInt($(this).data("id"));
+				var pid = parseInt($(this).find(".area-price").val());
+
+				var dc = {
+					AreaID: aid,
+					PriceSelect: pid,
+					Order: index
+				}
+				areas.push(dc);
+				index++;
+			})
+
+			var warehouses = [];
+			$("#station-warehouses tr").each(function () {
+				var group = parseInt($(this).data("group"));
+				var warehouseid = parseInt($(this).data("warehouse"));
+
+				var dc = {
+					GroupID: group,
+					WarehouseID: warehouseid,
+					
+				}
+				warehouses.push(dc);
+			})
+
+			var data = {
+				ID: $("#addstation").data("id"),
+				Name: name,
+				PriceSelect: price,
+				MenuId: menu,
+                prepareTypeDefault: preparetypedefault,
+				SalesMode: mode,
+				IsActive: active,
+                ImprimirPrecuentaDelivery: imprimirprecuentadelivery,
+				Areas: areas,
+				PrinterChannels: channels,
+				PrintCopy : printcopy,
+				IDSucursal: branch,
+				PrecioDelivery: deliveryprice,
+				GroupWarehouses : warehouses
+			}
+
+			$.ajax({
+				url: "/Menu/EditStation",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#station-list").DataTable().draw();
+						$("#addstation").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else if (data.status == 3) {
+						toastr.error("@ViewLocalizer["You can't create new station because it was limited by admin."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the category."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+		var stationtable = $("#station-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetStationList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick=EditStation('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteStation('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "id", "name": "id", "autoWidth": true },
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "menu", "name": "menu", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+	});
+
+	$("body").on("click", "a.delete-item", function () {
+		$(this).closest("tr").remove();
+	});
+
+	function SelectArea(area) {
+		var exist = false;
+		$("#station-areas tr").each(function () {
+			var id = $(this).data("id");
+			if ("" + id === "" + area.id) {
+				exist = true;
+			}
+		})
+		if (!exist) {
+			var html = `<tr data-id='${area.id}'> <td>${area.name}</td>`;
+			html += `
+					<td><div>
+					<select class="area-price select">
+						<option value="0">None</option>
+						<option value="1">Price 1</option>
+						<option value="2">Price 2</option>
+						<option value="3">Price 3</option>
+						<option value="4">Price 4</option>
+						<option value="5">Price 5</option>
+						<option value="6">Price 6</option>
+						<option value="7">Price 7</option>
+						<option value="8">Price 8</option>
+					</select></div></td>
+			`
+			html += `
+							<td>
+								<div class="delete-btn">
+									<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+								</div>
+							</td>
+						</tr>`;
+
+			$("#station-areas").append(html);
+			$("#listareas").modal("hide");
+		}
+		else {
+
+		}
+	}
+
+
+	function LoadArea() {
+		// load menu
+		$.ajax({
+			url: "/Menu/GetAreaList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#station-areas").empty();
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#station-areas").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "'>" + d.name + "</option>")
+				}
+				$("#station-areas").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function LoadMenu()
+    {
+        // load menu
+        $.ajax({
+            url: "/Menu/GetMenuList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#station-menu").empty();
+                $("#station-menu").append("<option value='' selected>@ViewLocalizer["Choose menu"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#station-menu").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "' data-desc='" + d.description + "'>" + d.name + "</option>")
+                }
+                $("#station-menu").select2();
+			},
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+	function LoadWarehouse() {
+        $.ajax({
+            url: "/Inventory/GetAllActiveWarehouses",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                $("#station-warehouse").empty();
+                $("#station-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#station-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+                }
+                $("#station-warehouse").select2();
+
+				$("#station-warehouse1").empty();
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#station-warehouse1").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#station-warehouse1").select2();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listwarehouse").modal("hide");
+	}
+
+	function LoadPreparetypes() {
+        $.ajax({
+            url: "/Setting/GetPrepareTypesList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                $("#prepare-type-default").empty();
+                $("#prepare-type-default").append("<option value='' selected>@ViewLocalizer["Elegir Prepare Type"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#prepare-type-default").append("<option value='" + d.id + "'>" + d.name + "</option>")
+                }
+                $("#prepare-type-default").select2();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        
+    }
+
+	function EditStation(id)
+	{
+		// load menu
+		$.ajax({
+			url: "/Menu/GetStation?stationId=" + id,
+			type: "POST",
+			success: function (d, textStatus, jqXHR) {
+				if (d.station) {
+					data = d.station;
+					$("#station-name").val(data.name);
+					$("#station-price").val(data.priceSelect).change();
+					$("#station-menu").val(data.menuSelect.id).change();
+					$("#station-warehouse").val(data.warehouse.id).change();
+                    $("#prepare-type-default").val(data.prepareTypeDefault).change();                    
+					$("#station-mode").val(data.salesMode).change();
+					$("#station-status").val("1").change();
+                    $("#delivery-price").val(data.precioDelivery).change();
+
+					$("#station-printcopy").val(data.printCopy).change();
+					$("#station-branch").val(data.idSucursal).change();
+					if (!data.isActive)
+					{
+						$("#station-status").val("0").change();
+					}
+					if (!data.imprimirPrecuentaDelivery) {
+						$("#imprimir-precuenta-delivery").val("0").change();
+					} else {
+                        $("#imprimir-precuenta-delivery").val("1").change();
+					}
+					var areas = data.areas.map(s=>s.id);
+
+					$("#station-areas").empty();
+
+					if (d.station.areas) {
+						for (var i = 0; i < d.station.areas.length; i++) {
+							var a = d.station.areas[i];
+							SelectArea(a);
+						}
+
+						if (d.station.areaPrices) {
+							var prices = JSON.parse(d.station.areaPrices);
+							if (prices ){
+								$("#station-areas tr").each(function (index, item) {
+									var id = $(this).data("id");
+									var price = prices.find(obj => {
+										return obj.AreaID === id
+									})
+
+									$(this).find(".area-price").val(price.PriceSelect).change();
+								})
+							}
+
+						}
+					}
+
+					$("#addstation").data("id", data.id);
+
+				}
+				else {
+					$("#station-name").val("");
+					$("#station-price").val("1").change();
+					$("#station-menu").val("").change();
+					$("#station-warehouse").val("").change();
+                    $("#prepare-type-default").val("").change();                    
+					$("#station-status").val("1").change();
+                    $("#imprimir-precuenta-delivery").val("0").change();
+					$("#station-areas").empty();
+					$("#addstation").data("id", 0);
+					$("#station-printcopy").val(0);
+					$("#station-branch").val(0);
+
+				}
+				if (d.channels && d.channels.length > 0)
+				{
+					$("#printerchannel-list").empty();
+					for(var i = 0; i < d.channels.length; i++)
+					{
+						var c = d.channels[i];
+						var dddd = "";
+						if (c.printerChannel.isDefault) dddd = "Yes";
+
+						var phtml = `<select class='printer select'>`;
+						phtml += `<option>Choose the printer</option>`
+						var printers = d.printers;
+						for(var j = 0; j < printers.length; j++)
+						{
+							var p = printers[j];
+							if (c.printer && c.printer.id == p.id)
+							{
+								phtml += `<option selected value='${p.id}'>${p.name}</option>`
+							}
+							else{
+								phtml += `<option value='${p.id}'>${p.name}</option>`
+							}
+
+						}
+						phtml += "</select>"
+
+						var html = `<tr><td class='channel-id' data-id='${c.printerChannel.id}'>${c.printerChannel.name}</td><td>${dddd}</td><td>${phtml}</td></tr>`;
+
+						$("#printerchannel-list").append(html);
+					}
+				}
+				$("#station-warehouses").empty();
+				if (d.warehouses && d.warehouses.length > 0) {
+					for (var i = 0; i < d.warehouses.length; i++) {
+						var w = d.warehouses[i];
+
+						var html = `<tr data-group='${w.group.id}' data-warehouse='${w.warehouse.id}'><td>${w.group.groupName}</td><td>${w.warehouse.warehouseName}</td><td>
+
+									<div class="delete-btn">
+										<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+									</div></td>
+						</tr>`
+						$("#station-warehouses").append(html);
+					}
+				}
+						
+				$("#addstation").modal("show");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function DeleteStation(id)
+	{
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the station?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonText: "@ViewLocalizer["Close"]",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Menu/DeleteStation?stationId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#station-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the station."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					}
+				});
+			}
+		});
+	}
+
+	$("#add-branch").click(function () {
+		$("#editbranch").modal("show");
+	});
+
+
+	var branchtable = $("#branch-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"filter": true, // this is for disable filter (search box)
+		"orderMulti": false, // for disable multiple column at once
+		"paging": false,
+		"ajax": {
+			"url": "/Menu/GetBranchList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"order": [[0, 'asc']],
+		"columns": [
+
+			{ "data": "name", "name": "name", "autoWidth": true },
+
+			{
+				'data': 'action', 'name': 'action', "orderable": "false",
+				render: function (data, type, row) {
+					return "<div class='d-flex align-items-center'><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditBranch(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectBranch(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+				},
+			},
+		]
+	});
+
+	$("#edit-branch").click(function () {
+		var branch = $("#branch-name").val();
+		if (!branch || branch == "") {
+			toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var data = {
+			ID: $("#branch-id").data("id"),
+			Name: branch,
+		}
+
+		$.ajax({
+			url: "/Menu/EditBranch",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					branchtable.draw();
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The name should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update the sucursal."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	});
+
+	$("#cancel-branch").click(function () {
+		SelectBranch();
+	});
+
+
+	// branch function
+	function EditBranch(branch) {
+		$("#branch-name").val(branch.name);
+		$("#branch-id").data("id", branch.id);
+		$("#branch-id").text("ID: " + branch.id);
+	}
+
+	function DeleteBranch(id) {
+
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the sucursal?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			cancelButtonText: "@ViewLocalizer["Cancel"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Menu/DeleteBranch?branchId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#branchtable").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the sucursal."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+
+		});
+
+	}
+
+	function SelectBranch(branch) {
+		$.ajax({
+			url: "/Menu/GetAllBranchs",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#station-branch").empty();
+				$("#station-branch").append("<option value='0' selected>@ViewLocalizer["Choose sucursal"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#station-branch").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				if (branch) {
+					$("#station-branch").val(branch.id).change();
+				}
+				else {
+					$("#station-branch").val(0).change();
+				}
+
+				$("#station-branch").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#editbranch").modal("hide");
+	}
+
+
+	$("#add-group-submit").click(function () {
+		var groupname = $("#station-group").find(":selected").text()
+		var groupid = parseInt($("#station-group").val())
+		var warehousename = $("#station-warehouse1").find(":selected").text()
+		var warehouseid = parseInt($("#station-warehouse1").val())
+
+		var exist = false
+		$("#station-warehouses tr").each(function() {
+			var group = parseInt($(this).data("group"));
+			if (group == groupid){
+				exist = true;
+			}
+		})
+
+		if (exist){
+			toastr.error("@ViewLocalizer["The group already exist."]", {})
+			return;
+		}
+
+		var html = `<tr data-group='${groupid}' data-warehouse='${warehouseid}'><td>${groupname}</td><td>${warehousename}</td><td>
+
+										<div class="delete-btn">
+											<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</div></td>
+							</tr>`
+
+		$("#station-warehouses").append(html);
+
+		$("#addgroupwarehouse").modal("hide");
+	});
+
+</script>

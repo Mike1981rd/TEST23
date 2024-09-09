@@ -1,0 +1,2610 @@
+﻿@{
+    Layout = null;
+    var reasons = (List<CancelReason>)ViewBag.CancelReasons;
+    var denominations = (List<Denomination>)ViewBag.Denominations;
+    var paymentMethods = (List<PaymentMethod>)ViewBag.PaymentMethods;
+    var products = (List<Product>)ViewBag.Products;
+    var stationID = ViewBag.StationID;
+    var discounts = (List<Discount>)ViewBag.Discounts;
+}
+@model Order
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Alfa Software">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>ALFA POS BARCODE</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/vendor/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="/vendor/css/dataTables.bootstrap4.min.css">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/select2/css/select2.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="/vendor/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/vendor/plugins/fontawesome/css/all.min.css">
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="/vendor/css/bootstrap-datetimepicker.min.css">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/select2/css/select2.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/vendor/css/style.css">
+
+
+    <!-- jQuery -->
+    <script src="/vendor/js/jquery-3.6.0.min.js"></script>
+    <!-- Feather Icon JS -->
+    <script src="/vendor/js/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="/vendor/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="/vendor/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Datatable JS -->
+    <script src="/vendor/js/jquery.dataTables.min.js"></script>
+    <script src="/vendor/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="/vendor/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Owl JS -->
+    <script src="/vendor/plugins/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Sweetalert 2 -->
+    <script src="/vendor/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="/vendor/plugins/sweetalert/sweetalerts.min.js"></script>
+    <!-- Datetimepicker JS -->
+    <script src="~/vendor/js/moment.min.js"></script>
+    <script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Mask JS -->
+    <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+    <script src="~/vendor/plugins/toastr/toastr.js"></script>
+    <script src="~/vendor/js/jquery.mask.js"></script>
+    <!-- Custom JS -->
+    <script src="/vendor/js/script.js"></script>
+
+</head>
+<body style="6jul2023">
+    <div class="main-wrapper d-flex text-white">
+        <div class="barcode-details show">
+            <div class="top">
+                <a href="" class="logout">
+                    <img class="sales-logo" src="/vendor/img/logo-02.jpg" alt="">
+                </a>
+                <div class="row p-2 w-100">
+                    <div class="col-6">
+                        <div>@ViewLocalizer["User"]: <span class="order-user">@Model.WaiterName</span></div>
+                        <div>@ViewLocalizer["Client"]:  <span class="order-client">@Model.ClientName</span></div>
+                        <div>@ViewLocalizer["Comprobante"]: <span class="order-comprobante">@Model.ComprobanteName</span></div>
+                        <div>@ViewLocalizer["Mode"]:  <span class="order-mode">@Model.OrderMode</span></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="white" style="color:white">@ViewLocalizer["Products"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="product-select" class="select ">
+                                        <option value="">@ViewLocalizer["Choose product"]</option>
+                                        @foreach (var t in products)
+                                        {
+                                            <option value="@t.ID" data-barcode="@t.Barcode">@t.Name</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content" style="padding: 0px 15px;">
+                <label>
+                    <input type="checkbox" id="checkbox-consolidate" name="consolidate">
+                    @ViewLocalizer["Consolidar"]
+                </label>
+                <div class="barcode-order-table" style="height: initial;">
+                    <div class="table h-100">
+                        <div class="table-header">
+                            <div class="tr1">
+                                <div class="td1">@ViewLocalizer["Item"]</div>
+                                <div class="td1">@ViewLocalizer["Stock Qty"]</div>
+                                <div class="td1">@ViewLocalizer["Units"]</div>
+                                <div class="td1">@ViewLocalizer["Qty"]</div>
+                                <div class="td1">@ViewLocalizer["Price"]</div>
+                                <div class="td1">@ViewLocalizer["Amt"]</div>
+                                <div class="td1">@ViewLocalizer["Itbis"]</div>
+                                <div class="td1">%</div>
+                                <div class="td1">@ViewLocalizer["Del"]</div>
+                            </div>
+                        </div>
+                        <div id="order-item-list" class="table-body" style="max-height: calc(100vh - 380px); min-height: calc(100vh - 380px)">
+                            <!--Aquí se muestran los prod-->
+                        </div>
+                    </div>
+                </div>
+                <div class="barcode-order-summary row" style="position : initial">
+                    <div class="col-7">
+                        <div class="sub-total">@ViewLocalizer["Note"]:</div>
+                        <div>
+                            <textarea id="order-note" rows="5" class="w-100">@Model.Note</textarea>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="sub-total"><span>@ViewLocalizer["Subtotal"]:</span><span id="order-subtotal">00.00</span></div>
+                        <div class="sub-total"><span>@ViewLocalizer["Discount"]:</span><span id="order-discount">00.00</span></div>
+                        <div class="order-discount-items">
+                        </div>
+                        <div class="sub-total"><span>@ViewLocalizer["Tax"]:</span><span id="order-tax">0</span></div>
+                        <div class="order-tax-items">
+                        </div>
+                        <div class="total" id="order-total">00.00</div>
+                        <div class="justify-content-between d-flex"><span id="payment-status" class="pt-2" style="font-size: large"></span><span class="total text-success" id="order-paid-total"></span></div>
+
+                    </div>
+
+                </div>
+                <div class="bottom-grid">
+                </div>
+            </div>
+
+        </div>
+        <div class="barcode-products p-4">
+            <div class="row justify-content-between">
+                <div class="col-xl-6 p-2 text-center">
+                    <button id="btn-item-qty" class="btn button6  w-100" style="background-color:dimgray">@ViewLocalizer["Qty"]</button>
+                </div>
+                <div class="col-xl-6 p-2 ">
+                    <button id="order-info" class="btn button6  w-100">@ViewLocalizer["Información"]</button>
+                </div>
+                <div class="col-xl-6  p-2 text-center">
+                    <button id="btn-order-discount" class="btn button6  w-100">@ViewLocalizer["Descuento"]</button>
+                </div>
+                <div class="col-xl-6  p-2 ">
+                    <button id="btn-closedrawer" class="btn button6 w-100">@ViewLocalizer["Cuadre de Caja"]</button>
+                </div>
+                <div class="col-xl-6 p-2 text-center" style="display:none">
+                    <button id="order-mode" class="btn button6 w-100" disabled>@ViewLocalizer["Modo"]</button>
+                </div>
+                <div class="col-xl-6 p-2 text-center">
+                    <button id="btn-orderitem-discount" class="btn button6  w-100">@ViewLocalizer["Descuento Item"]</button>
+                </div>
+                <div class="col-xl-6  p-2 ">
+                    <button id="btn-order-reprint" class="btn button6  w-100">@ViewLocalizer["Reimpresión"]</button>
+                </div>
+                <div class="col-xl-6  p-2 text-center">
+                    <button id="btn-order-void" class="btn button6 red w-100">@ViewLocalizer["Anular"]</button>
+                </div>
+                <div class="col-xl-6 p-2">
+                    <button id="barcode-orders" class="btn button6 w-100" style="background-color:orange">@ViewLocalizer["Ordenes"]</button>
+                </div>
+                <div class="col-xl-6  p-2 text-center">
+                    <button id="btn-order-pay" class="btn button6 green w-100">@ViewLocalizer["Pagar"]</button>
+                </div>
+                <div class="col-xl-6  p-2">
+                    <button id="btn-order-cancel" class="btn button6 red w-100">@ViewLocalizer["Cancelar"]</button>
+                </div>
+                <div class="col-xl-12 text-center">
+                    <button id="order-save" class="btn button6 btn-success green w-100">@ViewLocalizer["SALVAR"]</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Discount item modal -->
+    <div class="modal fade" id="discountmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Discounts"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">                 
+                    <div id="discount-list">
+                        @foreach (var d in discounts)
+                        {
+                            <button class='select-discount w-25 m-3 btn button2' data-id='@d.ID'>@d.Name</button>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="discount-apply" type="button" class="btn btn-primary">@ViewLocalizer["Apply"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="orderinfo" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Order Information"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Nombre de Cliente"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="customer-select" class="select">
+                                        <option value="" selected>@ViewLocalizer["Choose customer"]</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                    <div class="add-icon">
+                                        <a id="add-customer-modal" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <label>@ViewLocalizer["Número de teléfono"]</label>
+                        <div class="col-lg-10 col-sm-10 col-10">
+                            <select id="customer-select-phone" class="select">
+                                <option value="">@ViewLocalizer["Choose phone number"]</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="info-submit" type="button" class="btn btn-primary" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- call saved modal -->
+    <div class="modal fade" id="reordermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Saved orders"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date From"] </label>
+                                <input id="filter_barcode_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date To"] </label>
+                                <input id="filter_barcode_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="table-responsive w-100" style="max-height:400px;">
+                                <table id="order-list" class="table" style="position:relative;">
+                                    <thead style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>@ViewLocalizer["Action"] </th>
+                                            <th>@ViewLocalizer["ID #"] </th>
+                                            <th>@ViewLocalizer["Date"]</th>
+                                            <th>@ViewLocalizer["Total"]</th>
+                                            <th>@ViewLocalizer["Paid"]</th>
+                                            <th>@ViewLocalizer["Status"]</th>
+                                            <th>@ViewLocalizer["Customer"]</th>
+                                            <th>@ViewLocalizer["Waiter"]</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reprint order modal -->
+    <div class="modal fade" id="reprintmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Reprint the Order"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date From"] </label>
+                                <input id="filter_reprint_datefrom1" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date To"] </label>
+                                <input id="filter_reprint_dateto1" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="table-responsive w-100" style="max-height:400px;">
+                                <table id="order-paid-list" class="table" style="position:relative;">
+                                    <thead style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>@ViewLocalizer["Action"] </th>
+                                            <th>@ViewLocalizer["ID #"] </th>
+                                            <th>@ViewLocalizer["Date"]</th>
+                                            <th>@ViewLocalizer["Total"]</th>
+                                            <th>@ViewLocalizer["Paid"]</th>
+                                            <th>@ViewLocalizer["Status"]</th>
+                                            <th>@ViewLocalizer["Customer"]</th>
+                                            <th>@ViewLocalizer["Waiter"]</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel order modal -->
+    <div class="modal fade" id="voidordermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Void Order"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group p-5">
+                        <label>@ViewLocalizer["Void Reason"]</label>
+
+                        <div id="void-reason-order" class="d-flex select mx-2">
+                            @foreach (var reason in reasons)
+                            {
+                                <button class='select-reason-order w-25 m-3 btn button2' data-id='@reason.ID'>@reason.Reason</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="void-order-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Term order modal -->
+    <div class="modal fade" id="termsordermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Terms"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group p-5">
+                        <label>@ViewLocalizer["Terms"]</label>
+                          <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="order-terms" class="select">
+                                    <option value="Contado">Contado</option>
+                                    <option value="Consignacion">Consignacion</option>
+                                    <option value="Credito">Credito</option>
+                                    <option value="Produccion">Produccion</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="term-order-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel modal -->
+    <div class="modal fade" id="cancelitemmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Void Item"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group p-5">
+                        <label>@ViewLocalizer["Void Reason"]</label>
+
+                        <div id="void-reason" class="d-flex select mx-2">
+                            @foreach (var reason in reasons)
+                            {
+                                <button class='select-reason w-25 m-3 btn button2' data-id='@reason.ID'>@reason.Reason</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="void-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="reordermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["ReOrder"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date From"] </label>
+                                <input id="filter_reprint_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Date To"] </label>
+                                <input id="filter_reprint_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="table-responsive w-100" style="max-height:400px;">
+                                <table id="order-list" class="table" style="position:relative;">
+                                    <thead style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>@ViewLocalizer["Action"] </th>
+                                            <th>@ViewLocalizer["ID #"] </th>
+                                            <th>@ViewLocalizer["Date"]</th>
+                                            <th>@ViewLocalizer["Total"]</th>
+                                            <th>@ViewLocalizer["Paid"]</th>
+                                            <th>@ViewLocalizer["Status"]</th>
+                                            <th>@ViewLocalizer["Customer"]</th>
+                                            <th>@ViewLocalizer["Waiter"]</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantity modal -->
+    <div class="modal fade" id="quantitymodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="smartbuton-modal-title">@ViewLocalizer["Quantity"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group text-center">
+                            <input id="qty-number" class="keyboard-pad w-50" onkeypress="return onlyDecimalKey(event)" value="" type="text" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">7</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">8</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">9</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-outline-danger">&#8592</button></div>
+                    </div>
+                    <div class="row">
+                        <div class="col  text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">4</button></div>
+                        <div class="col  text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">5</button></div>
+                        <div class="col  text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">6</button></div>
+                        <div class="col  text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-outline-primary">C</button></div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">1</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">2</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">3</button></div>
+                        <div class="col text-center p-2"><button type="button" class="qty-keyboard btn-keyboard btn btn-secondary">0</button></div>
+                    </div>
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button id="submit-qty" type="button" class="btn btn-success">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Menu modal -->
+    <div class="modal fade" id="menuoptionmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Menu Options"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-3 p-2"><button id="btn-void" class="btn-menu btn btn-primary">@ViewLocalizer["Void"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-qty" class="btn-menu btn btn-primary">@ViewLocalizer["Quantity"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-discountitem" class="btn-menu btn btn-primary">@ViewLocalizer["Discount"]</button></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Mode modal -->
+    <div class="modal fade" id="changemodemodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Change Mode"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-6 p-2"><button id="btn-modeinvoice" class="btn-menu btn btn-primary">@ViewLocalizer["Invoice Mode"]</button></div>
+                        <div class="col-6 p-2"><button id="btn-modequote" class="btn-menu btn btn-primary">@ViewLocalizer["Quote Mode"]</button></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="listcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Customer List"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <a onclick="AddCustomer()" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Customer</a>
+                        </div>
+                        <div class="col-12">
+                            <div class="table-responsive w-100" style="max-height:400px;">
+                                <table id="customer-list" class="table" style="position:relative;">
+                                    <thead style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>@ViewLocalizer["Action"]</th>
+                                            <th>@ViewLocalizer["Avatar"] </th>
+                                            <th>@ViewLocalizer["Name"] </th>
+                                            <th>@ViewLocalizer["Phone"] </th>
+                                            <th>@ViewLocalizer["Email"]</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Customer"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                                <input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+                                <input id="customer-rnc" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+                                <input id="customer-phone" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+                                <input id="customer-email" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Dirección"]<span class="manitory">*</span></label>
+                                <input id="customer-address" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-sm-6 col-12" style="display:none">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Zona"]<span class="manitory">*</span></label>
+                                <select id="customer-zone" class="select ">
+                                    <option value="">Zonas</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>@ViewLocalizer["Comprobantes"]</label>
+                                <select id="customer-voucher" class="select ">
+                                    <option value="" selected>Choose comprobantes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="edit-customer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="messagebox" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="group-modal-title">@ViewLocalizer["Message"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-12">
+                            <h6>
+                                @ViewLocalizer["Please assign the client to pay this payment method."]
+                            </h6>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="permissionpinmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content" style="border: 0">
+
+                <div>
+                    <div class="panel d-flex">
+                        <div>
+                            <div class="pin" data-num="1" style="background-image: url('/vendor/img/login/pin1.png');">
+                            </div>
+                            <div class="pin" data-num="4" style="background-image: url('/vendor/img/login/pin4.png');">
+                            </div>
+                            <div class="pin" data-num="7" style="background-image: url('/vendor/img/login/pin7.png');">
+                            </div>
+                            <div class="pin" data-num="" style="background-image: url('/vendor/img/login/pinx.png');">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="pin" data-num="2" style="background-image: url('/vendor/img/login/pin2.png');">
+                            </div>
+                            <div class="pin" data-num="5" style="background-image: url('/vendor/img/login/pin5.png');">
+                            </div>
+                            <div class="pin" data-num="8" style="background-image: url('/vendor/img/login/pin8.png');">
+                            </div>
+                            <div class="pin" data-num="0" style="background-image: url('/vendor/img/login/pin0.png');">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="pin" data-num="3" style="background-image: url('/vendor/img/login/pin3.png');">
+                            </div>
+                            <div class="pin" data-num="6" style="background-image: url('/vendor/img/login/pin6.png');">
+                            </div>
+                            <div class="pin" data-num="9" style="background-image: url('/vendor/img/login/pin9.png');">
+                            </div>
+                            <div class="pin" data-num="del" style="background-image: url('/vendor/img/login/pindel.png');">
+                            </div>
+                        </div>
+                        <div>
+                            <div style="width: 230px; height:170px; margin:30px; padding-top:90px; margin-top: 40px; background-image: url('/vendor/img/login/enter.png');
+                            background-size: 100% 100%;">
+                                <div id="input-pin" class="d-flex" data-value="" style="padding-left:14px;">
+                                    <div class="display-pin"></div>
+                                    <div class="display-pin"></div>
+                                    <div class="display-pin"></div>
+                                    <div class="display-pin"></div>
+                                </div>
+                            </div>
+                            <div id="enter-pin" style="width: 230px; height:100px; margin:30px; background-image: url('/vendor/img/login/enter-btn.png');
+                            background-size: 100% 100%;">
+                            </div>
+                            <div id="cancel-pin" style="width: 230px; height:100px; margin:30px; background-image: url('/vendor/img/login/cancel-btn.png');
+                            background-size: 100% 100%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Close Drawer -->
+    <div class="modal fade" id="closedrawermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="smartbuton-modal-title">@ViewLocalizer["Cuadre de Caja"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-5">
+                    <div class="row">
+                        <div class="drawer-money-container col-6 p-3">
+                            <table class="table drawer-money">
+                                <thead>
+                                <th width="150">
+                                    @ViewLocalizer["Money"]
+                                </th>
+                                <th width="100">
+                                    @ViewLocalizer["Quantity"]
+                                </th>
+                                <th width="100">
+                                    @ViewLocalizer["Totals"]
+                                </th>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in denominations)
+                                    {
+                                        <tr class="drawer-item">
+                                            <td>@d.Name</td>
+                                            <td><div class=""><input class="drawer-money-input denomination form-control form-control-sm" data-id="@d.ID" data-name="@d.Name" data-rate="@d.Amount" onkeypress="return onlyNumberKey(event)" value="" type="text"></div></td>
+                                            <td class="sub-total">$0.00</td>
+                                        </tr>
+                                    }
+
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Grand Total"]:
+                                        </td>
+                                        <td class="drawer-denomination-total">
+                                            $0.00
+                                        </td>
+                                    </tr>
+                                    <tr class="drawer-item">
+                                        <td>TIP	</td>
+                                        <td><div class=""><input class="drawer-money-input form-control tip form-control-sm" onkeypress="return onlyDecimalKey(event)" value="" type="text"></div></td>
+                                        <td class="sub-total">$0.00</td>
+                                    </tr>
+
+                                    @foreach (var d in paymentMethods)
+                                    {
+                                        <tr class="drawer-item">
+                                            <td>@d.Name	</td>
+                                            <td><div class=""><input class="drawer-money-input form-control pmethod form-control-sm" data-id="@d.ID" data-rate="@d.Tasa" onkeypress="return onlyDecimalKey(event)" value="" type="text"></div></td>
+                                            <td class="sub-total">$0.00</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6 p-3 drawer-total mt-3">
+                            <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Grand Total"]:</h5> <h5 class="text-success drawer-grand-total">$0.00</h5></div>
+                            <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Value"]:</h5> <h5 class="text-primary expected-total">$0.00</h5></div>
+                            <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy"]:</h5> <h5 class=" difference-total">$0.00</h5></div>
+
+                            <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Tip"]:</h5> <h5 class="text-primary expected-tip">$0.00</h5></div>
+                            <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy Tip"]:</h5> <h5 class=" difference-tip">$0.00</h5></div>
+                            <div class="pt-5">
+
+                                <div class="row">
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">7</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">8</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">9</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-outline-danger">&#8592</button></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">4</button></div>
+                                    <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">5</button></div>
+                                    <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">6</button></div>
+                                    <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-outline-primary">C</button></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">1</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">2</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">3</button></div>
+                                    <div class="col text-center p-2"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">0</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">.</button></div>
+                                    <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">00</button></div>
+                                    <div class="col text-center p-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button id="drawer-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+<script>
+    let code = "";
+    let reading = false;
+    var productIdCounter = 0;
+
+    let itemMap = {};
+    document.addEventListener("DOMContentLoaded", function () {
+        var checkbox = document.getElementById("checkbox-consolidate");
+        checkbox.checked = true;
+    });
+    document.addEventListener('keypress', e => {
+        //usually scanners throw an 'Enter' key at the end of read
+
+        if (e.keyCode === 13) {
+
+            if (code.length >= 8) {
+                console.log(code);
+                /// code ready to use
+                $("#scannedBarcode").val(code)
+                AddOrderItem(code);
+                code = "";
+            }
+        } else {
+            code += e.key; //while this is not an 'enter' it stores the every key
+        }
+
+        //run a timeout of 200ms at the first read and clear everything
+        if (!reading) {
+            reading = true;
+            setTimeout(() => {
+                code = "";
+                reading = false;
+            }, 200);  //200 works fine for me but you can adjust it
+        }
+    });
+
+    document.querySelector("input").addEventListener('keypress', e => {
+        //usually scanners throw an 'Enter' key at the end of read
+
+        if (e.keyCode === 13) {
+
+            if (code.length >= 8) {
+                console.log(code);
+                /// code ready to use
+                $("#scannedBarcode").val(code)
+                AddOrderItem(code);
+                code = "";
+            }
+        } else {
+            code += e.key; //while this is not an 'enter' it stores the every key
+        }
+
+        //run a timeout of 200ms at the first read and clear everything
+        if (!reading) {
+            reading = true;
+            setTimeout(() => {
+                code = "";
+                reading = false;
+            }, 200);  //200 works fine for me but you can adjust it
+        }
+    });
+
+
+    $(document).ready(function () {
+
+        var zonas = [
+            { id: 1, nombre: "Zona centro" },
+            { id: 3, nombre: "Zona lejana" },
+            { id: 4, nombre: "Zona foranea" }
+        ];
+
+        var selectZona = document.getElementById("customer-zone");
+
+        // Genera las opciones del select
+        zonas.forEach(function (zona) {
+            var option = document.createElement("option");
+            option.value = zona.id;
+            option.textContent = zona.nombre;
+            selectZona.appendChild(option);
+        });
+
+        SelectCustomer();
+        SelectCustomerPhone();
+        SelectVoucher();
+        drag("#order-item-list");
+        drag("#order-list tbody");
+        $("#order-mode").hide();
+        $("#product-select").select2();
+        LoadOrderItems();
+    })
+    $("#barcode-logout").click(function () {
+        window.location.replace("/POS/logout");
+    })
+    $("#add-customer-modal").click(function () {
+        $("#orderinfo").modal("hide");
+        $("#listcustomer").modal("show");
+    })
+    $("#add-product").click(function () {
+        var prodId = $("#product-select").val();
+        $(".barcode-order-table").focus()
+        AddOrderItemByID(prodId);
+
+    })
+
+
+    $("#order-pay").click(function () {
+        CheckPermission("Permission.POS.Pay", function () {
+            window.location.replace("/POS/Checkout?OrderId=@Model.ID");
+        })
+
+
+    });
+
+    $("#btn-closedrawer").click(function () {
+        $("#stationoptionmodal").modal("hide");
+        CheckPermission("Permission.POS.CloseCashDrawer", function () {
+            ShowCloseDrawer();
+        });
+
+    });
+
+    $("#btn-order-cancel").click(function () {
+        var url = "/POS/Logout?station=@stationID";
+        console.log("out");
+
+        // Realiza la solicitud POST de logout
+        $.post("/POS/Logout", function () {
+            window.location.replace(url);
+        });
+    });
+
+    var discounttable = $("#discount-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/POS/GetDiscountList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3' href='javascript:void(0);'  onclick=SelectDiscount('" + row.id + "'); ><span class='icon'><span class='fa fa-check'></span></a>";
+                },
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "amount", "name": "amount", "autoWidth": true },
+            { "data": "amountType", "name": "amountType", "autoWidth": true },
+        ]
+    });
+
+    $(".payment-item").click(function () {
+        $(".payment-item").removeClass("active");
+        $(this).addClass("active");
+    })
+    $(".btn-easypay").click(function () {
+        var txt = $(this).data("value");
+        if (txt == 'Exact') {
+            var balance = $(".balance").data("balance");
+            $("#pay-amount").val(balance);
+        }
+        else {
+            $("#pay-amount").val(txt);
+        }
+    });
+
+    $(".pay-keyboard").click(function () {
+        var txt = $(this).text();
+        var current = $("#pay-amount").val();
+
+        if (txt == 'C') {
+            current = "";
+        }
+        else if (txt == '←') {
+            current = current.substring(0, current.length - 1);
+        }
+        else if (txt == ".") {
+            if (!current.includes(".")) {
+                current += txt;
+            }
+        }
+        else {
+            current += txt;
+        }
+
+        var val = parseFloatCorrect(current);
+        if (!val || val == 0) {
+            $("#pay-amount").val("");
+        }
+        else {
+            $("#pay-amount").val(current);
+        }
+    });
+
+    function CheckPermission(permission, callback) {
+        $.ajax({
+            url: "/POS/CheckPermission?permission=" + permission,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    callback();
+                }
+                else {
+                    ShowPermissionError(permission);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function ShowPermissionError(permission) {
+        $("#permissionpinmodal").data("permission", permission)
+        $("#permissionpinmodal").modal("show");
+    }
+
+    function AddOrderItem(barcode) {
+
+        var data = {
+            OrderId: @Model.ID,
+            Barcode: barcode,
+        }
+
+        $.ajax({
+            url: "/POS/AddProductToOrderItemWithBarcode",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                $("#scannedBarcode").val("")
+                if (data.status == 0) {
+                    LoadOrderItems(data.itemId);
+
+                }
+                else if (data.status == 1) {
+
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    function AddOrderItemByID(id) {
+
+
+        var data = {
+            OrderId: @Model.ID,
+            Barcode: "",
+            ProductId: id,
+        }
+
+        $.ajax({
+            url: "/POS/AddProductToOrderItemWithBarcode",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                console.log(data.status);
+                if (data.status == 0) {
+                    LoadOrderItems();
+                    productIdCounter++;
+
+                }
+                else if (data.status == 1) {
+
+                }
+                $("#product-select").val("");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    function LoadOrderItems(itemId) {
+        ShowLoader();
+        var idu = 0;
+        $.ajax({
+            url: "/POS/GetOrderItemsInBarcode?orderId=@Model.ID",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#order-item-list").empty();
+                HideLoader();
+
+                var html = ``;
+                var consolidateItems = $("#checkbox-consolidate").is(":checked");
+
+                for (var i = 0; i < data.items.length; i++) {
+                    console.log(data);
+                    var d = data.items[i];
+                    var barcode = d.product.barcode;
+                    if (!barcode || barcode == "null") barcode = "";
+
+                    //var units =
+                    //    `<div class="">
+                    //        <select class="item-unit form-control-sm">`
+                    //            for (var ii = 0; ii < d.units.length; ii++) {
+                    //                var item = d.units[ii];
+                    //                units += `<option value="${item.number}" data-id="${item.number}" data-name="${item.name}" data-rate="${item.rate}">${item.name}</option>`;
+                    //            }
+
+                    //            units += `</select>
+                    //    </div>`;
+
+
+                    if (!consolidateItems) {
+                        for (var j = 0; j < d.qty; j++) {
+                            html += `
+                                    <div class="order-item tr1" data-id="${d.id}" data-status="${d.status}" data-iditem="${idu}">
+                                    <div class="td1 text-start">${d.name}</div>
+                                    <div class="td1 text-start">${d.stockQty}</div>
+                                    <div class="td1 text-start">${d.unit}</div>
+                                     <div class="td1">${1}</div>
+                                    <div class="td1">${d.price.toFixed(2)}</div>
+                                    <div class="td1">${d.subTotal.toFixed(2)}</div>
+                                    <div class="td1">${d.tax.toFixed(2)}</div>
+                                    <div class="td1"></div>
+                                    <div class="td1"><img class="void-orderitem" src="/vendor/img/icons/delete.svg"/></div>
+                                </div>`;
+                            idu++;
+                        }
+                    } else {
+                        var existingItem = $(".order-item[data-id='" + d.id + "']");
+                        if (existingItem.length > 0) {
+                            var qtyInput = existingItem.find(".item-qty");
+                            var currentQty = parseInt(qtyInput.val());
+                            var newQty = currentQty + d.qty;
+                            qtyInput.val(newQty);
+                            continue;
+                        }
+
+                        html += `
+                            <div class="order-item tr1" data-id="${d.id}" data-status="${d.status}">
+                                <div class="td1 text-start">${d.name}</div>
+                                <div class="td1">${d.stockQty}</div>
+                                <div class="td1">${d.unit}</div>
+                                <div class="td1">${d.qty}</div>
+                                <div class="td1">${d.price.toFixed(2)}</div>
+                                <div class="td1">${d.subTotal.toFixed(2)}</div>
+                                <div class="td1">${d.tax.toFixed(2)}</div>
+                                <div class="td1"></div>
+                                <div class="td1"><img class="void-orderitem" src="/vendor/img/icons/delete.svg" /></div>
+                            </div>`;
+                    }
+                }
+
+                $("#order-item-list").append(html);
+
+                //$(".order-item").each(function () {
+                //    var id = $(this).data("id");
+                //    if (id == itemId) {
+                //        $(this).addClass("active");
+                //        var inp = $(this).find(".item-qty");
+                //        var qty = inp.val();
+                //        inp.focus();
+                //        inp.val("");
+                //        inp.val(qty);
+                //    }
+                //});
+
+                var total = numberWithCommas(data.order.totalPrice.toFixed(2))
+                $("#order-total").text("$" + total);
+                $("#order-tax").text("$" + data.order.tax.toFixed(2));
+                $(".order-tax-items").empty();
+                if (data.order.taxes && data.order.taxes.length > 0) {
+                    html = `<div class="sub-items subitems-tax">`;
+                    for (var k = 0; k < data.order.taxes.length; k++) {
+                        var q = data.order.taxes[k];
+                        html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.description}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
+                    }
+                    html += `</div>`;
+                    $(".order-tax-items").append(html);
+                }
+
+                $("#order-subtotal").text("$" + data.order.subTotal.toFixed(2));
+                $("#order-discount").text("$" + data.order.discount.toFixed(2));
+                $(".order-discount-items").empty();
+                if (data.order.discounts && data.order.discounts.length > 0) {
+                    html = `<div class="sub-items subitems-discount">`;
+                    for (var k = 0; k < data.order.discounts.length; k++) {
+                        var q = data.order.discounts[k];
+                        html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.name}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
+                    }
+                    html += `</div>`;
+                    $(".order-discount-items").append(html);
+                }
+                html = `<div class="sub-items subitems-discount">`;
+                for (var k = 0; k < data.transactions.length; k++) {
+                    var q = data.transactions[k];
+                    html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.method} ${q.note}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
+                }
+                html += `</div>`;
+                $("#order-discount-items").append(html);
+
+                $("#order-paid-total").text(data.order.payAmount);
+                if (data.order.paymentStatus == 0) {
+                    $("#payment-status").text("Not Paid");
+                } else if (data.order.paymentStatus == 1) {
+                    $("#payment-status").text("Partly Paid");
+                } else if (data.order.paymentStatus == 2) {
+                    $("#payment-status").text("Paid");
+                }
+
+                $(".balance").data("balance", data.order.balance.toFixed(2));
+                $(".balance").text("$" + data.order.balance.toFixed(2));
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {});
+            }
+        });
+    }
+
+
+    $("body").on("keypress", ".item-qty", function(e) {
+        if (e.keyCode === 13) {
+            var qty = parseInt($(this).val());
+            var id = parseInt($(this).closest(".order-item").data("id"));
+            var data = {
+                ItemId: id,
+                Qty: qty
+            };
+
+            $.ajax({
+                url: "/POS/ChangeQtyItem",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    LoadOrderItems();
+                    $("#quantitymodal").modal("hide");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+            $("#product-select").focus();
+        }
+    });
+
+    $("body").on("change", ".item-qty", function () {
+
+    });
+    $(document).on('select2:open', () => {
+        document.querySelector('.select2-search__field').focus();
+    });
+
+    $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
+        $(this).closest(".select2-container").siblings('select:enabled').select2('open');
+    });
+
+    // steal focus during close - only capture once and stop propogation
+    $('select.select2').on('select2:closing', function (e) {
+        $(e.target).data("select2").$selection.one('focus focusin', function (e) {
+            e.stopPropagation();
+        });
+    });
+    $("body").on("click", ".order-item", function () {
+        $(".order-item").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $("body").on("click", ".edit-orderitem", function () {
+        $(".order-item").removeClass("active");
+        $(this).addClass("active");
+
+        var id = $(this).closest(".order-item").data("id");
+        $("#menuoptionmodal").data("itemid", id);
+
+        $("#menuoptionmodal").modal("show");
+    });
+
+    $(".qty-keyboard").click(function () {
+        var txt = $(this).text();
+        var current = $("#qty-number").val();
+
+        if (txt == 'C') {
+            current = "";
+        }
+        else if (txt == '←') {
+            current = current.substring(0, current.length - 1);
+        }
+        else {
+            current += txt;
+        }
+
+        var val = parseInt(current);
+        if (!val || val == 0) {
+            $("#qty-number").val("");
+        }
+        else {
+            $("#qty-number").val(val);
+        }
+    });
+    $("#order-save").click(function () {
+        $.ajax({
+            url: "/POS/SaveBarcodeOrder?orderId=@Model.ID",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                window.location.replace("/POS/Barcode");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+    $("#btn-item-qty").click(function ()  {
+        var itemid = $(".order-item.active").data("id");
+        if (!itemid) return;
+        $("#qty-number").val("");
+        $("#quantitymodal").data("itemid", itemid);
+        $("#quantitymodal").modal("show");
+        $("#menuoptionmodal").modal("hide");
+    })
+
+    $("#btn-qty").click(function () {
+        var itemId = $("#menuoptionmodal").data("itemid");
+
+        $("#qty-number").val("");
+        $("#quantitymodal").data("itemid", itemId);
+        $("#quantitymodal").modal("show");
+        $("#menuoptionmodal").modal("hide");
+    });
+    $("#submit-qty").click(function () {
+        var id = parseInt($("#quantitymodal").data("itemid"));
+        var qty = parseInt($("#qty-number").val())
+        var data = {
+            ItemId: id,
+            Qty: qty
+        };
+
+        $.ajax({
+            url: "/POS/ChangeQtyItem",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                LoadOrderItems();
+                $("#quantitymodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $("#enter-pin").click(function () {
+        var pin = $("#input-pin").data("value");
+        var permission = $("#permissionpinmodal").data("permission");
+
+        var data = {
+            Pin: pin,
+            Permission: permission
+        }
+        $.ajax({
+            url: "/POS/AllowPermission",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    if (permission == "Permission.POS.TransferOrder") {
+                        LoadMyOpenOrders();
+                    }
+                    else if (permission == "Permission.POS.CloseCashDrawer") {
+                        ShowCloseDrawer();
+                    }
+                    $("#permissionpinmodal").modal("hide")
+                }
+                else if (data.status = 1) {
+                    toastr.error("@ViewLocalizer["The wrong pin was inputted."]", {})
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function SelectCustomer(customer) {
+        if(customer){
+            console.log(customer);
+            $(".order-client").text(customer.name);
+            $(".order-comprobante").text(customer.voucher);
+            var data = {
+                OrderId: @Model.ID,
+                ClientName: customer.name,
+                CustomerId: customer.id,
+            };
+            $.ajax({
+                url: "/POS/UpdateOrderInfo",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    $(".order-client").text(data.customerName);
+                    $(".order-comprobante").text(data.comprobanteName);
+                    $("#orderinfo").modal("hide");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        }
+
+        $.ajax({
+            url: "/Setting/GetActiveCustomers",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                $("#customer-select").empty();
+                $("#customer-select").append("<option value='' selected>Choose customer</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-select").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#customer-select").select2({ dropdownParent: $('#orderinfo .modal-body') });
+                if (customer) {
+                    $("#customer-select").val(customer.id).change();
+                }
+                else {
+                    $("#customer-select").val(0).change();
+                }
+                $("#customer-select-seat").empty();
+                $("#customer-select-seat").append("<option value='' selected>Choose customer</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-select-seat").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#customer-select-seat").select2();
+                if (customer) {
+                    $("#customer-select-seat").val(customer.id).change();
+                }
+                else {
+                    $("#customer-select-seat").val(0).change();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listcustomer").modal("hide");
+    }
+
+    $("#customer-select-phone").change(function () {
+        var id = $(this).val();
+        $("#customer-select").val(id).change();
+    })
+
+    function SelectCustomerPhone(customer) {
+        $.ajax({
+            url: "/Setting/GetActiveCustomers",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#customer-select-phone").empty();
+                $("#customer-select-phone").append("<option value='' selected>Choose phone number</option>");
+
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-select-phone").append("<option value='" + d.id + "' >" + d.phone + "</option>")
+                }
+                $("#customer-select-phone").select2({ dropdownParent: $('#orderinfo .modal-body') });
+                if (customer) {
+                    $("#customer-select-phone").val(customer.id).change();
+                }
+                else {
+                    $("#customer-select-phone").val(0).change();
+                }
+                $("#customer-select-seat").empty();
+                $("#customer-select-seat").append("<option value='' selected>Choose phone number</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-select-seat").append("<option value='" + d.id + "' >" + d.phone + "</option>")
+                }
+                $("#customer-select-seat").select2();
+                if (customer) {
+                    $("#customer-select-seat").val(customer.id).change();
+                }
+                else {
+                    $("#customer-select-seat").val(0).change();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listcustomer").modal("hide");
+    }
+
+    function EditCustomer(id) {
+        $.ajax({
+            url: "/Setting/GetCustomer?customerId=" + id,
+            type: "POST",
+            success: function (customer, textStatus, jqXHR) {
+                if (customer) {
+                    $("#customer-name").val(customer.name);
+                    $("#customer-rnc").val(customer.rnc);
+                    $("#customer-phone").val(customer.phone);
+                    $("#customer-email").val(customer.email);
+                    $("#customer-voucher").val(customer.voucher).change();
+
+                    $("#addcustomer").data("id", customer.id);
+                    $("#addcustomer").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+    function AddCustomer() {
+
+        $("#customer-name").val("");
+        $("#customer-rnc").val("");
+        $("#customer-phone").val("");
+        $("#customer-email").val("");
+        $("#customer-voucher").val(0).change();
+
+        $("#addcustomer").data("id", 0);
+        $("#addcustomer").modal("show");
+        $('#listcustomer').modal("hide");
+
+    }
+
+    $("#customer-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Setting/GetActiveCustomerList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[2, 'desc']],
+        "columns": [
+            {
+
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    console.log(JSON.stringify(row));
+                    return "<a class='me-3' href='javascript:void(0);'  onclick=EditCustomer('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectCustomer(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+                },
+            },
+            {
+                'data': 'avatar', 'name': 'avatar',
+                render: function (data, type, row) {
+                    if (!row.avatar) {
+                        return "";
+                    }
+                    else {
+                        return "<img src='" + row.avatar + "' alt = 'avatar' style='max-height:40px; max-width:40px;' >";
+                    }
+                },
+                "autoWidth": true
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "phone", "name": "phone", "autoWidth": true },
+            { "data": "email", "name": "email", "autoWidth": true },
+        ]
+    });
+
+    $("#edit-customer").click(function () {
+        var name = $("#customer-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var phone = $("#customer-phone").val();
+
+        var email = $("#customer-email").val();
+        var rnc = $("#customer-rnc").val();
+        var address1 = $("#customer-address1").val();
+        var address2 = $("#customer-address2").val();
+        var zone = parseInt($("#customer-zone").val())
+        var voucher = parseInt($("#customer-voucher").val())
+        var id = parseInt($("#addcustomer").data("id"))
+        var data = {
+            id: id,
+            RNC: rnc,
+            name: name,
+            Phone: phone,
+            Email: email,
+            Address1: address1,
+            Address2: address2,
+            ZoneId: zone,
+            VoucherId: voucher
+        }
+
+        $.ajax({
+            url: "/Setting/EditCustomerSimple",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (dataResponse, textStatus, jqXHR) {
+                if (dataResponse.status == 0) {
+                    $("#customer-list").DataTable().draw();
+                    $("#addcustomer").modal("hide");
+                    $("#orderinfo").modal("hide");
+                    data.id = dataResponse.customerid;
+                    SelectCustomer(data);
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["The customer with same contact info already exists. Please confirm or check if the one exists."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+    });
+
+    function SelectVoucher(voucher) {
+        $.ajax({
+            url: "/Setting/GetActiveVoucherList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#customer-voucher").empty();
+                $("#customer-voucher").append("<option value='' selected>Choose comprobantes</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-voucher").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#customer-voucher").select2();
+                if (voucher) {
+                    $("#customer-voucher").val(voucher.id).change();
+                }
+                else {
+                    $("#customer-voucher").val(0).change();
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listvoucher").modal("hide");
+    }
+
+    // print
+    $("#order-print").click(function () {
+        $.ajax({
+            url: "/POS/PrintOrder?OrderID=@Model.ID",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function SelectDiscount(discountid) {
+        var type = $("#discountmodal").data("type");
+        var id = parseInt($("#discountmodal").data("id"));
+
+        var data = {
+            Type: type,
+            TargetId: id,
+            DiscountId: discountid,
+        }
+
+        $.ajax({
+            url: "/POS/AddDiscount",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                LoadOrderItems();
+                AdjustHeight();
+                $("#discountmodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("#btn-orderitem-discount").click(function () {
+        var itemid = $(".order-item.active").data("id");
+        if (!itemid) return;
+        $("#discountmodal").data("type", "OrderItem");
+        $("#discountmodal").data("id", itemid);
+        CheckPermission("Permission.POS.Discounts", function () {
+            $("#discountmodal").modal("show");
+        });
+    });
+
+    $("#btn-order-discount").click(function () {
+        $("#discountmodal").data("type", "Order");
+        $("#discountmodal").data("id", @Model.ID);
+        CheckPermission("Permission.POS.Discounts", function () {
+            $("#discountmodal").modal("show");
+        });
+        $("#ordermenuoptionmodal").modal("hide");
+    });
+    $("#void-submit").click(function () {
+        var id = parseInt($("#cancelitemmodal").data("itemid"));
+        var reasonId = parseInt($("#void-reason").data("id"))
+        var data = {
+            ItemId: id,
+            ReasonId: reasonId
+        };
+
+        $.ajax({
+            url: "/POS/VoidOrderItem",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                LoadOrderItems();
+                $("#cancelitemmodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $("body").on("click", ".void-orderitem", function () {
+        var itemId = $(this).closest(".order-item").data("id");
+        var status = $(this).closest(".order-item").data("status");
+        var idtem = $(this).closest(".order-item").data("iditem");
+        var consolidateItems = $("#checkbox-consolidate").is(":checked");
+
+        console.log(itemId);
+        console.log(idtem);
+
+
+            if (status == "0") {
+                var data = {
+                    ItemId: itemId,
+                    ReasonId: 0,
+                    Consolidate: consolidateItems
+                };
+
+                $.ajax({
+                    url: "/POS/VoidOrderItem",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        LoadOrderItems();
+                        $("#menuoptionmodal").modal("hide");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                });
+            }
+            else {
+
+                $("#cancelitemmodal").data("itemid", itemId);
+                $("#cancelitemmodal").data("status", status);
+                $("#menuoptionmodal").modal("hide");
+                CheckPermission("Permission.POS.VoidProduct", function () {
+
+                    $("#cancelitemmodal").modal("show");
+                })
+            }
+
+
+    });
+
+    $("#order-note").blur(function() {
+        var data = {
+            OrderId: @Model.ID,
+            Note: $(this).val()
+        }
+
+        $.ajax({
+            url: "/POS/UpdateOrderNote",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("#btn-order-void").click(function () {
+
+
+        CheckPermission("Permission.POS.VoidOrder", function () {
+            $("#voidordermodal").modal("show");
+        });
+    });
+
+    $("#void-order-submit").click(function () {
+
+        var reasonId = parseInt($("#void-reason-order").data("id"))
+        var data = {
+            OrderId: @Model.ID,
+            ReasonId: reasonId
+        };
+
+        $.ajax({
+            url: "/POS/VoidOrder",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                window.location.replace("/POS/Barcode");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $("#order-info").click(function () {
+        $("#orderinfo").modal("show");
+    });
+
+    $("#info-submit").click(function () {
+
+        var clientName = $("#customer-select option:selected").text();
+        var customerId = clientName !== "" ? parseInt($("#customer-select").val()) : parseInt($("#customer-select-phone").val());
+        var phoneNumber = $("#customer-select-phone option:selected").val();
+        var data = {
+            OrderId: @Model.ID,
+            ClientName: clientName,
+            CustomerId: customerId,
+            PhoneNumber: phoneNumber
+        };
+
+        $.ajax({
+            url: "/POS/UpdateOrderInfo",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                $(".order-client").text(data.customerName);
+                $(".order-comprobante").text(data.comprobanteName);
+                $("#orderinfo").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    // permission pin
+    $("body").on("click", ".pin", function () {
+        var val = $(this).data("num");
+        AddValue(val);
+    });
+
+    $("#cancel-pin").click(function () {
+        $("#permissionpinmodal").modal("hide");
+    });
+    $("#enter-pin").click(function () {
+        var pin = $("#input-pin").data("value");
+        var permission = $("#permissionpinmodal").data("permission");
+
+        var data = {
+            Pin: pin,
+            Permission: permission
+        }
+        $.ajax({
+            url: "/POS/AllowPermission",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    if (permission == "Permission.POS.Discounts") {
+                        $("#discountmodal").modal("show");
+                    }
+                    else if (permission == "Permission.POS.VoidOrder") {
+                        $("#voidordermodal").modal("show");
+                    }
+                    else if (permission == "Permission.POS.VoidProduct") {
+                        $("#cancelitemmodal").modal("show");
+                    }
+                    else if (permission == "Permission.POS.Pay") {
+                        window.location.replace("/POS/Checkout?OrderId=@Model.ID");
+                    }
+
+                    else if (permission == "Permission.POS.CloseCashDrawer") {
+                        ShowCloseDrawer();
+                    }
+                    $("#permissionpinmodal").modal("hide")
+                }
+                else if (data.status = 1) {
+                    toastr.error("@ViewLocalizer["Wrong pin was inputed."]", {})
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+
+    $("#order-mode").click(function () {
+        if ('@Model.OrderMode' == "Invoice") {
+            $("#btn-modeinvoice").parent().hide();
+            $("#btn-modequote").parent().show();
+        }
+        else if ('@Model.OrderMode' == "Quote") {
+            $("#btn-modeinvoice").parent().show();
+            $("#btn-modequote").parent().hide();
+        }
+        $("#changemodemodal").modal("show");
+
+    });
+
+    $("#btn-modeinvoice").click(function () {
+        $.ajax({
+            url: "/POS/ChangeBarcodeMode?orderId=@Model.ID",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $(".order-mode").text(data.mode);
+                }
+                $("#changemodemodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+    $("#btn-modequote").click(function () {
+        $.ajax({
+            url: "/POS/ChangeBarcodeMode?orderId=@Model.ID",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $(".order-mode").text(data.mode);
+                }
+                $("#changemodemodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+
+    $(".drawer-money-input").change(function () {
+        UpdateDrawerTotal();
+    })
+
+    $(".drawer-money-input").click(function () {
+        $(".drawer-money-input").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $(".drawer-keyboard").click(function () {
+        var txt = $(this).text();
+        var current = $(".drawer-money-input.active").val();
+
+        if (txt == 'C') {
+            current = "";
+        }
+        else if (txt == '←') {
+            current = current.substring(0, current.length - 1);
+        }
+        else if (txt == ".") {
+            if ($(".drawer-money-input.active").hasClass("denomination")) return;
+            if (!current.includes(".")) {
+                current += txt;
+            }
+            if (current == ".") {
+                $(".drawer-money-input.active").val("0.");
+                return;
+            }
+        }
+        else {
+            current += txt;
+        }
+
+        var val = parseFloatCorrect(current);
+        if (!val || val == 0) {
+            $(".drawer-money-input.active").val("");
+            UpdateDrawerTotal();
+        }
+        else {
+            $(".drawer-money-input.active").val(current);
+            UpdateDrawerTotal();
+        }
+    });
+
+
+		$("#drawer-submit").click(function () {
+			var difference = parseFloatCorrect($(".difference-total").data("diff"));
+			var differencetip = parseFloatCorrect($(".difference-tip").data("diff"));
+
+			var subs = [];
+			$(".denomination").each(function () {
+				var val = parseFloatCorrect($(this).val());
+				var rate = parseFloatCorrect($(this).data("rate"));
+
+				if (val > 0)
+				{
+					var sub = {
+						ID : parseInt($(this).data("id")),
+						Name: $(this).data("name"),
+						type : "Denomination",
+						Amount : val
+					}
+
+					subs.push(sub)
+				}
+			})
+			$(".pmethod").each(function () {
+				var val = parseFloatCorrect($(this).val());
+				var rate = parseFloatCorrect($(this).data("rate"));
+				if (val > 0)
+				{
+					var sub = {
+						ID: parseInt($(this).data("id")),
+						Name: $(this).data("name"),
+						type: "PaymentMethod",
+						Amount: val
+					}
+
+					subs.push(sub)
+				}
+			})
+
+			var data = {
+				Difference: difference,
+				TipDifference : differencetip,
+				Subs: subs
+			}
+
+			$.ajax({
+				url: "/POS/SubmitCloseDrawerBarcode",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json;',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					$("#closedrawermodal").modal("hide");
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+
+		});
+
+    $("#barcode-closedrawer").click(function () {
+        CheckPermission("Permission.POS.CloseCashDrawer", function () {
+            ShowCloseDrawer();
+        });
+
+    });
+
+
+	function ShowCloseDrawer() {
+		$.ajax({
+			url: "/POS/GetPrepareCloseDrawerBarcode",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					$(".drawer-money-input").val("");
+
+					$(".expected-total").text("$" + data.expected.toFixed(2))
+					$(".expected-total").data("value", data.expected)
+
+					$(".expected-tip").text("$" + data.expectedtip.toFixed(2))
+					$(".expected-tip").data("value", data.expectedtip)
+
+					UpdateDrawerTotal();
+					$("#closedrawermodal").modal("show");
+
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["Please transfer the existing open tables."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+    function UpdateDrawerTotal() {
+        var total = 0;
+        $(".denomination").each(function () {
+            var val = parseFloatCorrect($(this).val());
+            var rate = parseFloatCorrect($(this).data("rate"));
+
+            var subtotal = val * rate;
+
+            $(this).closest(".drawer-item").find(".sub-total").text("$" + subtotal.toFixed(2));
+            total += subtotal;
+        })
+
+        $(".drawer-denomination-total").text("$" + total.toFixed(2));
+
+        $(".pmethod").each(function () {
+            var val = parseFloatCorrect($(this).val());
+            var rate = parseFloatCorrect($(this).data("rate"));
+
+            var subtotal = val * rate;
+
+            $(this).closest(".drawer-item").find(".sub-total").text("$" + subtotal.toFixed(2));
+            total += subtotal;
+        })
+
+        var tip = parseFloatCorrect($(".tip").val());
+
+        $(".drawer-grand-total").text("$" + total.toFixed(2));
+        var expected = parseFloatCorrect($(".expected-total").data("value"));
+        var expectedtip = parseFloatCorrect($(".expected-tip").data("value"));
+        var diff = total - expected;
+        var difftip = tip - expectedtip;
+        $(".difference-total").data("diff", diff);
+        $(".difference-tip").data("diff", difftip);
+        if (diff > 0) {
+            $(".difference-total").text("$" + diff.toFixed(2));
+            $(".difference-total").addClass("text-success");
+            $(".difference-total").removeClass("text-danger");
+        }
+        else {
+            $(".difference-total").text("$" + diff.toFixed(2));
+            $(".difference-total").addClass("text-danger");
+            $(".difference-total").removeClass("text-success");
+        }
+
+        if (difftip > 0) {
+            $(".difference-tip").text("$" + difftip.toFixed(2));
+            $(".difference-tip").addClass("text-success");
+            $(".difference-tip").removeClass("text-danger");
+        }
+        else {
+            $(".difference-tip").text("$" + difftip.toFixed(2));
+            $(".difference-tip").addClass("text-danger");
+            $(".difference-tip").removeClass("text-success");
+        }
+    }
+    $("#barcode-orders").click(function () {
+        LoadPreviousOrdersBarcode();
+        $("#reordermodal").modal("show");
+    });
+    $("#btn-order-reprint").click(function () {
+        LoadPaidOrders();
+        $("#reprintmodal").modal("show");
+    });
+        $(".logout").click(function () {
+            window.location.replace("/POS/logout");
+        })
+
+    function LoadPreviousOrdersBarcode() {
+        var datefrom = $("#filter_barcode_datefrom").val();
+        var dateto = $("#filter_barcode_dateto").val();
+        $("#order-list").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+            "orderMulti": false, // for disable multiple column at once
+            "destroy": true,
+            "ajax": {
+                "url": "/POS/GetOrderBarcodeList?from=" + datefrom + "&to=" + dateto,
+                "type": "POST",
+                "datatype": "json"
+            },
+            'select': {
+                'style': 'multi'
+            },
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50],
+            "columns": [
+                {
+                    'data': 'action', 'name': 'action',
+                    render: function (data, type, row) {
+                        return "<a class='btn-reordersubmit btn btn-primary btn-sm me-3' data-order='" + row.id + "'  >Show</a>";
+                    },
+                },
+                { "data": "id", "name": "id", "autoWidth": true },
+                { "data": "orderDate", "name": "orderDate", "autoWidth": true },
+                { "data": "totalPrice", "name": "totalPrice", "autoWidth": true },
+                { "data": "payAmount", "name": "payAmount", "autoWidth": true },
+                {
+                    'data': 'status', 'name': 'status',
+                    render: function (data, type, row) {
+                        if (row.status == 3) {
+                            return "<span class='badges bg-lightgreen'>Paid</span>";
+                        }
+                        else {
+                            return "<span class='badges bg-lightyellow'>Pending</span>";
+                        }
+
+                    },
+                },
+                { "data": "clientName", "name": "clientName", "autoWidth": true },
+                { "data": "waiterName", "name": "waiterName", "autoWidth": true },
+
+            ]
+        });
+    }
+
+    $("body").on("click", ".btn-reordersubmit", function () {
+        var order = $(this).data("order");
+        window.location.replace("/Pos/Barcode?orderId=" + order);
+    });
+
+    $("#btn-order-pay").click(function () {
+        var orderId = "@Model.ID";
+        var origin = "barcode";
+        var url = "/POS/Checkout?OrderId=" + orderId + "&origin=" + origin; 
+        window.location.replace(url);
+    });
+
+
+    $("#product-select").change(function(e) {
+        var prodId = $("#product-select").val();
+        $(".barcode-order-table").focus()
+        AddOrderItemByID(prodId);
+    });
+
+    $("#btn-order-term").click(function () {
+        $("#termsordermodal").data("id", @Model.ID);
+        $("#termsordermodal").modal("show");
+    });
+    $("#drawer-submit").click(function () {
+        var difference = parseFloatCorrect($(".difference-total").data("diff"));
+        var differencetip = parseFloatCorrect($(".difference-tip").data("diff"));
+
+        var subs = [];
+        $(".denomination").each(function () {
+            var val = parseFloatCorrect($(this).val());
+            var rate = parseFloatCorrect($(this).data("rate"));
+
+            if (val > 0) {
+                var sub = {
+                    ID: parseInt($(this).data("id")),
+                    Name: $(this).data("name"),
+                    type: "Denomination",
+                    Amount: val
+                }
+
+                subs.push(sub)
+            }
+        })
+        $(".pmethod").each(function () {
+            var val = parseFloatCorrect($(this).val());
+            var rate = parseFloatCorrect($(this).data("rate"));
+            if (val > 0) {
+                var sub = {
+                    ID: parseInt($(this).data("id")),
+                    Name: $(this).data("name"),
+                    type: "PaymentMethod",
+                    Amount: val
+                }
+
+                subs.push(sub)
+            }
+        })
+
+        var data = {
+            Difference: difference,
+            TipDifference: differencetip,
+            Subs: subs
+        }
+
+        $.ajax({
+            url: "/POS/SubmitCloseDrawer",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                $("#closedrawermodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+    });
+    $("#term-order-submit").click(function () {
+        var term = $("#order-terms").val();
+        var id =  parseInt($("#termsordermodal").data("id"));
+
+        var data = {
+            OrderId: id,
+            Terms: term
+        }
+
+        $.ajax({
+            url: "/POS/UpdateTerms",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                $(".order-terms").text(term);
+                $("#termsordermodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+    function ShowCloseDrawer() {
+        $.ajax({
+            url: "/POS/GetPrepareCloseDrawer",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $(".drawer-money-input").val("");
+
+                    $(".expected-total").text("$" + data.expected.toFixed(2))
+                    $(".expected-total").data("value", data.expected)
+
+                    $(".expected-tip").text("$" + data.expectedtip.toFixed(2))
+                    $(".expected-tip").data("value", data.expectedtip)
+
+                    UpdateDrawerTotal();
+                    $("#closedrawermodal").modal("show");
+
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["Please transfer the existing open tables."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+    function LoadPaidOrders() {
+        var datefrom = $("#filter_reprint_datefrom1").val();
+        var dateto = $("#filter_reprint_dateto1").val();
+        $("#order-paid-list").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "dom": 'rt<"row"<"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+            "orderMulti": false, // for disable multiple column at once
+            "destroy": true,
+            "ajax": {
+                "url": "/POS/GetPaidOrderBarcodeList?from=" + datefrom + "&to=" + dateto,
+                "type": "POST",
+                "datatype": "json"
+            },
+            'select': {
+                'style': 'multi'
+            },
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50],
+            "columns": [
+                {
+                    'data': 'action', 'name': 'action',
+                    render: function (data, type, row) {
+                        return "<a class='btn-reprintsubmit btn btn-primary btn-sm me-3' data-order='" + row.id + "'  >Reprint</a>";
+                    },
+                },
+                { "data": "id", "name": "id", "autoWidth": true },
+                { "data": "orderDate", "name": "orderDate", "autoWidth": true },
+                { "data": "totalPrice", "name": "totalPrice", "autoWidth": true },
+                { "data": "payAmount", "name": "payAmount", "autoWidth": true },
+                {
+                    'data': 'status', 'name': 'status',
+                    render: function (data, type, row) {
+                        if (row.status == 3) {
+                            return "<span class='badges bg-lightgreen'>Paid</span>";
+                        }
+                        else {
+                            return "<span class='badges bg-lightyellow'>Pending</span>";
+                        }
+
+                    },
+                },
+                { "data": "clientName", "name": "clientName", "autoWidth": true },
+                { "data": "waiterName", "name": "waiterName", "autoWidth": true },
+
+            ]
+        });
+    }
+
+    $("body").on("click", ".btn-reprintsubmit", function () {
+        var orderId = $(this).data("order");
+        //window.location.replace("/Pos/Barcode?orderId=" + order);
+
+        $.ajax({
+            url: "/POS/RePrintOrder?OrderID=" + orderId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#reprintmodal").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $("body").on("click", '.select-reason', function () {
+        $(".select-reason").removeClass("active");
+        $(this).addClass("active");
+        $("#void-reason").data("id", $(this).data("id"));
+    })
+
+    $("body").on("click", '.select-reason-order', function () {
+        $(".select-reason-order").removeClass("active");
+        $(this).addClass("active");
+        $("#void-reason-order").data("id", $(this).data("id"));
+    })
+
+    $("body").on("click", '.select-discount', function () {
+        $(".select-discount").removeClass("active");
+        $(this).addClass("active");
+        $("#discount-list").data("id", $(this).data("id"));
+    })
+
+    $("body").on("click", '#discount-apply', function () {
+
+        var id = $("#discount-list").data("id");
+        SelectDiscount(id);
+    })
+</script>                

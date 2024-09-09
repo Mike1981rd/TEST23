@@ -1,0 +1,222 @@
+﻿
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>Minimum and Par Report</h3>
+	</div>
+</div>
+
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Supplier"] </label>
+					<select id="filter-supplier" class="select">
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<button id="create-porder" class="btn btn-primary m-2">@ViewLocalizer["Create Purchase Order"]</button>
+			</div>
+		</div>
+
+		<div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th><input type="checkbox" class="select-all-check form-check" /></th>
+						<th>@ViewLocalizer["Name"]</th>
+						<th>@ViewLocalizer["Supplier"]</th>
+						<th>@ViewLocalizer["Unit"]</th>
+						<th>@ViewLocalizer["Cost"]</th>
+						<th>@ViewLocalizer["Stock"]</th>
+						<th>@ViewLocalizer["Par"]</th>
+						<th>@ViewLocalizer["Reorder"]</th>
+					</tr>
+				</thead>
+				<tbody id="par-report">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editpurchaseorder" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Create Purchase Order"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Warehouse"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="purchase-warehouse" class="select">
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				
+				</div>
+			
+			</div>
+			<div class="modal-footer">
+				<button id="submit-purchaseorder" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function () {
+		LoadSupplier();
+		GenerateReport();
+		SelectWarehouse();
+		$("#filter-supplier").change(function () {
+			GenerateReport();
+		});
+		
+		$("#create-porder").click(function () {
+			$("#editpurchaseorder").modal("show");
+		});
+
+
+		$("#submit-purchaseorder").click(function () {
+			var supplierId = parseInt($("#filter-supplier").val());
+			if (!supplierId){
+				toastr.error("@ViewLocalizer["Please select the supplier."]", {})
+				return;
+			}
+			var warehouseId = parseInt($("#purchase-warehouse").val());
+			var items = [];
+			$("#par-report tr").each(function () {
+				var checked = $(this).find(".item-check").prop("checked");
+				if (checked) {
+
+					var reorder = parseFloat($(this).data("reorder"));
+					if (reorder && reorder > 0){
+						var item = {
+							ArticleID: $(this).data("id"),
+							Qty: $(this).data("reorder"),
+							UnitNum: $(this).data("unitnum")
+						}
+						items.push(item);
+					} 					
+				}
+			});
+
+			var data = {
+				SupplierID : supplierId,
+				WarehouseID: warehouseId,
+				Items : items
+			}
+
+			$.ajax({
+				url: "/Inventory/CreatePurchaseOrder",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json;',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						var url = "/Inventory/AddPurchaseOrder?purchaseOrderID=" + data.id;
+						window.open(url, '_blank');
+					}
+					else {
+						toastr.error("@ViewLocalizer["Invalid Request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+
+		});
+
+		$(".select-all-check").change(function () {
+			$(".item-check").prop("checked", $(".select-all-check").prop("checked"))
+		});
+	});
+
+	function GenerateReport() {
+		var supplier = parseInt($("#filter-supplier").val());
+		if (!supplier) return;
+
+		var data = {
+			SupplierID: supplier
+		}
+
+		$.ajax({
+			url: "/Report/GetParReport",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data) {
+					$("#par-report").empty();
+					for (var i = 0; i < data.length; i++) {
+						var d = data[i];
+
+						var reorder = d.par - d.stockQty;
+						if (reorder < 0) reorder = 0;
+
+						var html = `<tr class='report-item' data-id='${d.articleID}' data-unitnum='${d.unitNum}' data-reorder='${reorder}'><td><input type="checkbox" class="item-check form-check" /></td><td>${d.articleName}</td><td>${d.supplierName}</td><td>${d.unit}</td><td>${d.unitCost}</td><td>${d.stockQty.toFixed(2)}</td><td>${d.par}</td><td>${reorder.toFixed(2)}</td></tr>`;
+
+						$("#par-report").append(html);
+					}
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+	}
+
+	function LoadSupplier() {
+		$.ajax({
+			url: "/Inventory/GetAllActiveSuppliers",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-supplier").empty();
+				$("#filter-supplier").append("<option value='0' selected>@ViewLocalizer["Choose supplier"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-supplier").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-supplier").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function SelectWarehouse(warehouse) {
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#purchase-warehouse").empty();
+				$("#purchase-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#purchase-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#purchase-warehouse").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+</script>

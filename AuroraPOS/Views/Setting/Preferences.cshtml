@@ -1,0 +1,228 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Preference
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Preference"]</h4>
+		<h6>@ViewLocalizer["Manage preference"]</h6>
+	</div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="store-id" class="row" data-id="@Model.ID">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Name"]</label>
+                    <input id="store-name" type="text" value="@Model.Name">
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Company"]</label>
+                    <input id="store-company" type="text" value="@Model.Company">
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-4 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["RNC"]</label>
+                    <input id="store-rnc" type="text" value="@Model.RNC">
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-4 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Phone"]</label>
+                    <input id="store-phone" type="text" value="@Model.Phone">
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-4 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Email"]</label>
+                    <input id="store-email" type="text" value="@Model.Email">
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Address"] 1</label>
+                    <input id="store-address1" type="text" value="@Model.Address1">
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Address"] 2</label>
+                    <input id="store-address2" type="text" value="@Model.Address2">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["City"]</label>
+                    <input id="store-city" type="text" value="@Model.City">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["State"]</label>
+                    <input id="store-state" type="text" value="@Model.State">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Zip Code"]</label>
+                    <input id="store-zipcode" type="text" value="@Model.PostalCode">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Country"]</label>
+                    <input id="store-country" type="text" value="@Model.Country">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>Moneda </label>
+                    <input id="store-currency" type="text" value="@Model.Currency">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>Moneda Alterna </label>
+                    <input id="store-secondcurrency" type="text" value="@Model.SecondCurrency">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-6">
+                <div class="form-group">
+                    <label>Tasa </label>
+                    <input id="store-tasa" type="text" value="@Model.Tasa">
+                </div>
+            </div>
+            @if (User.IsInRole("ADMIN"))
+            {
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Limit of Station(0 : no limit)"]</label>
+                        <input id="store-stationlimit" type="text" value="@Model.StationLimit">
+                    </div>
+                </div>
+            }
+            </div>
+            <div class="row">
+                <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left pr-5">@ViewLocalizer["Photo"]</h6>
+                            <div class="del-unit text-danger">
+                                <a class="del-photo " href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/minus.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 col-4">
+                                @if (string.IsNullOrEmpty(Model.Logo))
+                                {
+                                    <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                                }
+                                else
+                                {
+                                    <img id="productimg" class="" style="max-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
+                                }
+                            
+                            </div>
+                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                <input id="imgInpProduct" type="file" name="Files" accept="image/*">
+                                <div class="image-uploads">
+                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="row pt-3">
+            <div class="col-lg-12">
+                <a id="submit-preference" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Update"]</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $(".del-photo").click(function () {
+            $("#productimg").attr("src", "/vendor/img/product/noimage.png");
+            $("#productimg").data("logo", "");
+            $("#imgInpProduct").val("")
+        })
+
+        $("#imgInpProduct").change(function () {
+            readProductBackURL(this);
+        });
+    })
+
+    function readProductBackURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#productimg').attr('src', e.target.result);
+                $("#productimg").data("logo", e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#submit-preference").click(function () {
+        var id = parseInt($("#store-id").data("id"))
+
+        var stationlimit = parseInt($("#store-stationlimit").val())
+        if (!stationlimit) stationlimit = 0;
+        var tasa = parseFloat($("#store-tasa").val());
+        if (!tasa) tasa = 0;
+
+        var data = {
+            ID : id,
+            Name: $("#store-name").val(),
+            RNC: $("#store-rnc").val(),
+            Company: $("#store-company").val(),
+            Phone: $("#store-phone").val(),
+            Email: $("#store-email").val(),
+            Address1: $("#store-address1").val(),
+            Address2: $("#store-address2").val(),
+            City: $("#store-city").val(),
+            State: $("#store-state").val(),
+            PostalCode: $("#store-zipcode").val(),
+            Country: $("#store-country").val(),
+            Logo: $("#productimg").data("logo"),
+            Currency: $("#store-currency").val(),
+            SecondCurrency: $("#store-secondcurrency").val(),
+            Tasa:tasa,
+            StationLimit: stationlimit
+        }
+
+        $.ajax({
+            url: "/Setting/SavePreference",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    toastr.success("@ViewLocalizer["The preference was updated successfully."]", {})
+                    window.location.replace("/")
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+</script>

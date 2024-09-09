@@ -1,0 +1,198 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="modal fade" id="listcourse" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Course List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-course" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Course</a>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="course-list" class="table reordertable" style="position:relative;" data-reorderable-rows="true">
+								<thead>
+									<tr>
+										<th>@ViewLocalizer["Action"]</th>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["Status"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-course" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editcourse" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="course-modal-title">@ViewLocalizer["Edit Course"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Course Name"]<span class="manitory">*</span></label>
+							<input id="course-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						</div>
+					</div>
+				
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="course-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-course" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		$(".reordertable tbody").sortable();
+
+		$("#add-course-modal").click(function () {
+			$("#listcourse").modal("show");
+		});
+
+		$("#add-course").click(function () {
+			$("#course-name").val("");
+
+			$("#course-status").val(1).change();
+			
+			$(".course-modal-title").html("@ViewLocalizer["Add Course"]");
+			$("#editcourse").data("id", 0);
+			$("#editcourse").modal("show");
+		});
+
+		var suppliertable = $("#course-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetCourseList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"paging": false,
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<div class='d-flex align-items-center'><a class='icon me-3 d-inline-block' href='javascript:void(0);' onclick='EditCourse(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectCourse(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+					},
+				},
+				{
+					'data': 'name', 'name': 'name',
+					
+					"autoWidth": true
+				},
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+
+
+		$("#edit-course").click(function () {
+			var name = $("#course-name").val();			
+
+			var fd = new FormData();
+		
+			fd.append('ID', $("#editcourse").data("id"));
+			fd.append('Name', name);
+			fd.append('IsActive', $("#course-status").val() == "1");
+
+			$.ajax({
+				url: "/Menu/EditCourse",
+				type: "POST",
+				data: fd,
+				processData: false,
+				contentType: false,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#course-list").DataTable().draw();
+						$("#editcourse").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else if (data.status == 3) {
+						toastr.error("@ViewLocalizer["The RNC should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the course."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+
+	})
+	
+	function EditCourse(supplier) {
+		$("#course-name").val(supplier.name);
+	
+	
+		if (supplier.isActive) {
+			$("#course-status").val(1).change();
+		}
+		else {
+			$("#course-status").val(0).change();
+		}
+		
+		$(".course-modal-title").html("@ViewLocalizer["Edit Course"]");
+		$("#editcourse").data("id", supplier.id);
+		$("#editcourse").modal("show");		
+	}
+
+</script>

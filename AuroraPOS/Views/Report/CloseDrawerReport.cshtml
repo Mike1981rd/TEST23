@@ -1,0 +1,155 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var users = (List<User>)ViewBag.Users;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>@ViewLocalizer["Close Drawer Report"]</h3>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date From"] </label>
+					<input id="filter_cd_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date To"] </label>
+					<input id="filter_cd_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12 ">
+				<div class="form-group">
+					<label>@ViewLocalizer["User"] </label>
+					<select id="filter_cd_user" class="select ">
+						<option value=0>All</option>
+						@foreach (var b in users)
+						{
+							<option value="@b.ID">@b.Username - @b.FullName</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+			</div>
+		</div>
+
+		<div class="row">
+			<table class="table reordertable">
+				<thead>
+					<tr>
+						<td>
+							Fecha
+						</td>
+						<td>
+							Usuario
+						</td>
+						<td>
+							Conteo Fisico
+						</td>
+						<td>
+							Sistema
+						</td>
+						<td>
+							Diferencia
+						</td>
+						<td>
+							Propina
+						</td>
+						<td>
+							Dif.Prop.
+						</td>
+					</tr>
+				</thead>
+				<tbody id="report-body">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+
+		ShowCloseDrawerReport();
+		$("#btn-report").click(function () {
+			var datefrom = $("#filter_cd_datefrom").val();
+			var dateto = $("#filter_cd_dateto").val();
+			var user = $("#filter_cd_user").val();
+			ShowLoader()
+			$.ajax({
+				type: "POST",
+				url: "/Report/GenerateCloseDrawerReport?from=" + datefrom + "&to=" + dateto + "&userId=" + user,
+				success: function (data) {
+					HideLoader()
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+	
+		$("select").change(function () {
+			ShowCloseDrawerReport();
+		})
+		$("input").change(function () {
+			ShowCloseDrawerReport();
+		})
+	});
+
+	function ShowCloseDrawerReport() {
+		var datefrom = $("#filter_cd_datefrom").val();
+		var dateto = $("#filter_cd_dateto").val();
+		var user = $("#filter_cd_user").val();
+		$.ajax({
+			type: "POST",
+			url: "/Report/GetCloseDrawerReport?from=" + datefrom + "&to=" + dateto + "&userId=" + user,
+			success: function (data) {
+				HideLoader()
+				if (data.status == 0) {
+					$("#report-body").empty();
+					var html = ``;
+					for (var i = 0; i < data.closeDrawers.length; i++) {
+						var item = data.closeDrawers[i];
+
+						html += `<tr><td>${item.closeDateStr}</td><td>${item.waiterName}</td><td>${format2Number(item.grandTotal)}</td><td>${format2Number(item.transTotal)}</td><td>${format2Number(item.transDifference)}</td><td>${format2Number(item.tipTotal)}</td><td>${format2Number(item.tipDifference)}</td></tr>`
+
+						html += `<tr><td colspan='3'></td><td colspan='3'><table><tbody>`;
+						for (var j = 0; j < item.dominations.length; j++) {
+							var item1 = item.dominations[j];
+
+							html += `<tr><td>${item1.name}</td><td>${item1.qty}</td><td>${format2Number(item1.amount)}</td></tr>`
+						}
+
+						for (var j = 0; j < item.payments.length; j++) {
+							var item1 = item.payments[j];
+
+							html += `<tr><td>${item1.name}</td><td></td><td>${format2Number(item1.amount)}</td></tr>`
+						}
+
+						html += `</tbody></table></td><td></td></tr>`;
+					}
+
+					$("#report-body").append(html);
+				}
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+</script>

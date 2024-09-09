@@ -1,0 +1,233 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var printers = (List<Printer>)ViewBag.Printers;
+	var stations = (List<Station>)ViewBag.Stations;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>Kds</h4>
+		<h6>@ViewLocalizer["Manage your kds"]</h6>
+	</div>
+	<div class="page-btn">
+		<a id="add-kitchen-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Kitchen"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="kitchen_list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Printer"] </th>
+						<th>@ViewLocalizer["Active"] </th>
+
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="addkitchen" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Kitchen"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="kitchen-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Printer"]</label>
+							<select id="kitchen-printer" class="select">
+								<option>@ViewLocalizer["Choose printer"]</option>
+								@foreach (var b in printers)
+								{
+									<option value="@b.ID">@b.Name</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-8 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Stations"]</label>
+							<select id="kitchen-stations" class="form-control tagging select" multiple aria-hidden="true">
+								@foreach (var t in stations)
+								{
+									<option value="@t.ID" data-valor="@t.Name">@t.Name</option>
+								}
+							</select>
+						</div>
+					</div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="kitchen-status" class="select ">
+								<option value="1">@ViewLocalizer["Active"]</option>
+								<option value="0">@ViewLocalizer["Inactive"]</option>
+							</select>
+
+						</div>
+                    </div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-kitchen" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+
+		$("#add-kitchen-modal").click(function () {
+			EditKitchen(0)
+		});
+
+		$("#edit-kitchen").click(function () {
+			var name = $("#kitchen-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var printer = parseInt($("#kitchen-printer").val());
+			// if (!printer) {
+			// 	toastr.warning("@ViewLocalizer["Please select the printer."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			// 	return;
+			// }
+			var stations = $("#kitchen-stations").val();
+			var active = $("#kitchen-status").val()
+			var data = {
+				ID: $("#addkitchen").data("id"),
+				Name: name,
+				PrinterID: printer,
+				stations:stations,
+				IsActive: active == "1"
+			}
+
+			$.ajax({
+				url: "/Menu/EditKitchen",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#kitchen_list").DataTable().draw();
+						$("#addkitchen").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the category."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+
+
+		var kitchentable = $("#kitchen_list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetKitchenList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick=EditKitchen('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "id", "name": "id", "autoWidth": true },
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "printer", "name": "printer", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+	});
+
+
+
+	function EditKitchen(id) {
+		// load menu
+		$.ajax({
+			url: "/Menu/GetKitchen?kitchenId=" + id,
+			type: "POST",
+			success: function (d, textStatus, jqXHR) {
+				if (d.kitchen) {
+					data = d.kitchen;
+					$("#kitchen-name").val(data.name);
+					$("#kitchen-printer").val(data.printerID).change();
+					$("#addkitchen").data("id", data.id)
+					if (data.isActive) {
+						$("#kitchen-status").val("1").change();
+					}
+					else {
+						$("#kitchen-status").val("0").change();
+					}
+					$("#kitchen-stations").val(data.stations).change();
+				}
+				else {
+					$("#kitchen-name").val("");
+					$("#kitchen-printer").val("").change();
+					$("#addkitchen").data("id", "")
+					$("#kitchen-status").val("1").change();
+				}
+
+				$("#addkitchen").modal("show");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+
+</script>

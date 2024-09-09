@@ -1,0 +1,83 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["User Management"]</h4>
+		<h6>@ViewLocalizer["Add/Update User"]</h6>
+	</div>
+</div>
+<!-- /add -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["First Name"]</label>
+					<input type="text">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Last Name"]</label>
+					<input type="text">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Username"]</label>
+					<input type="text">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Password"]</label>
+					<div class="pass-group">
+						<input type="password" class=" pass-input">
+						<span class="fas toggle-password fa-eye-slash"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Phone"]</label>
+					<input type="text">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Email"]</label>
+					<input type="text">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Role"]</label>
+					<select class="select">
+						<option>@ViewLocalizer["Select"]</option>
+						<option>@ViewLocalizer["Owner"]</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<div class="form-group">
+					<label>	User Image</label>
+					<div class="image-upload">
+						<input type="file">
+						<div class="image-uploads">
+							<img src="~/vendor/img/icons/upload.svg" alt="img">
+							<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<a href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
+				<a href="/User/UserList" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /add -->

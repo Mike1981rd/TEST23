@@ -1,0 +1,243 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var printers = (List<Printer>)ViewBag.Printers;
+}
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Printer Channels"]</h4>
+        <h6>@ViewLocalizer["Manage Printer Channels"]</h6>
+    </div>
+    <div class="page-btn">
+        <a id="add-printerchannel" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer Channel"]</a>
+    </div>
+</div>
+<!-- /product list -->
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="printerchannel-list" class="table">
+                <thead>
+                    <tr>
+                        <th>@ViewLocalizer["Action"]</th>
+                        <th>@ViewLocalizer["Name"]</th>
+                        <th>@ViewLocalizer["Default"]</th>
+                        <th>@ViewLocalizer["Status"]</th>
+                      
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- edit Modal -->
+<div class="modal fade" id="editprinterchannel" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="printerchannel-modal-title">@ViewLocalizer["Edit Printer Channel"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <input id="eprinterchannel-name" type="text" required>
+                        </div>
+                    </div>
+                  
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="form-check form-switch pt-4 px-5">
+                                <input class="form-check-input" type="checkbox" role="switch" id="eprinterchannel-default">
+                                <label class="form-check-label">Default</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Status"]</label>
+                            <select id="eprinterchannel-status" class="select">
+                                <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-printerchannel" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var printerchanneltable = $("#printerchannel-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Setting/GetPrinterChannelList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3' href='javascript:void(0);' onclick='EditPrinterChannel(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                },
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'isDefault',
+                render: function (data, type, row) {
+                    if (row.isDefault) {
+                        return "Yes";
+                    }
+                    else {
+                        return "";
+                    }
+                },
+                "autoWidth": true
+            },
+            {
+                'data': 'status', 'name': 'isActive',
+                render: function (data, type, row) {
+                    if (row.isActive) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                    }
+                    else {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
+            
+        ]
+    });
+
+    $("#add-printerchannel").click(function () {
+        $("#eprinterchannel-name").val("");
+        $("#eprinterchannel-default").prop("checked", false);
+
+        $("#eprinterchannel-status").val(1).change();
+        $(".printer-modal-title").html("@ViewLocalizer["Add Printer Channel"]");
+        $("#editprinterchannel").data("id", 0);
+        $("#editprinterchannel").modal("show");
+    });
+
+    function EditPrinterChannel(printerchannel) {
+        $("#eprinterchannel-name").val(printerchannel.name);
+        if (printerchannel.isDefault)
+        {
+            $("#eprinterchannel-default").prop("checked", true);
+        }
+        else{
+            $("#eprinterchannel-default").prop("checked", false);
+        }
+        if (printerchannel.isActive) {
+            $("#eprinterchannel-status").val(1).change();
+        }
+        else {
+            $("#eprinterchannel-status").val(0).change();
+        }
+        $(".printerchannel-modal-title").html("@ViewLocalizer["Edit Printer Channel"]");
+        $("#editprinterchannel").data("id", printerchannel.id);
+        $("#editprinterchannel").modal("show");
+    }
+
+    $("#edit-printerchannel").click(function () {
+        var name = $("#eprinterchannel-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+       
+        var active = $("#eprinterchannel-status").val()
+        var data = {
+            ID: $("#editprinterchannel").data("id"),
+            Name: name,
+            IsDefault: $("#eprinterchannel-default").prop("checked"),
+            IsActive: active == "1"
+        }
+
+        $.ajax({
+            url: "/Setting/EditPrinterChannel",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    printerchanneltable.draw();
+                    $("#editprinterchannel").modal("hide");
+                }
+                else if (data.status == 2)
+                {
+                    toastr.error("@ViewLocalizer["The name should be unique."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function DeletePrinterChannel(id) {
+
+        Swal.fire({
+            title: "@ViewLocalizer["Are you sure to delete the printer channel?"]",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+            cancelButtonText: "@ViewLocalizer["Cancel"]",
+            confirmButtonClass: "btn btn-primary",
+            cancelButtonClass: "btn btn-danger ml-1",
+            buttonsStyling: !1,
+        }).then(function (t) {
+            if (t.value) {
+                $.ajax({
+                    url: "/Setting/DeletePrinterChannel?printerchannelId=" + id,
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0) {
+                            printerchanneltable.draw();
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to delete the printer channel."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                });
+            }
+
+        });
+
+    }
+
+
+
+</script>

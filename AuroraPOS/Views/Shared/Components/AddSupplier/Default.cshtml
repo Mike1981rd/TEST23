@@ -1,0 +1,411 @@
+﻿
+<div class="modal fade" id="listsupplier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Supplier List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-supplier" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Supplier</a>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="supplier-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Action"]</th>
+										<th>@ViewLocalizer["Avatar"] </th>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["RNC"] </th>
+										<th>@ViewLocalizer["Seller"] </th>
+										<th>@ViewLocalizer["Status"]</th>
+
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-subcategory" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editsupplier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Edit Supplier"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Supplier Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="supplier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+							<input id="supplier-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Phone"]</label>
+							<input id="supplier-phone" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Email"]</label>
+							<input id="supplier-email" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Country"]</label>
+							<input id="supplier-country" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["City"]</label>
+							<input id="supplier-city" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-8 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Address"]</label>
+							<input id="supplier-address" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-3">
+						<div class="form-group row">
+							<input id="supplier-tax" type="checkbox" class="col-sm-4 col-4">
+							<label class="col-sm-8 col-8">@ViewLocalizer["Tax Included"]  </label>
+
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-3">
+						<div class="form-group row">
+							<input id="supplier-formula" type="checkbox" class="col-sm-4 col-4">
+							<label class="col-sm-8 col-8">@ViewLocalizer["Supplier Formula"]  </label>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-3">
+					</div>
+
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Seller"]</label>
+							<input id="supplier-seller" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Cell Phone"]</label>
+							<input id="supplier-cellphone" type="text" class="form-control" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="supplier-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-12 px-3">
+						<div class="form-group px-3">
+							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+								<h6 class="text-left pr-5">@ViewLocalizer["Avatar"]</h6>
+								<div class="del-unit text-danger">
+									<a class="del-photo " href="javascript:void(0);">
+										<img src="/vendor/img/icons/minus.svg" alt="img">
+									</a>
+								</div>
+							</div>
+							<div class="row">
+								<div id="Avatar" class="col-sm-4 col-2">
+									<img id="avatarimg" class="supplier-avatar" style="max-height: 150px;" src="~/vendor/img/profiles/avatar-15.jpg" alt="img">
+								</div>
+								<div class="col-sm-8 col-10 image-upload" style="height: 100%">
+									<input id="avatarimgInp" type="file" name="Files" accept="image/*">
+									<div class="image-uploads">
+										<img src="~/vendor/img/icons/upload.svg" alt="img">
+										<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="row pt-3">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+							<div class="add-unit">
+								<a class="add-accounting-item" data-other="2" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table reordertable">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Name"]
+									</td>
+									<td>
+										@ViewLocalizer["Type"]
+									</td>
+									<td>
+										@ViewLocalizer["Number"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="accounting-list2">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-supplier" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		$(".del-photo").click(function () {
+			$("#avatarimg").attr("src", "/vendor/img/profiles/avatar-15.jpg");
+			$("#Avatar").data("avatar", "");
+		})
+		$("#avatarimgInp").change(function () {
+			readAvatarURL(this);
+		});
+
+		$("#add-supplier-modal").click(function () {
+			$("#listsupplier").modal("show");
+		});
+
+		$("#add-supplier").click(function () {
+			$("#supplier-name").val("");
+			$("#supplier-rnc").val("");
+			$("#supplier-phone").val("");
+			$("#supplier-email").val("");
+			$("#supplier-country").val("");
+			$("#supplier-city").val("");
+			$("#supplier-address").val("");
+			$("#supplier-seller").val("");
+			$("#supplier-cellphone").val("");
+			$("#supplier-status").val(1).change();
+			$("#avatar").data("avatar", "");
+			$(".supplier-avatar").attr("src", "/vendor/img/profiles/avatar-15.jpg");
+			GetAccountItems(4, 0, "2")
+			$(".supplier-modal-title").html("@ViewLocalizer["Add Supplier"]");
+			$("#editsupplier").data("id", 0);
+			$("#editsupplier").modal("show");
+		});
+
+		var suppliertable = $("#supplier-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Inventory/GetSupplierList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"paging": false,
+			
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<div class='d-flex align-items-center'><a class='icon me-3 d-inline-block' href='javascript:void(0);' onclick='EditSupplier(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectSupplier(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+					},
+				},
+				{
+					'data': 'avatar', 'name': 'avatar',
+					render: function (data, type, row) {
+						if (!row.avatar) {
+							return "<img src='/vendor/img/product/product1.jpg' alt = 'supplier' > ";
+						}
+						else {
+							return "<img src='" + row.avatar + "' alt = 'supplier' style='max-height:40px; max-width:40px;' >";
+						}
+					},
+					"autoWidth": true
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "rnc", "name": "rnc", "autoWidth": true },
+				{ "data": "seller", "name": "rnc", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+
+
+		$("#edit-supplier").click(function () {
+			var name = $("#supplier-name").val();
+			var rnc = $("#supplier-rnc").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			if (!rnc || rnc == "") {
+				toastr.warning("@ViewLocalizer["Please input the rnc."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var fd = new FormData();
+
+			fd.append('Avatar', $('#Avatar').data("avatar"));
+			fd.append('ID', $("#editsupplier").data("id"));
+			fd.append('Name', name);
+			fd.append('RNC', rnc);
+			fd.append('PhoneNumber', $("#supplier-phone").val());
+			fd.append('PhoneNumber', $("#supplier-email").val());
+			fd.append('Country', $("#supplier-country").val());
+			fd.append('City', $("#supplier-city").val());
+			fd.append('Seller', $("#supplier-seller").val());
+			fd.append('Direction', $("#supplier-address").val());
+			fd.append('CellPhone', $("#supplier-cellphone").val());
+			fd.append('IsTaxIncluded', $("#supplier-tax").prop("checked"));
+			fd.append('IsFormalSupplier', $("#supplier-formula").prop("checked"));
+			fd.append('IsActive', $("#supplier-status").val() == "1");
+
+			$.ajax({
+				url: "/Inventory/EditSupplier",
+				type: "POST",
+				data: fd,
+				processData: false,
+				contentType: false,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						SaveAccountItems(4, data.id, function () {
+							$("#supplier-list").DataTable().draw();
+							$("#editsupplier").modal("hide");
+						}, "2")
+						
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else if (data.status == 3) {
+						toastr.error("@ViewLocalizer["The RNC should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the supplier."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+
+	})
+	
+	function EditSupplier(supplier) {
+		$("#supplier-name").val(supplier.name);
+		$("#supplier-rnc").val(supplier.rnc);
+		$("#supplier-phone").val(supplier.phoneNumber);
+		$("#supplier-email").val(supplier.email);
+		$("#supplier-country").val(supplier.country);
+		$("#supplier-city").val(supplier.city);
+		$("#supplier-address").val(supplier.direction);
+		$("#supplier-seller").val(supplier.seller);
+		$("#supplier-cellphone").val(supplier.cellPhone);
+		if (supplier.isTaxIncluded) {
+			$("#supplier-tax").prop('checked', true);
+		}
+		else {
+			$("#supplier-tax").prop('checked', false);
+		}
+		if (supplier.isFormalSupplier) {
+			$("#supplier-formula").prop('checked', true);
+		}
+		else {
+			$("#supplier-formula").prop('checked', false);
+		}
+	
+		if (supplier.isActive) {
+			$("#supplier-status").val(1).change();
+		}
+		else {
+			$("#supplier-status").val(0).change();
+		}
+		$("#avatar").data("avatar", supplier.avatar);
+		if (supplier.avatar)
+		{
+			$(".supplier-avatar").attr("src", supplier.avatar);
+		}
+		else
+		{
+			$(".supplier-avatar").attr("src", "/vendor/img/profiles/avatar-15.jpg");
+		}		
+			
+		$(".supplier-modal-title").html("@ViewLocalizer["Edit Supplier"]");
+		GetAccountItems(4, supplier.id, "2")
+		$("#editsupplier").data("id", supplier.id);
+		$("#editsupplier").modal("show");		
+	}
+
+
+	function readAvatarURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#avatarimg').attr('src', e.target.result);
+				$("#Avatar").data("avatar", e.target.result);
+			}
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	
+</script>

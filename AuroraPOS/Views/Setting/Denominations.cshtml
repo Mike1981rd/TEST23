@@ -1,0 +1,257 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>Denominaciones</h4>
+		<h6>@ViewLocalizer["Manage denominations"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="javascript:void(0);" class="btn btn-added" onclick="AddDenomination()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Denomination"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="denomination-list" class="table mb-3" >
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Amount"] </th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="adddenomination" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Denomination"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="denomination-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
+							<input id="denomination-amount" type="text" onkeypress="return onlyDecimalKey(event)" max="4" class="form-control" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-denomination" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	td:hover {
+		cursor: move;
+	}
+</style>
+<script>
+	$(document).ready(function(){
+
+		////
+		var fixHelperModified = function (e, tr) {
+			var $originals = tr.children();
+			var $helper = tr.clone();
+			$helper.children().each(function (index) {
+				$(this).width($originals.eq(index).width())
+			});
+			return $helper;
+		},
+		updateIndex = function (e, ui) {
+			var data = [];
+			$(".denomination-id").each(function (index, item) {
+
+				var id = $(this).data("id");
+				var d = {
+					ID: id,
+					DisplayOrder: index + 1
+				}
+
+				data.push(d);
+			})
+
+			$.ajax({
+					url: "/Setting/UpdateDenomicationOrder",
+					type: "POST",
+					data: JSON.stringify(data),
+					contentType: 'application/json;',
+					dataType: 'json',
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							//$("#denomination-list").DataTable().draw();
+							
+						}
+						
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+		};
+
+		$("#denomination-list tbody").sortable({
+			helper: fixHelperModified,
+			stop: updateIndex
+		}).disableSelection();
+
+		$("#denomination-list tbody").sortable();
+
+		/////
+
+
+		var stationtable = $("#denomination-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": false, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"orderable": false,
+			"rowReorder" : {
+				selector: 'tr'
+			},
+			"ajax": {
+				"url": "/Setting/GetDenominations",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action', 'orderable': false,
+					render: function (data, type, row) {
+						return "<a class='me-3 denomination-id' data-id='" +row.id+ "' href='javascript:void(0);'  onclick=EditDenomination(" + JSON.stringify(row) + "); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteDenomination('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "name", "name": "name", 'orderable': false, "autoWidth": true },
+				{ "data": "amount", "name": "amount", 'orderable': false, "autoWidth": true },
+			]
+		});
+		
+		$("#edit-denomination").click(function() {
+			var name = $("#denomination-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var amount = parseFloatCorrect($("#denomination-amount").val());
+			if (!name ) {
+				toastr.warning("@ViewLocalizer["Please input the amount."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var id = parseInt($("#adddenomination").data("id"));
+
+			var data = {
+				ID : id,
+				Name : name,
+				Amount : amount
+			};
+
+			$.ajax({
+				url: "/Setting/EditDenomination",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#denomination-list").DataTable().draw();
+						$("#adddenomination").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name and amount should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		})
+	});
+
+	function AddDenomination() {
+		$("#denomination-name").val("");
+		$("#denomination-amount").val("");
+		$("#adddenomination").data("id", 0);
+		
+		$("#adddenomination").modal("show");
+	}
+
+	function EditDenomination(denomination)
+	{
+		$("#denomination-name").val(denomination.name)
+		$("#denomination-amount").val(denomination.amount)
+		$("#adddenomination").data("id", denomination.id)
+
+		$("#adddenomination").modal("show");
+	}
+
+	function DeleteDenomination(id)
+	{
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the denomination?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			cancelButtonText: "@ViewLocalizer["Cancel"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Setting/DeleteDenomination?denominationId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#denomination-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the denomination."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+
+		});
+	}
+</script>

@@ -1,0 +1,213 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var branchs = (List<t_sucursal>)ViewBag.Branchs;
+	var products = (List<Product>)ViewBag.Products;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>@ViewLocalizer["Sales Report"]</h3>
+		<h6>@ViewLocalizer["Manage sales report"]</h6>
+	</div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        @*<div class="row">
+            <div class="col-12">
+                <button id="btn-hoy" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('today');">Hoy</button>
+                <button id="btn-ayer" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('yesterday');">Ayer</button>
+                <button id="btn-ultimos-7-dias" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('last7days');">Ultimos 7 dias</button>
+                <button id="btn-ultimo-mes" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('lastmonth');">Ultimo mes</button>
+            </div>
+        </div>*@
+        <div class="row">
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Rango de fechas"]</label>
+                    <select id="date-range-selector" class="form-control">
+                        <option value="">Selecciona una fecha</option>
+                        <option value="today">Hoy</option>
+                        <option value="yesterday">Ayer</option>
+                        <option value="last7days">Últimos 7 días</option>
+                        <option value="last30days">Últimos 30 días</option>
+                        <option value="last90days">Últimos 90 días</option>
+                        <option value="last365days">Últimos 365 días</option>
+                        <option value="lastmonth">Mes pasado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date From"] </label>
+                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date To"] </label>
+                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Sucursal"] </label>
+                    <select id="station-branch" class="select ">
+                        <option value=0>Selecciona una sucursal</option>
+                        @foreach (var b in branchs)
+                        {
+                            <option value="@b.ID">@b.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Product"] </label>
+                    <select id="filter-product" class="select ">
+                        <option value=0>All</option>
+                        @foreach (var b in products)
+                        {
+                            <option value="@b.ID">@b.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+                <button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate PDF Report"]</button>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+                <button id="btn-excelreport" class="btn btn-primary m-2">@ViewLocalizer["Generate Excel Report"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function SetRangeSelector(valor) {
+        $("#date-range-selector").val(valor).change();
+        return false;
+	}
+
+	$(document).ready(function () {
+
+        $("#filter-product").select2();
+		$("#btn-report").click(function () {
+			var datefrom = $("#filter_datefrom").val();
+			var dateto = $("#filter_dateto").val();
+			var sucursal = $("#station-branch").val();
+			var product = $("#filter-product").val();
+
+			ShowLoader()
+			$.ajax({
+				type: "POST",
+                url: "/Report/GenerateSalesReport?from=" + datefrom + "&to=" + dateto + "&sucursal=" + sucursal + "&productId=" + product,
+				success: function (data) {
+					HideLoader()
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+        $("#btn-excelreport").click(function () {
+            var datefrom = $("#filter_datefrom").val();
+            var dateto = $("#filter_dateto").val();
+            var sucursal = $("#station-branch").val();
+            var product = $("#filter-product").val();
+
+            ShowLoader()
+            $.ajax({
+                type: "POST",
+                url: "/Report/GenerateSalesExcelReport?from=" + datefrom + "&to=" + dateto + "&sucursal=" + sucursal + "&productId=" + product,
+                success: function (data) {
+                    HideLoader()
+                    if (data.status == 0) {
+                        window.open(data.url, '_blank');
+                    }
+                },
+                error: function () {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        });
+		// Función para formatear la fecha como "dd-MM-yyyy"
+		function formatDate(date) {
+			var day = date.getDate();
+			var month = date.getMonth() + 1;
+			var year = date.getFullYear();
+			return day + '-' + month + '-' + year;
+		}
+		$("#date-range-selector").change(function () {
+			var selectedValue = $(this).val();
+			var currentDate = new Date();
+			var currentMonth = currentDate.getMonth();
+			var currentYear = currentDate.getFullYear();
+			switch (selectedValue) {
+                case "today":
+                    var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                    $("#filter_datefrom").val(formattedDate).change();
+                    $("#filter_dateto").val(formattedDate).change();
+
+                    break;
+                case "yesterday":
+                    var yesterday = new Date(currentDate);
+                    yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                    var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                    $("#filter_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                    $("#filter_dateto").val(formattedYesterday).change();
+                    break;
+                case "last7days":
+                    var formattedDate = formatDate(currentDate);
+                    var last7Days = new Date(currentDate);
+                    last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                    var formattedLast7Days = formatDate(last7Days);
+                    $("#filter_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                    $("#filter_dateto").val(formattedDate).change();
+                    break;
+                // Agrega más casos según tus necesidades
+                case "last30days":
+                    var formattedDate = formatDate(currentDate);
+                    var last30Days = new Date(currentDate);
+                    last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                    var formattedLast30Days = formatDate(last30Days);
+                    $("#filter_datefrom").val(formattedLast30Days).change();
+                    $("#filter_dateto").val(formattedDate).change();
+                    break;
+                case "last90days":
+                    var formattedDate = formatDate(currentDate);
+                    var last90Days = new Date(currentDate);
+                    last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                    var formattedLast90Days = formatDate(last90Days);
+                    $("#filter_datefrom").val(formattedLast90Days).change();
+                    $("#filter_dateto").val(formattedDate).change();
+                    break;
+                case "last365days":
+                    var formattedDate = formatDate(currentDate);
+                    var last365Days = new Date(currentDate);
+                    last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                    var formattedLast365Days = formatDate(last365Days);
+                    $("#filter_datefrom").val(formattedLast365Days).change();
+                    $("#filter_dateto").val(formattedDate).change();
+                    break;
+                case "lastmonth":
+                    var formattedDate = formatDate(currentDate);
+                    var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                    var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                    var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                    var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                    $("#filter_datefrom").val(formattedLastMonthFirstDay).change();
+                    var formattedDate = formatDate(currentDate);
+                    break;
+			}
+
+		});
+	});
+
+</script>

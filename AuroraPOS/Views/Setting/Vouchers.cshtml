@@ -1,0 +1,314 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var taxes = (List<Tax>)ViewBag.Taxes;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Comprobantes List"]</h4>
+		<h6>@ViewLocalizer["Manage your Comprobantes"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="javascript:void(0);" class="btn btn-added" onclick="AddVoucher()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add New Comprobantes"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="voucher-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Primary"] </th>
+						<th>@ViewLocalizer["Class"] </th>
+						<th>@ViewLocalizer["Sequence"] </th>
+						<th>@ViewLocalizer["Require RNC"] </th>
+						<th>@ViewLocalizer["Status"] </th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Comprobantes"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-8 col-sm-8 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-4 col-12">
+						<div class="form-check form-switch pt-4 px-5">
+							<input class="form-check-input" type="checkbox" role="switch" id="voucher-primary">
+							<label class="form-check-label" >@ViewLocalizer["Primary"]</label>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Prefix"]</label>
+							<input id="voucher-class" type="text" class="form-control" >
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Sequence"]</label>
+							<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12  pt-2">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Require RNC"]</label>
+							<select id="voucher-requirernc" class="select">
+								<option value="1"> @ViewLocalizer["Yes"]</option>
+								<option value="0"> @ViewLocalizer["No"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-12 col-sm-12 col-12 pt-2">
+						<div class="form-group">
+							<label>@ViewLocalizer["Tax exempt"]</label>
+							<select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in taxes)
+								{
+									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					
+					<div class="col-6 pt-2">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="voucher-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-voucher" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		var stationtable = $("#voucher-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": false, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Setting/GetVouchers",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[2, 'desc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick=EditVoucher('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{
+					'data': 'isPrimary', 'name': 'isPrimary',
+					render: function (data, type, row) {
+						if (row.isPrimary)
+						{
+							return "<span class='text-success'>YES</span>"
+						}
+						else{
+							return "";
+						}
+					},
+				},
+				{ "data": "class", "name": "class", "autoWidth": true },
+				{ "data": "secuencia", "name": "secuencia", "autoWidth": true },
+				{ "data": "isRequireRNC", "name": "isRequireRNC", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+			]
+		});
+
+		$("#edit-voucher").click(function () {
+			var name = $("#voucher-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var id = parseInt($("#addvoucher").data("id"));
+			var cls = $("#voucher-class").val();
+			var seq = parseInt($("#voucher-sequence").val());
+			var primary = $("#voucher-primary").prop("checked")
+			var data = {
+				ID: id,
+				Name: name,
+				Class: cls,
+				TaxeIDs: $("#voucher-taxes").val(),
+				Secuencia: seq,
+				IsPrimary: primary,
+				IsRequireRNC: $("#voucher-requirernc").val() == "1",
+				IsActive: $("#voucher-status").val() == "1",
+			};
+
+			$.ajax({
+				url: "/Setting/EditVoucher",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#voucher-list").DataTable().draw();
+						$("#addvoucher").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name and amount should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		})
+	});
+
+	function AddVoucher() {
+		$("#voucher-name").val("");
+		$("#voucher-class").val("");
+		$("#voucher-reorder").val(1).change();
+		$("#voucher-sequence").val(1).change();
+		$("#voucher-requirernc").val(0).change();
+		$("#voucher-status").val(1).change();
+		$("#voucher-primary").prop("checked", false);
+		$("#addvoucher").data("id", 0);
+
+		$("#addvoucher").modal("show");
+	}
+	function EditVoucher(id) {
+		$.ajax({
+			url: "/Setting/GetVoucher?voucherId=" + id,
+			type: "POST",
+			success: function (voucher, textStatus, jqXHR) {
+				if (voucher) {
+					$("#voucher-name").val(voucher.name)
+					$("#voucher-class").val(voucher.class)
+					$("#voucher-reorder").val(voucher.reorder)
+					$("#voucher-sequence").val(voucher.secuencia)
+					if (voucher.isRequireRNC) {
+						$("#voucher-requirernc").val(1).change();
+					}
+					else {
+						$("#voucher-requirernc").val(0).change();
+					}
+				
+					var taxes = [];
+					if (voucher.taxes){
+						for (var i = 0; i < voucher.taxes.length; i++) {
+							taxes.push("" + voucher.taxes[i].id);
+						}
+						$("#voucher-taxes").val(taxes).change();
+					}
+					else{
+						$("#voucher-taxes").val("").change();
+					}
+					
+					if (voucher.isActive) {
+						$("#voucher-status").val(1).change();
+					}
+					else {
+						$("#voucher-status").val(0).change();
+					}
+					$("#voucher-primary").prop("checked", false);
+					if (voucher.isPrimary)
+					{
+						$("#voucher-primary").prop("checked", true);
+					}
+
+
+					$("#addvoucher").data("id", voucher.id)
+
+					$("#addvoucher").modal("show");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});		
+	}
+
+	function DeleteVoucher(id) {
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the comprobante?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			cancelButtonText: "@ViewLocalizer["Cancel"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Setting/DeleteVoucher?voucherId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#voucher-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the comprobante."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+
+		});
+	}
+</script>

@@ -1,0 +1,294 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Purchase Order List"]</h4>
+		<h6>@ViewLocalizer["Manage your Purchase Order"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Inventory/AddPurchaseOrder" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add PurchaseOrder"]</a>
+	</div>
+</div>
+
+
+<!-- /product list -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+		<div class="table-top">
+			<div class="search-set">
+				<div class="search-path">
+					<a class="btn btn-filter" id="filter_search">
+						<img src="/vendor/img/icons/filter.svg" alt="img">
+						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+					</a>
+				</div>
+				<div class="search-input">
+					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+					<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
+				</div>
+			</div>
+			<div class="wordset">
+				<ul>
+						<li>
+							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+						</li>
+					@*<li>
+						<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+					</li>*@
+				</ul>
+			</div>
+		</div>
+		<!-- /Filter -->
+		<div class="card" id="filter_inputs">
+			<div class="card-body pb-0">
+				<div class="row">
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Order Date From"] </label>
+							<input id="purchaseorder_filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+						</div>
+					</div>
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Order Date To"] </label>
+							<input id="purchaseorder_filter_dateto" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+						</div>
+					</div>
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Supplier"] </label>
+							<select id="filter-supplier" class="select">
+								<option>Choose Supplier</option>
+								<option>Supplier</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Status"] </label>
+							<select id="filter-status" class="select">
+								<option value="">@ViewLocalizer["Choose Status"]</option>
+								<option value="1">@ViewLocalizer["Pending"]</option>
+								<option value="2">@ViewLocalizer["Ordered"]</option>
+								<option value="3">@ViewLocalizer["Canceled"]</option>
+								<option value="4">@ViewLocalizer["Received"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Filter -->
+		<div class="table-responsive">
+			<table id="purchase-list" class="table">
+				<thead>
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Supplier"] </th>
+						<th>@ViewLocalizer["Warehouse"] </th>
+						<th>@ViewLocalizer["NCF"] </th>
+						<th>@ViewLocalizer["Date"]</th>					
+						<th>@ViewLocalizer["Sub Total"]</th>
+						<th>@ViewLocalizer["Grand Total"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					
+					</tr>
+				</thead>
+			</table>
+		</div>
+		</div>
+	</div>
+</div>
+<!-- /product list -->
+
+
+
+
+
+<script>
+	$(document).ready(function(){
+		LoadSupplier();
+
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterPurchaseOrder()
+		});
+				
+		$("#filter-supplier").change(function () {
+			FilterPurchaseOrder()
+		});
+
+		$("#filter-status").change(function () {
+			FilterPurchaseOrder()
+		});
+
+		$("#filter_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#purchaseorder_filter_datefrom").val("").change();
+				$("#purchaseorder_filter_dateto").val("").change();
+				$("#filter-supplier").val("").change();
+				$("#filter-status").val("").change();
+			}
+	
+		});
+
+		$(".btn-excel").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#purchaseorder_filter_datefrom").val();
+			var dateto = $("#purchaseorder_filter_dateto").val();
+			var supplier = $("#filter-supplier").val();
+			var status = $("#filter-status").val();
+
+			$.ajax({
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				url: "/Inventory/DownloadPurchaseOrderExcel?search=" + searchText + "&supplier=" + supplier + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (d) {
+					if (d.status == 0) {
+						var link = document.createElement('a');
+						link.href = d.result;
+						link.download = 'PurchaseOrder_@DateTime.Today.ToString("dd-MM-yyyy")' + ".csv";
+						link.dispatchEvent(new MouseEvent('click'));
+					}
+					else {
+						toastr.error(d.message, {})
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+
+			});
+		});
+
+		$(".btn-pdf").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#purchaseorder_filter_datefrom").val();
+			var dateto = $("#purchaseorder_filter_dateto").val();
+			var supplier = $("#filter-supplier").val();
+			var status = $("#filter-status").val();
+
+
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DownloadPurchaseOrderPDF?search=" + searchText + "&supplier=" + supplier + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (data) {
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+	})
+
+	function LoadSupplier()
+	{
+		$.ajax({
+			url: "/Inventory/GetAllActiveSuppliers",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-supplier").empty();
+				$("#filter-supplier").append("<option value='' selected>@ViewLocalizer["Choose supplier"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-supplier").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-supplier").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	var purchaseordertable = $("#purchase-list").DataTable({
+		"processing": true,
+		"serverSide": true,
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false,
+		"ajax": {
+			"url": "/Inventory/GetPurchaseOrderList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[0, 'desc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='/Inventory/AddPurchaseOrder?purchaseOrderID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "id", "name": "id", "autoWidth": true },
+			{ "data": "supplier", "name": "supplier", "autoWidth": true },
+			{ "data": "warehouse", "name": "warehouse", "autoWidth": true },
+			{ "data": "ncf", "name": "ncf", "autoWidth": true },
+			{ "data": "orderDate", "name": "realOrderDate", "autoWidth": true },
+			{
+				"data": "subTotal", "name": "subTotal", "autoWidth": true,
+				render: function (data, type, row) {
+					return numberWithCommas(row.subTotal.toFixed(2));
+				},
+			},
+			{
+				"data": "total", "name": "total", "autoWidth": true,
+				render: function (data, type, row) {
+					return numberWithCommas(row.total.toFixed(2));
+				},
+			},
+			{
+				'data': 'status', 'name': 'status',
+				render: function (data, type, row) {
+					if (row.status == 1) {
+						return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+					} else if (row.status == 2) {
+						return "<span class='badges bg-lightpurple'>@ViewLocalizer["Ordered"]</span>";
+					} else if (row.status == 3) {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+					} else if (row.status == 4) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Received"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			
+			
+		]
+	});
+
+	
+
+	function FilterPurchaseOrder()
+	{
+		var searchText = $("#filter-searchtext").val();
+		var datefrom = $("#purchaseorder_filter_datefrom").val();
+		var dateto = $("#purchaseorder_filter_dateto").val();
+		var supplier = $("#filter-supplier").val();
+		var status = $("#filter-status").val();
+
+		purchaseordertable.columns(0).search(searchText);
+		purchaseordertable.columns(1).search(datefrom);
+		purchaseordertable.columns(2).search(supplier);
+		purchaseordertable.columns(3).search(status);
+		purchaseordertable.columns(4).search(dateto);
+
+		purchaseordertable.draw();
+	}
+</script>

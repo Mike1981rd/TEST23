@@ -1,0 +1,1790 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    #group-panel {
+        padding: 5px;
+    }
+    #group-panel-main {
+        overflow:auto;
+        gap:10px;
+    }
+    .group-item {
+        padding: 5px;
+        cursor: move;
+    }
+    .item-selected{
+        background-color:dodgerblue;
+    }
+    .group-item button {
+        height: 50px;
+        font-size: large;
+        font-weight: 500;
+        color: white;
+        padding: 5px;
+    }
+
+    
+    #category-panel{
+        height: 30vh;
+        padding: 5px;
+    }
+
+    #category-panel-main{
+          overflow:auto;
+    }
+    .category-item{
+        padding: 5px;
+        height: 60px;
+        cursor:move;
+    }
+    .category-item button{
+        
+        font-size: large;
+        font-weight: 500;
+        color: white;
+    }
+    #subcategory-panel{
+        padding: 5px;
+    }
+
+    #subcategory-panel-main{
+        overflow: auto;
+    }
+    .subcategory-item{
+        padding: 5px;
+        height: 65px;
+        cursor: move;
+    }
+    .subcategory-item button {
+       
+          font-size: large;
+        font-weight: 500;
+        color: white;
+    }
+    #product-panel{
+        height: 40vh;
+        padding: 5px;
+    }
+
+    #staticproduct-panel {
+        height: 40vh;
+        padding: 5px;
+        display:none;
+    }
+    #product-panel-main{
+        overflow: auto;
+    }
+
+    #category-panel-main{
+       
+    }
+    .panel-title{
+        gap: 5px;
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+    .product-remove {
+        width:25px;
+        height:25px;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        border-radius: 50%;
+    }
+    .product-item{
+        cursor: move;
+    }
+
+    .static-product-remove {
+        width: 25px;
+        height: 25px;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        border-radius: 50%;
+    }
+
+    .static-product-item {
+        cursor: move;
+    }
+    .product-item-back {
+        width: 100%;
+        height: 60px;
+        background-color: brown;
+        color: white;
+        font-size: larger;
+        text-align: center;
+        vertical-align: central
+    }
+
+    a :hover{
+        text-decoration: none;
+    }
+</style>
+
+
+<link href="//cdn.muicss.com/mui-0.2.1/css/mui.min.css" rel="stylesheet" type="text/css" />
+<script src="//cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
+
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Add/Update Menu"]</h4>  
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12 col-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-9 col-sm-6 col-6">
+                            <select id="editor-menu" class="select ">
+                                <option value="">@ViewLocalizer["Choose menu"]</option>
+
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-sm-2 col-2 ps-0">
+                            <div class="d-flex">
+                                <div class="add-icon px-1">
+                                    <a id="add-menu-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                                <div class="edit-icon  px-1">
+                                    <a id="edit-menu-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/edit.svg" alt="img">
+                                    </a>
+                                </div>
+                                <div class="del-icon  px-1">
+                                    <a id="del-menu-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/minus.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                           
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="group-panel">
+            <div class="panel-title d-flex  align-items-center">
+                <label class="text-left px-5"> @ViewLocalizer["Groups"]</label>
+                <div  class="add-unit">
+                    <a  class="add-group-modal"  href="javascript:void(0);" >
+                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                    </a>
+                </div>
+            </div>
+            <div id="group-panel-main" class="d-flex p-2">
+               
+            </div>
+        </div>
+        
+        <div class="row" >
+            <div class="col-lg-9 col-sm-9 col-12">
+                <div id="category-panel" class="h-40 p-2 bg-lightyellow">
+                    <div class="panel-title d-flex  align-items-center">
+                        <label class="text-left px-5"> @ViewLocalizer["Category"]</label>
+                        <div class="add-unit">
+                            <a class="add-category-modal" href="javascript:void(0);">
+                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
+                    <div id="category-panel-main" class="row">
+                    
+                    </div>
+                </div>
+                <div id="product-panel" class="p-2">
+                    <div class="panel-title d-flex  align-items-center">
+                        <label class="text-left px-5"> @ViewLocalizer["Products"]</label>
+                        <div  class="add-unit">
+                            <a  class="add-product-modal"  href="javascript:void(0);" >
+                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
+                    <div id="product-panel-main" class="row">
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="subcategory-panel" class="col-lg-3 col-sm-3 col-12 p-2">
+                <div class="panel-title d-flex  align-items-center">
+                    <label class="text-left px-5"> @ViewLocalizer["Sub Category"]</label>
+                    <div class="add-unit">
+                        <a  class="add-subcategory-modal"  href="javascript:void(0);" >
+                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                        </a>
+                    </div>
+                </div>
+                <div id="subcategory-panel-main" class="row">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+               
+            <div id="staticproduct-panel" class="p-2">
+                <div class="panel-title d-flex  align-items-center">
+                    <label class="text-left px-5"> @ViewLocalizer["Static Products"]</label>
+                    <div class="add-unit">
+                        <a class="add-static-product-modal" href="javascript:void(0);">
+                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                        </a>
+                    </div>
+                </div>
+                <div id="static-product-panel-main" class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Add/Edit Menu -->
+<div class="modal fade" id="editmenu" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="menu-modal-title">@ViewLocalizer["Add/Edit Menu"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="menu-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12 pb-3">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Description"]</label>
+                            <textarea id="menu-description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12 pb-3">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Mode"] </label>
+                            <select id="menu-mode" class="select">
+                                <option value="0" selected>@ViewLocalizer["Restaurant"]</option>
+                                <option value="1">@ViewLocalizer["Kiosk"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-menu" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Add/Edit Menu Group -->
+<div class="modal fade" id="editgroup" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Add Group"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="group-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <label>	@ViewLocalizer["Background Color"]</label>
+                            <div id="group-bcolor" class="col-lg-4 text-start w-100">
+                                <input id="group-backcolor" type="text" class="form-control" value=" /">
+                            </div>
+                    </div>
+
+                    </div>
+                    <div class="col-lg-6 px-3">
+                        <div class="form-group px-3">
+                            <label>	@ViewLocalizer["Text Color"]</label>
+                            <div id="group-tcolor" class="col-lg-4 text-start w-100">
+                                <input id="group-textcolor" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-group" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Add/Edit Menu Category -->
+<div class="modal fade" id="editcategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Add Category"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <label>	@ViewLocalizer["Background Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="category-bcolor" class="backcolor">
+                                    <input id="category-backcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                    </div>
+
+                    </div>
+                    <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <label>	@ViewLocalizer["Text Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="category-tcolor" class="textcolor">
+                                    <input id="category-textcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                    
+                    </div>
+                </div>
+                 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-category" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- List Menu Category-->
+<div class="modal fade" id="listcategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="category-modal-title">@ViewLocalizer["Category List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    <div class="col-12">
+                        <div class="table-responsive w-100" style="max-height:400px;">
+                            <table id="category-list" class="table" style="position:relative;">
+                                <thead style="position: sticky; top: 0; z-index:2;">
+                                    <tr>
+                                        <th>@ViewLocalizer["Action"]</th>
+                                        <th>@ViewLocalizer["ID"] </th>
+                                        <th>@ViewLocalizer["Name"] </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Add/Edit Menu Sub Category -->
+<div class="modal fade" id="editsubcategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Add Sub Category"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="subcategory-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <label>	@ViewLocalizer["Background Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="subcategory-bcolor" class="backcolor ">
+                                    <input id="subcategory-backcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                    </div>
+
+                    </div>
+                    <div class="col-lg-6 px-3">
+                    <div class="form-group px-3">
+                        <label>	@ViewLocalizer["Text Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="subcategory-tcolor" class="textcolor ">
+                                    <input id="subcategory-textcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                    
+                    </div>
+            </div>
+                 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-subcategory" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- List Product-->
+<div class="modal fade" id="listproduct" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="product-modal-title">@ViewLocalizer["Products List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="table-top">
+                        <div class="search-set">
+                            <div class="search-path">
+                                <a class="btn btn-filter product_search" id="filter_search">
+                                    <img src="/vendor/img/icons/filter.svg" alt="img">
+                                    <span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+                                </a>
+                            </div>
+                            <div class="search-input">
+                                <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+                                <div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..." style="font-size:16px;"></label></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /Filter -->
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-6 col-12">
+                                    <div class="form-group category-body">
+                                        <label>@ViewLocalizer["Category"] </label>
+                                        <select id="filter-productcategory" class="select">
+                                        </select>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive w-100" style="max-height:400px;">
+                        <table id="product-list" class="table" style="position:relative;">
+                            <thead style="position: sticky; top: 0; z-index:2;">
+                                <tr>
+                                    <th>@ViewLocalizer["Action"]</th>
+                                    <th>@ViewLocalizer["ID"] </th>
+                                    <th>@ViewLocalizer["Name"] </th>
+                                    <th>@ViewLocalizer["Category"] </th>
+                                    <th>@ViewLocalizer["Printer"] </th>
+                                    <th>@ViewLocalizer["Status"] </th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="add-category-products" type="button" class="btn btn-primary btn-submit">@ViewLocalizer["Add All Products in Category"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    $(function () {
+        $("#product-panel-main").sortable();
+        $("#category-panel-main").sortable();
+        $("#subcategory-panel-main").sortable();
+
+        $('#group-bcolor').colorpicker({
+            popover: false,
+            format:'hex',
+            inline: true
+        });
+        $("#group-backcolor").off("keyup");
+
+        $('#group-tcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline:true
+        });
+        $("#group-textcolor").off("keyup");
+
+        $('#category-bcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true
+        });
+        $("#category-backcolor").off("keyup");
+
+        $('#category-tcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true
+        });
+        $("#category-textcolor").off("keyup");
+
+        $('#subcategory-bcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true
+        });
+        $("#subcategory-backcolor").off("keyup");
+
+        $('#subcategory-tcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true
+        });
+        $("#subcategory-textcolor").off("keyup");
+        ReloadMenu();
+
+
+        LoadProductFilterCategory();
+
+        $("#filter-productsearchtext").on("change keyup", function () {
+            FilterProduct();
+        });
+        $("#filter-productcategory").on("change", function () {
+            FilterProduct();
+        });
+
+        $(".product_search").click(function () {
+            if ($(this).hasClass("setclose")) {
+                $("#filter-productcategory").val("").change();
+            }
+        });
+
+        var producttable = $("#product-list").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Menu/GetProductList",
+                "type": "POST",
+                "datatype": "json"
+            },
+            'select': {
+                'style': 'multi'
+            },
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50],
+            "order": [[1, 'asc']],
+            "columns": [
+                {
+                    'data': 'action', 'name': 'action',
+                    render: function (data, type, row) {
+                        return `<span class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick="SelectProduct('` + row.id + `')"><span class='icon'><span class='fa fa-plus'></span></span></span>`;
+                    },
+                },
+                {
+                    'data': 'photo', 'name': 'photo',
+                    render: function (data, type, row) {
+                        if (!row.photo) {
+                            return "<img src='/vendor/img/product/product1.jpg' alt = 'supplier' > ";
+                        }
+                        else {
+                            return "<img src='" + row.photo + "' alt = 'supplier' style='max-height:40px; max-width:40px;' >";
+                        }
+                    },
+                    "autoWidth": true
+                },
+                { "data": "name", "name": "name", "autoWidth": true },
+                { "data": "categoryName", "name": "categoryName", "autoWidth": true },
+                { "data": "printer", "name": "printer", "autoWidth": true },
+                {
+                    'data': 'status', 'name': 'isActive',
+                    render: function (data, type, row) {
+                        if (row.isActive) {
+                            return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                        }
+                        else {
+                            return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                        }
+                    },
+                    "autoWidth": true
+                },
+
+            ]
+        });
+
+        function FilterProduct() {
+            var searchText = $("#filter-productsearchtext").val();
+            var category = $("#filter-productcategory").val();
+            if (!category) category = "";
+
+            producttable.columns(0).search(searchText);
+            producttable.columns(1).search(category);
+
+            producttable.draw();
+        }
+
+
+        $("#add-category-products").click(function () {
+            var categoryId = parseInt($("#filter-productcategory").val());
+            if (!categoryId) {
+                toastr.error("@ViewLocalizer["Invalid category!"]", {})
+                return;
+            }
+
+            var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+            var categories = $(".product-item").length;
+
+            var data = {
+                Order: categories
+            }
+            var selectedGroupId = $("#group-panel-main").data("selected");
+            var selectedCategoryId = $("#category-panel-main").data("selected");
+            var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+
+            $.ajax({
+                url: `/Menu/AddMenuProductFromCategory?groupId=${selectedGroupId}&categoryId=${selectedCategoryId}&subCategoryId=${selectedSubCategoryId}&productCategoryId=${categoryId}`,
+                type: "POST",
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        $("#listproduct").modal("hide");
+                        LoadProduct(0);
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["Failed to add product."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        })
+    });
+
+
+    function LoadProductFilterCategory() {
+        $.ajax({
+            url: "/Menu/GetAllActiveCategoryList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#filter-productcategory").empty();
+                $("#filter-productcategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#filter-productcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+                }
+                $("#filter-productcategory").select2({
+                    dropdownParent: $('.category-body')
+                });
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+    function ReloadMenu(id)
+    {
+        // load menu
+        $.ajax({
+            url: "/Menu/GetMenuList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#editor-menu").empty();
+                $("#editor-menu").append("<option value='' selected>@ViewLocalizer["Choose menu"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#editor-menu").append("<option value='" + d.id + "' data-id='" + d.id + "'data-name='" + d.name + "' data-mode='" + d.mode + "' data-desc='" + d.description + "'>" + d.name + "</option>")
+                }
+                $("#editor-menu").select2(); 
+                if (id)
+                {
+                    $("#editor-menu").val(id).change();
+                }
+        },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("#add-menu-modal").click(function(){
+        $("#menu-name").val("");
+        $("#menu-description").val("");
+        $("#menu-mode").val("0");
+        $("#menu-mode").prop("disabled", false);
+        $("#editmenu").data("id", 0);
+
+        $("#editmenu").modal("show");
+    });
+
+    $("#edit-menu-modal").click(function () {
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id"))
+        {
+            return;
+        }
+
+        var id = option.data("id");
+        var name = option.data("name");
+        var desc = option.data("desc");
+        var mode = option.data("mode");
+
+        $("#menu-name").val(name);
+        $("#menu-description").val(desc);
+        $("#menu-mode").val(mode);
+        $("#menu-mode").prop("disabled", true);
+        $("#editmenu").data("id", id);
+
+        $("#editmenu").modal("show");
+    });
+    
+    $("#edit-menu").click(function(){
+        var name = $("#menu-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var id = parseInt($("#editmenu").data("id"));
+        var desc = $("#menu-description").val();
+        var mode = parseInt($("#menu-mode").val());
+
+        var data = {
+            ID: id,
+            Name: name,
+            Description : desc,
+            Mode: mode
+        }
+
+        $.ajax({
+            url: "/Menu/EditMenu",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#editmenu").modal("hide");
+                    if (id == 0) {
+                        ReloadMenu(data.menuId);
+                    }
+                    else {
+                        ReloadMenu(id);
+                    }                    
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update the smart button."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("#del-menu-modal").click(function () {
+
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var id = option.data("id");
+
+        Swal.fire({
+            title: "@ViewLocalizer["Are you sure to delete the menu?"]",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+            confirmButtonClass: "btn btn-primary",
+            cancelButtonText: "@ViewLocalizer["Close"]",
+            cancelButtonClass: "btn btn-danger ml-1",
+            buttonsStyling: !1,
+        }).then(function (t) {
+            if (t.value) {
+                $.ajax({
+                    url: "/Menu/DeleteMenu?menuID=" + id,
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0) {
+                            ReloadMenu();
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to delete the menu."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+                    }
+                });
+            }
+        });
+    });
+
+    $("#editor-menu").change(function () {
+        LoadGroup(0);
+        LoadStaticProduct();
+        var option = $("#editor-menu option:selected");
+        var mode = option.data("mode");
+        if (mode == "1")
+        {
+            $("#staticproduct-panel").show();
+            $("#group-panel").hide();
+            $("#subcategory-panel").hide();
+        }
+        else{
+            $("#staticproduct-panel").hide();
+        }
+       
+    })
+    
+    $(".add-group-modal").click(function(){
+        $("#group-name").val("");
+        $("#group-backcolor").val("");
+        $("#group-backcolordiv").css("background-color", "");
+        $("#group-textcolor").val("");
+        $("#group-textcolordiv").css("background-color", "");
+        $("#editgroup").data("id", 0);
+
+        $("#editgroup").modal("show");
+    });
+
+    function LoadGroup(id)
+    {
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+
+        $.ajax({
+            url: "/Menu/GetMenuGroupList?menuId=" + menuId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#group-panel-main").empty();
+                $("#group-panel-main").data("selected", "");
+                $("#category-panel-main").empty();
+                $("#category-panel-main").data("selected", "");
+                $("#subcategory-panel-main").empty();
+                $("#subcategory-panel-main").data("selected", "");
+                $("#product-panel-main").empty();
+                
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var selected = "";
+                    if (id == 0 && i == 0)
+                    {
+                        selected = "item-selected";
+                        $("#group-panel-main").data("selected", d.id)
+                        LoadCategory(0);
+                    }
+                    if (id > 0 && id == d.id)
+                    {
+                        selected = "item-selected";
+                        $("#group-panel-main").data("selected", d.id)
+                        LoadCategory(0);
+                    }
+                  
+                    var html = 
+                        `
+                        <div class="group-item btn-group dropend ${selected}" data-id='${d.id}' data-name='${d.name}' data-bcolor='${d.backColor}' data-tcolor='${d.textColor}'>
+                            <button type="button" class="group-btn btn btn-info" style="width: 150px;background-color:${d.backColor}; color: ${d.textColor}">
+                                ${d.name}
+                          </button>
+                          <button type="button" style="background-color:${d.backColor};" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden"></span>
+                          </button>
+                          <ul class="dropdown-menu">
+                                <li><a class="group-edit dropdown-item" href="javascript:void(0);">@ViewLocalizer["Edit"]</a></li>
+                                <li><a class="group-remove dropdown-item" href="javascript:void(0);">@ViewLocalizer["Remove"]</a></li>
+                          </ul>
+                        </div>
+                        `
+                        $("#group-panel-main").append(html);
+                    
+                
+                }
+
+                $("#group-panel-main").sortable({
+                    update: function(){
+                        UpdateGroupOrder();
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function UpdateGroupOrder() {
+        var groups = [];
+        $(".group-item").each(function(i, e){
+            var group = {
+                ID: $(this).data("id"),
+                Order : i
+            }
+
+            groups.push(group);
+        })
+
+        $.ajax({
+            url: "/Menu/UpdateMenuGroupOrders",
+            type: "POST",
+            data: JSON.stringify(groups),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    
+                }
+                else if(data.status == 2)
+                {
+                    toastr.error("@ViewLocalizer["Invalid dimensions. Please check them with area dimensions."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("body").on("click", ".group-edit", function(){
+        var div = $(this).closest(".group-item");
+
+        $("#group-name").val(div.data("name"));
+        $("#group-backcolor").val( div.data("bcolor"));
+        $("#group-backcolor").change();
+        $("#group-textcolor").val(div.data("tcolor"));
+        $("#group-textcolor").change();
+        $("#editgroup").data("id", div.data("id"));
+
+        $("#editgroup").modal("show");
+    });
+
+   
+    $("body").on("click", ".group-remove", function(){
+        var div = $(this).closest(".group-item");
+        var groupId = div.data("id");
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+
+         $.ajax({
+            url: "/Menu/DeleteMenuGroup?menuId=" + menuId + "&groupId=" + groupId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadGroup(0);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to delete the menu group."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+        
+    });
+
+    $("#edit-group").click(function(){
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+        var name = $("#group-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var id = parseInt($("#editgroup").data("id"));
+        var back = $("#group-backcolor").val();
+        var text = $("#group-textcolor").val();
+        var groups = $(".group-item").length;
+
+        var data = {
+            ID: id,
+            Name: name,
+            BackColor: back,
+            TextColor: text,
+            Order: groups
+        }
+
+          $.ajax({
+            url: "/Menu/EditMenuGroup?menuId=" + menuId,
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#editgroup").modal("hide");
+                    LoadGroup(data.groupId);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+
+    $(".add-category-modal").click(function () {
+        var selectedGroupId = $("#group-panel-main").data("selected");
+        if (!selectedGroupId) return;
+
+        $("#category-name").val("");
+        $("#category-backcolor").val("");
+        $("#category-backcolor").change();
+        $("#category-textcolor").val("").change();
+        $("#editcategory").data("id", 0);
+
+        $("#editcategory").modal("show");
+    });
+
+    function LoadCategory(id)
+    {
+        var selectedGroupId = $("#group-panel-main").data("selected");
+        $.ajax({
+            url: "/Menu/GetMenuCategoryList?groupId=" + selectedGroupId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#category-panel-main").empty();
+                $("#category-panel-main").data("selected", "");
+                $("#subcategory-panel-main").empty();
+                $("#subcategory-panel-main").data("selected", "");
+                $("#product-panel-main").empty();
+              
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var selected = "";
+                    if (id == 0 && i == 0)
+                    {
+                        selected = "item-selected";
+                        $("#category-panel-main").data("selected", d.id);
+                        LoadSubCategory(0);
+                    }
+                    if (id > 0 && id == d.id)
+                    {
+                        selected = "item-selected";
+                        $("#category-panel-main").data("selected", d.id);
+                        LoadSubCategory(0);
+                    }
+                  
+                    var html = 
+                    `
+                        <div class="category-item col-3 btn-group dropend ${selected}" data-id='${d.id}' data-name='${d.name}' data-bcolor='${d.backColor}' data-tcolor='${d.textColor}'>
+                            <button type="button" class="category-btn btn btn-warning" style=" width: 80%;background-color:${d.backColor}; color: ${d.textColor}">
+                            ${d.name}
+                            </button>
+                                <button type="button" style="background-color:${d.backColor};" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" ></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="category-edit dropdown-item" href="javascript:void(0);">Edit</a></li>
+                                <li><a class="category-remove dropdown-item" href="javascript:void(0);">Remove</a></li>
+                            </ul>
+                        </div>
+                    `
+                    $("#category-panel-main").append(html);
+                    
+                
+                }
+
+                $("#category-panel-main").sortable({
+                    update: function(){
+                        UpdateCategoryOrders();
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+        
+    function UpdateCategoryOrders() {
+        var categories = [];
+        $(".category-item").each(function(i, e){
+            var group = {
+                ID: $(this).data("id"),
+                Order : i
+            }
+
+            categories.push(group);
+        })
+
+        $.ajax({
+            url: "/Menu/UpdateMenuCategoryOrders",
+            type: "POST",
+            data: JSON.stringify(categories),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+        
+    $("body").on("click", ".category-edit", function(){
+        var div = $(this).closest(".category-item");
+
+        $("#category-name").val(div.data("name"));
+        $("#category-backcolor").val(div.data("bcolor")).change();
+        $("#category-textcolor").val(div.data("tcolor")).change();
+        $("#category-backcolordiv").css("background-color", div.data("bcolor"));
+        $("#category-textcolordiv").css("background-color", div.data("tcolor"));
+        $("#editcategory").data("id", div.data("id"));
+
+        $("#editcategory").modal("show");
+    });
+
+    $("body").on("click", ".category-remove", function () {
+        var div = $(this).closest(".category-item");
+        var categoryId = div.data("id");
+        var selectedGroupId = $("#group-panel-main").data("selected");
+
+         $.ajax({
+            url: "/Menu/DeleteMenuCategory?groupId=" + selectedGroupId + "&categoryId=" + categoryId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadCategory(0);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to delete the category."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+        
+    });
+
+    $("#edit-category").click(function(){
+        var selectedGroupId = $("#group-panel-main").data("selected");
+        var option = $("#editor-menu option:selected");
+        var menuId = option.data("id");
+        var name = $("#category-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var id = parseInt($("#editcategory").data("id"));
+        var back = $("#category-backcolor").val();
+        var text = $("#category-textcolor").val();
+        var categories = $(".category-item").length;
+
+        var data = {
+            ID: id,
+            Name: name,
+            BackColor: back,
+            TextColor: text,
+            Order: categories
+        }
+
+          $.ajax({
+            url: "/Menu/EditMenuCategory?groupId=" + selectedGroupId + "&menuId=" + menuId,
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#editcategory").modal("hide");
+                    LoadCategory(data.categoryId);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $(".add-subcategory-modal").click(function () {
+        var selectedCategoryId = $("#category-panel-main").data("selected");
+        if (!selectedCategoryId || selectedCategoryId == "") return;
+
+        $("#subcategory-name").val("");
+        $("#subcategory-backcolor").val("").change();
+        $("#subcategory-textcolor").val("").change();
+        $("#editsubcategory").data("id", 0);
+
+        $("#editsubcategory").modal("show");
+    });
+        
+    function LoadSubCategory(id)
+    {
+        var selectedCategoryId = $("#category-panel-main").data("selected");
+        $.ajax({
+            url: "/Menu/GetMenuSubCategoryList?categoryId=" + selectedCategoryId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#subcategory-panel-main").empty();
+                $("#subcategory-panel-main").data("selected", "");
+                $("#product-panel-main").empty();
+              
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var selected = "";
+                    if (id == 0 && i == 0)
+                    {
+                        selected = "item-selected";
+                        $("#subcategory-panel-main").data("selected", d.id);
+                        LoadProduct(0);
+                    }
+                    if (id > 0 && id == d.id)
+                    {
+                        selected = "item-selected";
+                        $("#subcategory-panel-main").data("selected", d.id);
+                        LoadProduct(0);
+                    }
+                  
+                    var html = 
+                    `                      
+                        <div class="subcategory-item col-6 btn-group dropend ${selected}" data-id='${d.id}' data-name='${d.name}' data-bcolor='${d.backColor}' data-tcolor='${d.textColor}'>
+                            <button type="button" class="subcategory-btn btn btn-secondary" style="width:80%;background-color:${d.backColor}; color: ${d.textColor}">
+                                    ${d.name}
+                              </button>
+                                  <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" style="background-color:${d.backColor};" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Toggle Dropright</span>
+                              </button>
+                              <ul class="dropdown-menu">
+                                    <li><a class="subcategory-edit dropdown-item" href="javascript:void(0);">Edit</a></li>
+                                    <li><a class="subcategory-remove dropdown-item" href="javascript:void(0);">Remove</a></li>
+                              </ul>
+                            </div>
+                    `
+                    $("#subcategory-panel-main").append(html);
+                    
+                
+                }
+
+                $("#subcategory-panel-main").sortable({
+                    update: function(){
+                        UpdateSubCategoryOrders();
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+        
+    function UpdateSubCategoryOrders() {
+        var subcategories = [];
+        $(".subcategory-item").each(function(i, e){
+            var group = {
+                ID: $(this).data("id"),
+                Order : i
+            }
+
+            subcategories.push(group);
+        })
+
+        $.ajax({
+            url: "/Menu/UpdateMenuSubCategoryOrders",
+            type: "POST",
+            data: JSON.stringify(subcategories),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("body").on("click", ".subcategory-edit", function () {
+        var div = $(this).closest(".subcategory-item");
+
+        $("#subcategory-name").val(div.data("name"));
+        $("#subcategory-backcolor").val(div.data("bcolor")).change();
+        $("#subcategory-textcolor").val(div.data("tcolor")).change();
+        $("#subcategory-backcolordiv").css("background-color", div.data("bcolor"));
+        $("#subcategory-textcolordiv").css("background-color", div.data("tcolor"));
+        $("#editsubcategory").data("id", div.data("id"));
+
+        $("#editsubcategory").modal("show");
+    });
+
+    $("body").on("click", ".subcategory-remove", function () {
+        var div = $(this).closest(".subcategory-item");
+        var subcategoryId = div.data("id");
+        var selectedCategoryId = $("#category-panel-main").data("selected");
+
+        $.ajax({
+            url: "/Menu/DeleteMenuSubCategory?categoryId=" + selectedCategoryId + "&subCategoryId=" + subcategoryId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadSubCategory(0);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to delete the subcategory."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+
+    });
+
+    $("#edit-subcategory").click(function () {
+        var selectedCategoryId = $("#category-panel-main").data("selected");
+
+        var name = $("#subcategory-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var id = parseInt($("#editsubcategory").data("id"));
+        var back = $("#subcategory-backcolor").val();
+        var text = $("#subcategory-textcolor").val();
+        var categories = $(".subcategory-item").length;
+
+        var data = {
+            ID: id,
+            Name: name,
+            BackColor: back,
+            TextColor: text,
+            Order: categories
+        }
+
+        $.ajax({
+            url: "/Menu/EditMenuSubCategory?categoryId=" + selectedCategoryId,
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#editsubcategory").modal("hide");
+                    LoadSubCategory(data.subCategoryId);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    $(".add-product-modal").click(function () {
+        
+        var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+        if (!selectedSubCategoryId || selectedSubCategoryId == "") {
+
+            toastr.warning("@ViewLocalizer["Please select the Sub Category"]", {})
+            return;
+        }
+        $("#listproduct").data("staticproduct", 0);
+        $("#listproduct").modal("show");
+    });
+    
+    $(".add-static-product-modal").click(function () {
+        $("#listproduct").data("staticproduct", 1);
+        $("#listproduct").modal("show");
+    });
+
+    function SelectProduct(productId)
+    {
+        var staticproduct = $("#listproduct").data("staticproduct");
+        if (staticproduct == 1)
+        {
+            var option = $("#editor-menu option:selected");
+            if (!option || !option.data("id")) {
+                return;
+            }
+
+            var menuId = option.data("id");
+            var categories = $(".static-product-item").length;
+
+            var data = {
+                Order: categories
+            }
+            $.ajax({
+                url: `/Menu/EditMenuStaticProduct?menuId=${menuId}&productId=${productId}`,
+                type: "POST",
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        $("#listproduct").modal("hide");
+                        LoadStaticProduct(data.productId);
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["Failed to add product."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        }
+        else {
+            var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+
+            var categories = $(".product-item").length;
+
+            var data = {
+                Order: categories
+            }
+            var selectedGroupId = $("#group-panel-main").data("selected");
+            var selectedCategoryId = $("#category-panel-main").data("selected");
+            var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+            $.ajax({
+                url: `/Menu/EditMenuProduct?groupId=${selectedGroupId}&categoryId=${selectedCategoryId}&subCategoryId=${selectedSubCategoryId}&productId=${productId}`,
+                type: "POST",
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        $("#listproduct").modal("hide");
+                        LoadProduct(data.productId);
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["Failed to add product."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        }
+       
+    }
+
+    function LoadStaticProduct(id) {
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+        $.ajax({
+            url: "/Menu/GetMenuStaticProductList?menuId=" + menuId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#static-product-panel-main").empty();
+
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var selected = "";
+                    if (id == 0 && i == 0) {
+                        selected = "item-selected";
+                        $("#static-product-panel-main").data("selected", d.id);
+                    }
+                    if (id > 0 && id == d.id) {
+                        selected = "item-selected";
+                        $("#static-product-panel-main").data("selected", d.id);
+                    }
+
+                    var html =
+                        `
+                            <div class="static-product-item col-3 p-2" data-id='${d.id}' data-productid='${d.product.id}'>
+                                    <div class="product-item-back d-flex justify-content-center flex-column position-relative" style="background-color:${d.product.backColor}; color:${d.product.textColor}" > ${d.product.name}<button class="static-product-remove btn btn-secondary" >x</button></div>
+                            </div>
+                            `
+                    $("#static-product-panel-main").append(html);
+
+
+                }
+
+                $("#static-product-panel-main").sortable({
+                    update: function () {
+                        UpdateStaticProductOrders();
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadProduct(id) {
+        var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+        $.ajax({
+            url: "/Menu/GetMenuProductList?subCategoryId=" + selectedSubCategoryId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#product-panel-main").empty();
+
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var selected = "";
+                    if (id == 0 && i == 0) {
+                        selected = "item-selected";
+                        $("#product-panel-main").data("selected", d.id);
+                    }
+                    if (id > 0 && id == d.id) {
+                        selected = "item-selected";
+                        $("#product-panel-main").data("selected", d.id);
+                    }
+
+                    var html =
+                        `                            
+                        <div class="product-item col-3 p-2" data-id='${d.id}' data-productid='${d.product.id}'>
+                                <div class="product-item-back d-flex justify-content-center flex-column position-relative" style="background-color:${d.product.backColor}; color:${d.product.textColor}" > ${d.product.name}<button class="product-remove btn btn-secondary" >x</button></div>
+                        </div>
+                        `
+                    $("#product-panel-main").append(html);
+
+
+                }
+
+                $("#product-panel-main").sortable({
+                    update: function () {
+                        UpdateProductOrders();
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    function UpdateStaticProductOrders() {
+        var products = [];
+        $(".static-product-item").each(function (i, e) {
+            var group = {
+                ID: $(this).data("id"),
+                Order: i
+            }
+
+            products.push(group);
+        })
+        var option = $("#editor-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+        $.ajax({
+            url: `/Menu/UpdateMenuStaticProductOrders`,
+            type: "POST",
+            data: JSON.stringify(products),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    function UpdateProductOrders() {
+        var products = [];
+        $(".product-item").each(function (i, e) {
+            var group = {
+                ID: $(this).data("id"),
+                Order: i
+            }
+
+            products.push(group);
+        })
+        var selectedGroupId = $("#group-panel-main").data("selected");
+        var selectedCategoryId = $("#category-panel-main").data("selected");
+        var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+        $.ajax({
+            url: `/Menu/UpdateMenuProductOrders?groupId=${selectedGroupId}&categoryId=${selectedCategoryId}&subCategoryId=${selectedSubCategoryId}`,
+            type: "POST",
+            data: JSON.stringify(products),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("body").on("click", ".product-remove", function () {
+        var div = $(this).closest(".product-item");
+        var proudctId = div.data("id");
+        var selectedSubCategoryId = $("#subcategory-panel-main").data("selected");
+
+        $.ajax({
+            url: "/Menu/DeleteMenuProduct?subCategoryId=" + selectedSubCategoryId + "&productId=" + proudctId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadProduct(0);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to delete the product."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+
+    });
+
+    $("body").on("click", ".static-product-remove", function () {
+        var div = $(this).closest(".static-product-item");
+        var proudctId = div.data("id");
+
+        $.ajax({
+            url: "/Menu/DeleteMenuStaticProduct?productId=" + proudctId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadStaticProduct(0);
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to delete the product."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+            }
+        });
+
+    });
+
+    $("body").on("click", ".group-btn", function(){
+        var item = $(this).closest(".group-item");
+        var id = item.data("id");
+
+        $(".group-item").each(function(){
+            $(this).removeClass("item-selected");
+        })
+        item.addClass("item-selected");
+        $("#group-panel-main").data("selected", id);
+        LoadCategory(0);
+    })
+
+    $("body").on("click", ".category-btn", function(){
+        var item = $(this).closest(".category-item");
+        var id = item.data("id");
+
+        $(".category-item").each(function(){
+            $(this).removeClass("item-selected");
+        })
+        item.addClass("item-selected");
+        $("#category-panel-main").data("selected", id);
+        LoadSubCategory(0);
+    })
+
+    $("body").on("click", ".subcategory-btn", function(){
+        var item = $(this).closest(".subcategory-item");
+        var id = item.data("id");
+
+        $(".subcategory-item").each(function(){
+            $(this).removeClass("item-selected");
+        })
+        item.addClass("item-selected");
+        $("#subcategory-panel-main").data("selected", id);
+        LoadProduct(0);
+    })
+
+</script>

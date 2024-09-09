@@ -1,0 +1,574 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@{
+	var showCost = (AuthorizationService.AuthorizeAsync(User, "Permission.Inventory.StockHistory.Cost")).Result.Succeeded;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>Hisstorial de movimientos</h3>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date From"] </label>
+					<input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date To"] </label>
+					<input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Warehouse"]</label>
+					<select id="filter-warehouse" class="select">
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Reason"]</label>
+					<select id="filter-reason" class="select">
+						<option value="0">ALL</option>
+						<option value="1">Purchase Order</option>
+						<option value="2">Production</option>
+						<option value="3">Move</option>
+						<option value="4">Damage</option>
+						<option value="5">Physical Check</option>
+						<option value="6">Kitchen</option>
+						<option value="7">Void</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Type"]</label>
+					<select id="filter-itemtype" class="select">
+						<option value="-1">ALL</option>
+						<option value="0">Article</option>
+						<option value="1">Sub Recipe</option>
+					</select>
+				</div>
+			</div>		
+			<div class="col-lg-5 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Item"]</label>
+					<div class="row">
+						<div class="col-lg-10 col-sm-10 col-10">
+							<select id="filter-item" class="select">
+							</select>
+						</div>
+						<div class="col-lg-2 col-sm-2 col-2 ps-0">
+							<div class="add-icon">
+								<a id="add-item-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<button id="btn-result" class="btn btn-primary m-2">@ViewLocalizer["Generate"]</button>
+			</div>
+		</div>
+
+		<div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Almacén</th>
+						<th>ID</th>
+						<th>Type</th>
+						<th>Name</th>
+						<th>Unit</th>
+						<th>Stock</th>
+						<th></th>
+
+					</tr>
+				</thead>
+				<tbody id="stock-result">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Sub Recipe Modal -->
+<div class="modal fade" id="listitems" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="item-modal-title">@ViewLocalizer["Article / Sub Recipe List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="items-list" class="table">
+								<thead>
+									<tr>
+										<th>@ViewLocalizer["Select"]</th>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["Category"] </th>
+										<th>@ViewLocalizer["Sub Category"]</th>
+										<th>@ViewLocalizer["Status"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-article" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		SelectWarehouse();
+
+		$("#btn-result").click(function () {
+			var datefrom = $("#filter_datefrom").val();
+			var dateto = $("#filter_dateto").val();
+			var warehouse = parseInt($("#filter-warehouse").val());
+			if (!warehouse) warehouse = 0;
+			var itemtype = parseInt($("#filter-itemtype").val());
+			var reason = parseInt($("#filter-reason").val());
+			if (!reason) reason = 0;
+			var itemid = parseInt($("#filter-item").val());
+			if (!itemid) itemid = 0;
+
+
+			var data = {
+				FromDate: datefrom,
+				ToDate: dateto,
+				WarehouseID: warehouse,
+				ItemType: itemtype,
+				Reason: reason,
+				ItemID:itemid
+			}
+
+			$.ajax({
+				url: "/Inventory/GetStockHistoryByFilter",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data) {
+						$("#stock-result").empty();
+						for (var i = 0; i < data.length; i++) {
+							var d = data[i];
+							var itemtype = "Article";
+							if (d.itemtype == 1) {
+								itemtype = "Sub Recipe";
+							}
+
+							var cost = 0;
+							var html = `<tr class='stock-item' data-id='${d.itemID}' data-type='${d.itemType}'><td>${d.warehouse}</td><td>${d.itemID}</td><td>${itemtype}</td><td>${d.itemName}</td>`
+							html += `<td><select class="item-unit form-control form-control-sm">`
+							for (var j = 0; j < d.units.length; j++) {
+								var item = d.units[j];
+								if (item.number == 1) {
+									html += `<option selected value="${item.number}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+									cost = item.cost;
+								}
+								else {
+									html += `<option value="${item.number}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
+								}
+							}
+							html += `</select></td><td class='item-stockqty' data-qty='${d.stockQty}'>${d.stockQty.toFixed(2)}</td><td></td></tr>`
+
+							var costhead = "";
+							if ('@showCost' == "True") {
+								costhead = "<th>Cost($)</th>";
+							}
+							html += `<tr><td colspan='5'><div class='mx-3 p-2'><table class='w-100'><thead><tr><th>Date</th><th>Qty</th>${costhead}<th>Balance</th><th>Usuario</th><th>Razon</th></tr></thead><tbody class='history-item'>`;
+							for (var k = 0; k < d.history.length; k++) {
+								var h = d.history[k];
+								var qtycol = ""
+								if (h.qty > 0) {
+									qtycol = `<div class='d-flex'><span class='text-success px-3'><i class="fa fa-angle-up" aria-hidden="true"></i></span><span  class='item-qty'>${h.qty}</span></div>`;
+								}
+								else if (h.qty < 0) {
+									qtycol = `<div class='d-flex'><span class='text-danger px-3'><i class="fa fa-angle-down" aria-hidden="true"></i></span><span  class='item-qty'>${h.qty}</span></div>`;
+								}
+								else {
+									qtycol = `<div class='d-flex'><span class='text-danger'></span><span  class='item-qty'>${h.qty}</span></div>`;
+								}
+								var costcol = '';
+								if ('@showCost' == "True") {
+									costcol = `<td class='item-cost'>${h.cost}</td>`;
+								}
+								if (h.isVisible) {
+									html += `<tr data-qty='${h.baseQty}' data-balance='${h.balance}'><td>${h.changeAt}</td><td>${qtycol}</td>${costcol}<td class='item-balance'>${h.balance.toFixed(2)}</td><td>${h.changeBy}</td><td>${h.reason}</td></tr>`
+								}
+								
+							}
+							var costfooter = '';
+							if ('@showCost' == "True") {
+								costfooter = `<td>${d.totalCost}</td>`;
+							}
+
+							html += `<tr data-qty='${d.totalQty}'><td></td><td><h6>Total</h6></td>${costfooter}<td class='item-qty'>${d.totalQty.toFixed(2)}</td><td></td><td></td></tr>`
+							html += `</tbody></table></div></td></tr>`;
+
+							$("#stock-result").append(html);
+						}
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		})
+
+		$("body").on("change", ".item-unit", function () {
+			var parent = $(this).closest(".stock-item");
+			var current = parseInt($(this).find("option:selected").val());
+			var origin = 1;
+			var id = parseInt($(this).closest(".stock-item").data('id'));
+			if (!id) return;
+			var type = $(this).closest(".stock-item").data('type')
+		
+			if (type == "0") {
+				parent.next().find(".history-item").find('tr').each(function () {
+					var element = $(this);
+					var qty = parseFloat($(this).data("qty"));
+					var balance = parseFloat($(this).data("balance"));
+					if (!balance) balance = 0;
+					var data = {
+						ArticleID: id,
+						Qty: qty,
+						Qty1 : balance,
+						CurrentNumber: current,
+						OriginalNumber: 1
+					}
+
+					$.ajax({
+						url: "/Inventory/GetConvertedQty",
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: 'application/json;',
+						dataType: 'json',
+						success: function (data, textStatus, jqXHR) {
+							if (data.status == 0) {
+								element.find('.item-qty').text(data.qty);
+								element.find('.item-balance').text(data.qty1)
+							}
+							else {
+								toastr.error("@ViewLocalizer["Failed to update the unit."]", {})
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+						}
+					});
+				})
+
+				var qty = parseFloat(parent.find(".item-stockqty").data('qty'));
+				var data = {
+					ArticleID: id,
+					Qty: qty,
+					Qty1: 0,
+					CurrentNumber: current,
+					OriginalNumber: 1
+				}
+
+				$.ajax({
+					url: "/Inventory/GetConvertedQty",
+					type: "POST",
+					data: JSON.stringify(data),
+					contentType: 'application/json;',
+					dataType: 'json',
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							parent.find(".item-stockqty").text(data.qty);
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to update the unit."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+			else if (type == "1") {
+				parent.next().find(".history-item").find('tr').each(function () {
+					var element = $(this);
+					var qty = parseFloat($(this).data("qty"));
+					var balance = parseFloat($(this).data("balance"));
+					if (!balance) balance = 0;
+					var data = {
+						ArticleID: id,
+						Qty: qty,
+						Qty1: balance,
+						CurrentNumber: current,
+						OriginalNumber: 1
+					}
+
+					$.ajax({
+						url: "/Inventory/GetConvertedQtyForSubRecipe",
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: 'application/json;',
+						dataType: 'json',
+						success: function (data, textStatus, jqXHR) {
+							if (data.status == 0) {
+								element.find('.item-qty').text(data.qty);
+								element.find('.item-balance').text(data.qty1)
+							}
+							else if (data.status == 2) {
+								toastr.error("@ViewLocalizer["The name should be unique."]", {})
+							}
+							else {
+								toastr.error("@ViewLocalizer["Failed to update the unit."]", {})
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+						}
+					});
+				})
+
+				var qty = parseFloat(parent.find(".item-stockqty").data('qty'));
+				var data = {
+					ArticleID: id,
+					Qty: qty,
+					Qty1: 0,
+					CurrentNumber: current,
+					OriginalNumber: 1
+				}
+
+				$.ajax({
+					url: "/Inventory/GetConvertedQtyForSubRecipe",
+					type: "POST",
+					data: JSON.stringify(data),
+					contentType: 'application/json;',
+					dataType: 'json',
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							parent.find(".item-stockqty").text(data.qty);
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to update the unit."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+		});
+
+
+		$("#add-item-modal").click(function () {
+			var type = $("#filter-itemtype").val();
+			if (type != "-1") {
+				$("#listitems").modal("show");
+			}
+		});
+
+		$("#filter-itemtype").change(function () {
+
+			$("#filter-item").empty();
+			$("#filter-item").select2();
+
+			var type = $(this).val();
+			if (type == "0") {
+				$(".item-modal-title").text("Article List");
+				$("#items-list").DataTable({
+					"processing": true, // for show progress bar
+					"serverSide": true, // for process server side
+					"filter": true, // this is for disable filter (search box)
+					"orderMulti": false, // for disable multiple column at once
+					"ajax": {
+						"url": "/Inventory/GetArticleList?supplierID=0" ,
+						"type": "POST",
+						"datatype": "json"
+					},
+					"destroy": true,
+					'select': {
+						'style': 'multi'
+					},
+					"pageLength": 10,
+					"lengthMenu": [10, 25, 50],
+					"order": [[1, 'asc']],
+					"columns": [
+						{
+							'data': 'action', 'name': 'action',
+							render: function (data, type, row) {
+								return "<div class='me-3 icons-box d-inline-block' onclick='SelectItem(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></div></div>";
+							},
+						},
+						{ "data": "name", "name": "name", "autoWidth": true },
+						{ "data": "categoryName", "name": "categoryName", "autoWidth": true },
+						{ "data": "subCategoryName", "name": "subCategoryName", "autoWidth": true },
+						{
+							'data': 'status', 'name': 'isActive',
+							render: function (data, type, row) {
+								if (row.isActive) {
+									return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+								}
+								else {
+									return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+								}
+							},
+							"autoWidth": true
+						},
+
+					]
+				});
+			}
+			else if (type == "1") {
+				$(".item-modal-title").text("Sub Recipe List");
+				$("#items-list").DataTable({
+					"processing": true, // for show progress bar
+					"serverSide": true, // for process server side
+					"filter": true, // this is for disable filter (search box)
+					"orderMulti": false, // for disable multiple column at once
+					"ajax": {
+						"url": "/Inventory/GetSubRecipeList",
+						"type": "POST",
+						"datatype": "json"
+					},
+					"destroy": true,
+					'select': {
+						'style': 'multi'
+					},
+					"pageLength": 10,
+					"lengthMenu": [10, 25, 50],
+					"order": [[1, 'asc']],
+					"columns": [
+						{
+							'data': 'action', 'name': 'action',
+							render: function (data, type, row) {
+								return "<a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectItem(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+							},
+						},
+						{ "data": "name", "name": "name", "autoWidth": true },
+						{ "data": "category", "name": "category", "autoWidth": true },
+						{ "data": "subCategory", "name": "subCategory", "autoWidth": true },
+						{
+							'data': 'status', 'name': 'isActive',
+							render: function (data, type, row) {
+								if (row.isActive) {
+									return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+								}
+								else {
+									return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+								}
+							},
+							"autoWidth": true
+						},
+
+					]
+				});
+			}
+		})
+	});
+
+	function SelectItem(item)
+	{
+		if (item && !item.isActive) {
+			toastr.error("@ViewLocalizer["The item is inactive."]", {})
+			return;
+		}
+		var type = $("#filter-itemtype").val();
+		if (type == "0") {
+			$.ajax({
+				url: "/Inventory/GetAllActiveArticles",
+				type: "GET",
+				success: function (data, textStatus, jqXHR) {
+					$("#filter-item").empty();
+					$("#filter-item").append("<option value='0' selected>All Articles</option>")
+					for (var i = 0; i < data.length; i++) {
+						var d = data[i];
+						$("#filter-item").append("<option value='" + d.id + "'>" + d.name + "</option>")
+					}
+					$("#filter-item").select2();
+					if (item) {
+						$("#filter-item").val(item.id).change();
+					}
+					else {
+						$("#filter-item").val('').change();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		}
+		else if (type == "1") {
+			$.ajax({
+				url: "/Inventory/GetAllActiveSubRecipes",
+				type: "GET",
+				success: function (data, textStatus, jqXHR) {
+					$("#filter-item").empty();
+					$("#filter-item").append("<option value='0' selected>All SubRecipe</option>")
+					for (var i = 0; i < data.length; i++) {
+						var d = data[i];
+						$("#filter-item").append("<option value='" + d.id + "'>" + d.name + "</option>")
+					}
+					$("#filter-item").select2();
+					if (item) {
+						$("#filter-item").val(item.id).change();
+					}
+					else {
+						$("#filter-item").val('').change();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		}
+		
+
+		$("#listitems").modal("hide");
+	}
+
+	// warehosue functions
+	function SelectWarehouse(warehouse) {
+		if (warehouse && !warehouse.isActive) {
+			toastr.error("@ViewLocalizer["This warehouse is inactive."]", {})
+			return;
+		}
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-warehouse").empty();
+				$("#filter-warehouse").append("<option value='' selected>@ViewLocalizer["ALL Warehouses"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#filter-warehouse").select2();
+				if (warehouse) {
+					$("#filter-warehouse").val(warehouse.id).change();
+				}
+				else {
+					$("#filter-warehouse").val('').change();
+				}
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#listwarehouse").modal("hide");
+	}
+</script>

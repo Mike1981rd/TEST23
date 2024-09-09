@@ -1,0 +1,220 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Repartidores"]</h4>
+        <h6>@ViewLocalizer["Edición de Repartidores"]</h6>
+    </div>
+    <div class="page-btn">
+        <a href="javascript:void(0);" class="btn btn-added" onclick="AddCarrier()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Agregar Repartidor"]</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="carrier-list" class="table">
+                <thead>
+                    <tr>
+                        <th>@ViewLocalizer["Acción"]</th>
+                        <th>@ViewLocalizer["Nombre"] </th>
+                        <th>@ViewLocalizer["Activo"] </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddCarrier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="supplier-modal-title">@ViewLocalizer["Agregar/Editar Repartidor"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Nombre"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">ID</span>
+                                <input id="carrier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Activo"]</label>
+                            <select id="carrier-is-active" class="select">
+                                <option value="1"> @ViewLocalizer["Activo"]</option>
+                                <option value="0"> @ViewLocalizer["Inactivo"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-carrier" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+	$(document).ready(function(){
+		var stationtable = $("#carrier-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": false, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+                "url": "/Setting/GetDeliveryCarriers",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[2, 'desc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+                        return "<a class='me-3' href='javascript:void(0);'  onclick=EditCarrier('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteCarrier('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+                {
+                    'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Activo"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["Inactivo"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+			]
+		});
+
+		$("#edit-carrier").click(function() {
+			var name = $("#carrier-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var id = parseInt($("#AddCarrier").data("id"));
+
+			var data = {
+				ID : id,
+				Name : name,
+                IsActive: $("#carrier-is-active").val() == "1"
+			};
+
+			$.ajax({
+                url: "/Setting/EditDeliveryCarrier",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#carrier-list").DataTable().draw();
+						$("#AddCarrier").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name and amount should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		})
+	});
+
+	function AddCarrier() {
+		$("#carrier-name").val("");
+		$("#carrier-amount").val("");
+		$("#AddCarrier").data("id", 0);
+
+		$("#AddCarrier").modal("show");
+	}
+
+	function EditCarrier(id)
+	{
+
+		$.ajax({
+            url: "/Setting/GetDeliveryCarrier?id=" + id,
+			type: "POST",
+            success: function (carrier, textStatus, jqXHR) {
+                if (carrier) {
+					$("#carrier-name").val(carrier.name)					
+					if (carrier.isActive) {
+                        $("#carrier-is-active").val(1).change();
+					}
+					else {
+                        $("#carrier-is-active").val(0).change();
+					}
+					
+                    $("#AddCarrier").data("id", carrier.id)
+
+                    $("#AddCarrier").modal("show");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+		
+	}
+
+	function DeleteCarrier(id)
+	{
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the carrier?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			cancelButtonText: "@ViewLocalizer["Cancel"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+                    url: "/Setting/DeleteDeliveryCarrier?carrierId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#carrier-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the carrier."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				});
+			}
+
+		});
+	}
+</script>

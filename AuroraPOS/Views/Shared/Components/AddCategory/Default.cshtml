@@ -1,0 +1,312 @@
+﻿
+@model AuroraPOS.ViewComponents.AddCategoryViewModel
+
+<div class="modal fade" id="listcategory" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Category List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-category" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Category</a>
+					</div>
+					<div class="col-12">
+
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="category-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Name"] </th>
+										<th>@ViewLocalizer["Group"] </th>
+										<th>@ViewLocalizer["Plato"]</th>
+										<th>@ViewLocalizer["Status"]</th>
+										<th>@ViewLocalizer["Action"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-category" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editcategory" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="category-modal-title">@ViewLocalizer["Edit Category"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID  </span>
+								<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>					
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Group"]</label>
+							<select id="category-group" class="select">
+								<option value="">@ViewLocalizer["Choose Group"]</option>
+								@foreach (var g in Model.groups)
+								{
+									<option value="@g.ID">@g.GroupName</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 pb-3">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="category-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Taxes"]</label>
+							<select id="category-tax" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in Model.taxes)
+								{
+									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Propina"]</label>
+							<select id="category-propina" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in Model.propinas)
+								{
+									<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Course"]</label>
+							<select id="category-course" class="form-control select" tabindex="-1" aria-hidden="true">
+								<option value="">Choose course</option>
+								@foreach (var t in Model.courses)
+								{
+									<option value="@t.ID">@t.Name</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Printer Channels"]</label>
+							<select id="category-pchannel" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var p in Model.printerChannels)
+								{
+									<option value="@p.ID">@p.Name </option>
+								}
+							</select>
+						</div>
+					</div>
+
+				</div>
+				<div class="row pt-3">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+							<div class="add-unit">
+								<a class="add-accounting-item" data-other="1" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table reordertable">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Name"]
+									</td>
+									<td>
+										@ViewLocalizer["Type"]
+									</td>
+									<td>
+										@ViewLocalizer["Number"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="accounting-list1">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-category" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$("#add-category").click(function () {
+		$("#category-name").val("");
+		$("#category-plato").val("");
+		$("#category-group").val("").change()
+		$("#category-status").val(true).change()
+		$("#category-tax").val("").change()
+		$("#category-propina").val("").change()
+		$("#category-prinerchannels").val("").change()
+		$("#category-course").val("").change()
+
+		$(".category-modal-title").html("@ViewLocalizer["Add Category"]");
+		GetAccountItems(1, 0, "1");
+		$("#editcategory").data("id", 0);
+		$("#editcategory").modal("show");
+	});
+
+	var categorytable = $("#category-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"filter": true, // this is for disable filter (search box)
+		"orderMulti": false, // for disable multiple column at once
+		"searching": true,
+		"ajax": {
+			"url": "/Menu/GetCategoryList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"paging": false,
+		"order": [[1, 'asc']],
+		"columns": [
+
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{ "data": "groupName", "name": "groupName", "autoWidth": true },
+			{ "data": "plato", "name": "plato", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+					}
+					else {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {				
+					return "<div class='d-flex align-items-center'><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditCategory(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectCategory(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+				},
+			},
+		]
+	});
+		
+	$("#category-group").change(function () {
+		var group = $(this).val();
+		var id = $("#editcategory").data("id");
+		if (id == "0") {
+			GetAccountItems(13, group, "1");
+		}
+	})
+
+	function EditCategory(category) {
+		$("#category-name").val(category.name);
+		$("#category-plato").val(category.plato);
+		$("#category-group").val(category.groupID).change()
+		$("#category-status").val(category.isActive).change()
+		$("#category-tax").val(category.taxes).change()
+		$("#category-propina").val(category.propinas).change()
+		$("#category-pchannel").val(category.printerChannels).change()
+		$("#category-course").val(category.courseID).change()
+		if (category.isActive) {
+			$("#category-status").val(1).change();
+		}
+		else {
+			$("#category-status").val(0).change();
+		}
+		$(".category-modal-title").html("@ViewLocalizer["Edit Category"]");
+		$("#editcategory").data("id", category.id);
+		GetAccountItems(1, category.id, "1");
+		$("#editcategory").modal("show");
+	}
+		
+	$("#edit-category").click(function () {
+        var name = $("#category-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var group = parseInt($("#category-group").val());
+		if (!group || group == 0) {
+            toastr.warning("@ViewLocalizer["Please select the group."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+		var courseid = parseInt($("#category-course").val());
+		if (!courseid) courseid = 0;
+		var plato = parseInt($("#category-plato").val());
+		if (!plato) plato = 0;
+        var active = $("#category-status").val()
+        var data = {
+            ID: $("#editcategory").data("id"),
+            Name: name,
+			GroupID: group,
+			Plato : plato,
+			Taxes: $("#category-tax").val(),
+			Propinas: $("#category-propina").val(),
+			PrinterChannels:  $("#category-pchannel").val(),
+			CourseID: courseid,
+            IsActive: active == "1"
+        }
+
+        $.ajax({
+			url: "/Menu/EditCategory",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+					SaveAccountItems(1, data.id, function () {
+						$("#category-list").DataTable().draw();
+						$("#editcategory").modal("hide");
+					}, "1")
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["The name should be unique."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to update the category."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+</script>

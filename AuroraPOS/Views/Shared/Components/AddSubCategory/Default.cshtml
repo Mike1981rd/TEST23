@@ -1,0 +1,211 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<!-- Sub Category Modal -->
+<div class="modal fade" id="listsubcategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Sub Category List"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<a id="add-subcategory" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Sub Category"]</a>
+					</div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="subcategory-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+										<th>@ViewLocalizer["Name"]</th>
+										<th>@ViewLocalizer["Category"]</th>
+										<th>@ViewLocalizer["Description"]</th>
+										<th>@ViewLocalizer["Status"]</th>
+										<th>@ViewLocalizer["Action"]</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-subcategory" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editsubcategory" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="subcategory-modal-title">@ViewLocalizer["Edit Sub Category"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Sub Category Name"]<span class="manitory">*</span></label>
+							<input id="subcategory-name" type="text" value="" required>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Parent Category"]<span class="manitory">*</span></label>
+							<select id="subcategory-category" class="select">
+							</select>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Description"]</label>
+							<textarea id="subcategory-note" rows="5" cols="5" class="form-control" placeholder="@ViewLocalizer["Enter text here"]"></textarea>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="subcategory-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-subcategory" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	
+	$("#add-subcategory").click(function () {
+		$("#subcategory-name").val("");
+		$("#subcategory-note").val("");
+		$("#subcategory-category").val("").change()
+
+		$("#subcategory-status").val(1).change();
+		$(".subcategory-modal-title").html("@ViewLocalizer["Add Sub Category"]");
+		$("#editsubcategory").data("id", 0);
+		$("#editsubcategory").modal("show");
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#subcategory-category").empty();
+				$("#subcategory-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#subcategory-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#subcategory-category").select2();
+				var category = $("#article-category").val();
+				$("#subcategory-category").val(category).change();
+				$("#subcategory-category").prop("disabled", true);
+				$("#editsubcategory").modal("show");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+		
+	});
+
+			
+	function EditSubCategory(subcategory) {
+		$("#subcategory-name").val(subcategory.name);
+		$("#subcategory-note").val(subcategory.description);
+		
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#subcategory-category").empty();
+				$("#subcategory-category").append("<option value='' selected>Choose category</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#subcategory-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#subcategory-category").select2();
+				$("#subcategory-category").val("" + subcategory.categoryID).change();
+				$("#subcategory-category").prop("disabled", true);
+				$("#editsubcategory").modal("show");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		if (subcategory.isActive) {
+			$("#subcategory-status").val(1).change();
+		}
+		else {
+			$("#subcategory-status").val(0).change();
+		}
+		$(".subcategory-modal-title").html("@ViewLocalizer["Edit Sub Category"]");
+		$("#editsubcategory").data("id", subcategory.id);
+		$("#editsubcategory").modal("show");
+	}
+
+	$("#edit-subcategory").click(function () {
+        var name = $("#subcategory-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var category = parseInt($("#subcategory-category").val());
+        if (!category || category == 0)
+        {
+            toastr.warning("@ViewLocalizer["Please select the parent category."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var note = $("#subcategory-note").val();
+        var active = $("#subcategory-status").val()
+        var data = {
+            ID: $("#editsubcategory").data("id"),
+            Name: name,
+            CategoryID:category,
+            Description: note,
+            IsActive: active == "1"
+        }
+
+        $.ajax({
+            url: "/Menu/EditSubCategory",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+					$("#subcategory-list").DataTable().draw();
+                    $("#editsubcategory").modal("hide");
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["The name should be unique."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to update the sub category."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+
+</script>

@@ -1,0 +1,159 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	Layout = null;
+}
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<meta name="description" content="POS - Alfa Software">
+	<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+	<meta name="author" content="Dreamguys - Bootstrap Admin Template">
+	<meta name="robots" content="noindex, nofollow">
+	<title>ALFA POS Station</title>
+
+	<link rel="manifest" href="/manifest.json">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="/vendor/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+	<!-- animation CSS -->
+	<link rel="stylesheet" href="/vendor/css/animate.css">
+
+	<!-- Owl Carousel CSS -->
+	<link rel="stylesheet" href="/vendor/plugins/owlcarousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="/vendor/plugins/owlcarousel/owl.theme.default.min.css">
+
+	<!-- Select2 CSS -->
+	<link rel="stylesheet" href="/vendor/plugins/select2/css/select2.min.css">
+
+	<!-- Datetimepicker CSS -->
+	<link rel="stylesheet" href="/vendor/css/bootstrap-datetimepicker.min.css">
+	
+
+
+	<!-- Full Calander CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/fullcalendar/fullcalendar.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="/vendor/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/vendor/plugins/fontawesome/css/all.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="/vendor/css/style.css">
+	<!-- jQuery -->
+	<script src="/vendor/js/jquery-3.6.0.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="/vendor/js/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="/vendor/js/jquery.slimscroll.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="/vendor/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Datatable JS -->
+	<script src="/vendor/js/jquery.dataTables.min.js"></script>
+	<script src="/vendor/js/dataTables.bootstrap4.min.js"></script>
+
+
+	<!-- Datetimepicker JS -->
+	<script src="~/vendor/js/moment.min.js"></script>
+	<script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script>
+	<!-- Select2 JS -->
+	<script src="/vendor/plugins/select2/js/select2.full.js"></script>
+	<script src="/vendor/plugins/select2/js/underscore.js"></script>
+
+	<!-- Owl JS -->
+	<script src="/vendor/plugins/owlcarousel/owl.carousel.min.js"></script>
+
+	<!-- Sweetalert 2 -->
+	<script src="/vendor/plugins/sweetalert/sweetalert2.all.min.js"></script>
+	<script src="/vendor/plugins/sweetalert/sweetalerts.min.js"></script>
+
+	<!-- Toatr CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+
+	<!-- Mask JS -->
+	<script src="/vendor/plugins/toastr/toastr.min.js"></script>
+	<script src="/vendor/plugins/toastr/toastr.js"></script>
+	<script src="/vendor/js/jquery.mask.js"></script>
+
+
+
+	<!-- Full Calendar JS -->
+	<script src="/vendor/js/jquery-ui.min.js"></script>
+	<script src="/vendor/plugins/fullcalendar/index.global.js"></script>
+	<!-- Custom JS -->
+	<script src="/vendor/js/script.js"></script>
+	<style>
+		.station-toolbar {
+			position: fixed;
+			right: 0;
+			top: 0;
+			padding-top: 80px;
+			height: 100vh;
+			width: 120px;
+			display: flex;
+			flex-direction: column;
+			overflow-y: scroll;
+		}
+
+		.page-wrapper-pos{
+			margin: 70px 30px 30px 30px ;
+			
+		}
+		body {
+			background-color: #333;
+		}
+	</style>
+
+</head>
+<body>
+
+	<div id="global-loader">
+		<div class="whirly-loader"> </div>
+	</div>
+
+	<div class="main-wrappers" style="margin-right:100px;">
+	@*	<div class="header justify-content-between">
+			<!-- Logo -->
+			<div class="header-left border-0 ">
+				<a href="javascript:void(0);" class="logo logo-normal">
+					<img src="/vendor/img/logo.png" alt="">
+				</a>
+				<a href="javascript:void(0);" class="logo logo-white">
+					<img src="/vendor/img/logo-white.png" alt="">
+				</a>
+				<a href="javascript:void(0);" class="logo-small">
+					<img src="/vendor/img/logo-small.png" alt="">
+				</a>
+			</div>
+			<!-- /Logo -->
+			<!-- Header Menu -->
+			<div class="d-flex justify-content-between">
+				<h4 class="text-secondary px-2" style="line-height:60px;">@ViewBag.StationName</h4>
+				
+			</div>
+		</div>*@
+		<div class="page-wrapper-pos">
+			<div class="station-content p-0">
+				@RenderBody()
+			</div>
+		</div>
+		
+	</div>
+
+
+
+
+
+
+</body>
+</html>

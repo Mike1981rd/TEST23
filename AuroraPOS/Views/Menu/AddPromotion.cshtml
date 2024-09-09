@@ -1,0 +1,865 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Promotion
+@{
+    var startdt = "";
+    var starttime = "";
+    if (Model.StartTime > new DateTime(2000, 1, 1))
+    {
+        startdt = Model.StartTime.ToString("dd-MM-yyyy");
+        starttime = Model.StartTime.ToString("HH:mm");
+    }
+    var enddt = "";
+    var endtime = "";
+    if (Model.EndTime > new DateTime(2000, 1, 1))
+    {
+        enddt = Model.EndTime.ToString("dd-MM-yyyy");
+        endtime = Model.EndTime.ToString("HH:mm");
+    }
+    var recrstartdt = "";
+    // if (Model.RecurringStartDate != null && Model.RecurringStartDate > new DateTime(2000, 1, 1))
+    // {
+    //     recrstartdt = Model.RecurringStartDate.Value.ToString("dd-MM-yyyy");
+    // }
+
+    var weekdays = "";
+    if (!string.IsNullOrEmpty(Model.WeekDays))
+        weekdays = Model.WeekDays.Replace("\"", "");
+    var typestr = new string[] { "Group", "Category", "Sub Category", "Product" };
+    var isrecur = "style=display:none";
+    if (Model.IsRecurring)
+    {
+        isrecur = "";
+    }
+}
+
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Create Promotion"]</h4>
+        <h6>@ViewLocalizer["Add/Update Promotion"]</h6>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-body">
+        <div id="product-id" class="row" data-productid="0">
+            <div class="col-lg-4 col-sm-3 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                    <input id="promotion-name" value="@Model.Name" type="text">
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-3 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
+                    <input id="promotion-amount" value="@Model.Amount" onkeypress="return onlyDecimalKey(event)" type="text">
+                </div>
+            </div>
+            <div class="col-lg-2 col-sm-3 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Amount Type"]<span class="manitory">*</span></label>
+                    <select id="promotion-amounttype" class="select form-control" asp-for="AmountType">
+                        <option value="0">@ViewLocalizer["Percent"] (%)</option>
+                        <option value="1">@ViewLocalizer["Amount"] ($)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-sm-3 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Status"]</label>
+                    <select id="promotion-status" class="select form-control" asp-for="IsActive">
+                        <option value="1">@ViewLocalizer["Active"]</option>
+                        <option value="0">@ViewLocalizer["Inactive"]</option>
+                    </select>
+                </div>
+            </div>
+          
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                        <h6 class="text-left">@ViewLocalizer["Schedule"]</h6>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-2 col-2">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["All Day"]</label>
+                        <select id="schedule-allday" class="select form-control">
+                            @if(Model.IsAllDay)
+                            {
+                                <option value="1" selected>@ViewLocalizer["Yes"]</option>
+                                <option value="0">@ViewLocalizer["No"]</option>
+                            }
+                            else
+                            {
+                                  <option value="1">@ViewLocalizer["Yes"]</option>
+                            <option value="0" selected>@ViewLocalizer["No"]</option>
+                            }
+                          
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3 col-3">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Start Date"]</label>
+                        <div class="input-groupicon">
+                            <input id="schedule-startdate" type="text" placeholder="DD-MM-YYYY" value="@startdt" class="datetimepicker">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-sm-2 col-2 hour-select">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Start Time"]</label>
+                        <div class="input-groupicon">
+                            <input id="schedule-starttime" type="text" placeholder="HH:mm" value="@starttime" class="datetimepicker1">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/time.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="col-lg-3 col-sm-3 col-3">
+                   <div class="form-group">
+                        <label>@ViewLocalizer["End Date"]</label>
+                        <div class="input-groupicon">
+                            <input id="schedule-enddate" type="text" placeholder="DD-MM-YYYY" value="@enddt" class="datetimepicker">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-2 col-2  hour-select">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["End Time"]</label>
+                        <div class="input-groupicon">
+                            <input id="schedule-endtime" type="text" placeholder="HH:mm" value="@endtime" class="datetimepicker1">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/time.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                        <h6 class="text-left">@ViewLocalizer["Apply Type"]</h6>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 col-6">
+                    <div class="form-group">
+                        <select id="promotion-applytype" class="select form-control" asp-for="ApplyType">
+                            <option value="0">@ViewLocalizer["Trigger on all items after first"]</option>
+                            <option value="1">@ViewLocalizer["Trigger on every"]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-6">
+                    <div class="form-group input-group">
+                        <input class="" id="promotion-applyitem" onkeypress="return onlyDecimalKey(event)" value="@Model.FirstCount" type="text"> <span class="input-group-text ">item(s)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                        <h6 class="text-left">@ViewLocalizer["Recurring"]</h6>  
+                        <div class="w-25">
+                            <select id="recurring-enable" class="select form-control w-25 " >
+                                @if(Model.IsRecurring)
+                                {
+                                    <option value="0">@ViewLocalizer["No"]</option>
+                                    <option value="1" selected>@ViewLocalizer["Yes"]</option>
+                                }
+                                else
+                                {
+                                    <option value="0" selected>@ViewLocalizer["No"]</option>
+                                    <option value="1">@ViewLocalizer["Yes"]</option>
+                                }
+                               
+                                
+                            </select>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="row recurring-setting" @isrecur>
+                @* <div class="col-lg-3 col-sm-3 col-3">
+                   <div class="form-group">
+                        <label>@ViewLocalizer["Start Date"]</label>
+                        <div class="input-groupicon">
+                            <input id="recurring-start" type="text" placeholder="DD-MM-YYYY" value="@recrstartdt" class="datetimepicker">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-lg-2 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Duration"]</label>
+                        <div class="form-group input-group">
+                            <input class="" id="recurring-duration" value="@Model.Duration" onkeypress="return onlyDecimalKey(event)" type="text"> <span class="input-group-text ">month(s)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Every"]</label>
+                        <div class="form-group input-group">
+                            <input class="" id="recurring-weeks" value="@Model.WeekNum" onkeypress="return onlyDecimalKey(event)" type="text"> <span class="input-group-text ">week(s) on</span>
+                        </div>
+                    </div>
+                </div> *@
+                <div class="col-lg-6 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Week Days"]</label>
+                        <select id="recurring-weekdays" class="form-control tagging select" value="[1, 3]" multiple tabindex="-1" aria-hidden="true">
+                            
+                            <option value="1">@ViewLocalizer["Sunday"]</option>
+                            <option value="2">@ViewLocalizer["Monday"]</option>
+                            <option value="3">@ViewLocalizer["Tuesday"]</option>
+                            <option value="4">@ViewLocalizer["Wednesday"]</option>
+                            <option value="5">@ViewLocalizer["Thursday"]</option>
+                            <option value="6">@ViewLocalizer["Friday"]</option>
+                            <option value="7">@ViewLocalizer["Saturday"]</option>
+                           
+                        </select>
+                       
+                    </div>
+                </div>
+                @* <div class="col-lg-3 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["No end"]</label>
+                        <div class="form-group input-group">
+                            <select id="recurring-noend" class="select form-control">
+                                @if (Model.IsRecurNoEnd)
+                                {
+                                    <option value="0">@ViewLocalizer["No"]</option>
+                                    <option value="1" selected>@ViewLocalizer["Yes"]</option>
+                                }
+                                else
+                                {
+                                    <option value="0" selected>@ViewLocalizer["No"]</option>
+                                    <option value="1">@ViewLocalizer["Yes"]</option>
+                                }
+                               
+                            </select>
+                        </div>
+                    </div>
+                </div> *@
+                @* <div class="col-lg-3 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["End After"]</label>
+                        <div class="form-group input-group">
+                            <input class="" id="recurring-endafter" value="@Model.EndOccurrence" onkeypress="return onlyDecimalKey(event)" type="text"> <span class="input-group-text ">occurences</span>
+                        </div>
+                    </div>
+                </div> *@
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                        <h6 class="text-left"> @ViewLocalizer["Promotion Targets"]</h6>
+                        <div  class="add-unit">
+                            <a  class="add-new-target"  href="javascript:void(0);" >
+                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @ViewLocalizer["Menu"]
+                                </th>
+                                <th>
+                                    @ViewLocalizer["Type"]
+                                </th>
+                                <th>
+                                    @ViewLocalizer["Name"]
+                                </th>
+                                <th>
+                                    @ViewLocalizer["Action"]
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="promotion-targets">
+                            @if (Model.Targets != null)
+                            {
+                                @foreach (var t in Model.Targets)
+                                {
+                                    var range = (int)t.ProductRange;
+                                    <tr class="target-item" data-type="@range" data-id="@t.TargetId" data-name="@t.Description" data-menuid="@t.Menu" data-menuname="@t.MenuName" data-servingsize="@t.ServingSizeID"><td><div class="target-item-name">@t.MenuName</div></td><td>@typestr[(int)t.ProductRange - 1]</td><td>@t.Description</td><td><div class="remove-btn"><a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a></div></td></tr>
+                                }
+                            }
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row pt-3">
+            <div class="col-lg-12">
+                <a id="submit-promotion" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
+                <a id="cancel" href="/Menu/PromotionList" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Target Modal-->
+<div class="modal fade" id="listtargets" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Promotion Targets"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-6 pb-3">
+                        <label>@ViewLocalizer["Menu"]</label>
+                        <select id="target-menu" class="select">
+                            
+                        </select>
+					</div>
+                    <div class="col-6 pb-3">
+                        <label>@ViewLocalizer["Type"]</label>
+                        <select id="target-type" class="select">
+                            <option value="1"> @ViewLocalizer["Group"]</option>
+                            <option value="2"> @ViewLocalizer["Category"]</option>
+                            <option value="3"> @ViewLocalizer["Sub Category"]</option>
+                            <option value="4"> @ViewLocalizer["Product"]</option>
+                        </select>
+                    </div>
+                    <div class="col-4 pb-3 div-target-group" style="display:none">
+                        <label>@ViewLocalizer["Group"]</label>
+                        <select id="target-group" class="select">
+                            
+                        </select>
+                    </div>
+                    <div class="col-4 pb-3 div-target-category" style="display:none">
+                        <label>@ViewLocalizer["Category"]</label>
+                        <select id="target-category" class="select">
+                           
+                        </select>
+                    </div>
+                    <div class="col-4 pb-3 div-target-subcategory" style="display:none">
+                        <label>@ViewLocalizer["Sub Category"]</label>
+                        <select id="target-subcategory" class="select">
+                           
+                        </select>
+                    </div>
+					<div class="col-12">
+						<div class="table-responsive w-100" style="max-height:400px;">
+							<table id="question-list" class="table" style="position:relative;">
+								<thead style="position: sticky; top: 0; z-index:2;">
+									<tr>
+                                        <th>@ViewLocalizer["Action"]</th>
+										<th>@ViewLocalizer["Type"] </th>
+										<th>@ViewLocalizer["Name"] </th>
+									</tr>
+								</thead>
+                                <tbody id="target-body">
+
+                                </tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Order info modal -->
+<div class="modal fade" id="servingsizemodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="group-modal-title">@ViewLocalizer["Select Serving Size"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="product-servingsize" class="d-flex">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="servingsize-submit" type="button" class="btn btn-primary" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        if ('@Model.IsAllDay' == "True") {
+            $(".hour-select").hide();
+        }
+        else{
+            $(".hour-select").show();
+        }
+      
+
+        if(@ViewBag.PromotionID !== 0 && '@Model.WeekDays' != "")
+        {
+            //var weeks = JSON.parse(@weekdays);
+            $('#recurring-weekdays').val(@weekdays).trigger('change')
+        }
+
+        $("#recurring-enable").change(function(){
+            var enable = $(this).val();
+            if (enable == "1")
+            {
+                $(".recurring-setting").show();
+            }
+            else{
+                $(".recurring-setting").hide();
+            }
+        });
+
+        $(".add-new-target").click(function(){
+            $("#listtargets").modal("show");
+        })
+        ReloadMenu();
+        $("#target-type").change(function (){
+            var sel = $(this).val();
+
+            if (sel == "1") {
+                $(".div-target-group").hide();
+                $(".div-target-category").hide();
+                $(".div-target-subcategory").hide();
+                LoadGroup();
+            }
+            else if (sel == "2") {
+                $(".div-target-group").show();
+                $(".div-target-category").hide();
+                $(".div-target-subcategory").hide();
+                LoadCategory()
+            }
+            else if (sel == "3") {
+                $(".div-target-group").show();
+                $(".div-target-category").show();
+                $(".div-target-subcategory").hide();
+                LoadSubCategory()
+            }
+            else if (sel == "4") {
+                $(".div-target-group").show();
+                $(".div-target-category").show();
+                $(".div-target-subcategory").show();
+                LoadProduct()
+            }
+        });
+
+        $("#submit-promotion").click(function(){
+            SubmitPromotion();
+        });
+        
+        $("#target-menu").change(function () {
+            LoadGroup();
+        })
+        $("#target-group").change(function () {
+            LoadCategory();
+        })
+        $("#target-category").change(function () {
+            LoadSubCategory();
+        })
+        $("#target-subcategory").change(function () {
+            LoadProduct();
+        })
+    });
+    
+    $("body").on("click", "a.delete-item", function () {
+        $(this).closest("tr").remove();
+    });
+
+    $("body").on("click", ".select-target", function(){
+        var option = $("#target-menu option:selected");
+        var menuId = option.data("id");
+        var menuname = option.data("name");
+        
+        var target = $(this).closest(".target");
+
+        var id = target.data("targetid");
+        var type = target.data("type");
+        var name = target.data("name");
+
+        var typestr = "";
+        if (type == "1") {
+            typestr = "Group";
+        }
+        else if (type == "2") {
+            typestr = "Category";
+        }
+        else if (type == "3") {
+            typestr = "Sub Category"
+        }
+        else if (type == "4"){
+            typestr = "Product"
+        }
+
+        var html = `<tr class="target-item" data-type="${type}" data-id="${id}" data-name="${name}" data-menuid="${menuId}" data-menuname="${menuname}"><td>${menuname}</td><td>${typestr}</td><td><div class="target-item-name">${name}</div></td><td><div class="remove-btn"><a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a></div></td></tr>`
+        $("#promotion-targets").append(html);
+        $("#listtargets").modal("hide");
+
+        if (type == "4") {
+            $.ajax({
+                url: "/Menu/GetMenuProduct?productID=" + id,
+                type: "GET",
+                success: function (data, textStatus, jqXHR) {
+                    if (data) {
+                        if (data.hasServingSize) {
+                            $("#product-servingsize").empty();
+                            for (var i = 0; i < data.servingSizes.length; i++) {
+                                var item = data.servingSizes[i];
+                                var active = '';
+                                if (item.IsDefault) {
+                                    active = "active";
+                                }
+                                $("#product-servingsize").append(`<button class='select-servingsize w-25 m-3 btn button2 ${active}' data-id='${item.servingSizeID}'>${item.servingSizeName}</button>`)
+                            }
+                            $("#servingsizemodal").data("prodid", id);
+                            $("#servingsizemodal").modal("show");
+                        }
+                    }
+                    
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        }
+    });
+
+
+    $("body").on("click", '.select-servingsize', function () {
+        $(".select-servingsize").removeClass("active");
+        $(this).addClass("active");        
+    })
+
+    $("#servingsize-submit").click(function () {
+        var product = $("#servingsizemodal").data("prodid");
+        var serving = $(".select-servingsize.active").data("id");
+        var servingname = $(".select-servingsize.active").text();
+
+        $(".target-item").each(function () {
+            var type = $(this).data("type");
+            var id = $(this).data("id");
+
+            if (type == "4" && id == product) {
+                $(this).data("servingsize", serving)
+                var name = $(this).data("name");
+                name = name + "(" + servingname + ")";
+                $(this).data("name", name);
+                $(this).find(".target-item-name").text(name);
+            }
+        })
+    })
+
+    $("#schedule-allday").change(function () {
+        var allday = $(this).val();
+
+        if (allday == "1") {
+            $(".hour-select").hide();
+        }
+        else {
+            $(".hour-select").show();
+        }
+    });
+
+    function SubmitPromotion() {
+        var name = $("#promotion-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var amount = parseFloatCorrect($("#promotion-amount").val());
+        if (amount == 0)
+        {
+            toastr.warning("@ViewLocalizer["Please input the amount."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var amounttype = parseInt($("#promotion-amounttype").val());
+        var status = $("#promotion-status").val() == "1";
+        var applytype = parseInt($("#promotion-applytype").val());
+        var applyitem = parseInt($("#promotion-applyitem").val());
+        var allday = $("#schedule-allday").val() == "1";
+        var startdt = $("#schedule-startdate").val();        
+        var starttime = $("#schedule-starttime").val();
+        var enddt = $("#schedule-enddate").val();
+        var endtime = $("#schedule-endtime").val();
+        var recurring = $("#recurring-enable").val() == "1";
+        if (!starttime)
+            starttime = "12:00"
+        if (!endtime)
+            endtime = "12:00"
+        //var recurring_start = $("#recurring-start").val();
+        //var recurring_duration = parseInt($("#recurring-duration").val());
+        //var recurring_weeknum = parseInt($("#recurring-weeks").val());
+        var recurring_weekdays = $("#recurring-weekdays").val();
+        //var recurring_noend = $("#recurring-noend").val() == "1";
+        //var recurring_endafter = parseInt($("#recurring-endafter").val());
+
+        if (startdt == "" || enddt == "")
+        {
+            toastr.warning("@ViewLocalizer["Please set the start date and end date correctly."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var targets = [];
+        $("#promotion-targets tr").each(function(){
+            var menuid = parseInt($(this).data("menuid"));
+            var menuname = $(this).data("menuname");
+            var type = parseInt($(this).data("type"));
+            var id = parseInt($(this).data("id"));
+            var desc = $(this).data("name");
+            var serving = parseInt($(this).data("servingsize"));
+            if (!serving) serving = 0;
+            var target = {
+                Menu: menuid,
+                MenuName: menuname,
+                ProductRange: type,
+                TargetId: id,
+                Description: desc,
+                ServingSizeID : serving
+            }
+            targets.push(target);
+        });
+           
+        var data = {
+            ID:@ViewBag.PromotionID,
+            Name: name,
+            AmountType: amounttype,
+            Amount: amount,
+            IsRecurring:recurring,
+            IsAllDay: allday,
+            StartDateStr: "" + startdt + " " + starttime,
+            EndDateStr: "" + enddt + " " + endtime,
+            //RecurringStartDateStr: recurring_start,
+            //Duration: recurring_duration,
+            ApplyType: applytype,
+            FirstCount: applyitem,
+            //EndOccurrence: recurring_endafter,
+            //IsRecurNoEnd: recurring_noend,
+            //WeekNum: recurring_weeknum,
+            WeekDays: JSON.stringify(recurring_weekdays),
+            Targets: targets
+        }
+
+        $.ajax({
+            url: "/Menu/EditPromotion",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0)
+                {
+                    window.location.replace("/Menu/PromotionList");
+                }
+                else if (data.status == 2){
+                    toastr.error("@ViewLocalizer["The promotion with same name already exist."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+
+    }
+
+    function ReloadMenu() {
+        // load menu
+        $.ajax({
+            url: "/Menu/GetMenuList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#target-menu").empty();
+                $("#target-menu").append("<option value='' selected>Choose menu</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#target-menu").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "' data-desc='" + d.description + "'>" + d.name + "</option>")
+                }
+                $("#target-menu").select2();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadGroup() {
+        var option = $("#target-menu option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var menuId = option.data("id");
+
+        $.ajax({
+            url: "/Menu/GetMenuGroupList?menuId=" + menuId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {    
+                $("#target-group").empty();
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#target-group").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "'>" + d.name + "</option>")
+                }
+                $("#target-group").select2();
+
+                var type = $("#target-type").val();
+                if (type == "1") {
+                    $("#target-body").empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        var html = `<tr class="target" data-type="${type}" data-targetid="${d.id}" data-name="${d.name}"><td><a class='select-target me-3 icons-box d-inline-block' href='javascript:void(0);' ><span class='icon'><span class='fa fa-plus'></span></span></a></td><td>Group</td><td>${d.name}</td></tr>`;
+
+                        $("#target-body").append(html);
+                    }
+                }
+                LoadCategory()
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadCategory() {
+        var option = $("#target-group option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var id = option.data("id");
+        
+        $.ajax({
+            url: "/Menu/GetMenuCategoryList?groupId=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                $("#target-category").empty();
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#target-category").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "'>" + d.name + "</option>")
+                }
+                $("#target-category").select2();
+
+                var type = $("#target-type").val();
+                if (type == "2") {
+                    $("#target-body").empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        var html = `<tr class="target" data-type="${type}" data-targetid="${d.id}" data-name="${d.name}"><td><a class='select-target me-3 icons-box d-inline-block' href='javascript:void(0);' ><span class='icon'><span class='fa fa-plus'></span></span></a></td><td>Category</td><td>${d.name}</td></tr>`;
+
+                        $("#target-body").append(html);
+                    }
+                }
+                LoadSubCategory()
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadSubCategory() {
+        var option = $("#target-category option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var id = option.data("id");
+        $.ajax({
+            url: "/Menu/GetMenuSubCategoryList?categoryId=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#target-subcategory").empty();
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#target-subcategory").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "'>" + d.name + "</option>")
+                }
+                $("#target-subcategory").select2();
+
+                var type = $("#target-type").val();
+                if (type == "3") {
+                    $("#target-body").empty();                   
+
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        var html = `<tr class="target" data-type="${type}" data-targetid="${d.id}" data-name="${d.name}"><td><a class='select-target me-3 icons-box d-inline-block' href='javascript:void(0);' ><span class='icon'><span class='fa fa-plus'></span></span></a></td><td>Sub Category</td><td>${d.name}</td></tr>`;
+
+                        $("#target-body").append(html);
+                    }
+                }
+                LoadProduct()
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadProduct() {
+        var option = $("#target-subcategory option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var id = option.data("id");
+        $.ajax({
+            url: "/Menu/GetMenuProductList?subCategoryId=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                
+                var type = $("#target-type").val();
+                if (type == "4") {
+                    $("#target-body").empty();
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        var html = `<tr class="target" data-type="${type}" data-targetid="${d.id}" data-name="${d.product.name}"><td><a class='select-target me-3 icons-box d-inline-block' href='javascript:void(0);' ><span class='icon'><span class='fa fa-plus'></span></span></a></td><td>Product</td><td>${d.product.name}</td></tr>`;
+                   
+                        $("#target-body").append(html);
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+
+
+
+</script>

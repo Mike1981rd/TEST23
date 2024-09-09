@@ -1,0 +1,521 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@{
+	ViewData["Title"] = "Home Page";
+	var branchs = (List<t_sucursal>)ViewBag.Branchs;
+	var fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+	var toDate = DateTime.Today;
+}
+
+
+<!-- Button trigger modal -->
+
+<div class="row">
+	<div class="card col-8 m-2">
+        <div class="card-body">
+            @*<div class="row">
+                <div class="col-12">
+                    <button id="btn-hoy" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('today');">Hoy</button>
+                    <button id="btn-ayer" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('yesterday');">Ayer</button>
+                    <button id="btn-ultimos-7-dias" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('last7days');">Ultimos 7 dias</button>
+                    <button id="btn-ultimo-mes" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('lastmonth');">Ultimo mes</button>
+                </div>
+            </div>*@
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date From"]</label>
+                            <input id="dashboard_filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date To"]</label>
+                            <input id="dashboard_filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+</div>
+<div class="row">
+	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
+	{
+		<div class="col">
+			<div class="dash-widget" style="background:#FF9F43">
+				<div class="dash-widgetimg">
+					<span><img src="/vendor/img/icons/dash1.svg" alt="img"></span>
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_purchase"></h5>
+					<h6>@ViewLocalizer["Total Purchase Amount"]</h6>
+				</div>
+			</div>
+		</div>
+	}
+	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
+	{
+		<div class="col">
+			<div class="dash-widget dash1" style="background:#00CFE8">
+				<div class="dash-widgetimg">
+					<span><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_purchase_tax"></h5>
+					<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
+				</div>
+			</div>
+		</div>
+	}
+	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
+	{
+		<div class="col">
+			<div class="dash-widget dash2" style="background:#1B2850; color:white">
+				<div class="dash-widgetimg">
+					<span><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_sale"></h5>
+					<h6>@ViewLocalizer["Total Sale Amount"]</h6>
+				</div>
+			</div>
+		</div>
+	}
+	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
+	{
+		<div class="col">
+			<div class="dash-widget dash3" style="background:#28C76F">
+				<div class="dash-widgetimg">
+					<span><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_sale_tax"></h5>
+					<h6>@ViewLocalizer["Total Sale Tax"]</h6>
+				</div>
+			</div>
+		</div>
+	}
+	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
+	{
+		<div class="col">
+			<div class="dash-widget dash3" style="background:#88226F">
+				<div class="dash-widgetimg">
+					<span><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_sale_propina"></h5>
+					<h6>@ViewLocalizer["Total Sale Propina"]</h6>
+				</div>
+			</div>
+		</div>
+	}	
+</div>
+
+<div class="row">
+	<div class="col-lg-7 col-sm-12 col-12 ">
+		<div class="card">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h5 class="card-title mb-0">@ViewLocalizer["Inventory Total"]</h5>
+				<h6 class="inventory-total"></h6>
+			</div>
+			<div class="card-body" style="position: relative;">
+				<div class="table-responsive dataview"  style="min-height: 315px;">
+					<table id="inventory-list" class="table">
+						<thead>
+							<tr>
+								<th>@ViewLocalizer["Warehouse"] </th>
+								<th>@ViewLocalizer["Value"]</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="card ">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h5 class="card-title mb-0">@ViewLocalizer["Alertas"]</h5>
+			</div>
+			<div class="card-body" style="position: relative;">
+				<div class="table-responsive dataview" style="min-height: 500px; max-height: 600px;">
+					<table id="alert-list" class="table">
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-5 col-sm-12 col-12 d-flex">
+		<div class="card flex-fill">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h4 class="card-title mb-0">@ViewLocalizer["Top Sales Products"]</h4>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group category-body">
+							<label>@ViewLocalizer["Category"] </label>
+							<select id="filter-productcategory" class="select">
+							</select>
+						</div>
+                    </div>
+					<div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group category-body">
+							<label>@ViewLocalizer["Sucursal"] </label>
+							<select id="filter-branch" class="select ">
+								<option>@ViewLocalizer["Choose sucursal"]</option>
+								@foreach (var b in branchs)
+								{
+									<option value="@b.ID">@b.Name</option>
+								}
+							</select>
+                        </div>
+                    </div>
+				</div>
+				<div class="table-responsive dataview"  style="min-height: 315px;"> 
+					<table id="prod-list" class="table">
+						<thead>
+							<tr>
+								<th>@ViewLocalizer["No"] </th>
+								<th>@ViewLocalizer[""] </th>
+								<th>@ViewLocalizer["Products"] </th>
+								<th>@ViewLocalizer["Qty"] </th>
+								<th>@ViewLocalizer["Cost"]</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card mb-0">
+	<div class="card-body">
+		<h4 class="card-title">@ViewLocalizer["Damaged Articles"]</h4>
+		<div class="table-responsive dataview">
+			<table id="damage-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Warehouse"] </th>
+						<th>@ViewLocalizer["Item Name"] </th>
+						<th>@ViewLocalizer["Qty"]</th>
+						<th>@ViewLocalizer["Unit"]</th>
+						<th>@ViewLocalizer["Date"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+
+    function SetRangeSelector(valor) {
+        $("#date-range-selector").val(valor).change();
+        return false;
+    }
+
+	$(document).ready(function() {
+		$("#dashboard_filter_datefrom").val('@fromDate.ToString("dd-MM-yyyy")').change();
+		$("#dashboard_filter_dateto").val('@toDate.ToString("dd-MM-yyyy")').change();
+
+		setTimeout(function () {
+			GetSalesTotal();
+			GetPurchaseTotal();
+			GetTopSalesProducts();
+			GetInventoryStock();
+			GetStockAlert()
+		}, 60 * 1000)
+		LoadProductFilterCategory();
+		GetSalesTotal();
+		GetPurchaseTotal();
+		GetTopSalesProducts();
+		GetInventoryStock();
+		GetStockAlert();
+
+		$("#date-range-selector").change(function () {
+			var selectedValue = $(this).val();
+			var currentDate = new Date();
+			var currentMonth = currentDate.getMonth();
+			var currentYear = currentDate.getFullYear(); 
+			switch (selectedValue) {
+				case "today":
+					var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+					$("#dashboard_filter_datefrom").val(formattedDate).change();
+                    $("#dashboard_filter_dateto").val(formattedDate).change();
+					
+					break;
+				case "yesterday":
+					var yesterday = new Date(currentDate);
+					yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+					var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+					$("#dashboard_filter_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                    $("#dashboard_filter_dateto").val(formattedYesterday).change();
+					break;
+				case "last7days":
+                    var formattedDate = formatDate(currentDate);
+					var last7Days = new Date(currentDate);
+					last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+					var formattedLast7Days = formatDate(last7Days);
+					$("#dashboard_filter_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                    $("#dashboard_filter_dateto").val(formattedDate).change();
+					break;
+				// Agrega más casos según tus necesidades
+				case "last30days":
+                    var formattedDate = formatDate(currentDate);
+					var last30Days = new Date(currentDate);
+					last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+					var formattedLast30Days = formatDate(last30Days);
+					$("#dashboard_filter_datefrom").val(formattedLast30Days).change();
+                    $("#dashboard_filter_dateto").val(formattedDate).change();
+					break;
+				case "last90days":
+                    var formattedDate = formatDate(currentDate);
+					var last90Days = new Date(currentDate);
+					last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+					var formattedLast90Days = formatDate(last90Days);
+					$("#dashboard_filter_datefrom").val(formattedLast90Days).change();
+                    $("#dashboard_filter_dateto").val(formattedDate).change();
+					break;
+				case "last365days":
+                    var formattedDate = formatDate(currentDate);
+					var last365Days = new Date(currentDate);
+					last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+					var formattedLast365Days = formatDate(last365Days);
+					$("#dashboard_filter_datefrom").val(formattedLast365Days).change();
+                    $("#dashboard_filter_dateto").val(formattedDate).change();
+					break;
+				case "lastmonth":
+                    var formattedDate = formatDate(currentDate);
+					var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+					var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+					var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+					var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+					$("#dashboard_filter_datefrom").val(formattedLastMonthFirstDay).change();
+                    var formattedDate = formatDate(currentDate);
+					break;
+			}
+
+			damagetable.ajax.reload();
+		});
+
+		$("#filter-productcategory").change(function () {
+			GetTopSalesProducts();
+		})
+		$("#filter-branch").change(function () {
+			GetTopSalesProducts();
+		})
+
+		// Función para formatear la fecha como "dd-MM-yyyy"
+		function formatDate(date) {
+			var day = date.getDate();
+			var month = date.getMonth() + 1;
+			var year = date.getFullYear();
+			return day + '-' + month + '-' + year;
+		}
+		var damagetable = $("#damage-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Inventory/GetDamageArticleList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+
+				{ "data": "id", "name": "id", "autoWidth": true },
+				{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "qty", "name": "qty", "autoWidth": true },
+				{ "data": "unitName", "name": "unitName", "autoWidth": true },
+				{ "data": "damageDate", "name": "damageDate", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'status',
+					render: function (data, type, row) {
+						if (row.status == 1) {
+							return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+						}
+						else if (row.status == 2) {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+						}
+						else if (row.status == 3) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>";
+						}
+					},
+					"autoWidth": true
+				}				
+			]
+		});
+	});
+
+	function LoadProductFilterCategory() {
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-productcategory").empty();
+				$("#filter-productcategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-productcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-productcategory").select2({
+					dropdownParent: $('.category-body')
+				});
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+	function GetSalesTotal()
+	{
+		var datefrom = $("#dashboard_filter_datefrom").val();
+		var dateto = $("#dashboard_filter_dateto").val();
+
+		$.ajax({
+			type: "POST",
+			url: "/Home/GetSalesTotal?from=" + datefrom + "&to=" + dateto,
+			success: function (data) {
+				$(".total_sale").text("$" + numberWithCommas(data.totalSales.toFixed(2)))
+				$(".total_sale_tax").text("$" + numberWithCommas(data.totalSalesTax.toFixed(2)))
+				$(".total_sale_propina").text("$" + numberWithCommas(data.totalPropina.toFixed(2)))
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function GetPurchaseTotal() {
+		var datefrom = $("#dashboard_filter_datefrom").val();
+		var dateto = $("#dashboard_filter_dateto").val();
+
+		$.ajax({
+			type: "POST",
+			url: "/Home/GetPurchaseTotal?from=" + datefrom + "&to=" + dateto,
+			success: function (data) {
+				$(".total_purchase").text("$" + numberWithCommas(data.totalPurchase.toFixed(2)))
+				$(".total_purchase_tax").text("$" + numberWithCommas(data.totalPurchaseTax.toFixed(2)))
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function GetTopSalesProducts() {
+		var category = $("#filter-productcategory").val();
+		var branch = $("#filter-branch").val();
+		$.ajax({
+			type: "POST",
+			url: "/Home/GetTopSalesProducts?category=" + category + "&branch=" + branch ,
+			success: function (data) {
+				$("#prod-list tbody").empty();
+				for(var i = 0; i < data.length; i++)
+				{
+					if (i > 10) break;
+					var p = data[i];
+
+					var img = "<img src='/vendor/img/product/product1.jpg' alt = 'supplier' /> ";
+					if (p.productImage)
+					{
+						img = "<img src='" + p.productImage + "' alt = 'supplier' style='max-height:40px; max-width:40px;' >";
+					}
+
+					var html = `<tr><td>${i + 1}</td><td>${img}</td><td> ${p.productName}</td><td>${p.qty}</td><td>${numberWithCommas(p.cost.toFixed(2))}</td></tr>`;
+
+					$("#prod-list tbody").append(html);
+				}
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function GetInventoryStock() {
+
+		$.ajax({
+			type: "POST",
+			url: "/Home/GetInventoryTotal",
+			success: function (data) {
+				$(".inventory-total").text("$" + numberWithCommas(data.inventoryTotal.toFixed(2)))
+
+				$("#inventory-list tbody").empty();
+				for (var i = 0; i < data.inventoryStock.length; i++) {
+					
+					var p = data.inventoryStock[i];
+									
+					var html = `<tr><td> ${p.warehouse}</td><td>$${numberWithCommas(p.total.toFixed(2))}</td></tr>`;
+
+					$("#inventory-list tbody").append(html);
+				}
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function GetStockAlert() {
+
+		$.ajax({
+			type: "POST",
+			url: "/Home/GetStockAlerts",
+			success: function (data) {
+
+				$("#alert-list tbody").empty();
+				for (var i = 0; i < data.length; i++) {
+
+					var p = data[i];
+					var diff = p.stock - p.minimum;
+					if (diff < 0) {
+						var html = `<tr><td> <div class="alert alert-danger m-0" role="alert">
+										  Alarma baja de inventario:  ${p.name}  Minimo: ${p.minimum.toFixed(2)} ${p.unitName}  Stock: ${p.stock.toFixed(2)} 
+									</div></td></tr>`;
+
+						$("#alert-list tbody").append(html);
+					}
+					
+				}
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+</script>

@@ -1,0 +1,1355 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var users = (List<Customer>)ViewBag.Customers;
+    var branchs = (List<t_sucursal>)ViewBag.Branchs;
+}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<style>
+    /* Estilos para el botón de colapso */
+    .collapsible {
+        background-color: floralwhite;
+        color: black;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+    }
+    /* Estilos para el contenido colapsable */
+    .contentCollap {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: floralwhite;
+    }
+</style>
+<div class="page-header">
+    <div class="page-title">
+        <h3>@ViewLocalizer["Orders Report"]</h3>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Rango de fechas"]</label>
+                    <select id="date-range-selector" class="form-control">
+                        <option value="">Selecciona una fecha</option>
+                        <option value="today">Hoy</option>
+                        <option value="yesterday">Ayer</option>
+                        <option value="last7days">Últimos 7 días</option>
+                        <option value="last30days">Últimos 30 días</option>
+                        <option value="last90days">Últimos 90 días</option>
+                        <option value="last365days">Últimos 365 días</option>
+                        <option value="lastmonth">Mes pasado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date From"] </label>
+                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date To"] </label>
+                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Sucursal"] </label>
+                    <select id="station-branch" class="select ">
+                        <option value=0>Selecciona una sucursal</option>
+                        @foreach (var b in branchs)
+                        {
+                            <option value="@b.ID">@b.Name</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Cliente"] </label>
+                    <select id="user" class="js-example-basic-multiple" name="states[]" multiple="multiple">
+                        <option value=0>Selecciona un cliente</option>
+                        @foreach (var b in users)
+                        {
+                            <option value="@b.ID">@b.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Orden"] </label>
+                    <input id="orden" type="number" class="form-control" required="">
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+
+                    <table id="report-orderlista-list" class="table">
+                        <thead id="ocultarthead">
+                            <tr>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Fecha"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center"># @ViewLocalizer["Orden"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Subtotal"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Descuento"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["ITBIS"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Propina"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Prop. Voluntaria"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Delivery"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Tipo"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Total"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Costo"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">%@ViewLocalizer["Costo"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Ganancia"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ordersreports-body">
+                            <tr>
+                                <td colspan="15">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>@ViewLocalizer["Producto"]</th>
+                                                <th>@ViewLocalizer["Precio"]</th>
+                                                <th>@ViewLocalizer["Qty"]</th>
+                                                <th>@ViewLocalizer["Sub Total"]</th>
+                                                <th>@ViewLocalizer["Descuento"]</th>
+                                                <th>@ViewLocalizer["Itbis"]</th>
+                                                <th>@ViewLocalizer["Propina"]</th>
+                                                <th>@ViewLocalizer["Total"]</th>
+                                                <th>@ViewLocalizer["Costo"]</th>
+                                                <th>@ViewLocalizer["Costo"]</th>
+                                                <th>@ViewLocalizer["Ganancia"]</th>
+                                            @*     <th>@ViewLocalizer["Método de Pago"]</th> *@
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="report-ProductosOrdersreports-body">
+                                            <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
+                                                <td colspan="15">
+                                                    <div id="detalle-1" class="collapse">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>@ViewLocalizer["Artículo"]</th>
+                                                                    <th>@ViewLocalizer["Marca"]</th>
+                                                                    <th>@ViewLocalizer["Qty"]</th>
+                                                                    <th>@ViewLocalizer["Unidad"]</th>
+                                                                    <th>@ViewLocalizer["Costo"]</th>
+                                                                    <th>@ViewLocalizer["Total"]</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                             
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
+                                                <td colspan="11">
+                                                    <!-- Colspan ajustado para cubrir las primeras 11 columnas -->
+                                                    <!-- Contenido de la fila -->
+                                                </td>
+                                                <td colspan="2">Mastercard 12345</td> <!-- Contenido de la nueva columna -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                          
+                        </tbody>
+                    </table>
+                
+                    <canvas id="myChart11"></canvas>
+                </div>
+            </div>
+          
+        </div>
+
+      
+
+
+    </div>
+</div>
+
+
+
+<script>
+
+
+ 
+    $(document).ready(function () {
+     
+
+        $("#user").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#orden").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#filter_datefrom").on('dp.change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#filter_dateto").on('dp.change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#station-branch").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        function formatDate(date) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            return day + '-' + month + '-' + year;
+        }
+
+        RefreshDayOfWeekReport();
+    });
+
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        return day + '-' + month + '-' + year;
+    }
+    $("#date-range-selector").change(function () {
+        var selectedValue = $(this).val();
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+        switch (selectedValue) {
+            case "today":
+                var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                $("#filter_datefrom").val(formattedDate).change();
+                $("#filter_dateto").val(formattedDate).change();
+
+                break;
+            case "yesterday":
+                var yesterday = new Date(currentDate);
+                yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                $("#filter_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                $("#filter_dateto").val(formattedYesterday).change();
+                break;
+            case "last7days":
+                var formattedDate = formatDate(currentDate);
+                var last7Days = new Date(currentDate);
+                last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                var formattedLast7Days = formatDate(last7Days);
+                $("#filter_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            // Agrega más casos según tus necesidades
+            case "last30days":
+                var formattedDate = formatDate(currentDate);
+                var last30Days = new Date(currentDate);
+                last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                var formattedLast30Days = formatDate(last30Days);
+                $("#filter_datefrom").val(formattedLast30Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "last90days":
+                var formattedDate = formatDate(currentDate);
+                var last90Days = new Date(currentDate);
+                last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                var formattedLast90Days = formatDate(last90Days);
+                $("#filter_datefrom").val(formattedLast90Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "last365days":
+                var formattedDate = formatDate(currentDate);
+                var last365Days = new Date(currentDate);
+                last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                var formattedLast365Days = formatDate(last365Days);
+                $("#filter_datefrom").val(formattedLast365Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "lastmonth":
+                var formattedDate = formatDate(currentDate);
+                var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                $("#filter_datefrom").val(formattedLastMonthFirstDay).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+        }
+     
+    });
+
+
+    function RefreshDayOfWeekReport() {
+        var datefrom = $("#filter_datefrom").val();
+        var dateto = $("#filter_dateto").val();
+        var user = $("#user").val();
+        var orden = $("#orden").val();
+        var sucursal = $("#station-branch").val();
+        
+        $("#report-ordersreports-body").empty();
+ 
+        ShowLoader()
+
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetWorkDayReportOrders?from=" + datefrom + "&to=" + dateto + "&user=" + user + "&sucursal=" + sucursal + "&orden=" + orden,
+            success: function (data) {
+                HideLoader()
+
+                if (data.resultado) {
+
+
+                    
+
+                    function addRowToMainTable(order_, index) {
+                        var ocultarthead_ = document.getElementById("ocultarthead");
+                        ocultarthead_.style.display = "none";
+
+                        var theadElement = document.createElement("thead");
+                        // ----------------------------------------- por elementos
+                        var trElementCABEZAL = document.createElement("tr");
+                        var thFecha = document.createElement("th");
+                        thFecha.style.backgroundColor = "#493F5E";
+                        thFecha.style.color = "white";
+                        thFecha.style.textAlign = "center";
+                        thFecha.textContent = "Fecha";
+                        trElementCABEZAL.appendChild(thFecha);
+                        // ---------------------------------------------------
+                        // var thCliente = document.createElement("th");
+                        // thCliente.style.backgroundColor = "#493F5E";
+                        // thCliente.style.color = "white";
+                        // thCliente.style.textAlign = "center";
+                        // thCliente.textContent = "Cliente";
+                        // trElementCABEZAL.appendChild(thCliente);
+                        // ---------------------------------------------------
+                        // var thNumero = document.createElement("th");
+                        // thNumero.style.backgroundColor = "#493F5E";
+                        // thNumero.style.color = "white";
+                        // thNumero.style.textAlign = "center";
+                        // thNumero.textContent = "Número";
+                        // trElementCABEZAL.appendChild(thNumero);
+                        // ---------------------------------------------------
+                        var thOrden = document.createElement("th");
+                        thOrden.style.backgroundColor = "#493F5E";
+                        thOrden.style.color = "white";
+                        thOrden.style.textAlign = "center";
+                        thOrden.textContent = "Orden";
+                      
+                        console.log("se agrego el pop- up")
+                        trElementCABEZAL.appendChild(thOrden);
+                        // ---------------------------------------------------
+                        // var thAbierta = document.createElement("th");
+                        // thAbierta.style.backgroundColor = "#493F5E";
+                        // thAbierta.style.color = "white";
+                        // thAbierta.style.textAlign = "center";
+                        // thAbierta.textContent = "Abierta";
+                        // trElementCABEZAL.appendChild(thAbierta);
+                        // // ---------------------------------------------------
+                        // var thCerrada = document.createElement("th");
+                        // thCerrada.style.backgroundColor = "#493F5E";
+                        // thCerrada.style.color = "white";
+                        // thCerrada.style.textAlign = "center";
+                        // thCerrada.textContent = "Cerrada";
+                        // trElementCABEZAL.appendChild(thCerrada);
+                        // ---------------------------------------------------
+                        var thSubtotal = document.createElement("th");
+                        thSubtotal.style.backgroundColor = "#493F5E";
+                        thSubtotal.style.color = "white";
+                        thSubtotal.style.textAlign = "center";
+                        thSubtotal.textContent = "Subtotal";
+                        trElementCABEZAL.appendChild(thSubtotal);
+                        // ---------------------------------------------------
+                        var thDescuento = document.createElement("th");
+                        thDescuento.style.backgroundColor = "#493F5E";
+                        thDescuento.style.color = "white";
+                        thDescuento.style.textAlign = "center";
+                        thDescuento.textContent = "Descuento";
+                        trElementCABEZAL.appendChild(thDescuento);
+                        // ---------------------------------------------------
+                        var thITBIS = document.createElement("th");
+                        thITBIS.style.backgroundColor = "#493F5E";
+                        thITBIS.style.color = "white";
+                        thITBIS.style.textAlign = "center";
+                        thITBIS.textContent = "ITBIS";
+                        trElementCABEZAL.appendChild(thITBIS);
+                        // ---------------------------------------------------
+                        var thPropina = document.createElement("th");
+                        thPropina.style.backgroundColor = "#493F5E";
+                        thPropina.style.color = "white";
+                        thPropina.style.textAlign = "center";
+                        thPropina.textContent = "Propina";
+                        trElementCABEZAL.appendChild(thPropina);
+                        // ---------------------------------------------------
+                        var thPropinaVoluntaria = document.createElement("th");
+                        thPropinaVoluntaria.style.backgroundColor = "#493F5E";
+                        thPropinaVoluntaria.style.color = "white";
+                        thPropinaVoluntaria.style.textAlign = "center";
+                        thPropinaVoluntaria.textContent = "Prop. Voluntaria";
+                        trElementCABEZAL.appendChild(thPropinaVoluntaria);
+                        // ---------------------------------------------------
+                        var thDelivery = document.createElement("th");
+                        thDelivery.style.backgroundColor = "#493F5E";
+                        thDelivery.style.color = "white";
+                        thDelivery.style.textAlign = "center";
+                        thDelivery.textContent = "Delivery";
+                        trElementCABEZAL.appendChild(thDelivery);
+                        // ---------------------------------------------------
+                        var thTipo = document.createElement("th");
+                        thTipo.style.backgroundColor = "#493F5E";
+                        thTipo.style.color = "white";
+                        thTipo.style.textAlign = "center";
+                        thTipo.textContent = "Tipo";
+                        trElementCABEZAL.appendChild(thTipo);
+                        // ---------------------------------------------------
+                        var thTotal = document.createElement("th");
+                        thTotal.style.backgroundColor = "#493F5E";
+                        thTotal.style.color = "white";
+                        thTotal.style.textAlign = "center";
+                        thTotal.textContent = "Total";
+                        trElementCABEZAL.appendChild(thTotal);
+                        // ---------------------------------------------------
+                        var thCosto = document.createElement("th");
+                        thCosto.style.backgroundColor = "#493F5E";
+                        thCosto.style.color = "white";
+                        thCosto.style.textAlign = "center";
+                        thCosto.textContent = "Costo";
+                        trElementCABEZAL.appendChild(thCosto);
+                        // ---------------------------------------------------
+                        var thPorcentajeCosto = document.createElement("th");
+                        thPorcentajeCosto.style.backgroundColor = "#493F5E";
+                        thPorcentajeCosto.style.color = "white";
+                        thPorcentajeCosto.style.textAlign = "center";
+                        thPorcentajeCosto.textContent = "%Costo";
+                        trElementCABEZAL.appendChild(thPorcentajeCosto);
+                        // ---------------------------------------------------
+                        var thGanancia = document.createElement("th");
+                        thGanancia.style.backgroundColor = "#493F5E";
+                        thGanancia.style.color = "white";
+                        thGanancia.style.textAlign = "center";
+                        thGanancia.textContent = "Ganancia";
+                        trElementCABEZAL.appendChild(thGanancia);
+                        // ---------------------------------------------------
+
+                        // ----------------------------------------- nombres 
+                        var trElement = document.createElement("tr");
+
+                     
+                        trElement.setAttribute("class", "clickable");
+                        trElement.setAttribute("data-bs-toggle", "collapse");
+                        trElement.setAttribute("data-bs-target", "#group-of-rows-" + index + "-" + index);
+                        
+                        var tdFecha = document.createElement("td");
+                        tdFecha.setAttribute("align", "center");
+                        tdFecha.textContent = order_.fecha;
+                        trElement.appendChild(tdFecha);
+                        // ----------------------------------------
+
+                        // var tdClienteName = document.createElement("td");
+                        // tdClienteName.setAttribute("align", "center");
+                        // tdClienteName.textContent = order_.clienteName;
+                        // trElement.appendChild(tdClienteName);
+                        // ----------------------------------------
+                     
+                        // var tdOrderNum = document.createElement("td");
+                        // tdOrderNum.setAttribute("align", "center");
+                        // tdOrderNum.textContent = order_.numero;
+                        // trElement.appendChild(tdOrderNum);
+                        // ------------------------------
+
+                        var tdNum = document.createElement("td");
+                        tdNum.setAttribute("align", "center");
+                        tdNum.textContent = order_.orderNum;
+
+                        tdNum.addEventListener("mouseenter", function () {
+                           
+                            
+                            var popupContent = document.createElement("div");                                                     
+                            popupContent.classList.add("popupDiv");
+                            popupContent.innerHTML = "<h2 style='font-weight: bold;'>Datos de Orden</h2><ul>" +
+                                "<li><strong><span style='color: blue;'>Nombre Cliente:</span></strong> <span style='color: blue;'>" + order_.clienteName + "</span></li>" +
+                                "<li><strong><span style='color: blue;'>Número:</span></strong> <span style='color: blue;'>" + order_.numero + "</span></li>" +
+                                "<li><strong><span style='color: blue;'>Abierta:</span></strong> <span style='color: blue;'>" + order_.abiertaName + "</span>: <hr style='margin: 0; padding: 0; height: 1px;' />" + "<span style='color: #00008B;'>" + order_.abierta + "</span></li>" +
+                                "<li><strong><span style='color: blue;'>Cerrada:</span></strong> <span style='color: blue;'>" + order_.cerradaName + "</span>: <hr style='margin: 0; padding: 0; height: 1px;' />" + "<span style='color: #00008B;'>" + order_.cerrada + "</span></li></ul>";
+                          
+                            popupContent.style.position = "absolute";
+                            
+                            popupContent.style.top = (tdNum.offsetTop + 150)+ "px";
+                            popupContent.style.left = (tdNum.offsetLeft + 220)+ "px";
+                            popupContent.style.backgroundColor = "white";
+                            popupContent.style.padding = "20px";
+                            popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+                            popupContent.style.zIndex = "9999";
+                            popupContent.style.borderRadius = "10px";
+                            document.body.appendChild(popupContent);
+
+                           
+                            tdNum.addEventListener("mouseleave", function () {
+                                document.body.removeChild(popupContent);
+                            });
+                        });
+
+                        trElement.appendChild(tdNum);
+                        // -------------------------------------------
+
+                        // var tdAbierta = document.createElement("td");
+                        // tdAbierta.setAttribute("align", "center");
+                        // tdAbierta.innerHTML = order_.abiertaName + "<hr style='margin: 0; padding: 0; height: 1px; ' />" + order_.abierta;
+                        // trElement.appendChild(tdAbierta);
+
+                        // // ------------------------
+
+                        
+                        // // ------------------------
+                       
+                        // var tdCerrada = document.createElement("td");
+                        // tdCerrada.setAttribute("align", "center");
+                        // tdCerrada.innerHTML = order_.cerradaName + "<hr style='margin: 0; padding: 0; height: 1px; ' />" + order_.cerrada;
+                        // trElement.appendChild(tdCerrada);
+
+                        // ------------------------
+                        var tdsubTotal = document.createElement("td");
+                        tdsubTotal.setAttribute("align", "center");
+                        tdsubTotal.innerHTML = order_.subTotal;
+                        trElement.appendChild(tdsubTotal);
+                        // ------------------------
+
+                        var tdsubdescuento = document.createElement("td");
+                        tdsubdescuento.setAttribute("align", "center");
+                        tdsubdescuento.innerHTML = order_.descuento;
+                        trElement.appendChild(tdsubdescuento);
+                        // ------------------------
+
+                        var tdsubditbis = document.createElement("td");
+                        tdsubditbis.setAttribute("align", "center");
+                        tdsubditbis.innerHTML = order_.itbis;
+                        trElement.appendChild(tdsubditbis);
+                        // ------------------------
+
+                        var tdsubdpropina = document.createElement("td");
+                        tdsubdpropina.setAttribute("align", "center");
+                        tdsubdpropina.innerHTML = order_.propina;
+                        trElement.appendChild(tdsubdpropina);
+                        // ------------------------
+
+                        var tdsubdpropinavoluntaria = document.createElement("td");
+                        tdsubdpropinavoluntaria.setAttribute("align", "center");
+                        tdsubdpropinavoluntaria.innerHTML = order_.propinaVoluntaria;
+                        trElement.appendChild(tdsubdpropinavoluntaria);
+                        // ------------------------
+
+                        var tdsubddelivery = document.createElement("td");
+                        tdsubddelivery.setAttribute("align", "center");
+                        tdsubddelivery.innerHTML = order_.delivery;
+                        trElement.appendChild(tdsubddelivery);
+                        // ------------------------
+
+                        var tdsubdtip = document.createElement("td");
+                        tdsubdtip.setAttribute("align", "center");
+                        tdsubdtip.innerHTML = order_.tipo;
+                        trElement.appendChild(tdsubdtip);
+                        // ------------------------
+
+                        var tdsubtotal = document.createElement("td");
+                        tdsubtotal.setAttribute("align", "center");
+                        tdsubtotal.innerHTML = order_.total;
+                        trElement.appendChild(tdsubtotal);
+                        // ------------------------
+                        var tdcosto = document.createElement("td");
+                        tdcosto.setAttribute("align", "center");
+                        tdcosto.innerHTML = order_.costo;
+                        trElement.appendChild(tdcosto);
+                        // ------------------------
+                        
+
+                        var tdcostoPor = document.createElement("td");
+                        tdcostoPor.setAttribute("align", "center");
+                        tdcostoPor.innerHTML = order_.costoPor;
+                        trElement.appendChild(tdcostoPor);
+                        // ------------------------
+
+                        var tdganancia = document.createElement("td");
+                        tdganancia.setAttribute("align", "center");
+                        tdganancia.innerHTML = order_.ganancia;
+                        trElement.appendChild(tdganancia);
+                        // ------------------------
+                   // ------------------------------------------------------------------------
+                        var trElementPagos = document.createElement("tr");
+                        trElementPagos.setAttribute("align", "right");
+                       
+                      
+                        if (order_.listmetodoPago.length > 0) {
+                            var trElementPagossub = document.createElement("tr");
+                            trElementPagossub.setAttribute("style", "width: 100%;");
+
+
+
+                            // -------------------------------------------------
+
+                          
+
+                            // -------------------------------------------------
+
+                            var tdTipo6 = document.createElement("td");
+                            tdTipo6.setAttribute("align", "center");
+                            tdTipo6.style.fontWeight = "bold";
+                            tdTipo6.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo6);
+
+                            // -------------------------------------------------
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+
+
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+                            var tdTipo7 = document.createElement("td");
+                            tdTipo7.setAttribute("align", "center");
+                            tdTipo7.style.fontWeight = "bold";
+                            tdTipo7.style.width = "200px"; // Establecer el ancho a 200px
+                            trElementPagos.appendChild(tdTipo7);
+
+                            var tdpapa = document.createElement("td");
+                            for (var c = 0; c < order_.listmetodoPago.length; c++) {
+                               
+                                var metodospago = order_.listmetodoPago[c];
+                                if (metodospago.cantidad !== "0.0") {
+                                
+                                    // -------------------------------------------------
+                                    // ------------------------------------------------------
+                                  
+                                    var trpapa = document.createElement("tr");
+                                    var tdTipo = document.createElement("td");
+                                    tdTipo.setAttribute("align", "center");
+                                    tdTipo.style.fontWeight = "bold";
+                                    tdTipo.textContent = metodospago.tipo;
+                                    trpapa.appendChild(tdTipo);
+
+                                    var tdCantidad = document.createElement("td");
+                                    tdCantidad.setAttribute("align", "center");
+                                    tdCantidad.style.fontWeight = "bold";
+                                    tdCantidad.textContent = metodospago.cantidad;
+                                    trpapa.appendChild(tdCantidad);
+                                    tdpapa.appendChild(trpapa);
+
+                                    // ------------------------------------------------------
+                                    trElementPagos.appendChild(tdpapa);
+                                    // trElementPagos.appendChild(trElementPagossub);
+                                }
+                            }
+                        }
+                   // ------------------------------------------------------
+                        if (order_.listOrderItems.length > 0){ 
+                        var newRowSub = document.createElement("tr");
+                        newRowSub.id = "group-of-rows-" + index + "-" + index;
+                        newRowSub.className = "collapse";
+                      
+                        var colspanCell = document.createElement("td");
+                        colspanCell.colSpan = 10;
+                        var innerTable = document.createElement("table");
+                        innerTable.setAttribute("border", "1");
+                            innerTable.style.paddingRight = "100px";
+                        innerTable.setAttribute("id", "SegundaTablaHija");
+                       
+                        
+                        for (var i = 0; i < order_.listOrderItems.length; i++) 
+                        {
+                                var row = document.createElement("tr");
+                                var headerCellProducto = document.createElement("th");
+                                headerCellProducto.textContent = "Producto";
+                                headerCellProducto.style.backgroundColor = "#1d2951";
+                                headerCellProducto.style.color = "white";
+                                headerCellProducto.style.textAlign = "center";
+                                headerCellProducto.style.width = "10%";
+
+                                row.appendChild(headerCellProducto);
+                                // ---------------------------Tabla
+
+                                var headerCellPrecio = document.createElement("th");
+                                headerCellPrecio.textContent = "Precio";
+                                headerCellPrecio.style.backgroundColor = "#1d2951";
+                                headerCellPrecio.style.color = "white";
+                                headerCellPrecio.style.textAlign = "center";
+                                headerCellPrecio.style.width = "10%";
+
+                                row.appendChild(headerCellPrecio);
+                                // ---------------------------Tabla
+
+                                var headerCellQty = document.createElement("th");
+                                headerCellQty.textContent = "Qty";
+                                headerCellQty.style.backgroundColor = "#1d2951";
+                                headerCellQty.style.color = "white";
+                                headerCellQty.style.textAlign = "center";
+                                headerCellQty.style.width = "10%";
+
+                                row.appendChild(headerCellQty);
+                                // ---------------------------Tabla
+
+                                var headerCellSubTotal = document.createElement("th");
+                                headerCellSubTotal.textContent = "Sub Total";
+                                headerCellSubTotal.style.backgroundColor = "#1d2951";
+                                headerCellSubTotal.style.color = "white";
+                                headerCellSubTotal.style.textAlign = "center";
+                                headerCellSubTotal.style.width = "10%";
+
+                                row.appendChild(headerCellSubTotal);
+                                // ---------------------------Tabla
+                                var headerCellDescuento = document.createElement("th");
+                                headerCellDescuento.textContent = "Descuento";
+                                headerCellDescuento.style.backgroundColor = "#1d2951";
+                                headerCellDescuento.style.color = "white";
+                                headerCellDescuento.style.textAlign = "center";
+                                headerCellDescuento.style.width = "10%";
+
+                                row.appendChild(headerCellDescuento);
+                                // ---------------------------Tabla
+
+                                var headerCellItbis = document.createElement("th");
+                                headerCellItbis.textContent = "Itbis";
+                                headerCellItbis.style.backgroundColor = "#1d2951";
+                                headerCellItbis.style.color = "white";
+                                headerCellItbis.style.textAlign = "center";
+                                headerCellItbis.style.width = "10%";
+
+                                row.appendChild(headerCellItbis);
+                                // ---------------------------Tabla
+
+
+                                var headerCellIPropina = document.createElement("th");
+                                headerCellIPropina.textContent = "Propina";
+                                headerCellIPropina.style.backgroundColor = "#1d2951";
+                                headerCellIPropina.style.color = "white";
+                                headerCellIPropina.style.textAlign = "center";
+                                headerCellIPropina.style.width = "10%";
+
+                                row.appendChild(headerCellIPropina);
+                                // ---------------------------Tabla
+
+                                var headerCellITotal = document.createElement("th");
+                                headerCellITotal.textContent = "Total";
+                                headerCellITotal.style.backgroundColor = "#1d2951";
+                                headerCellITotal.style.color = "white";
+                                headerCellITotal.style.textAlign = "center";
+                                headerCellITotal.style.width = "10%";
+
+                                row.appendChild(headerCellITotal);
+
+                                var headerCellIcosto = document.createElement("th");
+                                headerCellIcosto.textContent = "Costo";
+                                headerCellIcosto.style.backgroundColor = "#1d2951";
+                                headerCellIcosto.style.color = "white";
+                                headerCellIcosto.style.textAlign = "center";
+                                headerCellIcosto.style.width = "10%";
+
+                                row.appendChild(headerCellIcosto);
+
+                                var headerCellIcostopor = document.createElement("th");
+                                headerCellIcostopor.textContent = "%Costo";
+                                headerCellIcostopor.style.backgroundColor = "#1d2951";
+                                headerCellIcostopor.style.color = "white";
+                                headerCellIcostopor.style.textAlign = "center";
+                                headerCellIcostopor.style.width = "10%";
+
+                                row.appendChild(headerCellIcostopor);
+
+                                var headerCellIGanancia = document.createElement("th");
+                                headerCellIGanancia.textContent = "Ganancias";
+                                headerCellIGanancia.style.backgroundColor = "#1d2951";
+                                headerCellIGanancia.style.color = "white";
+                                headerCellIGanancia.style.textAlign = "center";
+                                headerCellIGanancia.style.width = "10%";
+
+                                row.appendChild(headerCellIGanancia);
+
+
+                                innerTable.appendChild(row)
+                            var orderItem = order_.listOrderItems[i];
+                            var rowContenido = document.createElement("tr");
+                            rowContenido.setAttribute("data-bs-toggle", "collapse");
+                             rowContenido.setAttribute("data-bs-target", "#group-of-rows-" + index + "-" + index + "-" + i);
+                            var contentCellproducto = document.createElement("td");
+                            contentCellproducto.textContent = orderItem.producto;
+                            contentCellproducto.style.width = "10%";
+                            contentCellproducto.style.textAlign = "center";
+
+                            rowContenido.appendChild(contentCellproducto);
+
+                            // ---------------------------------------------
+
+                            var contentCellprecio = document.createElement("td");
+                            contentCellprecio.textContent = orderItem.precio;
+                            contentCellprecio.style.width = "10%";
+                            contentCellprecio.style.textAlign = "center";
+
+                            rowContenido.appendChild(contentCellprecio);
+
+                            // ---------------------------------------------
+
+
+                            var contentCellqty = document.createElement("td");
+                            contentCellqty.textContent = orderItem.qty;
+                            contentCellqty.style.width = "10%";
+                            contentCellqty.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellqty);
+
+                            // ---------------------------------------------
+
+                            var contentCellsubTotal = document.createElement("td");
+                                contentCellsubTotal.textContent = orderItem.subTotal;
+                            contentCellsubTotal.style.width = "10%";
+                            contentCellsubTotal.style.textAlign = "center";
+
+                            rowContenido.appendChild(contentCellsubTotal);
+
+                            // ---------------------------------------------
+
+                                var contentCellitdescuento = document.createElement("td");
+                                contentCellitdescuento.textContent = orderItem.descuento;
+                                contentCellitdescuento.style.width = "10%";
+                                contentCellitdescuento.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellitdescuento);
+
+                            // ---------------------------------------------
+
+                                var contentCellitbis = document.createElement("td");
+                                contentCellitbis.textContent = orderItem.itbis;
+                                contentCellitbis.style.width = "10%";
+                                contentCellitbis.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellitbis);
+
+                            // ---------------------------------------------
+                                var contentCellppropinal = document.createElement("td");
+                                contentCellppropinal.textContent = orderItem.propina;
+                                contentCellppropinal.style.width = "10%";
+                                contentCellppropinal.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellppropinal);
+
+                                // ---------------------------------------------
+                            var contentCellptotal = document.createElement("td");
+                                contentCellptotal.textContent = orderItem.total;
+                            contentCellptotal.style.width = "10%";
+                            contentCellptotal.style.textAlign = "center";
+
+                            rowContenido.appendChild(contentCellptotal);
+
+                            // ---------------------------------------------
+
+
+                            var contentCellpcosto = document.createElement("td");
+                            contentCellpcosto.textContent = orderItem.costo;
+                            contentCellpcosto.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellpcosto);
+
+                            // ---------------------------------------------
+                                var contentCellcostoPor = document.createElement("td");
+                                contentCellcostoPor.textContent = orderItem.costoPor;
+                                contentCellcostoPor.style.width = "10%";
+                                contentCellcostoPor.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellcostoPor);
+
+                            // ---------------------------------------------
+
+                                // ---------------------------------------------
+                                var contentCellganancia = document.createElement("td");
+                                contentCellganancia.textContent = orderItem.ganancia;
+                                contentCellganancia.style.width = "10%";
+                                contentCellganancia.style.textAlign = "center";
+
+                                rowContenido.appendChild(contentCellganancia);
+
+                                // ---------------------------------------------
+
+                            
+                            // ultima tabla
+                          
+                                var orderItem = order_.listOrderItems[i];
+                                if (orderItem.listRecetasItems.length > 0) {
+                                    var newRowSubsub = document.createElement("tr");
+                                    newRowSubsub.id = "group-of-rows-" + index + "-" + index + "-" + i;
+                                    newRowSubsub.className = "collapse";
+                                    var colspanCellsub = document.createElement("td");
+                                    colspanCellsub.colSpan = 10;
+                                    var innerTableSub = document.createElement("table");
+                                    innerTableSub.setAttribute("border", "1");
+                                    innerTableSub.style.paddingRight = "250px";
+                                    var rowsub = document.createElement("tr");
+                                    // ----------------------------------------------------
+
+                                    var headerCellarticulo = document.createElement("th");
+                                    headerCellarticulo.textContent = "Articulo";
+                                    headerCellarticulo.style.backgroundColor = "#234f1e";
+                                    headerCellarticulo.style.color = "white";
+                                    headerCellarticulo.style.textAlign = "center";
+                                    headerCellarticulo.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellarticulo);
+                                    // ----------------------------------------------------
+
+                                    var headerCellMarca = document.createElement("th");
+                                    headerCellMarca.textContent = "Marca";
+                                    headerCellMarca.style.backgroundColor = "#234f1e";
+                                    headerCellMarca.style.color = "white";
+                                    headerCellMarca.style.textAlign = "center";
+                                    headerCellMarca.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellMarca);
+                                    // ----------------------------------------------------
+                                    var headerCellqty = document.createElement("th");
+                                    headerCellqty.textContent = "Qty";
+                                    headerCellqty.style.backgroundColor = "#234f1e";
+                                    headerCellqty.style.color = "white";
+                                    headerCellqty.style.textAlign = "center";
+                                    headerCellqty.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellqty);
+                                    // ----------------------------------------------------
+                                    var headerCellUnidad = document.createElement("th");
+                                    headerCellUnidad.textContent = "Unidad";
+                                    headerCellUnidad.style.backgroundColor = "#234f1e";
+                                    headerCellUnidad.style.color = "white";
+                                    headerCellUnidad.style.textAlign = "center";
+                                    headerCellUnidad.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellUnidad);
+                                    // ----------------------------------------------------
+                                    var headerCellCosto = document.createElement("th");
+                                    headerCellCosto.textContent = "Costo";
+                                    headerCellCosto.style.backgroundColor = "#234f1e";
+                                    headerCellCosto.style.color = "white";
+                                    headerCellCosto.style.textAlign = "center";
+                                    headerCellCosto.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellCosto);
+                                    // ----------------------------------------------------
+
+                                    var headerCellTotal = document.createElement("th");
+                                    headerCellTotal.textContent = "Total";
+                                    headerCellTotal.style.backgroundColor = "#234f1e";
+                                    headerCellTotal.style.color = "white";
+                                    headerCellTotal.style.textAlign = "center";
+                                    headerCellTotal.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellTotal);
+                                    // ----------------------------------------------------
+
+                                   
+
+                                    for (var z = 0; z < orderItem.listRecetasItems.length; z++) {
+                                        var prudctoItemsub = orderItem.listRecetasItems[z];
+                                        var rowContenidosub = document.createElement("tr");
+                                        // -------------------------------------------------------------
+                                        var contentCellarticulo = document.createElement("td");
+                                        contentCellarticulo.textContent = prudctoItemsub.articulo;
+                                        contentCellarticulo.style.width = "10%";
+                                        contentCellarticulo.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCellarticulo);
+
+                                        // ---------------------------------------------
+                                        var contentCellmarca = document.createElement("td");
+                                        contentCellmarca.textContent = prudctoItemsub.marca;
+                                        contentCellmarca.style.width = "10%";
+                                        contentCellmarca.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCellmarca);
+
+                                        // ---------------------------------------------
+
+                                        var contentCellqty = document.createElement("td");
+                                        contentCellqty.textContent = prudctoItemsub.qty;
+                                        contentCellqty.style.width = "10%";
+                                        contentCellqty.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCellqty);
+
+                                        // ---------------------------------------------
+
+                                        var contentCellunidad = document.createElement("td");
+                                        contentCellunidad.textContent = prudctoItemsub.unidad;
+                                        contentCellunidad.style.width = "10%";
+                                        contentCellunidad.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCellunidad);
+
+                                        // ---------------------------------------------
+
+
+                                        var contentCellcosto = document.createElement("td");
+                                        contentCellcosto.textContent = prudctoItemsub.costo;
+                                        contentCellcosto.style.width = "10%";
+                                        contentCellcosto.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCellcosto);
+
+                                        // ---------------------------------------------
+
+                                        var contentCelltotal = document.createElement("td");
+                                        contentCelltotal.textContent = prudctoItemsub.total;
+                                        contentCelltotal.style.width = "10%";
+                                        contentCelltotal.style.textAlign = "center";
+
+                                        rowContenidosub.appendChild(contentCelltotal);
+
+                                        // rowsub.appendChild(rowContenidosub);
+                                        // ---------------------------------------------
+                                        innerTableSub.appendChild(rowsub)
+                                        innerTableSub.appendChild(rowContenidosub)
+                                       
+                                    }
+                                    
+                                    colspanCellsub.appendChild(innerTableSub);
+                                    newRowSubsub.appendChild(colspanCellsub);
+                                 
+                                    // innerTable
+
+
+
+
+                                }
+                                else {
+                                    var newRowSubsub = document.createElement("tr");
+                                    newRowSubsub.id = "group-of-rows-" + index + "-" + index + "-" + i;
+                                    newRowSubsub.style.display = "none";
+                                    newRowSubsub.className = "collapse";
+
+                                    var colspanCellsub = document.createElement("td");
+                                    colspanCellsub.colSpan = 10;
+                                    var innerTableSub = document.createElement("table");
+                                    innerTableSub.setAttribute("border", "1");
+                                    var rowsub = document.createElement("tr");
+                                    // ----------------------------------------------------
+
+                                    var headerCellarticulo = document.createElement("th");
+                                    headerCellarticulo.textContent = "Articulo";
+                                    headerCellarticulo.style.backgroundColor = "#d2b48c";
+                                    headerCellarticulo.style.color = "white";
+                                    headerCellarticulo.style.textAlign = "center";
+                                    headerCellarticulo.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellarticulo);
+                                    // ----------------------------------------------------
+
+                                    var headerCellMarca = document.createElement("th");
+                                    headerCellMarca.textContent = "Marca";
+                                    headerCellMarca.style.backgroundColor = "#d2b48c";
+                                    headerCellMarca.style.color = "white";
+                                    headerCellMarca.style.textAlign = "center";
+                                    headerCellMarca.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellMarca);
+                                    // ----------------------------------------------------
+                                    var headerCellqty = document.createElement("th");
+                                    headerCellqty.textContent = "Qty";
+                                    headerCellqty.style.backgroundColor = "#d2b48c";
+                                    headerCellqty.style.color = "white";
+                                    headerCellqty.style.textAlign = "center";
+                                    headerCellqty.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellqty);
+                                    // ----------------------------------------------------
+                                    var headerCellUnidad = document.createElement("th");
+                                    headerCellUnidad.textContent = "Unidad";
+                                    headerCellUnidad.style.backgroundColor = "#d2b48c";
+                                    headerCellUnidad.style.color = "white";
+                                    headerCellUnidad.style.textAlign = "center";
+                                    headerCellUnidad.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellUnidad);
+                                    // ----------------------------------------------------
+                                    var headerCellCosto = document.createElement("th");
+                                    headerCellCosto.textContent = "Costo";
+                                    headerCellCosto.style.backgroundColor = "#d2b48c";
+                                    headerCellCosto.style.color = "white";
+                                    headerCellCosto.style.textAlign = "center";
+                                    headerCellCosto.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellCosto);
+                                    // ----------------------------------------------------
+
+                                    var headerCellTotal = document.createElement("th");
+                                    headerCellTotal.textContent = "Total";
+                                    headerCellTotal.style.backgroundColor = "#d2b48c";
+                                    headerCellTotal.style.color = "white";
+                                    headerCellTotal.style.textAlign = "center";
+                                    headerCellTotal.style.width = "10%";
+
+                                    rowsub.appendChild(headerCellTotal);
+                                    // ----------------------------------------------------
+
+                                    innerTableSub.appendChild(rowsub)
+
+
+
+                                    colspanCellsub.appendChild(innerTableSub);
+                                    newRowSubsub.appendChild(colspanCellsub);
+
+                                    // innerTable
+
+
+                                   
+
+                                }
+                               
+                          innerTable.appendChild(rowContenido);
+                         innerTable.appendChild(newRowSubsub);
+
+                               
+                        
+                        }
+                        colspanCell.appendChild(innerTable);
+                        newRowSub.appendChild(colspanCell);
+                        }
+                        // trElement.appendChild(newRowSub);
+
+                    
+                         // if (order_.listOrderItems.length > 0) {
+
+
+                        var tabla = document.getElementById("report-ordersreports-body");
+                        tabla.appendChild(trElementCABEZAL);
+                        tabla.appendChild(trElement);
+                        tabla.appendChild(trElementPagos);
+                        if (newRowSub != null) {
+                            tabla.appendChild(newRowSub);
+                        }
+                       
+
+                        
+                                }
+
+                          // }
+
+                        
+
+                    }
+
+
+                    for (var i = 0; i < data.listaModelo.length; i++) {
+                        var order_ = data.listaModelo[i];
+                        addRowToMainTable(order_, i);
+                        
+                    }
+
+                var trsumas = document.createElement("tr");
+                debugger;
+                var tdTipo6 = document.createElement("td");
+                tdTipo6.setAttribute("align", "center");
+                tdTipo6.style.fontWeight = "bold";
+                var textoTotal = document.createElement("b");
+                textoTotal.textContent = "Totales";
+                tdTipo6.appendChild(textoTotal);
+                tdTipo6.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTipo6);
+
+
+                var tdTipodos = document.createElement("td");
+                tdTipodos.setAttribute("align", "center");
+                tdTipodos.style.fontWeight = "bold";
+                tdTipodos.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTipodos);
+                
+                var tdTiposubtotal_ = document.createElement("td");
+                tdTiposubtotal_.setAttribute("align", "center");
+                tdTiposubtotal_.textContent = data.subtotal_
+                tdTiposubtotal_.style.fontWeight = "bold";
+                tdTiposubtotal_.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTiposubtotal_);
+
+
+                var tddescuento = document.createElement("td");
+                tddescuento.setAttribute("align", "center");
+                tddescuento.textContent = data.descuento_
+                tddescuento.style.fontWeight = "bold";
+                tddescuento.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tddescuento);
+
+
+                var tdditbia = document.createElement("td");
+                tdditbia.setAttribute("align", "center");
+                tdditbia.textContent = data.itbis_
+                tdditbia.style.fontWeight = "bold";
+                tdditbia.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdditbia);
+
+                
+                var tdPropina = document.createElement("td");
+                tdPropina.setAttribute("align", "center");
+                tdPropina.textContent = data.propuba_
+                tdPropina.style.fontWeight = "bold";
+                tdPropina.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdPropina);
+
+                var tdPropinaVoluntaria = document.createElement("td");
+                tdPropinaVoluntaria.setAttribute("align", "center");
+                tdPropinaVoluntaria.textContent = data.propinavoluntaria_
+                tdPropinaVoluntaria.style.fontWeight = "bold";
+                tdPropinaVoluntaria.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdPropinaVoluntaria);
+
+
+                 var tddelivery = document.createElement("td");
+                tddelivery.setAttribute("align", "center");
+                tddelivery.textContent = data.delivery_
+                tddelivery.style.fontWeight = "bold";
+                tddelivery.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tddelivery);
+
+                var tdTipovacio = document.createElement("td");
+                tdTipovacio.setAttribute("align", "center");
+                tdTipovacio.style.fontWeight = "bold";
+                tdTipovacio.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTipovacio);
+
+
+                var tdTotal = document.createElement("td");
+                tdTotal.setAttribute("align", "center");
+                tdTotal.textContent = data.total_
+                tdTotal.style.fontWeight = "bold";
+                tdTotal.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTotal);
+
+
+                var tdCost = document.createElement("td");
+                tdCost.setAttribute("align", "center");
+                tdCost.textContent = data.costo_
+                tdCost.style.fontWeight = "bold";
+                tdCost.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdCost);
+
+
+
+                var tdTipovaciotres = document.createElement("td");
+                tdTipovaciotres.setAttribute("align", "center");
+                tdTipovaciotres.style.fontWeight = "bold";
+                tdTipovaciotres.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdTipovaciotres);
+
+                var tdGanancia = document.createElement("td");
+                tdGanancia.setAttribute("align", "center");
+                tdGanancia.textContent = data.ganancia_
+                tdGanancia.style.fontWeight = "bold";
+                tdGanancia.style.width = "200px"; // Establecer el ancho a 200px
+                trsumas.appendChild(tdGanancia);
+
+
+                var tabla = document.getElementById("report-ordersreports-body");
+                tabla.appendChild(trsumas);
+
+                } 
+           
+        });
+
+
+
+    }
+
+
+    function obtenerDatosDeTabla(selector) {
+        var data = [];
+        $(selector + " tr").each(function () {
+            var descripcion = $(this).find("td:eq(0)").text().trim();
+            var valorStr = $(this).find("td:eq(1)").text().trim().replace(/[^0-9.]/g, '');
+
+            if (valorStr !== "") {
+                var valor = parseFloat(valorStr);
+                console.log("Descripcion:", descripcion);
+                data.push({ descripcion: descripcion, valor: valor });
+            }
+        });
+        return data;
+    }
+
+
+    $('#user').select2({
+        placeholder: 'Buscar cliente',  
+        allowClear: true,  
+        tags: true  
+    });
+ 
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+
+

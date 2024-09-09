@@ -1,0 +1,208 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>CxC Reporte</h3>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date From"] </label>
+					<input id="filter_cxc_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-30).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date To"] </label>
+					<input id="filter_cxc_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12 ">
+				<div class="form-group">
+					<label>@ViewLocalizer["Cliente"] </label>
+					<select id="filter_cxc_customer" class="select ">
+						
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+			</div>
+		</div>
+
+		<div class="row">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["CXC"] </th>
+						<th>@ViewLocalizer["Cliente"] </th>
+						<th>@ViewLocalizer["Fecha"] </th>
+						<th>@ViewLocalizer["Vence"] </th>
+						<th>@ViewLocalizer["Días vencimiento"] </th>
+						<th>@ViewLocalizer["Monto"] </th>
+						<th>@ViewLocalizer["Abono"]</th>
+						<th>@ViewLocalizer["Balance"]</th>
+					</tr>
+				</thead>
+				<tbody id="report-body">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+
+		$.ajax({
+			url: "/Setting/GetActiveCustomers",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+
+				$("#filter_cxc_customer").empty();
+				$("#filter_cxc_customer").append("<option value='' selected>Todo</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#filter_cxc_customer").append("<option value='" + d.id + "' >" + d.name + "</option>")
+				}
+				$("#filter_cxc_customer").select2({ dropdownParent: $('.card-body') });
+				
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		ShowCxcReport();
+
+		$("#btn-report").click(function () {
+			
+
+			var datefrom = $("#filter_cxc_datefrom").val();
+			var dateto = $("#filter_cxc_dateto").val();
+			var user = $("#filter_cxc_customer").val();
+			ShowLoader()
+			$.ajax({
+				type: "POST",
+				url: "/Report/GenerateCXCReport?from=" + datefrom + "&to=" + dateto + "&customerId=" + user,
+				success: function (data) {
+					HideLoader()
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+		$("select").change(function () {
+			ShowCxcReport();
+		})
+		$("input").change(function () {
+			ShowCxcReport();
+		})
+	});
+
+	function ShowCxcReport() {
+		var datefrom = $("#filter_cxc_datefrom").val();
+		var dateto = $("#filter_cxc_dateto").val();
+		var user = $("#filter_cxc_customer").val();
+		$.ajax({
+			type: "POST",
+			url: "/Report/GetCXCReport?from=" + datefrom + "&to=" + dateto + "&customerId=" + user,
+			success: function (data) {
+				HideLoader()
+				if (data.status == 0) {
+					$("#report-body").empty();
+					var html = ``;
+					var days = 0;
+					if (data.customer) {
+						days = data.customer.creditDays;
+					}
+					var totalAmount = 0;
+					var totalTemporaryDifference = 0;
+					var totalBalance = 0;
+					for (var i = 0; i < data.trans.length; i++) {
+						var item = data.trans[i];
+						var formattedDate = formatDateForInput(new Date(item.paymentDate));
+						var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+						var adjustedDate = addDaysToDate(new Date(item.paymentDate), days); // Suma días
+						var formattedAdjustedDate = formatDateForInput(adjustedDate); // Formatea la nueva fecha
+						var today = new Date();
+						var daysBetween = calculateDaysBetweenDates(today, adjustedDate);
+
+						totalAmount += item.beforeBalance;
+						totalTemporaryDifference += item.temporaryDifference;
+						totalBalance += item.afterBalance;
+
+						html += `<tr><td>${item.id}</td><td>${item.clientName}</td><td>${formattedDate}</td><td>${formattedAdjustedDate}</td><td>${daysBetween}</td><td>${format2Number(item.beforeBalance)}</td><td>${format2Number(item.temporaryDifference)}</td><td>${format2Number(item.afterBalance)}</td></tr>`
+					}
+					html += `<tr><td></td><td></td><td></td><td></td><td></td><td>${format2Number(totalAmount)}</td><td>${format2Number(totalTemporaryDifference)}</td><td>${format2Number(totalBalance)}</td></tr>`
+					$("#report-body").append(html);
+				}
+			},
+			error: function () {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function formatDate(date) {
+		// Obtener el día, mes y año
+		var day = date.getDate();
+		var month = date.getMonth() + 1; // Se agrega 1 porque los meses comienzan desde 0
+		var year = date.getFullYear().toString().slice(-2); // Obtener solo los últimos dos dígitos del año
+
+		// Agregar ceros iniciales si es necesario
+		if (day < 10) {
+			day = '0' + day;
+		}
+		if (month < 10) {
+			month = '0' + month;
+		}
+
+		// Devolver la fecha formateada
+		return day + '/' + month + '/' + year;
+	}
+
+	function formatDateForInput(date) {
+		// Obtener el año, mes y día de la fecha
+		var year = date.getFullYear();
+		var month = (date.getMonth() + 1).toString().padStart(2, '0'); // El mes se incrementa en 1 porque los meses en JavaScript son de 0 a 11
+		var day = date.getDate().toString().padStart(2, '0');
+
+		// Retorna la fecha formateada en formato "AAAA-MM-DD"
+		return year + '-' + month + '-' + day;
+	}
+
+	// Esta función suma días a una fecha y retorna la nueva fecha
+	function addDaysToDate(date, days) {
+		var result = new Date(date);
+		result.setDate(result.getDate() + parseInt(days));
+		return result;
+	}
+
+	function calculateDaysBetweenDates(startDate, endDate) {
+		const oneDay = 24 * 60 * 60 * 1000; // milisegundos en un día
+		const startDateObj = new Date(startDate);
+		const endDateObj = new Date(endDate);
+
+		const differenceInTime = startDateObj.getTime() - endDateObj.getTime();
+		const differenceInDays = Math.round(differenceInTime / oneDay);
+
+		return differenceInDays;
+	}
+
+
+</script>

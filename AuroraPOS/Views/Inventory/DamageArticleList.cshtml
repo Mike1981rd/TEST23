@@ -1,0 +1,272 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Damaged Article List"]</h4>
+		<h6>@ViewLocalizer["Manage your articles"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Inventory/AddDamageArticle" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Damaged Article"]</a>
+	</div>
+</div>
+
+
+<!-- /product list -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+		<div class="table-top">
+			<div class="search-set">
+				<div class="search-path">
+					<a class="btn btn-filter" id="filter_search">
+						<img src="/vendor/img/icons/filter.svg" alt="img">
+						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+					</a>
+				</div>
+				<div class="search-input">
+					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+					<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
+				</div>
+			</div>
+			<div class="wordset">
+				<ul>
+						<li>
+							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+						</li>
+					@*<li>
+						<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+					</li>*@
+				</ul>
+			</div>
+		</div>
+		<!-- /Filter -->
+		<div class="card" id="filter_inputs">
+			<div class="card-body pb-0">
+				<div class="row">
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Date From"] </label>
+								<input id="damage_filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+						</div>
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Date To"] </label>
+								<input id="damage_filter_dateto" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+						</div>
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Warehouse"] </label>
+								<select id="damage-warehouse" class="select">
+									<option>@ViewLocalizer["Choose Warehouse"]</option>
+								</select>
+							</div>
+						</div>		
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Status"] </label>
+								<select id="damage-status" class="select">
+									<option value="">@ViewLocalizer["Choose Status"]</option>
+									<option value="1">@ViewLocalizer["Pending"]</option>
+									<option value="3">@ViewLocalizer["Confirmed"]</option>
+									<option value="2">@ViewLocalizer["Canceled"]</option>
+								</select>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+		<div class="table-responsive">
+			<table id="damage-list" class="table">
+				<thead>
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Warehouse"] </th>
+						<th>@ViewLocalizer["Item Name"] </th>
+						<th>@ViewLocalizer["Qty"]</th>
+						<th>@ViewLocalizer["Unit"]</th>
+						<th>@ViewLocalizer["Date"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					
+					</tr>
+				</thead>
+			</table>
+		</div>
+		</div>
+	</div>
+</div>
+<!-- /product list -->
+<script>
+	$(document).ready(function () {
+		LoadWarehouse();
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterDamage()
+		});
+
+		$("#damage-warehouse").change(function () {
+			FilterDamage()
+		});
+
+		$("#damage-status").change(function () {
+			FilterDamage()
+		});
+
+		$("#filter_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#damage_filter_datefrom").val("").change();
+				$("#damage_filter_dateto").val("").change();
+				$("#damage-warehosue").val("").change();
+				$("#damage-status").val("").change();
+			}
+
+		});
+
+
+
+		$(".btn-excel").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#damage_filter_datefrom").val();
+			var dateto = $("#damage_filter_dateto").val();
+			var warehouse = $("#damage-warehouse").val();
+			var status = $("#damage-status").val();
+
+			$.ajax({
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				url: "/Inventory/DownloadDamageArticleExcel?search=" + searchText + "&warehouse=" + warehouse + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (d) {
+					if (d.status == 0) {
+						var link = document.createElement('a');
+						link.href = d.result;
+						link.download = 'DamageArticle_@DateTime.Today.ToString("dd-MM-yyyy")' + ".csv";
+						link.dispatchEvent(new MouseEvent('click'));
+					}
+					else {
+						toastr.error(d.message, {})
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+
+			});
+		});
+
+		$(".btn-pdf").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#damage_filter_datefrom").val();
+			var dateto = $("#damage_filter_dateto").val();
+			var warehouse = $("#damage-warehouse").val();
+			var status = $("#damage-status").val();
+
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DownloadDamageArticlePDF?search=" + searchText + "&warehouse=" + warehouse + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (data) {
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+	})
+	var damagetable = $("#damage-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Inventory/GetDamageArticleList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='/Inventory/AddDamageArticle?damageArticleID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "id", "name": "id", "autoWidth": true },
+			{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{ "data": "qty", "name": "qty", "autoWidth": true },
+			{ "data": "unitName", "name": "unitName", "autoWidth": true },
+			{ "data": "damageDate", "name": "realDamageDate", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'status',
+				render: function (data, type, row) {
+					if (row.status == 1) {
+						return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+					}
+					else if (row.status == 2) {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+					}
+					else if (row.status == 3) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			
+		]
+	});
+
+	function LoadWarehouse() {
+		
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#damage-warehouse").empty();
+				$("#damage-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#damage-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#damage-warehouse").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#listwarehouse").modal("hide");
+	}
+
+	function FilterDamage() {
+		var searchText = $("#filter-searchtext").val();
+		var datefrom = $("#damage_filter_datefrom").val();
+		var dateto = $("#damage_filter_dateto").val();
+		var warehouse = $("#damage-warehouse").val();
+		var status = $("#damage-status").val();
+
+		damagetable.columns(0).search(searchText);
+		damagetable.columns(1).search(datefrom);
+		damagetable.columns(2).search(warehouse);
+		damagetable.columns(3).search(status);
+		damagetable.columns(4).search(dateto);
+
+		damagetable.draw();
+	}
+</script>

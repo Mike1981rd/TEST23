@@ -1,0 +1,331 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Move Article List"]</h4>
+		<h6>@ViewLocalizer["Manage your articles"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Inventory/AddMoveArticle" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Create Move"]</a>
+	</div>
+</div>
+
+
+<!-- /product list -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="table-top">
+				<div class="search-set">
+					<div class="search-path">
+						<a class="btn btn-filter" id="filter_search">
+							<img src="/vendor/img/icons/filter.svg" alt="img">
+							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+						</a>
+					</div>
+					<div class="search-input">
+						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]"..."></label></div>
+					</div>
+				</div>
+				<div class="wordset">
+					<ul>
+						<li>
+							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+						</li>
+						@*<li>
+							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+						</li>*@
+					</ul>
+				</div>
+			</div>
+			<!-- /Filter -->
+			<div class="card" id="filter_inputs">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Order Date From"] </label>
+								<input id="move_filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+						</div>
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Order Date To"] </label>
+								<input id="move_filter_dateto" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+						</div>
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Source Warehouse"] </label>
+								<select id="move-warehousefrom" class="select">
+									<option>Choose Supplier</option>
+									<option>Supplier</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Target Warehouse"] </label>
+								<select id="move-warehouseto" class="select">
+									<option>Choose Supplier</option>
+									<option>Supplier</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Status"] </label>
+								<select id="filter-status" class="select">
+									<option value="">@ViewLocalizer["Choose Status"]</option>
+									<option value="1">@ViewLocalizer["Pending"]</option>
+									<option value="2">@ViewLocalizer["Moved"]</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table id="move-list" class="table">
+					<thead>
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["ID"] </th>
+							<th>@ViewLocalizer["From"] </th>
+							<th>@ViewLocalizer["To"] </th>
+							<th>@ViewLocalizer["Total"] </th>
+							<th>@ViewLocalizer["Date"] </th>
+							<th>@ViewLocalizer["Status"]</th>
+							
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th></th> 
+							<th></th>
+							<th colspan="2"></th>
+							<th></th> <!-- The total salary will go here -->
+							<th></th>
+							<th></th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /product list -->
+<script>
+	$(document).ready(function () {
+		LoadWarehouse();
+
+		$("#move-warehousefrom").change(function () {
+			FilterMoveArticle()
+		});
+
+		$("#move-warehouseto").change(function () {
+			FilterMoveArticle()
+		});
+
+		$("#filter-status").change(function () {
+			FilterMoveArticle()
+		});
+
+		$("#filter_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#move_filter_datefrom").val("").change();
+				$("#move_filter_dateto").val("").change();
+				$("#move-warehousefrom").val("").change();
+				$("#move-warehouseto").val("").change();
+				$("#filter-status").val("").change();
+			}
+
+		});
+
+
+		$(".btn-excel").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#move_filter_datefrom").val();
+			var dateto = $("#move_filter_dateto").val();
+			var warehousefrom = $("#move-warehousefrom").val();
+			var warehouseto = $("#move-warehouseto").val();
+			var status = $("#filter-status").val();
+
+			$.ajax({
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				url: "/Inventory/DownloadMoveArticleExcel?search=" + searchText + "&warehousefrom=" + warehousefrom + "&warehouseto=" + warehouseto + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (d) {
+					if (d.status == 0) {
+						var link = document.createElement('a');
+						link.href = d.result;
+						link.download = 'Transfers_@DateTime.Today.ToString("dd-MM-yyyy")' + ".csv";
+						link.dispatchEvent(new MouseEvent('click'));
+					}
+					else {					
+						toastr.error(d.message, {})
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+
+			});
+		});
+
+		$(".btn-pdf").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var datefrom = $("#move_filter_datefrom").val();
+			var dateto = $("#move_filter_dateto").val();
+			var warehousefrom = $("#move-warehousefrom").val();
+			var warehouseto = $("#move-warehouseto").val();
+			var status = $("#filter-status").val();
+
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DownloadMoveArticlePDF?search=" + searchText + "&warehousefrom=" + warehousefrom + "&warehouseto=" + warehouseto + "&datefrom=" + datefrom + "&dateto=" + dateto + "&status=" + status,
+				success: function (data) {
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+	});
+
+	var movetable = $("#move-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Inventory/GetMoveArticleList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"footerCallback": function(row, data, start, end, display){
+			var api = this.api();
+
+			// Remove the formatting to get integer data for summation
+			var intVal = function (i) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '') * 1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+			// Total over all pages
+			var total = api
+				.column(4)
+				.data()
+				.reduce(function (a, b) {
+					return intVal(a) + intVal(b);
+				}, 0);
+
+			// Update footer
+			$(api.column(4).footer()).html(
+				'$' + numberWithCommas(total.toFixed(2))
+			);
+		},
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='/Inventory/AddMoveArticle?moveArticleID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "id", "name": "id", "autoWidth": true },
+			{ "data": "fromWarehouse", "name": "fromWarehouse", "autoWidth": true },
+			{ "data": "toWarehouse", "name": "toWarehouse", "autoWidth": true },
+			{
+				'data': 'price', 'name': 'price',
+				render: function (data, type, row) {
+					return "" + numberWithCommas(row.price.toFixed(2))
+				},
+			},
+			{ "data": "moveDate", "name": "realMoveDate", "autoWidth": true },
+			
+			{
+				'data': 'status', 'name': 'status',
+				render: function (data, type, row) {
+					if (row.status == 1) {
+						return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+					}
+					else if (row.status == 2) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Moved"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+			
+		]
+	});
+
+	function LoadWarehouse() {
+
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#move-warehousefrom").empty();
+				$("#move-warehousefrom").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#move-warehousefrom").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#move-warehousefrom").select2();
+
+				$("#move-warehouseto").empty();
+				$("#move-warehouseto").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#move-warehouseto").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#move-warehouseto").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+	}
+
+
+	function FilterMoveArticle() {
+		var searchText = $("#filter-searchtext").val();
+		var datefrom = $("#move_filter_datefrom").val();
+		var dateto = $("#move_filter_dateto").val();
+		var warehousefrom = $("#move-warehousefrom").val();
+		var warehouseto = $("#move-warehouseto").val();
+		var status = $("#filter-status").val();
+
+		movetable.columns(0).search(searchText);
+		movetable.columns(1).search(warehousefrom);
+		movetable.columns(2).search(warehouseto);
+		movetable.columns(3).search(datefrom);
+		movetable.columns(4).search(dateto);
+		movetable.columns(5).search(status);
+
+		movetable.draw();
+	}
+
+</script>

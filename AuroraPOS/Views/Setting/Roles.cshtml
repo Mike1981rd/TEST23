@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Role List"]</h4>
+		<h6>@ViewLocalizer["Manage roles"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Setting/AddRole" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Role"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="user-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Role Name"] </th>
+						<th>@ViewLocalizer["Priority"] </th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$("#user-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": false, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Setting/GetRoles",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[2, 'desc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='/Setting/AddRole?roleId=" + row.id + "'  ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					},
+				},
+			
+				{ "data": "roleName", "name": "roleName", "autoWidth": true },
+				{ "data": "priority", "name": "priority", "autoWidth": true },
+				
+			]
+		});
+
+	})
+</script>

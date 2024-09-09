@@ -1,0 +1,565 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var branchs = (List<t_sucursal>)ViewBag.Branchs;
+}
+<ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active"
+           id="ex1-tab-1"
+           data-bs-toggle="tab"
+           href="#ex1-tabs-1"
+           role="tab"
+           aria-controls="ex1-tabs-1"
+           aria-selected="true">@ViewLocalizer["Day of Week"]</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link"
+           id="ex1-tab-2"
+           data-bs-toggle="tab"
+           href="#ex1-tabs-2"
+           role="tab"
+           aria-controls="ex1-tabs-2"
+           aria-selected="false">@ViewLocalizer["Covers"]</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link"
+           id="ex1-tab-3"
+           data-bs-toggle="tab"
+           href="#ex1-tabs-3"
+           role="tab"
+           aria-controls="ex1-tabs-3"
+           aria-selected="false">@ViewLocalizer["Propina"]</a>
+    </li>
+</ul>
+<div class="tab-content" id="ex1-content">
+    <div class="tab-pane fade show active"
+         id="ex1-tabs-1"
+         role="tabpanel"
+         aria-labelledby="ex1-tab-1">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector1" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date From"] </label>
+                            <input id="report1_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date To"] </label>
+                            <input id="report1_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 ">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Sucursal"] </label>
+                            <select id="report1_station-branch" class="select ">
+                                <option value=0>Selecciona una sucursal</option>
+                                @foreach (var b in branchs)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive" style="padding-bottom:300px;">
+                        <table id="report1-list" class="table">
+                            <thead>
+                                <tr>
+                                    <th>@ViewLocalizer["Day of Week"]</th>
+                                    <th style="width:250px;">@ViewLocalizer["Percent"]</th>
+                                    <th class='text-end'>@ViewLocalizer["Average Sales"] </th>
+                                    <th class='text-end'>@ViewLocalizer["Average Transactions"] </th>
+                                    <th class='text-end'>@ViewLocalizer["Average Sale"] </th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="report1-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector2" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date From"] </label>
+                            <input id="report2_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date To"] </label>
+                            <input id="report2_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 ">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Sucursal"] </label>
+                            <select id="report2_station-branch" class="select ">
+                                <option value=0>Selecciona una sucursal</option>
+                                @foreach (var b in branchs)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector3" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date From"] </label>
+                            <input id="report3_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Date To"] </label>
+                            <input id="report3_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 ">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Sucursal"] </label>
+                            <select id="report3_station-branch" class="select ">
+                                <option value=0>Selecciona una sucursal</option>
+                                @foreach (var b in branchs)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive" style="padding-bottom:300px;">
+                        <table id="report3-list" class="table">
+                            <thead>
+                                <tr>
+                                    <th>@ViewLocalizer["Stuff"]</th>
+                                    <th class='text-end'>@ViewLocalizer["Sales"] </th>
+                                    <th class='text-end'>@ViewLocalizer["Propina"] </th>
+                                </tr>
+                            </thead>
+                            <tbody id="report3-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .prog-container{
+        position: relative;
+       
+    }
+    .prog-content {
+        display: none;
+        position: absolute;
+        z-index: 5;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0px 0px 17px -13px #000;
+        border-radius: 15px;
+        top: 19px;
+        left: 0px;
+        max-width: 351px;
+        width: 350px;
+    }
+
+    tr:hover .prog-content {
+        display: block;
+    }
+    .spec {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    body[data-theme=dark] .prog-content {
+        background: #222222;
+    }
+</style>
+<script>
+
+
+    $(document).ready(function() {
+        RefreshDayOfWeekReport();
+        RefreshPropinaReport();
+
+        $("#report1_station-branch").on('change', function (e) {            
+            RefreshDayOfWeekReport();           
+        });
+
+        $("#report2_station-branch").on('change', function (e) {
+
+            
+
+        });
+
+        $("#report3_station-branch").on('change', function (e) {
+            RefreshPropinaReport();
+        });
+    });
+
+
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        return day + '-' + month + '-' + year;
+    }
+    $("#date-range-selector1").change(function () {
+        var selectedValue = $(this).val();
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+        switch (selectedValue) {
+            case "today":
+                var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                $("#report1_datefrom").val(formattedDate).change();
+                $("#report1_dateto").val(formattedDate).change();
+
+                break;
+            case "yesterday":
+                var yesterday = new Date(currentDate);
+                yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                $("#report1_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                $("#report1_dateto").val(formattedYesterday).change();
+                break;
+            case "last7days":
+                var formattedDate = formatDate(currentDate);
+                var last7Days = new Date(currentDate);
+                last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                var formattedLast7Days = formatDate(last7Days);
+                $("#report1_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                $("#report1_dateto").val(formattedDate).change();
+                break;
+            // Agrega más casos según tus necesidades
+            case "last30days":
+                var formattedDate = formatDate(currentDate);
+                var last30Days = new Date(currentDate);
+                last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                var formattedLast30Days = formatDate(last30Days);
+                $("#report1_datefrom").val(formattedLast30Days).change();
+                $("#report1_dateto").val(formattedDate).change();
+                break;
+            case "last90days":
+                var formattedDate = formatDate(currentDate);
+                var last90Days = new Date(currentDate);
+                last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                var formattedLast90Days = formatDate(last90Days);
+                $("#report1_datefrom").val(formattedLast90Days).change();
+                $("#report1_dateto").val(formattedDate).change();
+                break;
+            case "last365days":
+                var formattedDate = formatDate(currentDate);
+                var last365Days = new Date(currentDate);
+                last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                var formattedLast365Days = formatDate(last365Days);
+                $("#report1_datefrom").val(formattedLast365Days).change();
+                $("#report1_dateto").val(formattedDate).change();
+                break;
+            case "lastmonth":
+                var formattedDate = formatDate(currentDate);
+                var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                $("#report1_datefrom").val(formattedLastMonthFirstDay).change();
+                $("#report1_dateto").val(formattedDate).change();
+                break;
+        }
+
+        damagetable.ajax.reload();
+    });
+
+    $("#date-range-selector2").change(function () {
+        var selectedValue = $(this).val();
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+        switch (selectedValue) {
+            case "today":
+                var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                $("#report2_datefrom").val(formattedDate).change();
+                $("#report2_dateto").val(formattedDate).change();
+
+                break;
+            case "yesterday":
+                var yesterday = new Date(currentDate);
+                yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                $("#report2_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                $("#report2_dateto").val(formattedYesterday).change();
+                break;
+            case "last7days":
+                var formattedDate = formatDate(currentDate);
+                var last7Days = new Date(currentDate);
+                last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                var formattedLast7Days = formatDate(last7Days);
+                $("#report2_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                $("#report2_dateto").val(formattedDate).change();
+                break;
+            // Agrega más casos según tus necesidades
+            case "last30days":
+                var formattedDate = formatDate(currentDate);
+                var last30Days = new Date(currentDate);
+                last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                var formattedLast30Days = formatDate(last30Days);
+                $("#report2_datefrom").val(formattedLast30Days).change();
+                $("#report2_dateto").val(formattedDate).change();
+                break;
+            case "last90days":
+                var formattedDate = formatDate(currentDate);
+                var last90Days = new Date(currentDate);
+                last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                var formattedLast90Days = formatDate(last90Days);
+                $("#report2_datefrom").val(formattedLast90Days).change();
+                $("#report2_dateto").val(formattedDate).change();
+                break;
+            case "last365days":
+                var formattedDate = formatDate(currentDate);
+                var last365Days = new Date(currentDate);
+                last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                var formattedLast365Days = formatDate(last365Days);
+                $("#report2_datefrom").val(formattedLast365Days).change();
+                $("#report2_dateto").val(formattedDate).change();
+                break;
+            case "lastmonth":
+                var formattedDate = formatDate(currentDate);
+                var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                $("#report2_datefrom").val(formattedLastMonthFirstDay).change();
+                $("#report2_dateto").val(formattedDate).change();
+                break;
+        }
+
+        damagetable.ajax.reload();
+    });
+
+    $("#date-range-selector3").change(function () {
+        var selectedValue = $(this).val();
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+        switch (selectedValue) {
+            case "today":
+                var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                $("#report3_datefrom").val(formattedDate).change();
+                $("#report3_dateto").val(formattedDate).change();
+
+                break;
+            case "yesterday":
+                var yesterday = new Date(currentDate);
+                yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                $("#report3_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                $("#report3_dateto").val(formattedYesterday).change();
+                break;
+            case "last7days":
+                var formattedDate = formatDate(currentDate);
+                var last7Days = new Date(currentDate);
+                last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                var formattedLast7Days = formatDate(last7Days);
+                $("#report3_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                $("#report3_dateto").val(formattedDate).change();
+                break;
+            // Agrega más casos según tus necesidades
+            case "last30days":
+                var formattedDate = formatDate(currentDate);
+                var last30Days = new Date(currentDate);
+                last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                var formattedLast30Days = formatDate(last30Days);
+                $("#report3_datefrom").val(formattedLast30Days).change();
+                $("#report3_dateto").val(formattedDate).change();
+                break;
+            case "last90days":
+                var formattedDate = formatDate(currentDate);
+                var last90Days = new Date(currentDate);
+                last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                var formattedLast90Days = formatDate(last90Days);
+                $("#report3_datefrom").val(formattedLast90Days).change();
+                $("#report3_dateto").val(formattedDate).change();
+                break;
+            case "last365days":
+                var formattedDate = formatDate(currentDate);
+                var last365Days = new Date(currentDate);
+                last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                var formattedLast365Days = formatDate(last365Days);
+                $("#report3_datefrom").val(formattedLast365Days).change();
+                $("#report3_dateto").val(formattedDate).change();
+                break;
+            case "lastmonth":
+                var formattedDate = formatDate(currentDate);
+                var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                $("#report3_datefrom").val(formattedLastMonthFirstDay).change();
+                $("#report3_dateto").val(formattedDate).change();
+                break;
+        }
+
+        damagetable.ajax.reload();
+    });
+
+
+    function RefreshDayOfWeekReport()
+    {
+        var from = $("#report1_datefrom").val();
+        var to = $("#report1_dateto").val();
+        var sucursal = $("#report1_station-branch").val();
+
+        ShowLoader()
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetWeekOfDayReport?from=" + from + "&to=" + to + "&sucursal=" + sucursal,
+            success: function (data) {
+                HideLoader()
+                $("#report1-body").empty();
+
+                for(var i = 0; i < data.trans.length; i++)
+                {
+                    var tran = data.trans[i];
+                    var percent = 0;
+                    if (data.total)
+                
+                        percent = tran.avgSales / data.total * 100;
+                   
+                    var percentBtn = `<div class="prog-container">
+                                        <div class="progress">
+                                      <div class="progress-bar" role="progressbar" style="width: `+ percent.toFixed(2) +`%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" ></div>
+                                        </div>
+                                        <div class="prog-content">
+                                            <h6 class='text-primary'>`+ tran.dayStr +`</h6><hr>
+                                                    <div class='spec'>Total Sales <span class='text-primary'>`+ numberWithCommas(tran.totalSales.toFixed(2).toLocaleString()) + `</span></div>
+                                                        <div class='spec'>Transactions <span class='text-primary'>` + numberWithCommas(tran.totalTrans.toFixed(2).toLocaleString()) + `</span></div>
+                                                    <div class='spec'>% Average of Week <span class='text-primary'>` + percent.toFixed(2) + `%</span></div>
+                                                <br>
+                                            <p>Based on ` + tran.weekCount + ` weeks </p>
+                                        </div>
+                                        </div>`
+
+
+
+                    $("#report1-body").append("<tr><td >" + tran.dayStr + "</td><td>" + percentBtn + "</td><td class='text-end'>" + numberWithCommas(tran.avgSales.toFixed(2).toLocaleString()) + "</td><td class='text-end'>" + numberWithCommas(tran.avgTrans.toFixed(2)) + "</td><td class='text-end'>" + numberWithCommas(tran.avgAvgSales.toFixed(2).toLocaleString()) + "</td></tr>")
+
+                    $('[data-toggle="popover"]').popover({ trigger: "hover" })
+                }
+            },
+            error: function () {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+    }
+
+
+    function RefreshPropinaReport() {
+        var from = $("#report3_datefrom").val();
+        var to = $("#report3_dateto").val();
+        var sucursal = $("#report3_station-branch").val();
+
+        ShowLoader()
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetPropinaReport?from=" + from + "&to=" + to + "&sucursal=" + sucursal,
+            success: function (data) {
+                HideLoader()
+                $("#report3-body").empty();
+
+                for (var i = 0; i < data.trans.length; i++) {
+                    var tran = data.trans[i];
+
+                    $("#report3-body").append("<tr><td >" + tran.username + "</td><td class='text-end'>" + numberWithCommas(tran.sales.toFixed(2).toLocaleString()) + "</td><td class='text-end'>" + numberWithCommas(tran.propina.toFixed(2).toLocaleString()) + "</td></tr>")
+                }
+            },
+            error: function () {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+    }
+
+    function RefreshOrderCoverReport () {
+        var from = $("#report2_datefrom").val();
+        var to = $("#report2_dateto").val();
+        var sucursal = $("#report2_station-branch").val();
+
+    }
+
+
+
+</script>

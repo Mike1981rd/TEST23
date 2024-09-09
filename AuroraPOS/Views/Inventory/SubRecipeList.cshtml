@@ -1,0 +1,287 @@
+﻿
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Sub Recipe List"]</h4>
+		<h6>@ViewLocalizer["Manage your sub recipe"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="/Inventory/AddSubRecipe" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Sub Recipe"]</a>
+	</div>
+</div>
+
+
+<!-- /product list -->
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="table-top">
+				<div class="search-set">
+					<div class="search-path">
+						<a class="btn btn-filter" id="filter_search">
+							<img src="/vendor/img/icons/filter.svg" alt="img">
+							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+						</a>
+					</div>
+					<div class="search-input">
+						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
+					</div>
+				</div>
+				<div class="wordset">
+					<ul>
+						<li>
+							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+						</li>
+						@*<li>
+							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+						</li>*@
+					</ul>
+				</div>
+			</div>
+			<!-- /Filter -->
+			<div class="card" id="filter_inputs">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Category"] </label>
+								<select id="filter-category" class="select">
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Sub Category"] </label>
+								<select id="filter-subcategory" class="select">
+									<option value='' selected>Choose Sub Category</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Status"] </label>
+								<select id="filter-status" class="select">
+									<option value="1" selected>@ViewLocalizer["Active"]</option>
+									<option value="0">@ViewLocalizer["Inactive"]</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table id="subrecipe-list" class="table">
+					<thead>
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["ID"] </th>
+							<th>@ViewLocalizer["Name"] </th>
+							<th>@ViewLocalizer["Category"] </th>
+							<th>@ViewLocalizer["Sub Category"]</th>
+							<th>@ViewLocalizer["Status"]</th>
+							
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /product list -->
+
+
+
+
+
+<script>
+	$(document).ready(function () {
+		LoadCategory();
+
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterSubRecipe();
+		});
+		
+		$("#filter-category").on("change", function () {
+			FilterSubRecipe();
+			LoadSubCategory()
+		});
+		$("#filter-subcategory").on("change", function () {
+			FilterSubRecipe();
+		});
+		$("#filter-status").on("change", function () {
+			FilterSubRecipe();
+		});
+		$("#filter_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#filter-category").val("").change();
+				$("#filter-subcategory").val("").change();
+			}
+		});
+
+
+		$(".btn-excel").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var category = $("#filter-category").val();
+			var subcategory = $("#filter-subcategory").val();
+
+			$.ajax({
+				type: "POST",
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				url: "/Inventory/DownloadSubRecipeExcel?search=" + searchText + "&category=" + category + "&subcategory=" + subcategory,
+				success: function (d) {
+					if (d.status == 0) {
+						var link = document.createElement('a');
+						link.href = d.result;
+						link.download = 'SubRecipe_@DateTime.Today.ToString("dd-MM-yyyy")' + ".csv";
+						link.dispatchEvent(new MouseEvent('click'));
+					}
+					else {
+						toastr.error(d.message, {})
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+
+			});
+		});
+
+		$(".btn-pdf").click(function () {
+			var searchText = $("#filter-searchtext").val();
+			var category = $("#filter-category").val();
+			var subcategory = $("#filter-subcategory").val();
+
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DownloadSubRecipePDF?search=" + searchText + "&category=" + category + "&subcategory=" + subcategory,
+				success: function (data) {
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+	})
+	var subrecipetable = $("#subrecipe-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Inventory/GetSubRecipeList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='/Inventory/AddSubRecipe?subRecipeID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "id", "name": "id", "autoWidth": true },
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{ "data": "category", "name": "category", "autoWidth": true },
+			{ "data": "subCategory", "name": "subCategory", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+					}
+					else {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+		
+			
+		]
+	});
+
+
+	function LoadCategory() {
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-category").empty();
+				$("#filter-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-category").select2();
+				var brand = getCookie("subrecipeCategory");
+				if (brand && brand !== "") {
+					$("#filter-category").val(brand).change();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function LoadSubCategory() {
+		var category = $("#filter-category").val();
+		if (!category) return;
+		$.ajax({
+			url: "/Menu/GetAllSubCategories?categoryID=" + category,
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-subcategory").empty();
+				$("#filter-subcategory").append("<option value='' selected>@ViewLocalizer["Choose sub category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-subcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-subcategory").select2();
+
+				var brand = getCookie("subrecipeSubCategory");
+				if (brand && brand !== "") {
+					$("#filter-subcategory").val(brand).change();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function FilterSubRecipe() {
+		var searchText = $("#filter-searchtext").val();
+		var category = $("#filter-category").val();
+		var subcategory = $("#filter-subcategory").val();
+		var status = $("#filter-status").val();
+
+		//if (category && category !== "")
+		setCookie("subrecipeCategory", category, 1);
+		//if (subcategory && subcategory !== "")
+		setCookie("subrecipeSubCategory", subcategory, 1);
+
+
+		subrecipetable.columns(0).search(searchText);
+		subrecipetable.columns(1).search(category);
+		subrecipetable.columns(2).search(subcategory)
+		subrecipetable.columns(3).search(status)
+
+		subrecipetable.draw();
+	}
+
+</script>

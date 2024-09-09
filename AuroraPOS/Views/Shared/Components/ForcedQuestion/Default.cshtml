@@ -1,0 +1,1041 @@
+﻿<!-- Question Modal-->
+<div class="modal fade" id="listqestions" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="group-modal-title">@ViewLocalizer["Question List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <a id="add-question" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add New Question</a>
+                    </div>
+                    <div class="col-12">
+                        <div class="table-responsive w-100" style="max-height:400px;">
+                            <table id="question-list" class="table" style="position:relative;">
+                                <thead style="position: sticky; top: 0; z-index:2;">
+                                    <tr>
+                                        <th>@ViewLocalizer["Action"]</th>
+                                        <th>@ViewLocalizer["Name"] </th>
+                                        <th>@ViewLocalizer["Type"] </th>
+                                        <th>@ViewLocalizer["Answers"] </th>
+                                        <th>@ViewLocalizer["Status"]</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editquestion" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" data-editar-agregado="0">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="question-modal-title">@ViewLocalizer["Edit Question"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">ID  </span>
+                                <input id="question-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 pb-3">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Type"]</label>
+                            <select id="question-type" class="select">
+                                <option value="1"> @ViewLocalizer["Forced Question"]</option>
+                                <option value="2"> @ViewLocalizer["Optional Modifier"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Maximun Answers"]</label>
+                            <input id="question-maxanswer" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Minimum Answers"]</label>
+                            <input id="question-minanswer" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Free Choice"]</label>
+                            <input id="question-freechoice" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6 col-12 pb-3">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Status"]</label>
+                            <select id="question-status" class="select">
+                                <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 pb-3">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["Automatic"]</label>
+                            <select id="question-automatic" class="select">
+                                <option value="1"> @ViewLocalizer["Yes"]</option>
+                                <option value="0"> @ViewLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12" style="min-height: 300px; overflow: auto">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left"> @ViewLocalizer["Answers"] </h6>
+                            <div class="add-unit">
+                                <a class="add-new-answer" href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                        <table id="table-answers" class="reordertable  table  mb-3" data-reorderable-rows="true">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @ViewLocalizer["Name"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["PreSelected"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Has Qty"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Has Divisor"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Match Size"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Comentario"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Price Type"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Fixed Price"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Roll Price"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Post Question"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Action"]
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="question-answers">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12" style="height: 300px; overflow: auto">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left"> @ViewLocalizer["Smart Buttons"] </h6>
+                            <div class="add-unit">
+                                <a class="add-new-smartbutton" href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                        <table class="reordertable table mb-3" style="max-height:150px; overflow:auto;" data-reorderable-rows="true">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @ViewLocalizer["Name"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Before or After"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Apply Price"]
+                                    </th>
+                                    <th>
+                                        @ViewLocalizer["Action"]
+                                    </th>
+                            </thead>
+                            <tbody id="question-smartbuttons">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-question" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Button Modal-->
+<div class="modal fade" id="listsmartbuttons" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbutton-modal-title">@ViewLocalizer["Smart Button List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <a id="add-smartbutton" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add New Smart Button</a>
+                    </div>
+                    <div class="col-12">
+                        <div class="table-responsive w-100" style="max-height:400px;">
+                            <table id="smartbutton-list" class="table" style="position:relative;">
+                                <thead style="position: sticky; top: 0; z-index:2;">
+                                    <tr>
+                                        <th>@ViewLocalizer["Action"]</th>
+                                        <th>@ViewLocalizer["Name"] </th>
+                                        <th>@ViewLocalizer["After/Before"] </th>
+                                        <th>@ViewLocalizer["Apply Price"] </th>
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editsmartbutton" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Edit SmartButton"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="smartbutton-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12 pb-3">
+                        <div class="form-group mb-0">
+                            <label>@ViewLocalizer["After/Before Text"]</label>
+                            <select id="smartbutton-afterbefore" class="select">
+                                <option value="1"> @ViewLocalizer["Before Text"]</option>
+                                <option value="2"> @ViewLocalizer["After Text"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12 pt-3">
+                        <div class="form-group row">
+                            <input id="smartbutton-applyprice" type="checkbox" class="col-sm-4 col-4">
+                            <label class="col-sm-8 col-8">@ViewLocalizer["Apply Price"]  </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-smartbutton" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(".add-new-question").click(function () {
+        $("#listqestions").modal("show");
+    });
+
+
+    $("#add-question").click(function () {
+        $("#editquestion").data("editar-agregado",0);
+        $("#question-name").val("");
+        $("#question-type").val("1").change();
+        $("#question-maxanswer").val(1);
+        $("#question-minanswer").val(0);
+        $("#question-freechoice").val(0);
+        $("#question-answers").empty();
+        $("#question-smartbuttons").empty();
+
+        $(".question-modal-title").html("@ViewLocalizer["Add Question"]");
+        $("#editquestion").data("id", 0);
+        $("#editquestion").modal("show");
+    });
+    // answer list
+    $(".add-new-answer").click(function () {
+        $("#listproduct").data("type", "answer");
+        $("#bulk-products").show();
+        $("#listproduct").modal("show");
+    });
+
+    $("body").on("click", "#bulk-products", function () {
+        var prodIds = [];
+
+        $("#product-list tbody tr").each(function () {
+            var id = $(this).find(".prod").data("id");
+            prodIds.push(id);
+        })
+        var type = $("#listproduct").data("type");
+
+        $.ajax({
+            url: "/Menu/GetProducts",
+            type: "POST",
+            data: JSON.stringify(prodIds),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (ret, textStatus, jqXHR) {
+                if (ret) {
+                    for (var i = 0; i < ret.length; i++) {
+
+                        var data = ret[i];
+
+                        var html = `<tr data-id='${data.id}'><td>${data.name}</td>`;
+                        html += `<td><input class='answer-preselect' type='checkbox' /></td>`;
+                        html += `<td><input class='answer-hasqty' type='checkbox'  /></td>`;
+                        html += `<td><input class='answer-hasdivisor' type='checkbox'  /></td>`;
+                        html += `<td><input class='answer-matchsize' type='checkbox'  /></td>`;
+                        html += `<td><input class='answer-comentario' type='checkbox'  /></td>`;
+                        html += ` <td>
+                                                <select class="answer-pricetype select form-control-sm">
+                                                    <option value="0">@ViewLocalizer["Change Price"]</option>
+                                                    <option value="1">@ViewLocalizer["Price"]1 (${data.price[0]})</option>
+                                                    <option value="2">@ViewLocalizer["Price"]2 (${data.price[1]})</option>
+                                                    <option value="3">@ViewLocalizer["Price"]3 (${data.price[2]})</option>
+                                                    <option value="4">@ViewLocalizer["Price"]4 (${data.price[3]})</option>
+                                                    <option value="5">@ViewLocalizer["Price"]5 (${data.price[4]})</option>
+                                                    <option value="6">@ViewLocalizer["Price"]6 (${data.price[5]})</option>
+                                                    <option value="7">@ViewLocalizer["Price"]7 (${data.price[6]})</option>
+                                                    <option value="8">@ViewLocalizer["Price"]8 (${data.price[7]})</option>
+                                                    <option value="9">@ViewLocalizer["Regular Price"]</option>
+                                                    <option value="10">@ViewLocalizer["Fixed Price"]</option>
+                                                </select>
+                                            </td>   `;
+                        html += `<td><input class="answer-fixed form-control form-control-sm" placeholder="0" value="" onkeypress="return onlyDecimalKey(event)" type="text" /></td>`;
+                        html += `<td><input class="answer-roll form-control form-control-sm" placeholder="0" value="" onkeypress="return onlyDecimalKey(event)" type="text" style="display:none" /><input class='answer-roll-checkbox' type='checkbox'  /></td>`;
+                        html += `<td><select class='answer-postquestion select form-control-sm'><option value="0">None</option>`
+                        for (var ii = 0; ii < data.questions.length; ii++) {
+                            var q = data.questions[ii];
+                            html += `<option value="${q.id}" >${q.name}</option>`;
+                        }
+                        html += `</select></td>`;
+                        html += `<td>
+                                                    <div class="remove-btn">
+                                                        <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                                    </div>
+                                                </td></tr>`;
+
+                        $("#question-answers").append(html);
+                    }
+                                     
+                    $("#listproduct").modal("hide");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+
+    })
+
+    function SelectQuestion(question) {
+        var exist = false;
+        var mismotipo = true;
+        $("#product-questions tr").each(function () {
+            var id = $(this).data("id");
+            
+            
+            if ($(this).html().indexOf("Forced Question") >= 0 || $(this).html().indexOf("Pregunta forzada") >= 0 ){
+                if (!question.isForced) {
+                    mismotipo= false;
+                }
+            }else{
+                if (question.isForced) {
+                    mismotipo= false;
+                }
+            }
+            
+            if ("" + id === "" + question.id) {
+                exist = true;
+            }
+        })
+        
+        if (!mismotipo){
+            toastr.warning("@ViewLocalizer["Todas las preguntas tienen que ser del mismo tipo"]", {})
+        }else{
+            if (!exist) {
+                var html = `<tr data-id='${question.id}'> <td>${question.name}</td>`;
+                if (question.isForced) {
+                    html += `<td>Forced Question</td>`;
+                }
+                else {
+                    html += `<td>Optional Modifier</td>`;
+                }
+                html += `
+                                        <td><div class="">
+                                                            <a href="javascript:void(0);" class="edit-item"><img src="/vendor/img/icons/edit.svg"  onclick='EditQuestion1(" ${question.id}")' alt="svg"></a>
+                                        </div>
+                                        </td>
+                                        <td>
+                                        <div class="delete-btn">
+                                            <a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                        </div>
+                                    </td></tr>`
+                $("#product-questions").append(html);
+                $("#listqestions").modal("hide");
+            }
+            else {
+                toastr.warning("@ViewLocalizer["The question already exist."]", {})
+            }
+        }
+        
+        
+        
+    }
+
+
+    //smart button
+    $(".add-new-smartbutton").click(function () {
+        $("#listsmartbuttons").modal("show");
+    });
+
+    $("#add-smartbutton").click(function () {
+        $("#smartbutton-name").val("");
+        $("#smartbutton-afterbefore").val("1").change();
+
+        $(".smartbuton-modal-title").html("@ViewLocalizer["Add Smart Button"]");
+        $("#editsmartbutton").data("id", 0);
+        $("#editsmartbutton").modal("show");
+    });
+
+
+    var smartbuttontable = $("#smartbutton-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Menu/GetSmartButtonList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        "destroy": true,
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectSmartButton(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></a><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditSmartButton(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a></div>";
+                },
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            {
+                "data": "isAfterText", "name": "isAfterText", "autoWidth": true,
+                render: function (data, type, row) {
+                    if (row.isAfterText) {
+                        return "After";
+                    }
+                    else {
+                        return "Before";
+                    }
+                },
+            },
+            {
+                "data": "isApplyPrice", "name": "isApplyPrice", "autoWidth": true,
+                render: function (data, type, row) {
+                    if (row.isApplyPrice) {
+                        return "Yes";
+                    }
+                    else {
+                        return "No";
+                    }
+                },
+            },
+
+        ]
+    });
+
+    function EditSmartButton(smartButton) {
+        $("#smartbutton-name").val(smartButton.name);
+
+        if (smartButton.isAfterText) {
+            $("#smartbutton-afterbefore").val(2).change();
+        }
+        else {
+            $("#smartbutton-afterbefore").val(1).change();
+        }
+        if (smartButton.isApplyPrice) {
+            $("#smartbutton-applyprice").prop("checked", true);
+        }
+        else {
+            $("#smartbutton-applyprice").prop("checked", false);
+        }
+
+        $(".smartbuton-modal-title").html("@ViewLocalizer["Edit Smart Button"]");
+        $("#editsmartbutton").data("id", smartButton.id);
+        $("#editsmartbutton").modal("show");
+    }
+
+    $("#edit-smartbutton").click(function () {
+        var name = $("#smartbutton-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var isAfter = $("#smartbutton-afterbefore").val()
+        var active = $("#category-status").val()
+        var data = {
+            ID: $("#editsmartbutton").data("id"),
+            Name: name,
+            IsAfterText: isAfter == "2",
+            IsApplyPrice: $("#smartbutton-applyprice").prop("checked"),
+        }
+
+        $.ajax({
+            url: "/Menu/EditSmartButton",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    smartbuttontable.draw();
+                    $("#editsmartbutton").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update the smart button."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function SelectSmartButton(smartButton) {
+        var html = `<tr data-id='${smartButton.id}'><td>${smartButton.name}</td>`;
+
+        if (smartButton.isAfterText) {
+            html += `<td>After</td>`
+        }
+        else {
+            html += `<td>Before</td>`
+        }
+        if (smartButton.isApplyPrice) {
+            html += `<td>Yes</td>`
+        }
+        else {
+            html += `<td>No</td>`
+        }
+
+        html += `<td>
+                            <div class="remove-btn">
+                                <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                            </div>
+                        </td></tr>`;
+
+        $("#question-smartbuttons").append(html);
+        $("#listsmartbuttons").modal("hide");
+    }
+
+    $("body").on("click", "a.remove-smartbutton", function () {
+        $(this).closest("tr").remove();
+    });
+
+
+    function EditQuestion(question) {
+        $("#editquestion").data("editar-agregado",0);
+        $.ajax({
+            url: "/Menu/GetQuestion?questionID=" + question.id,
+            type: "GET",
+            success: function (data, textStatus, jqXHR) {
+                if (data) {
+                    $("#question-name").val(data.name);
+                    if (data.isForced) {
+                        $("#question-type").val("1").change();
+                    }
+                    else {
+                        $("#question-type").val("2").change();
+                    }
+
+                    $("#question-maxanswer").val(data.maxAnswer);
+                    $("#question-minanswer").val(data.minAnswer);
+                    $("#question-freechoice").val(data.freeChoice);
+                    $("#question-answers").empty();
+                    for (var i = 0; i < data.answers.length; i++) {
+                        var answer = data.answers[i];
+                        var html = `<tr data-id='${answer.product.id}' data-servingsize='${answer.servingSizeID}'><td>${answer.product.name}</td>`;
+                        html += `<td><input class='answer-preselect' type='checkbox' value='${answer.isPreSelected}'/></td>`;
+                        html += `<td><input class='answer-hasqty' type='checkbox'  value='${answer.hasQty}'/></td>`;
+                        html += `<td><input class='answer-hasdivisor' type='checkbox'  value='${answer.hasDivisor}'/></td>`;
+                        html += `<td><input class='answer-matchsize' type='checkbox'  value='${answer.matchSize}'/></td>`;
+                        html += `<td><input class='answer-comentario' type='checkbox'  value='${answer.comentario}'/></td>`;
+                        html += ` <td>
+                                    <select class="answer-pricetype select form-control-sm">
+                                        <option value="0">@ViewLocalizer["Change Price"]</option>
+                                        <option value="1">@ViewLocalizer["Price"]1 (${answer.product.price[0]})</option>
+                                        <option value="2">@ViewLocalizer["Price"]2 (${answer.product.price[1]})</option>
+                                        <option value="3">@ViewLocalizer["Price"]3 (${answer.product.price[2]})</option>
+                                        <option value="4">@ViewLocalizer["Price"]4 (${answer.product.price[3]})</option>
+                                        <option value="5">@ViewLocalizer["Price"]5 (${answer.product.price[4]})</option>
+                                        <option value="6">@ViewLocalizer["Price"]6 (${answer.product.price[5]})</option>
+                                        <option value="7">@ViewLocalizer["Price"]7 (${answer.product.price[6]})</option>
+                                        <option value="8">@ViewLocalizer["Price"]8 (${answer.product.price[7]})</option>
+                                        <option value="9">@ViewLocalizer["Regular Price"]</option>
+                                        <option value="10">@ViewLocalizer["Fixed Price"]</option>
+                                    </select>
+                                </td>   `;
+                        html += `<td><input class="answer-fixed form-control form-control-sm" placeholder="0" value="${answer.fixedPrice}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>`;
+                        html += `<td><input class="answer-roll form-control form-control-sm" placeholder="0" value="${answer.rollPrice}" onkeypress="return onlyDecimalKey(event)" type="text" style="display:none" /><input class='answer-roll-checkbox' type='checkbox' ` + (answer.rollPrice>0 ? "checked" : "")  + `  /></td>`;
+                        html += `<td><select class='answer-postquestion select form-control-sm'><option value="0">None</option>`
+                        for (var ii = 0; ii < answer.product.questions.length; ii++) {
+                            var q = answer.product.questions[ii];
+                            if (q.id == answer.forcedQuestionID) {
+                                html += `<option value="${q.id}" selected >${q.name}</option>`;
+                            }
+                            else {
+                                html += `<option value="${q.id}" >${q.name}</option>`;
+                            }
+                        }
+                        html += `</select></td>`;
+                        html += `<td>
+                                        <div class="remove-btn">
+                                            <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                        </div>
+                                    </td></tr>`;
+
+                        $("#question-answers").append(html);
+                        $("#question-answers tr").last().find(".answer-pricetype").val(answer.priceType).change();
+                        if (answer.isPreSelected) {
+                            $("#question-answers tr").last().find(".answer-preselect").prop("checked", true);
+                        }
+                        if (answer.hasQty) {
+                            $("#question-answers tr").last().find(".answer-hasqty").prop("checked", true);
+                        }
+                        if (answer.hasDivisor) {
+                            $("#question-answers tr").last().find(".answer-hasdivisor").prop("checked", true);
+                        }
+                        if (answer.matchSize) {
+                            $("#question-answers tr").last().find(".answer-matchsize").prop("checked", true);
+                        }
+                        if (answer.comentario) {
+                            $("#question-answers tr").last().find(".answer-comentario").prop("checked", true);
+                        }
+                    }
+                    $("#question-smartbuttons").empty();
+                    for (var i = 0; i < data.smartButtons.length; i++) {
+                        var btn = data.smartButtons[i];
+                        var html = `<tr data-id='${btn.button.id}'><td>${btn.button.name}</td>`;
+
+                        if (btn.button.isAfterText) {
+                            html += `<td>After</td>`
+                        }
+                        else {
+                            html += `<td>Before</td>`
+                        }
+                        if (btn.button.isApplyPrice) {
+                            html += `<td>Yes</td>`
+                        }
+                        else {
+                            html += `<td>No</td>`
+                        }
+
+                        html += `<td>
+                                                <div class="remove-btn">
+                                                    <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                                </div>
+                                            </td></tr>`;
+
+                        $("#question-smartbuttons").append(html);
+                    }
+                    $(".question-modal-title").html("@ViewLocalizer["Edit Question"]");
+                    $("#editquestion").data("id", data.id);
+                    $("#editquestion").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function EditQuestion1(id) {
+        $("#editquestion").data("editar-agregado",1);
+        $.ajax({
+            url: "/Menu/GetQuestion?questionID=" + id,
+            type: "GET",
+            success: function (data, textStatus, jqXHR) {
+                if (data) {
+                    $("#question-name").val(data.name);
+                    if (data.isForced) {
+                        $("#question-type").val("1").change();
+                    }
+                    else {
+                        $("#question-type").val("2").change();
+                    }
+
+                    $("#question-maxanswer").val(data.maxAnswer);
+                    $("#question-minanswer").val(data.minAnswer);
+                    $("#question-freechoice").val(data.freeChoice);
+                    $("#question-answers").empty();
+                    for (var i = 0; i < data.answers.length; i++) {
+                        var answer = data.answers[i];
+                        var html = `<tr data-id='${answer.product.id}' data-servingsize='${answer.servingSizeID}'><td>${answer.product.name}</td>`;
+                        html += `<td><input class='answer-preselect' type='checkbox' value='${answer.isPreSelected}'/></td>`;
+                        html += `<td><input class='answer-hasqty' type='checkbox'  value='${answer.hasQty}'/></td>`;
+                        html += `<td><input class='answer-hasdivisor' type='checkbox'  value='${answer.hasDivisor}'/></td>`;
+                        html += `<td><input class='answer-matchsize' type='checkbox'  value='${answer.matchSize}'/></td>`;
+                        html += `<td><input class='answer-comentario' type='checkbox'  value='${answer.comentario}'/></td>`;
+                        html += ` <td>
+                                        <select class="answer-pricetype select form-control-sm">
+                                            <option value="0">@ViewLocalizer["Change Price"]</option>
+                                            <option value="1">@ViewLocalizer["Price"]1 (${answer.product.price[0]})</option>
+                                            <option value="2">@ViewLocalizer["Price"]2 (${answer.product.price[1]})</option>
+                                            <option value="3">@ViewLocalizer["Price"]3 (${answer.product.price[2]})</option>
+                                            <option value="4">@ViewLocalizer["Price"]4 (${answer.product.price[3]})</option>
+                                            <option value="5">@ViewLocalizer["Price"]5 (${answer.product.price[4]})</option>
+                                            <option value="6">@ViewLocalizer["Price"]6 (${answer.product.price[5]})</option>
+                                            <option value="7">@ViewLocalizer["Price"]7 (${answer.product.price[6]})</option>
+                                            <option value="8">@ViewLocalizer["Price"]8 (${answer.product.price[7]})</option>
+                                            <option value="9">@ViewLocalizer["Regular Price"]</option>
+                                            <option value="10">@ViewLocalizer["Fixed Price"]</option>
+                                        </select>
+                                    </td>   `;
+                        html += `<td><input class="answer-fixed form-control form-control-sm" placeholder="0" value="${answer.fixedPrice}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>`;
+                        html += `<td><input class="answer-roll form-control form-control-sm" placeholder="0" value="${answer.rollPrice}" onkeypress="return onlyDecimalKey(event)" type="text" style="display:none" /><input class='answer-roll-checkbox' type='checkbox' ` + (answer.rollPrice>0 ? "checked" : "")  + `  /></td>`;
+                        html += `<td><select class='answer-postquestion select form-control-sm'><option value="0">None</option>`
+                        for (var ii = 0; ii < answer.product.questions.length; ii++) {
+                            var q = answer.product.questions[ii];
+                            if (q.id == answer.forcedQuestionID) {
+                                html += `<option value="${q.id}" selected >${q.name}</option>`;
+                            }
+                            else {
+                                html += `<option value="${q.id}" >${q.name}</option>`;
+                            }
+                        }
+                        html += `</select></td>`;
+                        html += `<td>
+                                            <div class="remove-btn">
+                                                <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                            </div>
+                                        </td></tr>`;
+
+                        $("#question-answers").append(html);
+                        $("#question-answers tr").last().find(".answer-pricetype").val(answer.priceType).change();
+                        if (answer.isPreSelected) {
+                            $("#question-answers tr").last().find(".answer-preselect").prop("checked", true);
+                        }
+                        if (answer.hasQty) {
+                            $("#question-answers tr").last().find(".answer-hasqty").prop("checked", true);
+                        }
+                        if (answer.hasDivisor) {
+                            $("#question-answers tr").last().find(".answer-hasdivisor").prop("checked", true);
+                        }
+                        if (answer.matchSize) {
+                            $("#question-answers tr").last().find(".answer-matchsize").prop("checked", true);
+                        }
+                        if (answer.comentario) {
+                            $("#question-answers tr").last().find(".answer-comentario").prop("checked", true);
+                        }
+                    }
+                    $("#question-smartbuttons").empty();
+                    for (var i = 0; i < data.smartButtons.length; i++) {
+                        var btn = data.smartButtons[i];
+                        var html = `<tr data-id='${btn.button.id}'><td>${btn.button.name}</td>`;
+
+                        if (btn.button.isAfterText) {
+                            html += `<td>After</td>`
+                        }
+                        else {
+                            html += `<td>Before</td>`
+                        }
+                        if (btn.button.isApplyPrice) {
+                            html += `<td>Yes</td>`
+                        }
+                        else {
+                            html += `<td>No</td>`
+                        }
+
+                        html += `<td>
+                                                    <div class="remove-btn">
+                                                        <a href="javascript:void(0);" class="remove-smartbutton"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+                                                    </div>
+                                                </td></tr>`;
+
+                        $("#question-smartbuttons").append(html);
+                    }
+                    $(".question-modal-title").html("@ViewLocalizer["Edit Question"]");
+                    $("#editquestion").data("id", data.id);
+                    $("#editquestion").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("body").on("click", ".answer-roll-checkbox", function () {
+        RollPriceChecker(this);
+    });
+
+    $("body").on("change", ".answer-pricetype", function () {
+        RollPriceChecker(this);
+    });
+
+    $("body").on("change", ".answer-fixed", function () {
+        RollPriceChecker(this);
+    });
+    
+    function RollPriceChecker(ctr){
+        if($(ctr).closest("tr").find(".answer-roll-checkbox")[0].checked){
+            var dValor = $(ctr).closest("tr").find(".answer-fixed")[0].value;
+
+            if (dValor<=0){
+                var dTexto = $(ctr).closest("tr").find(".answer-pricetype option:selected")[0].text;
+                dValor = parseFloat(dTexto.substring(dTexto.indexOf("(")+1, dTexto.indexOf(")")));
+            }
+            $($(ctr).closest("tr").find(".answer-roll-checkbox")[0]).prev().val(dValor);
+
+        }else{
+            $($(ctr).closest("tr").find(".answer-roll-checkbox")[0]).prev().val(0);
+        }
+    }
+
+    // question list
+    var questionlisttable = $("#question-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Menu/GetQuestionList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectQuestion(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></a><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditQuestion(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                },
+            },
+
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "type", "name": "type", "autoWidth": true },
+            { "data": "answers", "name": "answers", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'isActive',
+                render: function (data, type, row) {
+                    if (row.isActive) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                    }
+                    else {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
+
+        ]
+    });
+
+    $("#edit-question").click(function () {
+        var name = $("#question-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var isForce = $("#question-type").val();
+
+        var maxAnswer = parseInt($("#question-maxanswer").val());
+        if (!maxAnswer) maxAnswer = 0;
+
+        var minAnswer = parseInt($("#question-minanswer").val());
+        if (!minAnswer) minAnswer = 0;
+
+        var freeChoice = parseInt($("#question-freechoice").val());
+        if (!freeChoice) freeChoice = 0;
+
+        var answers = [];
+        var index = 0;
+        $("#question-answers tr").each(function () {
+            var type = parseInt($(this).find(".answer-pricetype").val());
+            var fixed = parseFloatCorrect($(this).find(".answer-fixed").val());
+            var roll = parseFloatCorrect($(this).find(".answer-roll").val());
+            var questionid = parseInt($(this).find(".answer-postquestion").val());
+            if (!questionid) questionid = 0;
+            var serving = parseInt($(this).data("servingsize"));
+            if (!serving) serving = 0;
+            var answer = {
+                Order: index + 1,
+                Product: {
+                    ID: $(this).data("id")
+                },
+                PriceType: type,
+                FixedPrice: fixed,
+                RollPrice: roll,
+                HasQty: $(this).find(".answer-hasqty").prop("checked"),
+                HasDivisor: $(this).find(".answer-hasdivisor").prop("checked"),
+                IsPreSelected: $(this).find(".answer-preselect").prop("checked"),
+                MatchSize: $(this).find(".answer-matchsize").prop("checked"),
+                Comentario: $(this).find(".answer-comentario").prop("checked"),
+                ForcedQuestionID: questionid,
+                ServingSizeID: serving
+            }
+
+            answers.push(answer);
+            index++;
+        });
+
+        var smartbtns = [];
+        index = 0;
+        $("#question-smartbuttons tr").each(function () {
+
+            var btns = {
+                Order: index + 1,
+                Button: {
+                    ID: $(this).data("id")
+                },
+            }
+
+            smartbtns.push(btns);
+            index++;
+        });
+
+        var data = {
+            ID: $("#editquestion").data("id"),
+            Name: name,
+            MaxAnswer: maxAnswer,
+            MinAnswer: minAnswer,
+            FreeChoice: freeChoice,
+            IsForced: isForce == "1",
+            Answers: answers,
+            SmartButtons: smartbtns,
+            IsActive: $("#question-status").val() == "1",
+            IsAutomatic: $("#question-automatic").val() == "1",
+        }
+        
+        
+        //Validamos que todo sea del mismo tipo
+        var mismotipo = true;
+        
+        if ($("#editquestion").data("editar-agregado")==1){
+            $("#product-questions tr").each(function () {
+                var questionid = $(this).data("id");
+                if (questionid!=$("#editquestion").data("id")){
+                    if ($(this).html().indexOf("Forced Question") >= 0 || $(this).html().indexOf("Pregunta forzada") >= 0 ){
+                        if (isForce != "1") {
+                            mismotipo= false;
+                        }
+                    }else{
+                        if (isForce == "1") {
+                            mismotipo= false;
+                        }
+                    }
+                }
+                
+            })
+        }
+        
+
+        if (!mismotipo){
+            toastr.warning("@ViewLocalizer["Todas las preguntas tienen que ser del mismo tipo"]", {})
+        }else{
+            //actualizamos el registro en la tabla
+            $("#product-questions tr").each(function () {
+                var questionid = $(this).data("id");
+                if (questionid==$("#editquestion").data("id")) {
+                    var element = $(this).find("td")[1];
+                    if (isForce == "1") {
+                        $(element).html("Forced Question");
+                    }
+                    else {
+                        $(element).html("Optional Modifier");
+                    }
+
+                }
+            });
+            
+            $.ajax({
+                url: "/Menu/EditQuestion",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        questionlisttable.draw();
+                        $("#editquestion").modal("hide");
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["Failed to add/update."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+        }
+        
+
+        
+
+    })
+
+
+</script>

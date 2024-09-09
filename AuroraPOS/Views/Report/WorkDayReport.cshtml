@@ -1,0 +1,1219 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var users = (List<User>)ViewBag.Users;
+    var branchs = (List<t_sucursal>)ViewBag.Branchs;
+}
+<div class="page-header">
+    <div class="page-title">
+        <h3>Cierre del dia</h3>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Rango de fechas"]</label>
+                    <select id="date-range-selector" class="form-control">
+                        <option value="">Selecciona una fecha</option>
+                        <option value="today">Hoy</option>
+                        <option value="yesterday">Ayer</option>
+                        <option value="last7days">Últimos 7 días</option>
+                        <option value="last30days">Últimos 30 días</option>
+                        <option value="last90days">Últimos 90 días</option>
+                        <option value="last365days">Últimos 365 días</option>
+                        <option value="lastmonth">Mes pasado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date From"] </label>
+                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Date To"] </label>
+                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Sucursal"] </label>
+                    <select id="station-branch" class="select ">
+                        <option value=0>Selecciona una sucursal</option>
+                        @foreach (var b in branchs)
+                        {
+                            <option value="@b.ID">@b.Name</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Usuario"] </label>
+                    <select id="user" class="select ">
+                        <option value=0>Selecciona un usuario</option>
+                        @foreach (var b in users)
+                        {
+                            <option value="@b.ID">@b.FullName</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12 ">
+                <div class="form-group">
+                    <label>@ViewLocalizer["Cierre"] </label>
+                    <select id="cierre" class="select ">
+                        <option value=0>Selecciona un usuario</option>
+                        @foreach (var b in users)
+                        {
+                            <option value="@b.ID">@b.FullName</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart11"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Tipo de Orden"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-tipo-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart8"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Transacciones"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-transacciones-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart3"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                    @ViewLocalizer["Ventas al Contado"]
+
+                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_al_contado')">Ver Detalle</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-contado-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart5"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                    @ViewLocalizer["Tarjetas de Crédito"]
+                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_tarjeta')">Ver Detalle</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-tarjetas-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart9"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                    @ViewLocalizer["Otras Ventas"]
+                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_otras')">Ver Detalle</button>
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="report-otras-ventas-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart6"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Impuestos x Grupo"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-impuestos-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart12"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Legal"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-propinas-legal-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Domicilio"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-domicilio-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart10"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Voluntaria"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-propinas-voluntaria-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart2"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Grupo"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-x-grupo-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart14"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Categoria"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-categoria-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart7"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Horas"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-ventas-hora-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart13"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6 col-12">
+                <div class="table-responsive" style="padding-bottom:70px;">
+                    <table id="report-list" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Descuentos"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-descuentos-body">
+                        </tbody>
+                    </table>
+                    <canvas id="myChart4"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="moreinfomodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="supplier-modal-title">@ViewLocalizer["Detalles"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row table-responsive">
+
+                    <div id="ventas-contado-detalle-div" class="col-12" style="display:none">
+                    </div>
+
+                    <div id="ventas-tarjeta-detalle-div" class="col-12" style="display:none">
+                    </div>
+
+                    <div id="ventas-otras-detalle-div" class="col-12" style="display:none">
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">                
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cerrar"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var bBloquear = false;
+
+    $(document).ready(function () {
+
+
+
+
+        $("#user").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#cierre").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+        $("#filter_datefrom").on('dp.change', function (e) {
+            if (!bBloquear) {
+                RefreshDayOfWeekReport();
+            }
+            
+        });
+
+        $("#filter_dateto").on('dp.change', function (e) {
+            if (!bBloquear) {
+                RefreshDayOfWeekReport();
+            }
+            
+        });
+
+        $("#station-branch").on('change', function (e) {
+            RefreshDayOfWeekReport();
+        });
+
+		function formatDate(date) {
+			var day = date.getDate();
+			var month = date.getMonth() + 1;
+			var year = date.getFullYear();
+			return day + '-' + month + '-' + year;
+		}
+
+        RefreshDayOfWeekReport();
+    });
+
+    function verDetalle(acccion) {
+        $("#moreinfomodal").modal("show");
+
+        switch (acccion) {
+            case "ventas_al_contado":
+                $("#ventas-contado-detalle-div").show();
+                $("#ventas-tarjeta-detalle-div").hide();
+                $("#ventas-otras-detalle-div").hide();
+                break;
+            case "ventas_tarjeta":
+                $("#ventas-contado-detalle-div").hide();
+                $("#ventas-tarjeta-detalle-div").show();
+                $("#ventas-otras-detalle-div").hide();
+                break;
+            case "ventas_otras":
+                $("#ventas-contado-detalle-div").hide();
+                $("#ventas-tarjeta-detalle-div").hide();
+                $("#ventas-otras-detalle-div").show();
+                break;
+        }
+
+        
+    }
+
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        return day + '-' + month + '-' + year;
+    }
+    $("#date-range-selector").change(function () {
+        var selectedValue = $(this).val();
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+
+        bBloquear = true;
+
+        switch (selectedValue) {
+            case "today":
+                var formattedDate = formatDate(currentDate); // Formatear la fecha actual
+                $("#filter_datefrom").val(formattedDate).change();
+                $("#filter_dateto").val(formattedDate).change();
+
+                break;
+            case "yesterday":
+                var yesterday = new Date(currentDate);
+                yesterday.setDate(currentDate.getDate() - 1); // Obtener la fecha de ayer
+                var formattedYesterday = formatDate(yesterday); // Formatear la fecha de ayer
+                $("#filter_datefrom").val(formattedYesterday).change(); // Establecer el campo "From" con la fecha de ayer y disparar el evento change
+                $("#filter_dateto").val(formattedYesterday).change();
+                break;
+            case "last7days":
+                var formattedDate = formatDate(currentDate);
+                var last7Days = new Date(currentDate);
+                last7Days.setDate(currentDate.getDate() - 6); // Restar 6 días para obtener el rango de los últimos 7 días
+                var formattedLast7Days = formatDate(last7Days);
+                $("#filter_datefrom").val(formattedLast7Days).change(); // Actualizar el valor del campo date from
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            // Agrega más casos según tus necesidades
+            case "last30days":
+                var formattedDate = formatDate(currentDate);
+                var last30Days = new Date(currentDate);
+                last30Days.setDate(currentDate.getDate() - 29); // Restar 29 días para obtener el rango de los últimos 30 días
+                var formattedLast30Days = formatDate(last30Days);
+                $("#filter_datefrom").val(formattedLast30Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "last90days":
+                var formattedDate = formatDate(currentDate);
+                var last90Days = new Date(currentDate);
+                last90Days.setDate(currentDate.getDate() - 89); // Restar 89 días para obtener el rango de los últimos 90 días
+                var formattedLast90Days = formatDate(last90Days);
+                $("#filter_datefrom").val(formattedLast90Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "last365days":
+                var formattedDate = formatDate(currentDate);
+                var last365Days = new Date(currentDate);
+                last365Days.setDate(currentDate.getDate() - 364); // Restar 364 días para obtener el rango de los últimos 365 días
+                var formattedLast365Days = formatDate(last365Days);
+                $("#filter_datefrom").val(formattedLast365Days).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+            case "lastmonth":
+                var formattedDate = formatDate(currentDate);
+                var lastMonthLastDay = new Date(currentYear, currentMonth, 0);
+                var lastMonthFirstDay = new Date(currentYear, currentMonth - 1, 1);
+                var formattedLastMonthFirstDay = formatDate(lastMonthFirstDay);
+                var formattedLastMonthLastDay = formatDate(lastMonthLastDay);
+                $("#filter_datefrom").val(formattedLastMonthFirstDay).change();
+                $("#filter_dateto").val(formattedDate).change();
+                break;
+        }
+
+        bBloquear = false;
+
+        RefreshDayOfWeekReport()
+
+        damagetable.ajax.reload();
+    });
+
+
+    function RefreshDayOfWeekReport()
+    {
+        var datefrom = $("#filter_datefrom").val();
+        var dateto = $("#filter_dateto").val();
+        var user = $("#user").val();
+        var cierre = $("#cierre").val();
+        var sucursal = $("#station-branch").val();
+        
+        
+
+        $("#report-propinas-legal-body").empty();
+        $("#report-propinas-voluntaria-body").empty();
+        $("#report-transacciones-body").empty();
+        $("#report-descuentos-body").empty();
+        $("#report-tarjetas-body").empty();
+        $("#report-domicilio-body").empty();
+        $("#report-ventas-contado-body").empty();
+        $("#report-otras-ventas-body").empty();
+        $("#report-ventas-categoria-body").empty();
+        $("#report-ventas-body").empty();
+        $("#report-impuestos-body").empty();
+        $("#report-ventas-tipo-body").empty();
+        $("#report-ventas-hora-body").empty();
+        $("#report-ventas-x-grupo-body").empty();
+
+        ShowLoader()
+
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetWorkDayReport?from=" + datefrom + "&to=" + dateto + "&user=" + user + "&sucursal=" + sucursal + "&cierre=" + cierre,
+            success: function (data) {
+                HideLoader()
+
+                if (data.resultado) {
+
+                    for (var i = 0; i < data.propinas_legal.length; i++) {
+                        var tran = data.propinas_legal[i];
+
+                        // Crear una fila de la tabla con la descripción y el valor
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            // Cambiar el color de fondo de la celda a morado
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        // Agregar la fila a la tabla
+                        $("#report-propinas-legal-body").append(row);
+                    }
+
+                    // Obtén datos de la tabla para propinas legales
+                    var propinasLegalData = obtenerDatosDeTabla("#report-propinas-legal-body");
+
+                    // Filtra los datos para excluir la fila con descripción "Total"
+                    var filteredLegalData = propinasLegalData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    // Extrae las descripciones y valores para el gráfico de propinas legales
+                    var labelsLegal = [];
+                    var valoresLegal = [];
+
+                    filteredLegalData.forEach(function (tran) {
+                        labelsLegal.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresLegal.push(tran.valor);
+                        }
+                    });
+
+                    // Crea gráfico de propinas legales
+                    var ctx1 = document.getElementById('myChart').getContext('2d');
+                    crearGrafico(ctx1, labelsLegal,  valoresLegal, "Propina Legal" , 'purple', 'white');
+
+
+                    for (var i = 0; i < data.propinas_voluntaria.length; i++) {
+                        var tran = data.propinas_voluntaria[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+                        $("#report-propinas-voluntaria-body").append(row);
+                    }
+                    var propinasVoluntariaData = obtenerDatosDeTabla("#report-propinas-voluntaria-body");
+
+                    var filteredVoluntariaData = propinasVoluntariaData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsVoluntaria = [];
+                    var valoresVoluntaria = [];
+
+                    filteredVoluntariaData.forEach(function (tran) {
+                        labelsVoluntaria.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVoluntaria.push(tran.valor);
+                        }
+                    });
+
+                    console.log(labelsVoluntaria);
+                    console.log(valoresVoluntaria);
+
+                    var ctx2 = document.getElementById('myChart2').getContext('2d');
+                    crearGrafico(ctx2, labelsVoluntaria, valoresVoluntaria,"Propina Voluntaria", 'blue', 'white');
+
+                    for (var i = 0; i < data.transacciones.length; i++) {
+                        var tran = data.transacciones[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        /*if (tran.descripcion.trim() === "Average por Transacción") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }*/
+
+                        $("#report-transacciones-body").append(row);
+                    }
+                    var transaccionesData = obtenerDatosDeTabla("#report-transacciones-body");
+
+                    // Filtra los datos para excluir la fila con descripción "Average por Transacción"
+                    var filteredTransaccionesData = transaccionesData.filter(function (tran) {
+                        return tran.descripcion != "No. de Personas" && tran.descripcion != "No. de Transacciones";
+                    });
+
+                    // Extrae las descripciones y valores para el gráfico de pastel
+                    var labelsTransacciones = [];
+                    var valoresTransacciones = [];
+
+                    filteredTransaccionesData.forEach(function (tran) {
+                        labelsTransacciones.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresTransacciones.push(tran.valor);
+                        }
+                    });
+
+                    // Crea gráfico de pastel para transacciones
+                    var ctxTransacciones = document.getElementById('myChart3').getContext('2d');
+                    crearGrafico(ctxTransacciones, labelsTransacciones, valoresTransacciones, "Transacciones", 'blue', 'white');
+
+
+                    for (var i = 0; i < data.descuentos.length; i++) {
+                        var tran = data.descuentos[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total Descuentos") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+                        $("#report-descuentos-body").append(row);
+                    }
+                    var descuentosData = obtenerDatosDeTabla("#report-descuentos-body");
+
+                    var filteredDescuentosData = descuentosData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total Descuentos";
+                    });
+
+                    var labelsDescuentos = [];
+                    var valoresDescuentos = [];
+
+                    filteredDescuentosData.forEach(function (tran) {
+                        labelsDescuentos.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresDescuentos.push(tran.valor);
+                        }
+                    });
+
+                    var ctx4 = document.getElementById('myChart4').getContext('2d');
+
+                    crearGraficoPastel(ctx4, labelsDescuentos, valoresDescuentos, 'Descuentos');
+
+                    for (var i = 0; i < data.tarjetas.length; i++) {
+                        var tran = data.tarjetas[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-tarjetas-body").append(row);
+                    }
+                    var tarjetasData = obtenerDatosDeTabla("#report-tarjetas-body");
+
+                    var filteredTarjetasData = tarjetasData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+                    var labelsTarjetas = [];
+                    var valoresTarjetas = [];
+
+                    filteredTarjetasData.forEach(function (tran) {
+                        labelsTarjetas.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresTarjetas.push(tran.valor);
+                        }
+                    });
+
+                    var ctx9 = document.getElementById('myChart9').getContext('2d');
+
+                    crearGraficoPastel(ctx9, labelsTarjetas, valoresTarjetas, 'Tarjetas de crédito');
+
+                    for (var i = 0; i < data.cargos_domicilio.length; i++) {
+                        var tran = data.cargos_domicilio[i];
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+
+                        $("#report-domicilio-body").append(row);
+                    }
+                    var domicilioData = obtenerDatosDeTabla("#report-domicilio-body");
+
+                    var filteredDomicilioData = domicilioData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsDomicilio = [];
+                    var valoresDomicilio = [];
+
+                    filteredDomicilioData.forEach(function (tran) {
+                        labelsDomicilio.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresDomicilio.push(tran.valor);
+                        }
+                    });
+
+                    var ctx10 = document.getElementById('myChart10').getContext('2d')
+                    crearGrafico(ctx10, labelsDomicilio, valoresDomicilio, "Domicilio", 'green', 'white');
+
+                    for (var i = 0; i < data.ventas_contado.length; i++) {
+                        var tran = data.ventas_contado[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-ventas-contado-body").append(row);
+                    }
+                    var ventasContadoData = obtenerDatosDeTabla("#report-ventas-contado-body");
+                    var filteredVentasContadoData = ventasContadoData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsVentasContado = [];
+                    var valoresVentasContado = [];
+
+                    filteredVentasContadoData.forEach(function (tran) {
+                        labelsVentasContado.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasContado.push(tran.valor);
+                        }
+                    });
+                    var ctx11 = document.getElementById('myChart5').getContext('2d');
+                    crearGrafico(ctx11, labelsVentasContado, valoresVentasContado, "Ventas al Contado", 'red', 'white');
+
+
+                    for (var i = 0; i < data.ventas_otras.length; i++) {
+                        var tran = data.ventas_otras[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+                        $("#report-otras-ventas-body").append(row);
+                    }
+
+                    var ventasOtrasData = obtenerDatosDeTabla("#report-otras-ventas-body");
+
+                    var filteredVentasOtrasData = ventasOtrasData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsVentasOtras = [];
+                    var valoresVentasOtras = [];
+
+                    filteredVentasOtrasData.forEach(function (tran) {
+                        labelsVentasOtras.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasOtras.push(tran.valor);
+                        }
+                    });
+
+                    var ctx12 = document.getElementById('myChart6').getContext('2d');
+                    crearGrafico(ctx12, labelsVentasOtras, valoresVentasOtras, "Otras Ventas", 'red', 'white');
+
+                    for (var i = 0; i < data.ventas_categoria.length; i++) {
+                        var tran = data.ventas_categoria[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total Categoria") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+                        $("#report-ventas-categoria-body").append(row);
+                    }
+
+                    var ctx17 = document.getElementById('myChart7').getContext('2d');
+
+                    var ventasCategoriaData = obtenerDatosDeTabla("#report-ventas-categoria-body");
+
+
+                    var filteredVentasCategoriaData = ventasCategoriaData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total Categoria";
+                    });
+
+                    var labelsVentasCategoria = [];
+                    var valoresVentasCategoria = [];
+
+                    filteredVentasCategoriaData.forEach(function (tran) {
+                        labelsVentasCategoria.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasCategoria.push(tran.valor);
+                        }
+                    });
+
+                    crearGraficoPastel(ctx17, labelsVentasCategoria, valoresVentasCategoria, 'Ventas x Categoria');
+
+
+
+                    for (var i = 0; i < data.ventas.length; i++) {
+                        var tran = data.ventas[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-ventas-body").append(row);
+                    }
+
+
+                    var ctx13 = document.getElementById('myChart11').getContext('2d');
+
+                    var ventasData = obtenerDatosDeTabla("#report-ventas-body");
+
+                    var filteredVentasData = ventasData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsVentas = [];
+                    var valoresVentas = [];
+
+                    filteredVentasData.forEach(function (tran) {
+                        labelsVentas.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentas.push(tran.valor);
+                        }
+                    });
+                    crearGraficoPastel(ctx13, labelsVentas, valoresVentas, 'Ventas');
+
+                    for (var i = 0; i < data.impuestos.length; i++) {
+                        var tran = data.impuestos[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-impuestos-body").append(row);
+                    }
+
+                    var ctx14 = document.getElementById('myChart12').getContext('2d');
+
+                    var impuestosData = obtenerDatosDeTabla("#report-impuestos-body");
+
+                    var filteredImpuestosData = impuestosData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsImpuestos = [];
+                    var valoresImpuestos = [];
+
+                    filteredImpuestosData.forEach(function (tran) {
+                        labelsImpuestos.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresImpuestos.push(tran.valor);
+                        }
+                    });
+
+                    crearGraficoPastel(ctx14, labelsImpuestos, valoresImpuestos, 'Impuestos');
+
+                    for (var i = 0; i < data.ventas_grupo.length; i++) {
+                        var tran = data.ventas_grupo[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-ventas-x-grupo-body").append(row);
+                    }
+
+                    var ctx15 = document.getElementById('myChart14').getContext('2d');
+
+                    var ventasxGrupoData = obtenerDatosDeTabla("#report-ventas-x-grupo-body");
+
+                    var filteredventasxGrupoData = ventasxGrupoData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    var labelsVentascGrupo = [];
+                    var valoresVentasxGrupo = [];
+
+                    filteredventasxGrupoData.forEach(function (tran) {
+                        labelsVentascGrupo.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasxGrupo.push(tran.valor);
+                        }
+                    });
+
+                    crearGraficoPastel(ctx15, labelsVentascGrupo, valoresVentasxGrupo, 'Ventas x Grupo');
+
+
+                    for (var i = 0; i < data.ventas_tipo.length; i++) {
+                        var tran = data.ventas_tipo[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+                        $("#report-ventas-tipo-body").append(row);
+                    }
+
+                    var ctx15 = document.getElementById('myChart8').getContext('2d');
+
+                    // Obtén datos de la tabla para ventas por tipo
+                    var ventasTipoData = obtenerDatosDeTabla("#report-ventas-tipo-body");
+
+                    // Filtra los datos para excluir la fila con descripción "Total"
+                    var filteredVentasTipoData = ventasTipoData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    // Extrae las descripciones y valores para el gráfico de barras de ventas por tipo
+                    var labelsVentasTipo = [];
+                    var valoresVentasTipo = [];
+
+                    filteredVentasTipoData.forEach(function (tran) {
+                        labelsVentasTipo.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasTipo.push(tran.valor);
+                        }
+                    });
+                    crearGraficoPastel(ctx15, labelsVentasTipo, valoresVentasTipo, 'Ventas x Tipo Orden');
+
+                    for (var i = 0; i < data.ventas_hora.length; i++) {
+                        var tran = data.ventas_hora[i];
+
+                        var row = $("<tr><td>" + tran.descripcion + "</td><td>" + tran.valor + "</td></tr>");
+
+                        if (tran.descripcion.trim() === "Total") {
+                            row.find("td").css({
+                                "background-color": "purple",
+                                "color": "white"
+                            });
+                        }
+
+                        $("#report-ventas-hora-body").append(row);
+                    }
+
+                    var ctx16 = document.getElementById('myChart13').getContext('2d');
+
+                    // Obtén datos de la tabla para ventas por hora
+                    var ventasHoraData = obtenerDatosDeTabla("#report-ventas-hora-body");
+
+                    // Filtra los datos para excluir la fila con descripción "Total"
+                    var filteredVentasHoraData = ventasHoraData.filter(function (tran) {
+                        return tran.descripcion.trim() !== "Total";
+                    });
+
+                    // Extrae las descripciones y valores para el gráfico de barras de ventas por hora
+                    var labelsVentasHora = [];
+                    var valoresVentasHora = [];
+
+                    filteredVentasHoraData.forEach(function (tran) {
+                        labelsVentasHora.push(tran.descripcion);
+                        if (!isNaN(tran.valor)) {
+                            valoresVentasHora.push(tran.valor);
+                        }
+                    });
+
+                    crearGrafico(ctx16, labelsVentasHora, valoresVentasHora, "Ventas x Hora", 'red', 'white');
+
+                    crearTablaDetalle('#ventas-contado-detalle-div', data.ventas_contado_detalle);
+                    crearTablaDetalle('#ventas-tarjeta-detalle-div', data.ventas_tarjeta_detalle);
+                    crearTablaDetalle('#ventas-otras-detalle-div', data.ventas_otras_detalle);
+                    
+
+                } else {
+                    toastr.error("@ViewLocalizer["El día seleccionado no tiene movimientos."]", {})
+                }
+
+
+            },
+            error: function () {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+
+
+    }
+
+    function crearTablaDetalle(selector, datos) {
+
+        $(selector).html("");
+
+        var jQueryTabla = $("<table class='table'><thead><th>Orden</th><th>Numero</th><th>SubTotal</th><th>Discount</th><th>Itbis</th><th>Propina</th><th>Delivery</th><th>Tip</th><th>Total</th><th>Metodo</th><th>Creado</th><th>Creación</th><th>Pago</th><th>Pagado</th><th>Tachar</th><thead></table>");
+        jQueryTabla.attr({
+            id: "idtabla"
+        });
+    
+        var alldatahtml = '<tbody>';
+        var dsubTotal = 0;
+        var ddiscount = 0;
+        var dtax = 0;
+        var dpropina = 0;
+        var ddelivery = 0;
+        var dtip = 0;
+        var damount = 0;
+        $.each(datos, function (key, value) {            
+            alldatahtml += '<tr><td>' + value.order + '</td><td>' + value.comprobanteNumber + '</td><td>' + value.subTotal + '</td><td>' + value.discount + '</td><td>' + value.tax + '</td><td>' + value.propina + '</td><td>' + value.delivery + '</td><td>' + value.tip + '</td><td>' + value.amount + '</td><td>' + value.paymentMethod + '</td><td>' + value.usuarioCreacion + '</td><td>' + value.fechaCreacion + '</td><td>' + value.usuarioPago + '</td><td>' + value.fechaPago + '</td><td><input type="checkbox" onclick="tacharFila(this)" /></td></tr>';
+            dsubTotal = dsubTotal + value.subTotal;
+            ddiscount = ddiscount + value.discount;
+            dtax = dtax + value.tax;
+            dpropina = dpropina + value.propina;
+            ddelivery = ddelivery + value.delivery;
+            dtip = dtip + value.tip;
+            damount = damount + value.amount;
+        });
+        alldatahtml += '<tr><td>' + 'TOTALES:' + '</td><td>' + '' + '</td><td>' + dsubTotal.toFixed(2) + '</td><td>' + ddiscount.toFixed(2) + '</td><td>' + dtax.toFixed(2) + '</td><td>' + dpropina.toFixed(2) + '</td><td>' + ddelivery.toFixed(2) + '</td><td>' + dtip.toFixed(2) + '</td><td>' + damount.toFixed(2) + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td><td>' + '' + '</td></tr>';
+        alldatahtml += '</tbody>';
+
+        $(jQueryTabla).find('thead').first().after(alldatahtml);
+
+        $(selector).append(jQueryTabla);
+
+        $(selector).find('table').DataTable({
+            "processing": false, // for show progress bar
+            "serverSide": false, // for process server side
+            "orderMulti": false, // for disable multiple column at once
+            "paging": false,
+            "layout": {
+                "topStart": {
+                    "buttons": [ 'excel', 'pdf']
+                }
+            },
+            "buttons": [
+                'excel'
+            ]
+        });
+
+    }
+
+    function tacharFila(control) {
+        if ($(control)[0].checked){
+            $(control).closest('tr').find('td').addClass('tachar');
+        }else{
+            $(control).closest('tr').find('td').removeClass('tachar');
+        }
+        
+    }
+
+    function obtenerDatosDeTabla(selector) {
+        var data = [];
+        $(selector + " tr").each(function () {
+            var descripcion = $(this).find("td:eq(0)").text().trim();
+            var valorStr = $(this).find("td:eq(1)").text().trim().replace(/[^0-9.]/g, '');
+
+            if (valorStr !== "") {
+                var valor = parseFloat(valorStr);
+                console.log("Descripcion:", descripcion);
+                data.push({ descripcion: descripcion, valor: valor });
+            }
+        });
+        return data;
+    }
+
+    // Función para crear gráfico
+    function crearGrafico(ctx, labels, valores, graphLabel, backgroundColor, borderColor) {
+        if (Chart && labels.length > 0 && valores.length > 0) {
+            // Destruye el gráfico existente si hay uno
+            if (ctx.chart) {
+                ctx.chart.destroy();
+            }
+
+            // Crea el nuevo gráfico
+            var newChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: graphLabel,
+                        data: valores,
+                        backgroundColor: obtenerColoresFondo(valores.length),
+                        borderColor: 'white',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {}
+                    }
+                }
+            });
+            // Almacena la referencia al gráfico en el contexto
+            ctx.chart = newChart;
+
+        } else {
+            console.error('Error: Chart.js no está cargado o los datos no están disponibles.');
+        }
+    }
+
+
+    function crearGraficoPastel(ctx, labels, valores, graphLabel) {
+        if (Chart && labels.length > 0 && valores.length > 0) {
+            // Destruye el gráfico existente si hay uno
+            if (ctx.chart) {
+                ctx.chart.destroy();
+            }
+
+            // Crea el nuevo gráfico de pastel
+            var newChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: obtenerColoresFondo(valores.length),
+                        borderColor: 'white',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'center'
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: true
+                }
+            });
+            ctx.canvas.width = 300;
+            ctx.canvas.height = 300;
+            // Almacena la referencia al gráfico en el contexto
+            ctx.chart = newChart;
+
+        } else {
+            console.error('Error: Chart.js no está cargado o los datos no están disponibles.');
+        }
+    }
+
+    // Función auxiliar para obtener colores de fondo aleatorios
+    function obtenerColoresFondo(cantidad) {
+        var colores = [];
+        for (var i = 0; i < cantidad; i++) {
+            colores.push(obtenerColorAleatorio());
+        }
+        return colores;
+    }
+
+    // Función auxiliar para obtener un color aleatorio en formato rgba
+    function obtenerColorAleatorio() {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        return 'rgba(' + r + ',' + g + ',' + b + ',0.8)';
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>

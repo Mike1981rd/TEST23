@@ -1,0 +1,1204 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var backgrounds = (List<string>) ViewBag.BackgroundImages;
+    var objectimgs = (List<string>) ViewBag.ObjectImages;
+}
+<style>
+.obj-content {
+  color: white;
+  font-size: 15px;
+  font-family: sans-serif;
+  touch-action: none;
+
+  /* This makes things *much* easier */
+  box-sizing: border-box;
+}
+
+.ellipse
+{
+    border-radius: 50%;
+}
+.object-selected
+{
+    border: 2px solid white;
+}
+.obj-name{
+    margin: 0;
+}
+</style>
+<div class="page-header">
+    <div class="page-title">
+        <h4>@ViewLocalizer["Add/Update Table Map"]</h4>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12 col-12">
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-lg-9 col-sm-6 col-6">
+                            <select id="editor-area" class="select ">
+                                <option value="">@ViewLocalizer["Choose area"]</option>
+
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-sm-2 col-2 ps-0">
+                            <div class="d-flex">
+                                <div class="add-icon px-1">
+                                    <a id="add-area-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                                <div class="edit-icon  px-1">
+                                    <a id="edit-area-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/edit.svg" alt="img">
+                                    </a>
+                                </div>
+                                <div class="del-icon  px-1">
+                                    <a id="del-area-modal" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/minus.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="d-flex">
+                        <button id="add-object-modal" class="btn btn-sm btn-success mx-3">@ViewLocalizer["Add New Object"]</button>
+                        <button id="edit-object-modal" class="btn  btn-sm btn-secondary mx-3">@ViewLocalizer["Edit Selected Object"]</button>
+                        <button id="clone-object-modal" class="btn  btn-sm btn-success mx-3">@ViewLocalizer["Clone Selected Object"]</button>
+                        <button id="del-object-modal" class="btn  btn-sm btn-danger mx-3">@ViewLocalizer["Delete Object"]</button>
+                    </div>
+                    <div id="main" class="p-2">
+                        <div class="d-flex justify-content-between">
+                            <div class="area-info"  style="display:none;">@ViewLocalizer["WIDTH"]: <span class="area-width-info text-info">1000</span>, @ViewLocalizer["HEIGHT"]: <span  class="area-height-info text-info">700</span></div> 
+                            <div class="selected-info" style="display:none;">SELECTED:  <span class="selected-name">@ViewLocalizer["NAME"]</span>, W x H: <span class="selected-wh text-info"></span>, @ViewLocalizer["POS"]: <span class="selected-pos text-info"></span></div>
+
+                        </div>
+                        <div id="area-panel" class="" style="position:relative;">
+                            <div class="areaobject-item">
+                                <div class="obj-content" style="width: 100%; height:100%; background-color: green;"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+
+<!--  Add/Edit Area -->
+<div class="modal fade" id="editarea" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="area-modal-title">@ViewLocalizer["Add/Edit Area"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="area-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Width"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="area-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Height"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="area-height" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-sm-6 col-12">
+                        <div class="form-group px-3">
+                            <label>	@ViewLocalizer["Background Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="area-bcolor" class="backcolor">
+                                    <input id="area-backcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group px-3">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left pr-5">@ViewLocalizer["Background"]</h6>
+                            <div class="add-unit text-danger">
+                                <a class="add-photo " href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus.svg" alt="img">
+                                </a>
+                            </div>
+                            <div  class="del-unit text-danger">
+                                <a  class="del-photo "  href="javascript:void(0);" >
+                                    <img src="/vendor/img/icons/minus.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                   
+                        <div class="row">
+                            <div class="col-sm-4 col-4">
+                                <img id="areaimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                            </div>
+                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                <input id="imgInpArea" type="file" name="Files" accept="image/*">
+                                <div class="image-uploads">
+                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-area" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Add/Edit Area object -->
+<div class="modal fade" id="editareaobject" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="area-modal-title">@ViewLocalizer["Add/Edit Area Object"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-8 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Seat Count"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-seat" onkeypress="return onlyDecimalKey(event)" placeholder="0" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Width"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)"  placeholder="0"  aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Height"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-height" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1"  placeholder="0"  required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Position X"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-posx" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Position Y"]<span class="manitory">*</span></label>
+                            <div class="input-group">
+                                <input id="obj-posy" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0"  required>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-4  col-sm-6 col-12">
+                       <label>@ViewLocalizer["Shape"]</label>
+                        <div class="input-group">
+                            <select id="obj-shape" class="select">
+                                <option value="0">@ViewLocalizer["Rectangle"]</option>
+                                <option value="1">@ViewLocalizer["Ellipse"]</option>
+                                <option value="2">@ViewLocalizer["RoundedRectangle"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Corner Radius"]</label>
+                            <div class="input-group">
+                                <input id="obj-radius" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0" required>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-lg-4  col-sm-6 col-12">
+                         <label>@ViewLocalizer["Type"]</label>
+                        <div class="input-group">
+                            <select id="obj-type" class="select">
+                                <option value="0">@ViewLocalizer["Static"]</option>
+                                <option value="1">@ViewLocalizer["Table"]</option>
+                                <option value="2">@ViewLocalizer["Chair"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-sm-6 col-12">
+                        <div class="form-group px-3">
+                            <label>	@ViewLocalizer["Background Color"]<input class="m-2" type="checkbox" checked id="has-bg" /></label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="object-bcolor" class="backcolor">
+                                    <input id="object-backcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-sm-6 col-12">
+                        <div class="form-group px-3">
+                            <label>	@ViewLocalizer["Text Color"]</label>
+                            <div class="col-lg-4 text-start w-100">
+                                <div id="object-tcolor" class="backcolor ">
+                                    <input id="object-textcolor" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group px-3">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left pr-5">@ViewLocalizer["Image"]</h6>
+                            <div class="add-unit text-danger">
+                                <a class="add-obj-photo " href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus.svg" alt="img">
+                                </a>
+                            </div>
+                            <div  class="del-unit text-danger">
+                                <a  class="del-obj-photo "  href="javascript:void(0);" >
+                                    <img src="/vendor/img/icons/minus.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                   
+                        <div class="row">
+                            <div class="col-sm-4 col-4">
+                                <img id="areaobjimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                            </div>
+                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                <input id="imgInpObjArea" type="file" name="Files" accept="image/*">
+                                <div class="image-uploads">
+                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-areaobject" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Background Gallery -->
+<div class="modal fade" id="selectback" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Select Background Image"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row d-flex">
+                    @foreach(var b in backgrounds)
+                    {
+                        <div class="back-item col-lg-3 col-6">
+                            <img src="@b" width="200" height="200" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Background Gallery -->
+<div class="modal fade" id="selectobjectimg" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["Select Object Image"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row d-flex">
+                    @foreach(var b in objectimgs)
+                    {
+                        <div class="object-imgitem col-lg-3 col-6">
+                            <img src="@b" width="150" height="150" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="clonecountmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="smartbuton-modal-title">@ViewLocalizer["How many objects do you want to copy?"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="p-3">
+                    <select id="clone-count" class="select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="clone-submit" type="button" class="btn btn-submit" data-bs-dismiss="modal">@ViewLocalizer["Clone"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        ReloadArea();
+       
+
+        $('#area-bcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true,
+        });
+        $("#area-backcolor").off("keyup");
+
+        $('#object-bcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true,
+        });
+        $("#object-backcolor").off("keyup");
+        $('#object-tcolor').colorpicker({
+            popover: false,
+            format: 'hex',
+            inline: true,
+        });
+        $("#object-textcolor").off("keyup");
+
+    });
+
+    function dragMoveListener (event) {
+        var target = event.target
+        // keep the dragged position in the data-x/data-y attributes
+        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+        // translate the element
+        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+
+        // update the posiion attributes
+        target.setAttribute('data-x', x)
+        target.setAttribute('data-y', y)
+        UpdateObjectSize(x, y);
+    }
+
+    $("#editor-area").change(function(){
+        var id = $("#editor-area").val();
+        if (!id || id == "")
+        {
+            return;
+        }
+
+        // load menu
+        $.ajax({
+            url: "/Menu/GetArea?areaID=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data)
+                {
+                    AreaRate = 700 / data.height;
+
+                    $("#area-panel").width(AreaRate * data.width);
+                    $("#area-panel").height(700);
+
+                    $("#main").width(AreaRate * data.width);
+                    
+                    $(".area-width-info").text(data.width);
+                    $(".area-height-info").text(data.height);
+                    $(".area-info").show();
+                    $(".selected-info").hide();
+
+                    if (data.backImage && data.backImage !== "")
+                    {
+                        $("#area-panel").css("background-image", "url('" + data.backImage + "')");
+                    }
+                    else
+                    {
+                        if (data.backColor && data.backColor !== "")
+                        {
+                            $("#area-panel").css("background-color", "antiquewhite");
+                        }
+                        else
+                        {
+                            $("#area-panel").css("background-color", "#888888");
+                        }
+                    }
+                    ReloadAreaObject();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+    
+    var AreaRate = 1.0;
+
+    $("#edit-area").click(function(){
+        var name = $("#area-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+        var width = parseFloatCorrect($("#area-width").val());
+        var height = parseFloatCorrect($("#area-height").val());
+        var backcolor = $("#area-backcolor").val();
+        var backimg = $("#areaimg").data("back");
+        var id = parseInt($("#editarea").data("id"));
+ 
+
+        var data = {
+            ID: id,
+            Name: name,
+            Width : width,
+            Height: height,
+            BackColor: backcolor,
+            ImageUpload: backimg,
+        }
+
+        $.ajax({
+            url: "/Menu/EditArea",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    ReloadArea(data.areaId); 
+                    $("#editarea").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update the area."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function ReloadArea(id)
+    {
+        // load menu
+        $.ajax({
+            url: "/Menu/GetAreaList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#editor-area").empty();
+                $("#editor-area").append("<option value='' selected>@ViewLocalizer["Choose area"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#editor-area").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "'>" + d.name + "</option>")
+                }
+                $("#editor-area").select2(); 
+                if (id)
+                {
+                    $("#editor-area").val(id).change();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+   
+
+    $("#add-area-modal").click(function(){
+        $("#area-name").val("");
+        $("#area-width").val("");
+        $("#area-height").val("");
+        $("#area-backcolor").val("").change();
+        $("#areaimg").attr("src", "/vendor/img/product/noimage.png");
+        $("#areaimg").data("back", "");
+        $("#editarea").data("id", 0);
+        $("#editarea").modal("show");
+    })
+    
+    $("#edit-area-modal").click(function(){
+        var id = $("#editor-area").val();
+        if (!id || id == "")
+        {
+            return;
+        }
+
+        // load menu
+        $.ajax({
+            url: "/Menu/GetArea?areaID=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data)
+                {
+                    $("#area-name").val(data.name);
+                                       
+                    $("#area-width").val(data.width);
+                    $("#area-height").val(data.height);
+                    $("#area-backcolor").val(data.backColor).change();
+
+                    $("#areaimg").attr("src", data.backImage);
+                    $("#areaimg").data("back", data.backImage);
+
+                    $("#editarea").data("id", data.id);
+                    $("#editarea").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("#del-area-modal").click(function () {
+
+        var option = $("#editor-area option:selected");
+        if (!option || !option.data("id")) {
+            return;
+        }
+
+        var id = option.data("id");
+
+        Swal.fire({
+            title: "@ViewLocalizer["Are you sure to delete the area?"]",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+            confirmButtonClass: "btn btn-primary",
+            cancelButtonText: "@ViewLocalizer["Close"]",
+            cancelButtonClass: "btn btn-danger ml-1",
+            buttonsStyling: !1,
+        }).then(function (t) {
+            if (t.value) {
+                $.ajax({
+                    url: "/Menu/DeleteArea?areaID=" + id,
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0) {
+                            ReloadArea();
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to delete the area."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+                    }
+                });
+            }
+        });
+    });
+
+
+    $(".add-photo").click(function(){
+         $("#selectback").modal("show");
+    })
+    $(".del-photo").click(function(){
+         $("#areaimg").attr("src", "/vendor/img/product/noimage.png");
+         $("#areaimg").data("back", "");
+    })
+    $(".back-item").click(function(){
+        
+        var src = getBase64FromImageUrl($("#areaimg"), $(this).find("img").attr("src"))
+        $("#areaimg").attr("src", src);
+        $("#areaimg").data("back", src);
+
+        $("#selectback").modal("hide");
+    })
+
+    $("#imgInpArea").change(function () {
+		readBackURL(this);
+	});
+
+        
+	function readBackURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#areaimg').attr('src', e.target.result);
+				$("#areaimg").data("back", e.target.result);
+			}
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+    // object
+    $(".add-obj-photo").click(function(){
+         $("#selectobjectimg").modal("show");
+    })
+    $(".del-obj-photo").click(function(){
+         $("#areaobjimg").attr("src", "/vendor/img/product/noimage.png");
+         $("#areaobjimg").data("back", "");
+    })
+    $(".object-imgitem").click(function(){
+        
+        var src = getBase64FromImageUrl($('#areaobjimg'), $(this).find("img").attr("src"))
+        $("#areaobjimg").attr("src", src);
+        $("#areaobjimg").data("back", src);
+
+        $("#selectobjectimg").modal("hide");
+    })
+
+    $("#imgInpObjArea").change(function () {
+		readObjBackURL(this);
+	});
+
+        
+	function readObjBackURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#areaobjimg').attr('src', e.target.result);
+				$("#areaobjimg").data("back", e.target.result);
+			}
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+
+	function getBase64FromImageUrl(obj, url) {
+        var img = new Image();
+
+        img.setAttribute('crossOrigin', 'anonymous');
+
+        img.onload = function () {
+            var canvas = document.createElement("canvas");
+            canvas.width =this.width;
+            canvas.height =this.height;
+
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(this, 0, 0);
+
+            var dataURL = canvas.toDataURL("image/png");
+            obj.attr('src', dataURL);
+			obj.data("back", dataURL);
+        };
+
+        img.src = url;
+    }
+
+
+    
+    $("#add-object-modal").click(function(){
+        $("#obj-name").val("");
+        $("#obj-width").val("");
+        $("#obj-height").val("");
+        $("#obj-posx").val("");
+        $("#obj-posy").val("");
+        $("#areaobjimg").attr("src", "/vendor/img/product/noimage.png");
+        $("#areaobjimg").data("back", "");
+        $("#obj-shape").val("0").change();
+        $("#obj-radius").val("");
+        $("#obj-type").val("0").change();
+        $("#editareaobject").data("id", 0);
+        $("#editareaobject").modal("show");
+    })
+  
+    $("#edit-object-modal").click(function(){
+        debugger;
+        var id = $(".object-selected").data("id");
+        if (!id || id == "")
+        {
+            return;
+        }
+        
+        // load menu
+        $.ajax({
+            url: "/Menu/GetAreaObject?objectID=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data)
+                {
+                    $("#obj-name").val(data.name);
+                    $("#obj-width").val(data.width);
+                    $("#obj-height").val(data.height);
+                    $("#obj-posx").val(data.positionX);
+                    $("#obj-posy").val(data.positionY);
+                    $("#obj-shape").val(data.shape).change();
+                    $("#obj-radius").val(data.radius);
+                    $("#obj-type").val(data.objectType).change();
+                    $("#object-backcolor").val(data.backColor).change();
+                    $("#object-textcolor").val(data.textColor).change();
+                    $("#obj-seat").val(data.seatCount).change();
+
+                    if (data.backImage && data.backImage != "")
+                    {
+                        $("#areaobjimg").attr("src", data.backImage);
+                        $("#areaobjimg").data("back", data.backImage);
+                    }
+                    else{
+                        $("#areaobjimg").attr("src", "/vendor/img/product/noimage.png");
+                        $("#areaobjimg").data("back", "");
+                    }
+
+                    $("#editareaobject").data("id", data.id);
+                    $("#editareaobject").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+
+    $("#clone-object-modal").click(function () {
+        var id = $(".object-selected").data("id");
+        if (!id || id == "") {
+            return;
+        }
+
+        $("#clonecountmodal").data("id", id);
+        $("#clonecountmodal").modal("show");
+        
+    })
+
+    $("#clone-submit").click(function () {
+        var id = $("#clonecountmodal").data("id");
+        var count = parseInt($("#clone-count").val());       
+            // load menu
+        $.ajax({
+            url: "/Menu/GetAreaObject?objectID=" + id,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data) {
+
+                    for (var i = 0; i < count; i++) {
+                        var areaId = $("#editor-area").val();
+                        var data1 = {
+                            ID: 0,
+                            Name: data.name + "-Copy" + (i+ 1),
+                            Width: data.width,
+                            Height: data.height,
+                            SeatCount: data.seatCount,
+                            PositionX: data.positionX + data.width / 2 + (10*i),
+                            PositionY: data.positionY + data.height / 2 + (10 * i),
+                            BackColor: data.backColor,
+                            TextColor: data.textColor,
+                            ImageUpload: data.backImage,
+                            Shape: data.shape,
+                            ObjectType: data.objectType,
+                            Radius: data.radius
+                        }
+
+                        $.ajax({
+                            url: "/Menu/EditAreaObject?areaID=" + areaId,
+                            type: "POST",
+                            data: JSON.stringify(data1),
+                            contentType: 'application/json;',
+                            dataType: 'json',
+                            success: function (data, textStatus, jqXHR) {
+                                if (data.status == 0) {
+                                    ReloadAreaObject(data.areaObjectId);
+                                }
+                                else {
+                                    toastr.error("@ViewLocalizer["Failed to add/update the object."]", {})
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                            }
+                        });
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+        
+    })
+
+    $("#del-object-modal").click(function () {
+
+        var id = $(".object-selected").data("id");
+        if (!id || id == "")
+        {
+            return;
+        }
+
+        var areaId = $("#editor-area").val();
+         if (!areaId || areaId == "")
+        {
+            return;
+        }
+
+        Swal.fire({
+            title: "@ViewLocalizer["Are you sure to delete the object?"]",
+            text: "",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+            confirmButtonClass: "btn btn-primary",
+            cancelButtonText: "@ViewLocalizer["Close"]",
+            cancelButtonClass: "btn btn-danger ml-1",
+            buttonsStyling: !1,
+        }).then(function (t) {
+            if (t.value) {
+                $.ajax({
+                    url: "/Menu/DeleteAreaObject?areaID=" + areaId + "&areaObjectID=" + id,
+                    type: "POST",
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0) {
+                            ReloadAreaObject();
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to delete the object."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+                    }
+                });
+            }
+        });
+    });
+
+    $("#edit-areaobject").click(function(){
+        debugger;
+        var name = $("#obj-name").val();
+        
+        var areaId = $("#editor-area").val();
+        if (!areaId || areaId == "")
+        {
+            return;
+        }
+        var seat = parseInt($("#obj-seat").val());
+        if (!seat) seat = 0;
+
+        var width = parseFloatCorrect($("#obj-width").val());
+        var height = parseFloatCorrect($("#obj-height").val());
+
+        if (width == 0 || height == 0)
+        {
+              toastr.warning("@ViewLocalizer["Please input the width and height of object."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var posx = parseFloatCorrect($("#obj-posx").val());
+        var posy = parseFloatCorrect($("#obj-posy").val());
+        var backcolor = $("#object-backcolor").val();
+        var textcolor = $("#object-textcolor").val();
+        var backimg = $("#areaobjimg").data("back");
+        var shape = parseInt($("#obj-shape").val());
+        var radius = parseInt($("#obj-radius").val());
+        if (!radius) {
+            radius = 0;
+        }
+        var type = parseInt($("#obj-type").val())
+        var id = parseInt($("#editareaobject").data("id"));
+        var hasbg = $("#has-bg").prop("checked");
+        if (!hasbg)
+            backcolor = "";
+
+        var data = {
+            ID: id,
+            Name: name,
+            Width : width,
+            Height: height,
+            SeatCount: seat,
+            PositionX: posx,
+            PositionY: posy,
+            BackColor: backcolor,
+            TextColor: textcolor,
+            ImageUpload: backimg,
+            Shape : shape,
+            ObjectType: type,
+            Radius: radius
+        }
+
+        $.ajax({
+            url: "/Menu/EditAreaObject?areaID=" + areaId,
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    ReloadAreaObject(data.areaObjectId); 
+                    $("#editareaobject").modal("hide");
+                }
+                else {
+                    toastr.error("@ViewLocalizer["Failed to add/update the object."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    });
+
+    function ReloadAreaObject(id)
+    {
+        var areaId = $("#editor-area").val();
+        if (!areaId || areaId == "")
+        {
+            return;
+        }
+
+        // load object
+        $.ajax({
+            url: "/Menu/GetAreaObjectsInArea?areaID=" + areaId,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#area-panel").empty();
+               if (data)
+               {
+                   for(var i = 0; i < data.length; i++)
+                   {
+                       var obj = data[i];
+
+                       var selected = "object-selected";
+                       if (!id || id != obj.id) selected = "";
+
+                       var backimg = "";
+                       if (obj.backImage && obj.backImage !== "")
+                       {
+                           backimg = `background-image: url(${obj.backImage});`;
+                       }
+                       var backcolor = "";
+                       if (obj.backColor && obj.backColor !== "")
+                       {
+                           backcolor = `background-color: ${obj.backColor};`
+                       }
+                       var shape = "";
+                       if (obj.shape == 1) shape = "ellipse";
+
+                       var borderradius = "";
+                       if (obj.shape == 2 && obj.radius > 0) {
+                           borderradius = `border-radius:${obj.radius}px;`; 
+                       }
+
+                       var seat = "";
+                       if (obj.objectType == 1)
+                       {
+                           seat = `<span>(${obj.seatCount})</span>`
+                       }
+
+                        var width = obj.width * AreaRate;
+                       if (width< 30) width= 30;
+
+                        var height = obj.height * AreaRate;
+                        if (height < 30) height = 30;
+                       var html = 
+                       `
+                           <div class="areaobject-item" id="areaobject-${obj.id}" style="position:absolute; width:${width}px; height:${height}px;transform: translate(${obj.positionX * AreaRate}px, ${obj.positionY * AreaRate}px);" data-x="${obj.positionX * AreaRate}" data-y="${obj.positionY * AreaRate}" data-id="${obj.id}" data-name="${obj.name}">
+                                <div class="obj-content ${shape}" style="text-align: center; width: 100%; height:100%;background-size: 100% 100%; ${backcolor} ${backimg} ${borderradius}"><p class='obj-name'>${obj.name}</p>${seat}</div>
+                            </div>
+                       `;
+                       $("#area-panel").append(html);
+                       ApplyDragMove(`#areaobject-${obj.id}`);
+                   }
+                    
+               }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    
+
+    }
+
+    $("body").on("mousedown", ".areaobject-item", function(event){
+        event.stopPropagation();
+        $(".areaobject-item").each(function(){
+            $(this).removeClass("object-selected");
+        })
+        $(this).addClass("object-selected")
+    })
+
+    function UpdateObjectSize(x, y)
+    {
+        var id = $(".object-selected").data("id");
+        if (!id || id == "")
+        {
+            return;
+        }
+        var areaId = $("#editor-area").val();
+         if (!areaId || areaId == "")
+        {
+            return;
+        }
+        var name = $(".object-selected").data("name");
+        console.log($(".object-selected").data("x"));
+        var posx = x / AreaRate;
+        var posy = y / AreaRate;
+        var width = $(".object-selected").width() / AreaRate;
+        var height = $(".object-selected").height() / AreaRate;
+
+        $(".selected-name").text(name);
+        $(".selected-wh").text("" + width.toFixed(2) + " x " + height.toFixed(2));
+        $(".selected-pos").text("" + posx.toFixed(2) + ", " + posy.toFixed(2));
+        $(".selected-info").show();
+        var data = {
+            AreaID: areaId,
+            AreaObjectID : id,
+            Width: width,
+            Height: height,
+            PositionX : posx,
+            PositionY : posy
+
+        }
+
+        $.ajax({
+            url: "/Menu/UpdateAreaObjectSize" ,
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function ApplyDragMove(selector)
+    {
+        interact(selector) 
+            .resizable({
+                // resize from all edges and corners
+                edges: { left: true, right: true, bottom: true, top: true },
+
+                listeners: {
+                  move (event) {
+                    var target = event.target
+                    var x = (parseFloat(target.getAttribute('data-x')) || 0)
+                    var y = (parseFloat(target.getAttribute('data-y')) || 0)
+
+                    // update the element's style
+                    target.style.width = event.rect.width + 'px'
+                    target.style.height = event.rect.height + 'px'
+
+                    // translate when resizing from top or left edges
+                    x += event.deltaRect.left
+                    y += event.deltaRect.top
+
+                    target.style.transform = 'translate(' + x + 'px,' + y + 'px)'
+
+                    target.setAttribute('data-x', x)
+                    target.setAttribute('data-y', y)
+                    //target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
+                    UpdateObjectSize(x, y);
+                  }
+                },
+                modifiers: [
+                  // keep the edges inside the parent
+                  interact.modifiers.restrictEdges({
+                    outer: 'parent'
+                  }),
+
+                  // minimum size
+                  interact.modifiers.restrictSize({
+                    min: { width: 30, height: 30 }
+                  })
+                ],
+
+                inertia: true
+              })
+              .draggable({
+                 listeners: { move: dragMoveListener },
+                inertia: true,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                    restriction: 'parent',
+                    endOnly: true
+                    })
+                ]
+              })
+    }
+</script>

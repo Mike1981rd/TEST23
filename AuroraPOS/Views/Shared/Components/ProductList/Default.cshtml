@@ -1,0 +1,179 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<!-- List Product-->
+<div class="modal fade" id="listproduct" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="product-modal-title">@ViewLocalizer["Products List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+				<div class="row">
+					<div class="table-top">
+						<div class="search-set">
+							<div class="search-path">
+								<a class="btn btn-filter product_search" id="filter_search">
+									<img src="/vendor/img/icons/filter.svg" alt="img">
+									<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+								</a>
+							</div>
+							<div class="search-input">
+								<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+								<div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]"..." style="font-size:16px;"></label></div>
+							</div>
+						</div>
+			
+					</div>
+					<!-- /Filter -->
+					<div class="card" id="filter_inputs">
+						<div class="card-body pb-0">
+							<div class="row">
+								<div class="col-lg-4 col-sm-6 col-12">
+									<div class="form-group category-body">
+										<label>@ViewLocalizer["Category"] </label>
+										<select id="filter-productcategory" class="select">
+										</select>
+									</div>
+								</div>
+					
+							</div>
+						</div>
+					</div>
+                    <div class="table-responsive w-100" style="max-height:400px;">
+                        <table id="product-list" class="table" style="position:relative;">
+                            <thead style="position: sticky; top: 0; z-index:2;">
+                                <tr>
+                                    <th>@ViewLocalizer["Action"]</th>
+                                    <th>@ViewLocalizer["ID"] </th>
+                                    <th>@ViewLocalizer["Name"] </th>
+                                    <th>@ViewLocalizer["Category"] </th>
+                                    <th>@ViewLocalizer["Printer"] </th>
+                                    <th>@ViewLocalizer["Status"] </th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+				</div>
+            <div class="modal-footer">
+                <button id="bulk-products" type="button" class="btn btn-primary" style="display:none;" >@ViewLocalizer["Select All Products"]</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+	$(document).ready(function () {
+		LoadProductFilterCategory();
+
+		$("#filter-productsearchtext").on("change keyup", function () {
+			FilterProduct();
+		});
+		$("#filter-productcategory").on("change", function () {
+			FilterProduct();
+		});
+
+		$(".product_search").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#filter-productcategory").val("").change();
+			}
+		});
+	});
+
+	var producttable = $("#product-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Menu/GetProductList",
+			"type": "POST",
+			"datatype": "json"
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return `<span class='me-3 icons-box d-inline-block prod' data-id='${row.id}' href='javascript:void(0);' onclick="SelectProduct('` + row.id + `')"><span class='icon'><span class='fa fa-plus'></span></span></span>`;
+				},
+			},
+			{
+				'data': 'photo', 'name': 'photo',
+				render: function (data, type, row) {
+					if (!row.photo) {
+						return "<img src='/vendor/img/product/product1.jpg' alt = 'supplier' > ";
+					}
+					else {
+						return "<img src='" + row.photo + "' alt = 'supplier' style='max-height:40px; max-width:40px;' >";
+					}
+				},
+				"autoWidth": true
+			},
+			{ "data": "name", "name": "name", "autoWidth": true },
+			{ "data": "categoryName", "name": "categoryName", "autoWidth": true },
+			{ "data": "printer", "name": "printer", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+					}
+					else {
+						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+
+		]
+	});
+
+	function LoadProductFilterCategory() {
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-productcategory").empty();
+				$("#filter-productcategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-productcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-productcategory").select2({
+					dropdownParent: $('.category-body')
+				});
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function FilterProduct() {
+		var searchText = $("#filter-productsearchtext").val();
+		var category = $("#filter-productcategory").val();
+		if (!category) category = "";
+
+		producttable.columns(0).search(searchText);
+		producttable.columns(1).search(category);
+
+		producttable.draw();
+	}
+</script>

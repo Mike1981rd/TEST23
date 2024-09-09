@@ -1,0 +1,504 @@
+﻿@using AuroraPOS.ModelsCentral;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var roles = (List<Role>)ViewBag.Roles;
+	var companies = (List<Company>)ViewBag.Companies;
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["User List"]</h4>
+		<h6>@ViewLocalizer["Manage users"]</h6>
+	</div>
+	<div class="page-btn">
+		<a href="javascript:void(0);" class="btn btn-added" onclick="AddUser()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add User"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="user-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Image"] </th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Username"] </th>
+						<th>@ViewLocalizer["Active"] </th>
+						<th>@ViewLocalizer["Phone"] </th>
+						<th>@ViewLocalizer["Email"]</th>
+						<th>@ViewLocalizer["Roles"]</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="adduser" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit User"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Full Name"]<span class="manitory">*</span></label>
+                            <input id="user-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Username"]<span class="manitory">*</span></label>
+                            <input id="user-username" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+	                    <div class="form-group">
+		                    <div>
+			                    <label style="float: left;">@ViewLocalizer["Password"]<span class="manitory">*</span></label>
+			                    <div style="float: right">
+				                    <input type="checkbox" onclick="verPassword()" style="width: 17px;height: 17px;">Ver Password
+			                    </div>
+			                    
+		                    </div>
+		                    <input id="user-password" type="password" class="form-control" max="6" required>
+
+	                    </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Pin"]<span class="manitory">*</span></label>
+                            <input id="user-pin" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" max="4" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+                            <input id="user-phone" type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+                            <input id="user-email" type="text" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="col-lg-8 col-sm-8 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Address"]<span class="manitory">*</span></label>
+							<input id="user-address" type="text" class="form-control" required>
+						</div>
+					</div>
+                    <div class="col-lg-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["City"]</label>
+                            <input id="user-city" type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["State"]</label>
+                            <input id="user-state" type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Zip Code"]</label>
+                            <input id="user-zipcode" type="text" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="col-lg-4 col-sm-4 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="user-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Roles"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="user-roles" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">                                        
+                                        @foreach (var r in roles)
+                                        {
+                                            <option value="@r.ID">@r.RoleName</option>
+                                        }
+
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-12" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
+                        <div class="form-group">
+                            <label>@ViewLocalizer["Companies"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="user-companies" class="form-control tagging select" multiple="multiple" tabindex="-1" aria-hidden="true">
+                                        <option value="">Choose company</option>
+                                        @foreach (var r in companies)
+                                        {											
+                                            <option value="@r.Id">@r.Name</option>
+                                        }
+
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+					
+                    <div class="row">
+                        <div class="form-group px-3">
+                            <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                <h6 class="text-left pr-5">@ViewLocalizer["Profile Image"]</h6>
+                                <div class="del-unit text-danger">
+                                    <a class="del-photo " href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/minus.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4 col-4">
+                                    <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                                </div>
+                                <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                    <input id="imgInpProduct" type="file" name="Files" accept="image/*">
+                                    <div class="image-uploads">
+                                        <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                        <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-user" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+
+		$("#user-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Setting/GetUsers?validateAdmin=true",
+				"type": "POST",
+				"datatype": "json",
+				"complete": function () {
+					$( ".imgzoom" ).each(function() {
+						$(this).on( "mouseenter", function() {
+							var popupContent = document.createElement("div");
+							popupContent.classList.add("popupDiv");
+							popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+							popupContent.style.position = "absolute";
+
+							popupContent.style.top = ($(this).offset().top + -200)+ "px";
+							popupContent.style.left = ($(this).offset().left + 50)+ "px";
+							popupContent.style.backgroundColor = "white";
+							popupContent.style.padding = "5px";
+							popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+							popupContent.style.zIndex = "9999";
+							popupContent.style.borderRadius = "10px";
+							document.body.appendChild(popupContent);
+
+							$(this).on( "mouseleave", function() {
+								//document.body.removeChild(popupContent);
+								$(".popupDiv").remove();
+							});
+
+
+
+						});
+					});
+				},
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[2, 'desc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick=EditUser('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					},
+				},
+				{
+					'data': 'profileImage', 'name': 'profileImage',
+					render: function (data, type, row) {
+						if (!row.profileImage) {
+							return "";
+						}
+						else {
+							return "<img src='" + row.profileImage + "' alt = 'profileImage' style='max-height:40px; max-width:40px;'  class='imgzoom'>";
+						}
+					},
+					"autoWidth": true
+				},
+				{ "data": "fullName", "name": "fullName", "autoWidth": true },
+				{ "data": "username", "name": "username", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+				{ "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
+				{ "data": "email", "name": "email", "autoWidth": true },
+				{
+					'data': 'roles', 'name': 'roles',
+					render: function (data, type, row) {
+						if (!row.roles) {
+							return "";
+						}
+						else {
+							var rolenames = row.roles.map(s=>s.roleName);
+
+
+							return "<div>" + rolenames + "</div>";
+						}
+					},
+					"autoWidth": true
+				},
+			]
+		});
+
+		$("#edit-user").click(function () {
+			var name = $("#user-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var username = $("#user-username").val();
+			if (!username || username == "") {
+				toastr.warning("@ViewLocalizer["Please input the username."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var password = $("#user-password").val();
+			var pin = $("#user-pin").val();
+			if (!password || password == "")
+			{
+				toastr.warning("@ViewLocalizer["Please input the password."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			if (!pin || pin == "") {
+				toastr.warning("@ViewLocalizer["Please input the pin."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var phone = $("#user-phone").val();
+			var email = $("#user-email").val();
+			var address = $("#user-address").val();
+			var city = $("#user-city").val();
+			var state = $("#user-state").val();
+			var zipcode = $("#user-zipcode").val();
+			var photo = $("#productimg").data("avatar");
+			var active = $("#user-status").val()
+			var id = parseInt($("#adduser").data("id"))
+			var data = {
+				ID: id,
+				Username: username,		
+				Password: password,
+				Pin: pin,
+				FullName: name,
+				PhoneNumber: phone,
+				Email: email,
+				Address: address,
+				City: city,
+				State: state,
+				ZipCode: zipcode,
+				ProfileImage: photo,
+				RoleIds: $("#user-roles").val(),
+				CompanyIds: $("#user-companies").val(),
+				IsActive: active == "1"
+			}
+
+			$.ajax({
+				url: "/Setting/EditUser",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json;',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						$("#user-list").DataTable().draw();
+						$("#adduser").modal("hide");
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The user with same username already exists. Please confirm or check if the one exists."]", {})
+					}
+					else if (data.status == 3) {
+						toastr.error("@ViewLocalizer["The user with same PIN already exists. Please confirm or check if the one exists."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+
+		});
+
+		$(".del-photo").click(function () {
+			$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+			$("#productimg").data("avatar", "");
+			$("#imgInpProduct").val("")
+		})
+
+		$("#imgInpProduct").change(function () {
+			readProductBackURL(this);
+		});
+
+	});
+
+	function verPassword() {
+		var x = document.getElementById("user-password");
+		if (x.type === "password") {
+			x.type = "text";
+		} else {
+			x.type = "password";
+		}
+	}
+
+	function readProductBackURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#productimg').attr('src', e.target.result);
+				$("#productimg").data("avatar", e.target.result);
+			}
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	function AddUser() {
+		$("#user-name").val("");
+		$("#user-username").val("");
+		$("#user-password").val("");
+		$("#user-pin").val("");
+		$("#user-phone").val("");
+		$("#user-email").val("");
+		$("#user-address").val("");
+		$("#user-city").val("");
+		$("#user-state").val("");
+		$("#user-zipcode").val("");
+		$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+		$("#productimg").data("avatar", "");
+		$("#user-status").val(1).change();
+
+		$("#user-roles option:selected").removeAttr("selected");
+		$("#user-companies option:selected").removeAttr("selected");
+
+		if (@(ViewBag.CurrentCompany!=null ? "true" : "false" ) == true)
+		{
+			$('#user-companies option[value="' + @ViewBag.CurrentCompany + '"]').attr("selected", "selected");
+			$("#user-companies").select2("destroy");
+			$("#user-companies").select2();
+		}
+		
+
+		$("#adduser").data("id", 0);
+		$("#adduser").modal("show");
+	}
+
+	function EditUser(id) {
+		$.ajax({
+			url: "/Setting/GetUser?userId=" + id,
+			type: "POST",
+			success: function (customer, textStatus, jqXHR) {
+				if (customer.user) {
+					$("#user-name").val(customer.user.fullName);
+					$("#user-username").val(customer.user.username);
+					$("#user-password").val(customer.user.password);
+					$("#user-pin").val(customer.user.pin);
+					$("#user-phone").val(customer.user.phoneNumber);
+					$("#user-email").val(customer.user.email);
+					$("#user-address").val(customer.user.address);
+					$("#user-city").val(customer.user.city);
+					$("#user-state").val(customer.user.state);
+					$("#user-zipcode").val(customer.user.zipCode);
+					if (customer.user.isActive) {
+						$("#user-status").val(1).change();
+					}
+					else {
+						$("#user-status").val(0).change();
+					}
+					var roles = [];
+					for (var i = 0; i < customer.user.roles.length; i++) {
+						roles.push("" + customer.user.roles[i].id);
+					}
+					$("#user-roles").val(roles).change();
+                             
+
+                    //$("#user-companies").val([]);
+
+					$("#user-companies option:selected").removeAttr("selected");
+					//$("#user-companies option").removeAttr("data-select2-id");
+                    $("#user-companies").val([]).change();			
+
+					if (customer.companies) {
+                        customer.companies.forEach(function callback(currentValue, index, array) {
+                            $('#user-companies option[value="' + currentValue.id + '"]').attr("selected", "selected");
+                        });
+					}                    
+
+                    $("#user-companies").select2("destroy");
+                    $("#user-companies").select2();
+
+                    if (customer.user.profileImage == "") {
+						$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+					}
+					else {
+                        $("#productimg").attr("src", customer.user.profileImage);
+					}
+                    $("#productimg").data("avatar", customer.user.profileImage);
+
+                    $("#adduser").data("id", customer.user.id);
+					$("#adduser").modal("show");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+
+</script>

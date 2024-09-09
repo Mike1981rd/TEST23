@@ -1,0 +1,233 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h3>@ViewLocalizer["Void Order Report"]</h3>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date From"] </label>
+					<input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12">
+				<div class="form-group">
+					<label>@ViewLocalizer["Date To"] </label>
+					<input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+			</div>
+			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 col-sm-12 col-12">
+				<div class="table-responsive" style="padding-bottom:70px;">
+
+                    <table id="report-productista-list" class="table table-striped">
+                        <thead id="ocultarthead">
+                            <tr>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Order#"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Monto"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Creado"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Cancelado"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Razon"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Usuario"]</th>
+                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Void by"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-productista-list-body">
+                        </tbody>
+							
+                    </table>
+
+					<canvas id="myChart11"></canvas>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+		$("#btn-report").click(function () {
+			var datefrom = $("#filter_datefrom").val();
+			var dateto = $("#filter_dateto").val();
+			ShowLoader()
+			$.ajax({
+				type: "POST",
+				url: "/Report/GenerateVoidOrdersReport?from=" + datefrom + "&to=" + dateto,
+				success: function (data) {
+
+					HideLoader()
+					if (data.status == 0) {
+						window.open(data.url, '_blank');
+					}
+				},
+				error: function () {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+
+		$("#filter_datefrom").on('dp.change', function (e) {
+			RefreshDayOfWeekReport();
+		});
+
+		$("#filter_dateto").on('dp.change', function (e) {
+			RefreshDayOfWeekReport();
+		});
+
+		function RefreshDayOfWeekReport() {
+			var datefrom = $("#filter_datefrom").val();
+			var dateto = $("#filter_dateto").val();
+			ShowLoader()
+
+			$.ajax({
+				type: "POST",
+				url: "/Report/ViewVoidOrdersReport?from=" + datefrom + "&to=" + dateto,
+				success: function (data) {
+
+					HideLoader()
+					if (data.resultado) {
+
+						var tabla = document.getElementById("report-productista-list-body");
+						while (tabla.rows.length > 0) {
+							tabla.deleteRow(0);
+						}
+
+
+						for (var c = 0; c < data.listmodelo.length; c++) {
+							
+							var modelo = data.listmodelo[c];
+							
+							var trElement = document.createElement("tr");
+
+
+                            var tdOrder = document.createElement("td");
+                            tdOrder.setAttribute("align", "center");
+							tdOrder.setAttribute("id", modelo.order);
+							tdOrder.setAttribute("data-custom", c);
+                            tdOrder.textContent = modelo.order;
+							tdOrder.productos = modelo.listaProductos;
+							tdOrder.addEventListener("mouseover", function () {
+								
+								var currentTd = this;
+								var popupContent = document.createElement("div");
+								var tdId = tdOrder.getAttribute("id");
+								popupContent.setAttribute("id", "popup_" + tdId);								
+                                popupContent.classList.add("popupDiv");
+								
+							 
+								var contenidoHTML = "<h2 style='font-weight: bold;'>Datos de Producto</h2><ul>";
+
+								 
+								currentTd.productos.forEach(function (elemento) {
+									contenidoHTML += "<li><strong><span style='color: blue;'>Nombre Producto:</span></strong> <span style='color: blue;'>" + elemento.product + "</span></li>";
+									contenidoHTML += "<li><strong><span style='color: blue;'>Precio :</span></strong> <span style='color: blue;'>" + elemento.productprecio + "</span></li>";
+								});
+
+								 
+								contenidoHTML += "</ul>";
+
+							 
+								popupContent.innerHTML = contenidoHTML;
+
+								 
+								popupContent.style.position = "absolute";
+								popupContent.style.top = (currentTd.offsetTop + 120) + "px";
+								popupContent.style.left = (currentTd.offsetLeft + 360) + "px";
+								popupContent.style.backgroundColor = "white";
+								popupContent.style.padding = "20px";
+								popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+								popupContent.style.zIndex = "9999";
+								popupContent.style.borderRadius = "10px";
+								document.body.appendChild(popupContent);                                
+
+                                this.addEventListener("mouseleave", function () {									
+									document.body.removeChild(popupContent);
+								});
+								function closePopup(event) {
+									if (!popupContent.contains(event.target) && event.target !== currentTd) {
+										document.body.removeChild(popupContent);
+										document.getElementById(popupId).style.display = "none"; 
+										document.removeEventListener("click", closePopup);
+									}
+								}
+
+								
+								document.addEventListener("click", closePopup);
+								
+
+							});
+                            trElement.appendChild(tdOrder);
+
+                            var tdAmount = document.createElement("td");
+                            tdAmount.setAttribute("align", "center");
+                            tdAmount.textContent = modelo.amount;
+                            trElement.appendChild(tdAmount);
+
+							var tdFecha = document.createElement("td");
+							tdFecha.setAttribute("align", "center");
+							tdFecha.textContent = modelo.fechaCreado;
+							trElement.appendChild(tdFecha);
+
+                            var tdFechaCreado = document.createElement("td");
+                            tdFechaCreado.setAttribute("align", "center");
+                            tdFechaCreado.textContent = modelo.fecha;
+                            trElement.appendChild(tdFechaCreado);
+
+							var tdRazon = document.createElement("td");
+							tdRazon.setAttribute("align", "center");
+							tdRazon.textContent = modelo.razon;
+							trElement.appendChild(tdRazon);
+
+							var tdUsuario = document.createElement("td");
+							tdUsuario.setAttribute("align", "center");
+							tdUsuario.textContent = modelo.usuario;
+							trElement.appendChild(tdUsuario);
+
+							var tdvoid_by = document.createElement("td");
+							tdvoid_by.setAttribute("align", "center");
+							tdvoid_by.textContent = modelo.void_By;
+							trElement.appendChild(tdvoid_by);
+
+							var tabla = document.getElementById("report-productista-list-body");
+							tabla.appendChild(trElement);
+						}
+
+
+
+
+						var elementomonto = document.createElement("tr");
+
+						var tdvacio = document.createElement("td");
+						tdvacio.setAttribute("align", "center");
+						elementomonto.appendChild(tdvacio);
+
+						var tdAmountsuma = document.createElement("td");
+						tdAmountsuma.setAttribute("align", "center");
+						tdAmountsuma.textContent = data.sumaAmount;
+						elementomonto.appendChild(tdAmountsuma);
+						var tabla = document.getElementById("report-productista-list-body");
+						tabla.appendChild(elementomonto);
+					}
+				}
+
+			});
+
+		}
+	});
+
+</script>

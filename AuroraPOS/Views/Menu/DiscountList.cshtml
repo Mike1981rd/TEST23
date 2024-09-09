@@ -1,0 +1,292 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Discount List"]</h4>
+		<h6>@ViewLocalizer["Manage your Discounts"]</h6>
+	</div>
+	<div class="page-btn">
+		<a id="add-discount-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Discount"]</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="discount-list" class="table">
+				<thead>
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Amount"] </th>
+						<th>@ViewLocalizer["Amount Type"]</th>			
+						<th>@ViewLocalizer["Status"]</th>
+
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="adddiscount" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit discount"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="discount-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-8 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
+							<input id="discount-amount" type="text" onkeypress="return onlyDecimalKey(event)" placeholder="0" class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Amount Type"]<span class="manitory">*</span></label>
+							<select id="discount-type" class="select">
+								<option value="0">Percent (%)</option>
+								<option value="1">Amount</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="discount-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>					
+				</div>
+				<div class="row pt-5">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+							<div class="add-unit">
+								<a class="add-accounting-item" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table reordertable">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Name"]
+									</td>
+									<td>
+										@ViewLocalizer["Type"]
+									</td>
+									<td>
+										@ViewLocalizer["Number"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="accounting-list">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-discount" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@{
+	@await Component.InvokeAsync("Accounting", new { })
+}
+
+<script>
+	$(document).ready(function(){
+
+		$("#add-discount-modal").click(function(){
+			$("#discount-name").val("");
+			$("#discount-amount").val("");
+			$("#discount-type").val("0").change();
+			$("#discount-status").val("1").change();
+			$("#adddiscount").data("id", 0);
+			GetAccountItems(11, 0);
+			$("#adddiscount").modal("show");
+		});
+
+		$("#edit-discount").click(function(){
+			var name = $("#discount-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var amount = parseFloatCorrect($("#discount-amount").val());
+
+			var type = parseInt($("#discount-type").val());
+			var active = $("#discount-status").val() == "1";
+
+			var data = {
+				ID: $("#adddiscount").data("id"),
+				Name: name,
+				Amount: amount,
+				DiscountAmountType: type,
+				IsActive: active,
+			}
+
+			$.ajax({
+				url: "/Menu/EditDiscount",
+				type: "POST",
+				data: data,
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						SaveAccountItems(11, data.id, function () {
+							$("#discount-list").DataTable().draw();
+							$("#adddiscount").modal("hide");
+						})						
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the discount."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
+
+		var discounttable = $("#discount-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			"filter": true, // this is for disable filter (search box)
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Menu/GetDiscountList",
+				"type": "POST",
+				"datatype": "json"
+			},
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-3' href='javascript:void(0);'  onclick=EditDiscount('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteDiscount('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+					},
+				},
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "amount", "name": "amount", "autoWidth": true },
+				{ "data": "amountType", "name": "amountType", "autoWidth": true },
+				{
+					'data': 'isActive', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						}
+						else {
+							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+
+			]
+		});
+	});
+
+
+	function EditDiscount(id)
+	{
+		// load menu
+		$.ajax({
+			url: "/Menu/GetDiscount?discountID=" + id,
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				if (data) {
+					$("#discount-name").val(data.name);
+					$("#discount-amount").val(data.amount);
+					$("#discount-type").val(data.discountAmountType).change();
+					$("#discount-status").val("1").change();
+					if (!data.isActive)
+					{
+						$("#discount-status").val("0").change();
+					}
+					GetAccountItems(11, data.id);
+					$("#adddiscount").data("id", data.id);
+					$("#adddiscount").modal("show");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+	function DeleteDiscount(id)
+	{	
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the discount?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonText: "@ViewLocalizer["Close"]",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Menu/DeleteDiscount?discountID=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							$("#discount-list").DataTable().draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the discount."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					}
+				});
+			}
+		});
+	}
+</script>

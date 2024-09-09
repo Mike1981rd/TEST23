@@ -1,0 +1,437 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<meta name="description" content="POS - Alfa Software">
+	<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+	<meta name="robots" content="noindex, nofollow">
+	<title>ALFA POS back office</title>
+
+	<link rel="manifest" href="/manifest.json">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
+
+	<!-- Animation CSS -->
+	<link rel="stylesheet" href="~/vendor/css/animate.css">
+
+	<!-- Select2 CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/select2/css/select2.min.css">
+
+	<!-- range slider -->
+	<link rel="stylesheet" href="~/vendor/plugins/ion-rangeslider/css/ion.rangeSlider.min.css">
+
+	<!-- Datatable CSS -->
+	<link rel="stylesheet" href="~/vendor/css/dataTables.bootstrap4.min.css">
+	
+	<!-- Datetimepicker CSS -->
+	<link rel="stylesheet" href="~/vendor/css/bootstrap-datetimepicker.min.css">
+	
+	<link rel="stylesheet" href="~/vendor/css/bootstrap-colorpicker.css">
+		
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="~/vendor/css/style.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<!-- /Main Wrapper -->
+	<!-- jQuery -->
+	<script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+
+	<!-- Feather Icon JS -->
+	<script src="~/vendor/js/feather.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="~/vendor/js/jquery.slimscroll.min.js"></script>
+
+	<!-- Datatable JS -->
+	<!-- <script src="~/vendor/js/jquery.dataTables.min.js"></script>
+
+	<script src="~/vendor/js/dataTables.bootstrap4.min.js"></script> 
+
+	<link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-2.0.6/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/sc-2.4.2/datatables.min.css" rel="stylesheet"> --> 
+
+	<script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-2.0.6/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/sc-2.4.2/datatables.min.js"></script>
+
+
+	<!-- Bootstrap Core JS -->
+	<script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Select2 JS -->
+	<script src="~/vendor/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Range Slider -->
+	<script src="~/vendor/plugins/ion-rangeslider/js/ion.rangeSlider.js"></script>
+	<script src="~/vendor/plugins/ion-rangeslider/js/custom-rangeslider.js"></script>
+
+	<!-- Sweetalert 2 -->
+	<script src="~/vendor/plugins/sweetalert/sweetalert2.all.min.js"></script>
+	<script src="~/vendor/plugins/sweetalert/sweetalerts.min.js"></script>
+	
+		<!-- Datetimepicker JS -->
+	<script src="~/vendor/js/moment.min.js"></script>
+	<script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script> 
+
+
+	<!-- Toatr CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+
+	<!-- Mask JS -->
+	<script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+	<script src="~/vendor/plugins/toastr/toastr.js"></script>
+
+	<!-- ColorPicker JS -->
+	<script src="~/vendor/js/colorpalettepicker.js"></script>
+	<script src="~/vendor/js/bootstrap-colorpicker.js"></script>
+
+	<!-- ColorPicker JS -->
+	<script src="~/vendor/js/jquery.mask.js"></script>
+
+	<!-- Custom JS -->
+	<script src="~/vendor/js/script.js" asp-append-version="true"></script>
+	<script src="~/vendor/js/site.js"></script>
+
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+	<div id="global-loader">
+		<div class="whirly-loader"> </div>
+	</div>
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+
+		<!-- Header -->
+		<div class="header">
+			
+			<!-- Logo -->
+			<div class="header-left active">
+				<a href="/Home/Index" class="logo logo-normal">
+					<img src="~/vendor/img/logo.png" alt="">
+				</a>
+				<a href="/Home/Index" class="logo logo-white">
+					<img src="~/vendor/img/logo-white.png" alt="">
+				</a>
+				<a href="/Home/Index" class="logo-small">
+					<img src="~/vendor/img/logo-small.png" alt="">
+				</a>
+				<a id="toggle_btn" href="javascript:void(0);">
+				</a>
+			</div>
+			<!-- /Logo -->
+
+			<a id="mobile_btn" class="mobile_btn" href="#sidebar">
+				<span class="bar-icon">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</a>
+
+			<!-- Header Menu -->
+			<ul class="nav user-menu">
+				<div class="switch-wrapper"><div id="dark-mode-toggle"><span class="light-mode"> <img src="/vendor/img/icons/sun-icon.svg" class="me-2" alt=""> Light</span><span class="dark-mode active"><i class="far fa-moon me-2"></i> Dark</span></div></div>
+				<li class="nav-item dropdown has-arrow main-drop">
+					<a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+						<span class="user-img">
+							<img src="~/vendor/img/profiles/avator1.jpg" alt="">
+							<span class="status online"></span>
+						</span>
+					</a>
+					<div class="dropdown-menu menu-drop-user">
+						<div class="profilename">
+							<div class="profileset">
+								<span class="user-img">
+									<img src="~/vendor/img/profiles/avator1.jpg" alt="">
+									<span class="status online"></span>
+								</span>
+								<div class="profilesets">
+									<h6>@User.Identity.GetName()</h6>
+									<h5>@User.Identity.GetRole()</h5>
+								</div>
+							</div>
+							<hr class="m-0">
+							<hr class="m-0">
+							<a class="dropdown-item logout pb-0" href="/Account/Logoff"><img src="~/vendor/img/icons/log-out.svg" class="me-2" alt="img">@ViewLocalizer["Logout"]</a>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<!-- /Header Menu -->
+			<!-- Mobile Menu -->
+			<div class="dropdown mobile-user-menu">
+				<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" href="/Account/Logoff">@ViewLocalizer["Logout"]</a>
+				</div>
+			</div>
+			<!-- /Mobile Menu -->
+		</div>
+		<!-- Header -->
+		<!-- Sidebar -->
+		<div class="sidebar" id="sidebar">
+			<div class="sidebar-inner slimscroll">
+				<div id="sidebar-menu" class="sidebar-menu">
+					<ul>
+						<li>
+							<a id="dashboard" href="/Home/Index"><img src="~/vendor/img/icons/dashboard.svg" alt="img"><span> @ViewLocalizer["Dashboard"]</span> </a>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);"><img src="~/vendor/img/icons/product.svg" alt="img"><span> @ViewLocalizer["Configuration"]</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Store")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Preferences">@ViewLocalizer["Preferences"]</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Role")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Roles">@ViewLocalizer["Roles"]</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.User")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Users">@ViewLocalizer["Users"]</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Customer")).Result.Succeeded)
+                                {
+									<li><a href="/Setting/Customers">Clientes</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Printer")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Printers">@ViewLocalizer["Printers"]</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PrinterChannel")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/PrinterChannels">@ViewLocalizer["Printing Channels"]</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Tax")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Taxrates">@ViewLocalizer["Tax Rates"]</a></li>
+                                }
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Propina")).Result.Succeeded)
+								{
+									<li><a href="/Setting/Propinas">@ViewLocalizer["Propina"]</a></li>
+								}
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Denomination")).Result.Succeeded)
+                                {
+									<li><a href="/Setting/Denominations">Denominaciones</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PaymentMethod")).Result.Succeeded)
+                                {
+									<li><a href="/Setting/PaymentMethods">Métodos de pago</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.VoidReason")).Result.Succeeded)
+                                {
+									<li><a href="/Setting/Reasons">Razones de anulación</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Comprobantes")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/Vouchers">@ViewLocalizer["Comprobantes"]</a></li>
+                                }
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
+								{
+									<li><a href="/Setting/DeliveryCarriers">@ViewLocalizer["Repartidores"]</a></li>
+								}
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
+                                {
+									<li><a href="/Setting/PrepareTypes">Tipo de ordenes</a></li>
+                                }
+                                @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.ZonasReparto")).Result.Succeeded)
+                                {
+                                    <li><a href="/Setting/DeliveryZones">@ViewLocalizer["Zonas de Reparto"]</a></li>
+                                }
+								<li><a href="/Setting/Accounts">Cuentas contables</a></li>
+                            </ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);"><img src="~/vendor/img/icons/settings.svg" alt="img"><span> @ViewLocalizer["Inventory"]</span> <span class="menu-arrow"></span></a>
+							<ul>
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Warehouse")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/WarehouseList">@ViewLocalizer["Warehouse"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Supplier")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/SupplierList">@ViewLocalizer["Suppliers"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Article")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/ArticleList">@ViewLocalizer["Articles"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PurchaseOrder")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/PurchaseOrderList">@ViewLocalizer["Purchase order"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.SubRecipe")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/SubRecipeList">@ViewLocalizer["Sub Recipe"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Move")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/MoveArticleList">@ViewLocalizer["Transfer"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Production")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/ProductionList">@ViewLocalizer["Production"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Damage")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/DamageArticleList">@ViewLocalizer["Waste"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PhysicalCount")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/ManagePhysicalCount">@ViewLocalizer["Physical Count"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.StockHistory")).Result.Succeeded)
+								{
+									<li><a href="/Inventory/Stock">Tarjeta de Movimientos</a></li>
+								}
+								
+							</ul>
+						</li>
+						<li class="submenu">
+							<a href="javascript:void(0);"><img src="~/vendor/img/icons/purchase1.svg" alt="img"><span> @ViewLocalizer["Menu"]</span> <span class="menu-arrow"></span></a>
+							<ul>
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Group")).Result.Succeeded)
+								{
+									<li><a href="/Menu/GroupList">@ViewLocalizer["Groups"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Category")).Result.Succeeded)
+								{
+									<li><a href="/Menu/CategoryList">@ViewLocalizer["Categories"]</a></li>
+								}
+								<li><a href="/Menu/ServingSizeList">Tamaños </a></li>
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.SubCategory")).Result.Succeeded)
+								{
+									<li><a href="/Menu/SubCategoryList">@ViewLocalizer["Sub Categories"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Product")).Result.Succeeded)
+								{
+									<li><a href="/Menu/ProductList">@ViewLocalizer["Products"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MenuEditor")).Result.Succeeded)
+								{
+									<li><a href="/Menu/MenuEditor">@ViewLocalizer["Menu Editor"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MapTableEditor")).Result.Succeeded)
+								{
+									<li><a href="/Menu/MapTableEditor">@ViewLocalizer["Map Table Editor"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Station")).Result.Succeeded)
+								{
+									<li><a href="/Menu/StationList">Estaciones </a></li>
+								}
+								<li><a href="/Menu/KitchenList">Kds</a></li>
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Discount")).Result.Succeeded)
+								{
+									<li><a href="/Menu/DiscountList">@ViewLocalizer["Discounts"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Promotion")).Result.Succeeded)
+								{
+									<li><a href="/Menu/PromotionList">@ViewLocalizer["Promotions"]</a></li>
+								}
+								
+								<li><a href="/Menu/ReservationList">Reservaciones</a></li>
+								
+							</ul>
+						</li>
+					
+						<li class="submenu">
+							<a href="javascript:void(0);"><img src="~/vendor/img/icons/time.svg" alt="img"><span> @ViewLocalizer["Reports"]</span> <span class="menu-arrow"></span></a>
+                            <ul>
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.SalesReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/SalesReport">@ViewLocalizer["Sales Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.DetailedSalesReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/DetailedSalesReport">@ViewLocalizer["Detailed Sales Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.PurchaseReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/PurchaseReport">@ViewLocalizer["Purchase Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.InventoryLevelReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/InventoryLevelREport">@ViewLocalizer["Inventory Level Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.InventoryDepletionReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/InventoryDepletionReport">@ViewLocalizer["Inventory Depletion Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CloseDrawerReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/CloseDrawerReport">@ViewLocalizer["Close Drawer Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.PaymentMethodReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/PaymentMethodReport">@ViewLocalizer["Payment method Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VoidOrdersReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/VoidOrdersReport">@ViewLocalizer["Void Orders Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VoidProductsReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/VoidProductsReport">@ViewLocalizer["Void Products Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.SalesInsightReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/SalesInsightReport">@ViewLocalizer["Sales Insight"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.WorkDayReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/WorkDayReport">@ViewLocalizer["Work Day Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.OrdersReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/OrdersReport">@ViewLocalizer["Orders Report"]</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.ProductCost")).Result.Succeeded)
+								{
+									<li><a href="/Report/PercentCostReport">Costo de productos</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CostoDeVenta")).Result.Succeeded)
+								{
+									<li><a href="/Report/InventoryByGroupReport">Costo de venta</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VarianceReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/VarianceReport">Reporte de varianza</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.ParReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/ParReport">Reporte de mínimos & máximos</a></li>
+								}
+								@if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CxCReport")).Result.Succeeded)
+								{
+									<li><a href="/Report/CXCReport">CxC Reporte</a></li>
+								}
+
+                            </ul>
+						</li>
+							
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- /Sidebar -->
+
+		<div class="page-wrapper">
+			<div class="content">
+				@RenderBody()
+			</div>
+		</div>
+
+	</div>
+	
+</body>
+</html>

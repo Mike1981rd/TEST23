@@ -1,0 +1,163 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+@model LoginViewModel
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="description" content="POS - Alfa Software">
+        <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+        <meta name="robots" content="noindex, nofollow">
+        <title>Login - Pos admin template</title>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
+        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
+
+        <!-- Toatr CSS -->
+        <link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+        <!-- Main CSS -->
+        
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="~/vendor/css/style.css">
+        <style>
+            body, html {
+              height: 100%;
+              margin: 0;
+            }
+
+            .bg {
+              /* The image used */
+              background-image: url("/vendor/img/login/background.jpg");
+              position: relative;
+              /* Full height */
+              height: 100%; 
+
+              /* Center and scale the image nicely */
+              background-position: center;
+              background-repeat: no-repeat;
+              background-size: cover;
+            }
+            .logo
+            {
+                position:absolute;
+                bottom: 50px;
+                right: 50px;
+                height: 125px;
+            }
+
+            .login-logo{
+                 background-image: url("/vendor/img/logo.png");
+                 margin: 0 auto;
+                 width: 150px;
+                 height: 80px;
+                 background-size: 100% 100%;
+            }
+            .panel
+            {
+                width: 450px;
+                height: 550px;                
+                background-image: url("/vendor/img/login/keyboard-back.png");
+                background-size: 100% 100%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 30px;
+            }
+           .login-wrapper .login-content{
+                width: 100%;
+                height: 500px;
+                padding: 30px;
+                overflow: auto;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                align-items: center;
+           }
+        </style>
+    </head>
+    <body class="account-page">
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper bg">
+            <img class="logo" src="~/vendor/img/logo-circle.png" />
+
+            <div class="panel">
+                <div class="login-wrapper">
+                    <div class="login-content">
+                        <div class="login-userset">
+                             <form method="post" asp-controller="Account" asp-action="Login">
+                            @Html.AntiForgeryToken()
+                <div class="login-logo logo-normal">
+                </div>
+                <div class="form-login">
+                    <label>@ViewLocalizer["Username"]</label>
+                    <div class="form-addons">
+                        <input type="text" placeholder="@ViewLocalizer["Enter your username or email address"]" asp-for="UserName" required>
+                        <img src="~/vendor/img/icons/mail.svg" alt="img">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-login">
+                    <label>@ViewLocalizer["Password"]</label>
+                    <div class="pass-group">
+                        <input type="password" class="pass-input" placeholder="@ViewLocalizer["Enter your password"]" asp-for="Password" onkeypress="return onlyNumberKey(event)" 
+        maxlength="6"  required>
+                        <span class="fas toggle-password fa-eye-slash"></span>
+                        <span asp-validation-for="Password" class="text-danger"></span><br />
+                        <span class="form-text text-muted">max 6 number only</span>
+                    </div>
+                </div>
+                <div class="form-login pt-5">
+                      <a id="submit" class="btn btn-login" href="javascript:void(0);">@ViewLocalizer["SignIn"]</a>                                
+                </div>
+                </form>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Main Wrapper -->
+
+        <!-- jQuery -->
+        <script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+
+         <!-- Feather Icon JS -->
+        <script src="~/vendor/js/feather.min.js"></script>
+
+        <!-- Bootstrap Core JS -->
+        <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Custom JS -->
+        <script src="~/vendor/js/script.js"></script>
+
+
+        <!-- Mask JS -->
+        <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+        <script src="~/vendor/plugins/toastr/toastr.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                $("#submit").click(function(){
+                    $("form").submit();
+                });
+
+      
+            })
+        </script>
+
+    </body>
+</html>

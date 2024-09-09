@@ -1,0 +1,387 @@
+﻿@{
+    var reasons = (List<CancelReason>)ViewBag.CancelReasons;
+
+}
+
+@using AuroraPOS.Data
+
+@model List<DeliveryAuxiliar>
+
+
+<table style="width: 100%;">
+    @foreach (var item in Model)
+    {
+        <tr class="tr-delivery" style="border:1px solid grey;" data-id="@item.DeliveryId" id="orden-@item.Orden.ID">
+
+            @switch (item.Status)
+            {
+                case StatusEnum.Nuevo:
+                    <td style="width: 4px; vertical-align: middle; background-color: red ">
+                    </td>
+
+                    break;
+                case StatusEnum.EnRuta:
+                    <td style=" width: 4px; vertical-align: middle; background-color: blue">
+                    </td>
+                    break;
+                case StatusEnum.Entregado:
+                    <td style=" width: 4px; vertical-align: middle; background-color: green">
+                    </td>
+                    break;
+                case StatusEnum.Cerrado:
+                    <td style=" width: 4px; vertical-align: middle; background-color: orange">
+                    </td>
+                    break;
+                default:
+                    <td style=" width: 4px; vertical-align: middle;">
+                    </td>
+                    break;
+            }
+            <td style=" padding: 10px; vertical-align: middle;">
+                <div class="tr-delivery" style="width:50px; padding-top: 15px;">
+                    <img src="~/vendor/img/eye.png" style="width:40px; height:40px; filter: brightness(0.5);" />
+                </div>
+            </td>
+            <td style=" padding: 10px; vertical-align: middle;">
+                <div style=" font-size: 16px; font-weight: bold;">@item.Creacion.ToShortTimeString()</div>
+                <div style="font-size: 14px;">@(Math.Round((DateTime.Now - item.Creacion).TotalMinutes,0)) minutos</div>
+            </td>
+            <td style=" padding: 10px; vertical-align: middle;">
+
+                @if (Math.Round((item.Entrega - DateTime.Now).TotalMinutes, 0) < 0)
+                {
+                    <div style="color: #e10000; font-size: 16px; font-weight: bold;">@item.Entrega.ToShortTimeString()</div>
+                    @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                    {
+                        <div style="color: #e10000; font-size: 14px; ">hace @(Math.Round((item.Entrega - DateTime.Now).TotalMinutes,0)*-1) minutos</div>
+                    }
+
+                }
+                else
+                {
+                    <div class="deliverydetail-color1" style=" font-size: 16px; font-weight: bold;">@item.Entrega.ToShortTimeString()</div>
+                    @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                    {
+                        <div class="deliverydetail-color1" style=" font-size: 14px;">en @(Math.Round((item.Entrega - DateTime.Now).TotalMinutes, 0)) minutos</div>
+                    }
+
+                }
+
+            </td>
+            <td style=" padding: 10px; vertical-align: middle;" id="@("delivery" + item.DeliveryId.ToString())" class="deliveryheader" data-detail="@("deliverydetail" + item.DeliveryId.ToString())">
+                <div style="color: #008dff; font-size: 15px; ">
+                    #@(Html.Raw(item.Orden.ID.ToString() + (string.IsNullOrEmpty(item.Repartidor) ? "" : "- Repartidor: " + item.Repartidor)))
+
+
+
+
+                </div>
+                <div class="deliverydetail-color1" style=" font-size: 14px;">@item.Descripcion</div>
+
+            </td>
+
+            <td style=" padding: 10px; vertical-align: middle;">
+                @switch (item.Status)
+                {
+                    case StatusEnum.Nuevo:
+                        <div style="color:red">Nuevo</div>
+                        @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                        {
+                            <div class="deliverydetail-color1" style=" font-size: 14px; ">hace @(Math.Round((item.Creacion - DateTime.Now).TotalMinutes, 0) * -1) minutos</div>
+                        }
+
+                        break;
+                    case StatusEnum.EnRuta:
+                        <div style="color:blue">En Ruta</div>
+                        @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                        {
+                            <div class="deliverydetail-color1" style=" font-size: 14px; ">hace @(Math.Round((item.Actualizacion - DateTime.Now).TotalMinutes, 0) * -1) minutos</div>
+                        }
+
+                        break;
+                    case StatusEnum.Entregado:
+                        <div style="color:green">Entregado</div>
+                        @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                        {
+                            <div class="deliverydetail-color1" style=" font-size: 14px; ">hace @(Math.Round((item.Actualizacion - DateTime.Now).TotalMinutes, 0) * -1) minutos</div>
+                        }
+
+                        break;
+                    case StatusEnum.Cerrado:
+                        <div style="color:orange">Cerrado</div>
+                        @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Entregado)
+                        {
+                            <div class="deliverydetail-color1" style=" font-size: 14px; ">hace @(Math.Round((item.Actualizacion - DateTime.Now).TotalMinutes, 0) * -1) minutos</div>
+                        }
+
+                        break;
+                    default:
+                        <div>@item.Status</div>
+                        break;
+                }
+            </td>
+            <td style="text-align: center; padding: 10px; vertical-align: middle;">
+                <div class="deliverydetail-color1" style=" font-size: 15px; font-weight: bold; ">$@item.Total.ToString("#,##0.00")</div>
+                <div class="deliverydetail-color1" style=" font-size: 14px;">Pagado $@item.Orden.PayAmount.ToString("#,##0.00")</div>
+
+             
+                <div class="deliverydetail-color1 lbl-promesa-pago-monto" style=" font-size: 14px; @Html.Raw(item.Orden.PromesaPago <= 0 ? "display:none" : "") ">Promesa de pago $@item.Orden.PromesaPago.ToString("#,##0.00")</div>
+                <div class="deliverydetail-color1 lbl-promesa-pago-devuelto" style=" font-size: 14px; @Html.Raw(item.Orden.PromesaPago <= 0 ? "display:none" : "") ">Devolver $@((item.Orden.PromesaPago - item.Total ).ToString("#,##0.00"))</div>
+                
+
+
+
+            </td>
+            <td style=" padding: 5px; vertical-align: middle;">
+
+                @if (item.Orden.PrepareType != null && !item.Orden.PrepareType.SinChofer)
+                {
+                    switch (item.Status)
+                    {
+                        case StatusEnum.Nuevo:
+                            <a href="javascript:void(0);" class="set-carrier btn btn-submit btn-delivery me-2 btn-orange" data-id="@item.DeliveryId" style="width: 100%;">Iniciar Envio</a>
+                            break;
+                        case StatusEnum.EnRuta:
+                            <a href="javascript:void(0);" class="delivered btn btn-submit me-2 btn-delivery btn-orange" data-id="@item.DeliveryId" style="width: 100%;">Entregado</a>
+                            break;
+                        case StatusEnum.Entregado:
+                            <a href="javascript:void(0);" class="closed btn btn-submit me-2 btn-delivery btn-orange" data-id="@item.DeliveryId" style="width: 100%;">Cerrar</a>
+                            break;
+
+                        default:
+                            // code block
+                            break;
+                    }
+                }
+
+
+            </td>
+
+
+            <td style=" padding: 10px; vertical-align: middle;">
+                @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Cancelado)
+                {
+                    <div>
+                        <button class="paymentButton btn btn-submit btn-delivery btn-orange me-2" data-order-id="@item.Orden.ID" style="width: 100%;" @Html.Raw(Math.Round(item.Total,2,MidpointRounding.AwayFromZero) == Math.Round(item.Orden.PayAmount,2,MidpointRounding.AwayFromZero) || item.Orden.ConduceOrderId > 0 ? "disabled" : "")>Pagar</button>
+                    </div>
+                }
+            </td>
+            <td style=" padding: 10px; vertical-align:middle;">
+                <!-- Botón "Void" -->
+                @if (item.Status != StatusEnum.Cerrado && item.Status != StatusEnum.Cancelado && item.Orden.PaymentStatus != PaymentStatus.Partly)
+                {
+                    <div>
+                        <button type="button" class="btn btn-submit btn-delivery me-2 void-button" data-toggle="modal" data-target="#cancelitemmodal" data-id="@item.Orden.ID">
+                            Void
+                        </button>
+                    </div>
+                }
+
+            </td>
+            <td style=" padding: 10px; vertical-align:middle;">
+                <!-- Botón "Print" -->
+                <div>
+                    <button type="button" class="btn btn-submit btn-delivery me-2 btn-reordersubmit" data-toggle="modal" data-id="@item.Orden.ID">
+                        Print
+                    </button>
+
+                </div>
+            </td>
+
+            <td style=" padding: 10px; vertical-align:middle;">
+                <!-- Botón "Print" -->
+                <div>
+                    <button type="button" class="btn btn-submit btn-delivery me-2 btn-promesa-pago" data-order-id="@item.Orden.ID">
+                        Promesa Pago
+                    </button>
+
+                </div>
+            </td>
+
+        </tr>
+        <tr id="@("deliverydetail" + item.DeliveryId.ToString())" class="delivery-detail" style=" display:none">
+            <td style="width: 4px;"></td>
+            <td ></td>
+            <td style="padding: 10px;">
+                <div class="deliverydetail-color1" style=" font-size: 14px;">@item.Orden.ClientName</div>
+                <div class="deliverydetail-color1" style="font-size: 14px;">@item.DeliveryType</div>
+            </td>
+            <td style=" padding: 10px;">
+                <div class="deliverydetail-color1" style="font-size: 14px;">Zona</div>
+                <div class="deliverydetail-color1" class="zone" style=" font-size: 14px;">@item.Zona</div>
+            </td>
+            <td style=" padding: 10px;">
+                <div class="deliverydetail-color1" style=" font-size: 14px;">Dirección</div>
+                <div class="deliverydetail-color1" class="address" style="font-size: 14px;">@item.Direccion</div>
+            </td>
+            <td colspan="6" style="padding: 10px;">
+                <table style="width:100%">
+                    <tr>
+                        <td class="deliverydetail-color1" style=" font-size: 14px;">Producto</td>
+                        <td class="deliverydetail-color1" style="text-align: right; font-size: 14px;">Cantidad</td>
+                        <td class="deliverydetail-color1" style="text-align: right; font-size: 12px;">Precio</td>
+                    </tr>
+                    @foreach (var itemOrder in item.Orden.Items)
+                    {
+                        <tr>
+                            <td style="font-size: 14px;">@itemOrder.Name</td>
+                            <td style="text-align: right; font-size: 14px;">@itemOrder.Qty</td>
+                            <td style="text-align: right; font-size: 14px;">$@((itemOrder.SubTotal + itemOrder.Tax).ToString("#,##0.00"))</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+            @if (item.Status == StatusEnum.Nuevo)
+            {
+                <td style="padding: 10px;" id="@("delivery" + item.DeliveryId.ToString())" class="deliveryheader" data-detail="@("deliverydetail" + item.DeliveryId.ToString())">
+                    <div style="color: #008dff; font-size: 15px;">
+                        #@(Html.Raw(item.Orden.ID.ToString() + (string.IsNullOrEmpty(item.Repartidor) ? "" : "- Repartidor: " + item.Repartidor)))
+                    </div>
+                    <div class="deliverydetail-color1" style=" font-size: 14px;">@item.Descripcion</div>
+                    <button type="button" class="btn btn-link edit-button me-2" data-toggle="modal" data-target="#editmodal" data-id="@item.DeliveryId" data-orderid="@item.Orden.ID" style="display: @Html.Raw(Math.Round(item.Total,2,MidpointRounding.AwayFromZero) == Math.Round(item.Orden.PayAmount,2,MidpointRounding.AwayFromZero) ? "none" : "block")">
+                        <img src="/vendor/img/icons/edit.svg" alt="img">
+                    </button>
+
+                </td>
+            }
+        </tr>
+
+    }
+
+</table>
+
+
+
+<script>
+    $("body").on("click", ".tr-delivery", function () {
+        var deliveryId = $(this).data("id");
+
+        $(".delivery-detail").hide();
+        $("#deliverydetail" + deliveryId).show();
+
+    });
+
+    BindDelivery();
+    $(".paymentButton").click(function () {
+        var orderId = $(this).data("order-id");
+        var origin = "delivery";
+        var url = "/POS/Checkout?OrderId=" + orderId + "&origin=" + origin;
+        window.location.replace(url);
+    });
+
+
+    $(".btn-promesa-pago").click(function () {
+        var orderId = $(this).data("order-id");
+        $("#promesa_pago-order-id").val(orderId);
+        $("#promesa-pago-monto").val("");
+        $("#promesapagomodal").modal("show");
+
+    });
+
+
+    $(document).ready(function () {
+
+
+         $.ajax({
+             url: "/POS/CheckPermission?permission=" + "Permission.POS.VoidOrder",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    //$('.void-button').show();
+                    //alert("si");
+                }
+                else {
+                    $('.void-button').hide();
+                    //alert("no");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        // Evento de clic del botón "Void"
+        $('.void-button').on('click', function () {            
+                // Obtener el ID del pedido o cualquier otro dato necesario
+                var orderId = $(this).data('id');
+                console.log(orderId);
+
+                // Asignar el ID al campo oculto
+                $('#order-id').val(orderId);
+
+                // Limpiar el valor del campo de motivo de anulación
+                //$('#void-reason').val('');
+
+                // Mostrar el modal
+                $('#cancelitemmodal').modal('show');           
+        });
+
+
+
+
+
+        $('.edit-button').click(function () {
+            var orderId = $(this).data("orderid");
+            console.log(orderId);
+            window.location.replace("/POS/Sales?orderId=" + orderId);
+
+        });
+
+
+
+
+
+        function loadDeliveryDetails(deliveryId) {
+            console.log(deliveryId);
+            $.ajax({
+                url: '/Delivery/GetDelivery',
+                type: 'POST',
+                data: { Id: deliveryId },
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === 0) {
+                        var zone = response.data.zone;
+                        var address = response.data.address1;
+                        var items = response.data.order ? response.data.order.items : [];
+
+                        // Verifica si ambas direcciones están vacías y establece el valor "Para Llevar" en ese caso
+                        if (!address && !response.data.address2) {
+                            address = "Para Llevar";
+                        } else {
+                            address = address.trim();
+                            response.data.address2 = response.data.address2.trim();
+                        }
+                        if (!zone) {
+                            zone = "No aplica";
+                        } else {
+                            zone = zone.trim();
+                        }
+
+                        $('#edit-zone').text(zone);
+                        $('#edit-address').text(address);
+
+                        var itemsHtml = '';
+
+                        items.forEach(function (item) {
+                            itemsHtml += `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>$${(item.price).toFixed(2)}</td>
+                            </tr>
+                        `;
+                        });
+
+                        $('#edit-items tbody').html(itemsHtml);
+
+                        $('#editmodal').modal('show');
+                    }
+                },
+                error: function () {
+                    // Maneja el error según sea necesario
+                }
+            });
+        }
+
+
+    });</script>

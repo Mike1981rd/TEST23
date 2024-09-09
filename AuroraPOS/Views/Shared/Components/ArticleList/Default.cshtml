@@ -1,0 +1,316 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<!-- Article Modal -->
+<div class="modal fade" id="listarticle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="group-modal-title">@ViewLocalizer["Article List"]</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+							<label>@ViewLocalizer["Supplier Filter"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10 supplier-body">
+                                    <select id="article-purchase-supplier" class="select">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<button id="all_supplier_in_articlelist" class="btn btn-primary m-2">@ViewLocalizer["All Supplier"]</button>
+					</div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+						<div class="table-top">
+			<div class="search-set">
+				<div class="search-path">
+					<a class="btn btn-filter article-filter" id="filter_search">
+						<img src="/vendor/img/icons/filter.svg" alt="img">
+						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+					</a>
+				</div>
+				<div class="search-input">
+					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+					<div class="dataTables_filter"><label> <input id="filter-articlesearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]"..."></label></div>
+				</div>
+			</div>
+			
+		</div>
+		<!-- /Filter -->
+		<div class="card" id="filter_inputs">
+			<div class="card-body pb-0">
+				<div class="row">
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group brand-body">
+							<label>@ViewLocalizer["Brand"] </label>
+							<select id="filter-articlebrand" class="select">
+							</select>
+						</div>
+					</div>
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group articlecategory-body">
+							<label>@ViewLocalizer["Category"] </label>
+							<select id="filter-articlecategory" class="select">
+								
+							</select>
+						</div>
+					</div>
+					<div class="col-lg col-sm-6 col-12">
+						<div class="form-group subcategory-body">
+							<label>@ViewLocalizer["Sub Category"] </label>
+							<select id="filter-articlesubcategory" class="select">
+												<option value='' selected>@ViewLocalizer["Choose Sub Category"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Filter -->
+                        <div class="table-responsive w-100" style="max-height:700px;">
+                            <table id="article-list" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>@ViewLocalizer["Select"]</th>   
+                                        <th>@ViewLocalizer["Name"] </th>
+                                        <th>@ViewLocalizer["Brand"]</th>
+                                        <th>@ViewLocalizer["Category"] </th>
+                                        <th>@ViewLocalizer["Sub Category"]</th> 
+                                        <th>@ViewLocalizer["Tax"]</th>
+                                        <th>@ViewLocalizer["Status"]</th>
+                                       
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-article" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+	$("#article-purchase-supplier").change(function () {
+        ChangeArticleTable();
+    })
+	$("#all_supplier_in_articlelist").click(function () {
+		var current = parseInt($("#article-purchase-supplier").val());
+
+		if (current && current > 0) {
+			$(this).data("supplier", current);
+			$("#article-purchase-supplier").val("0");
+			$("#article-purchase-supplier").change();;
+		}
+		else{
+			current = $(this).data("supplier");
+			$("#article-purchase-supplier").val("" + current);
+			$("#article-purchase-supplier").change();;
+		}
+		
+    })
+	$(document).ready(function(){
+		LoadArticleBrand();
+		LoadArticleCategory();
+		LoadSupplier();
+
+		$("#filter-articlesearchtext").on("change keyup", function(){
+			FilterArticle();
+		});
+		$("#filter-articlebrand").on("change", function(){
+			FilterArticle();
+		});
+		$("#filter-articlecategory").on("change", function(){
+			FilterArticle();
+			LoadArticleSubCategory()
+		});
+		$("#filter-articlesubcategory").on("change", function () {
+			FilterArticle();
+		});
+
+		$(".article-filter").click(function () {
+			if ($(this).hasClass("setclose")) {
+				$("#filter-articlebrand").val("").change();
+				$("#filter-articlecategory").val("").change();
+				$("#filter-articlesubcategory").val("").change();
+			}
+		});
+	});
+
+	function LoadSupplier() {
+        $.ajax({
+            url: "/Inventory/GetAllActiveSuppliers",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                // article supplier
+                $("#article-purchase-supplier").empty();
+                $("#article-purchase-supplier").append("<option value='0' selected>@ViewLocalizer["All Supplier"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    $("#article-purchase-supplier").append("<option value='" + d.id + "'>" + d.name + "</option>")
+                }
+                $("#article-purchase-supplier").select2({
+					dropdownParent: $('.supplier-body')
+				});
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+    }
+
+
+	function LoadArticleBrand()
+	{
+		$.ajax({
+			url: "/Inventory/GetAllBrands",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+				$("#filter-articlebrand").empty();
+				$("#filter-articlebrand").append("<option value='' selected>@ViewLocalizer["Choose brand"]</option>")
+				for(var i =0; i < data.length; i++)
+				{
+					var d = data[i];
+					$("#filter-articlebrand").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+							
+				$("#filter-articlebrand").select2({
+					dropdownParent: $('.brand-body')
+				});
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+		
+	}
+
+	function LoadArticleCategory()
+	{
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+				$("#filter-articlecategory").empty();
+				$("#filter-articlecategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+				for(var i =0; i < data.length; i++)
+				{
+					var d = data[i];
+					$("#filter-articlecategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-articlecategory").select2({
+					dropdownParent: $('.articlecategory-body')
+				});
+				
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+	}
+
+	function LoadArticleSubCategory()
+	{
+		var category = $("#filter-articlecategory").val();
+		if (!category) return;
+		$.ajax({
+			url: "/Menu/GetAllSubCategories?categoryID=" + category,
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#filter-articlesubcategory").empty();
+				$("#filter-articlesubcategory").append("<option value='' selected>@ViewLocalizer["Choose sub category"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#filter-articlesubcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#filter-articlesubcategory").select2({
+					dropdownParent: $('.subcategory-body')
+				});
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+    function ChangeArticleTable() {
+        var articletable = $("#article-list").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+				"url": "/Inventory/GetActiveArticleList?supplierID=" + $("#article-purchase-supplier").val(),
+                "type": "POST",
+                "datatype": "json"
+            },
+            "destroy": true,
+            'select': {
+                'style': 'multi'
+            },
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50],
+            "order": [[1, 'asc']],
+            "columns": [
+                {
+                    'data': 'action', 'name': 'action',
+                    render: function (data, type, row) {
+                        return "<div class='me-3 icons-box d-inline-block' onclick='SelectArticle(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></div></div>";
+                    },
+                },
+                { "data": "name", "name": "name", "autoWidth": true },
+                { "data": "brand", "name": "brand", "autoWidth": true },
+                
+                { "data": "categoryName", "name": "categoryName", "autoWidth": true },
+                { "data": "subCategoryName", "name": "subCategoryName", "autoWidth": true },                
+                { "data": "tax", "name": "tax", "autoWidth": true },
+                {
+                    'data': 'status', 'name': 'isActive',
+                    render: function (data, type, row) {
+                        if (row.isActive) {
+                            return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                        }
+                        else {
+                            return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                        }
+                    },
+                    "autoWidth": true
+                },
+             
+            ]
+        });
+
+    }
+
+	function FilterArticle() {
+		var searchText = $("#filter-articlesearchtext").val();
+		var category = $("#filter-articlecategory").val();
+		var subcategory = $("#filter-articlesubcategory").val();
+		var brand = $("#filter-articlebrand").val();
+
+		var articletable = $("#article-list").DataTable();
+		articletable.columns(0).search(searchText);
+		articletable.columns(1).search(brand);
+		articletable.columns(2).search(category);
+		articletable.columns(3).search(subcategory)
+
+		articletable.draw();
+	}
+</script>

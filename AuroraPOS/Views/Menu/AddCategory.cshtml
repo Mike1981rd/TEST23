@@ -1,0 +1,344 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var groups = (List<Group>)ViewBag.Groups;
+	var taxs = (List<Tax>)ViewBag.Taxes;
+	var propinas = (List<Propina>)ViewBag.Propinas;
+	var printerChannels = (List<PrinterChannel>)ViewBag.PrinterChannels;
+	var courses = (List<Course>)ViewBag.Courses;
+}
+@model CategoryViewModel
+<div class="page-header">
+	<div class="page-title">
+		<h4>@ViewLocalizer["Category Management"]</h4>
+		<h6>@ViewLocalizer["Add/Update Category"]</h6>
+	</div>
+</div>
+<!-- /add -->
+<div class="card">
+	<div class="card-body">
+		<form method="post" asp-controller="Menu" asp-action="AddCategory" enctype="multipart/form-data">
+			@Html.AntiForgeryToken()
+			<div class="row">
+				<div class="col-lg-4 col-sm-6 col-12">
+					<input type="hidden" id="category-id" asp-for="ID" />
+					<input type="hidden" asp-for="GroupName" />
+					<div class="form-group">
+						<label>@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
+						<div class="input-group">
+							<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
+							<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required><br />
+							
+						</div>
+						<span asp-validation-for="Name" class="text-danger"></span>
+					</div>
+				</div>			
+				<div class="col-lg-4 col-sm-6 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Group"]</label>
+						<select id="category-group" asp-for="GroupID" class="select">
+							<option value="">@ViewLocalizer["Choose Group"]</option>
+							@foreach(var g in groups)
+							{
+								<option value="@g.ID">@g.GroupName</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="col-lg-6 col-sm-6 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Taxes"]</label>
+						<select id="category-tax" class="form-control tagging select" asp-for="Taxes" multiple tabindex="-1" aria-hidden="true">
+							@foreach (var t in taxs)
+							{
+								<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="col-lg-6 col-sm-6 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Propina"]</label>
+						<select id="category-propina" class="form-control tagging select" asp-for="Propinas" multiple tabindex="-1" aria-hidden="true">
+							@foreach (var t in propinas)
+							{
+								<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="col-lg-6 col-sm-6 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Printer Channels"]</label>
+						<select id="category-pchannel" class="form-control tagging select" asp-for="PrinterChannels" multiple tabindex="-1" aria-hidden="true">
+							@foreach (var p in printerChannels)
+							{
+								<option value="@p.ID">@p.Name </option>
+							}
+						</select>
+						<span asp-validation-for="PrinterChannels" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-lg-3 col-sm-6 col-12 pb-3">
+					<div class="form-group mb-0">
+						<label>@ViewLocalizer["Status"]</label>
+						<select id="category-status" class="select" asp-for="IsActive">
+							<option value="1"> @ViewLocalizer["Active"]</option>
+							<option value="0"> @ViewLocalizer["InActive"]</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-lg-3 col-sm-6 col-12">
+					<div class="form-group">
+						<label>@ViewLocalizer["Course"]</label>
+						<div class="row">
+							<div class="col-lg-10 col-sm-10 col-10">
+								<select id="category-course" class="select " asp-for="CourseID">
+									<option value="0">@ViewLocalizer["Choose course"]</option>
+									@foreach (var t in courses)
+									{
+										<option value="@t.ID">@t.Name</option>
+									}
+
+								</select>
+							</div>
+							<div class="col-lg-2 col-sm-2 col-2 ps-0">
+								<div class="add-icon">
+									<a id="add-course-modal" href="javascript:void(0);">
+										<img src="/vendor/img/icons/plus1.svg" alt="img">
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+			<div class="row pt-5">
+				<div class="col-lg-12 col-sm-12 col-12">
+					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+						<h6 class="text-left"> @ViewLocalizer["Questions and Modifiers"]</h6>
+						<div class="add-unit">
+							<a class="add-new-question" href="javascript:void(0);">
+								<img src="/vendor/img/icons/plus1.svg" alt="img">
+							</a>
+						</div>
+					</div>
+					<table class="table reordertable">
+						<thead>
+							<tr>
+								<td>
+									@ViewLocalizer["Name"]
+								</td>
+								<td>
+									@ViewLocalizer["Type"]
+								</td>
+								<td>
+									@ViewLocalizer["Action"]
+								</td>
+						</thead>
+						<tbody id="product-questions">
+							@foreach(var q in Model.Questions)
+							{
+								<tr data-id="@q.ID">
+									<td>@q.Name</td>
+									<td>@q.Type</td>
+									<td>
+										<div class="">
+											<a href="javascript:void(0);" class="edit-item"><img src="/vendor/img/icons/edit.svg" onclick="EditQuestion1(@q.ID)" alt="svg"></a>
+										</div>
+									</td>
+									<td>
+										<div class="delete-btn">
+											<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+			<div class="row pt-5">
+				<div class="col-lg-12 col-sm-12 col-12">
+					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+						<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+						<div class="add-unit">
+							<a class="add-accounting-item" href="javascript:void(0);">
+								<img src="/vendor/img/icons/plus1.svg" alt="img">
+							</a>
+						</div>
+					</div>
+					<table class="table reordertable">
+						<thead>
+							<tr>
+								<td>
+									@ViewLocalizer["Name"]
+								</td>
+								<td>
+									@ViewLocalizer["Type"]
+								</td>
+								<td>
+									@ViewLocalizer["Number"]
+								</td>
+								<td>
+									@ViewLocalizer["Action"]
+								</td>
+						</thead>
+						<tbody id="accounting-list">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row pt-3">
+				<div class="col-lg-12">
+					<a id="submit" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
+					<a id="cancel" href="javascript:void(0);" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</div>
+@{
+	@await Component.InvokeAsync("AddCourse", new { })
+}
+@{
+	@await Component.InvokeAsync("Accounting", new { })
+}
+@{
+	@await Component.InvokeAsync("ForcedQuestion", new { })
+}
+<!-- Product List -->
+@{
+	@await Component.InvokeAsync("ProductList", new { })
+}
+<!-- /add -->
+<script>
+	$(document).ready(function () {
+		$("#submit").click(function () {
+			var questions = [];
+			var iindex = 0;
+			$("#product-questions tr").each(function (i, e) {
+				var id = parseInt($(this).data("id"));
+				var d = {
+					ID: id,
+					DisplayOrder: iindex + 1,
+					Name:"",
+					Type:""
+				}
+				questions.push(d);
+				
+				iindex++;
+			});
+
+			var name = $("#category-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var group = parseInt($("#category-group").val());
+			if (!group || group == 0) {
+				toastr.warning("@ViewLocalizer["Please select the group."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+			var courseid = parseInt($("#category-course").val());
+			if (!courseid) courseid = 0;
+			var plato = parseInt($("#category-plato").val());
+			if (!plato) plato = 0;
+			var active = $("#category-status").val()
+
+			var id = parseInt($("#category-id").val());
+			if (!id) id = 0;
+
+			var data = {
+				ID: id,
+				Name: name,
+				GroupID: group,
+				Plato: plato,
+				Taxes: $("#category-tax").val(),
+				Propinas: $("#category-propina").val(),
+				PrinterChannels: $("#category-pchannel").val(),
+				CourseID: courseid,
+				IsActive: active == "1",
+				Questions: questions
+			}
+			
+			$.ajax({
+				url: "/Menu/EditCategory",
+				type: "POST",
+				data: data,
+			
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						SaveAccountItems(1, data.id, function () {
+							window.location.replace("/Menu/CategoryList");
+						})
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else if (data.status == 3) {
+						toastr.error("@ViewLocalizer["The RNC should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the category."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		})
+		$("#cancel").click(function () {
+			window.location.replace("/Menu/CategoryList");
+		})
+
+		if (@Model.ID > 0) {
+			GetAccountItems(1, @Model.ID);
+		}
+		
+        $("#category-group").change(function () {
+			var group = $(this).val();
+			if (@Model.ID == 0) {
+				GetAccountItems(13, group);
+			}
+		})
+
+	})
+
+	function SelectCourse(course) {
+		$.ajax({
+			url: "/Menu/GetAllActiveCourseList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#category-course").empty();
+				$("#category-course").append("<option value='' selected>@ViewLocalizer["Choose course"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+
+					$("#category-course").append("<option value='" + d.id + "' >" + d.name + "</option>")
+				}
+				$("#category-course").select2();
+				if (course) {
+					$("#category-course").val(course.id).change();
+				}
+				else {
+					$("#category-course").val('').change();
+				}
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
+		$("#listcourse").modal("hide");
+	}
+
+	$("body").on("click", "a.delete-item", function () {
+		$(this).closest("tr").remove();
+	});
+</script>

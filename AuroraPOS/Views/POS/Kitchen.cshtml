@@ -1,0 +1,823 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+
+    var printerChannels = (List<PrinterChannel>)ViewBag.PrinterChannels;
+}
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Alfa Software">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="robots" content="noindex, nofollow">
+    <title>ALFA POS Kichen</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
+
+    <!-- Animation CSS -->
+    <link rel="stylesheet" href="~/vendor/css/animate.css">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/select2/css/select2.min.css">
+
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="~/vendor/css/dataTables.bootstrap4.min.css">
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="~/vendor/css/bootstrap-datetimepicker.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/vendor/css/style.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <!-- /Main Wrapper -->
+    <!-- jQuery -->
+    <script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="~/vendor/js/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/vendor/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Datatable JS -->
+    <script src="~/vendor/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="~/vendor/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Sweetalert 2 -->
+    <script src="~/vendor/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="~/vendor/plugins/sweetalert/sweetalerts.min.js"></script>
+
+    <!-- Datetimepicker JS -->
+    <script src="~/vendor/js/moment.min.js"></script>
+    <script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Toatr CSS -->
+    <link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+
+    <!-- Mask JS -->
+    <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+    <script src="~/vendor/plugins/toastr/toastr.js"></script>
+
+    <!-- ColorPicker JS -->
+    <script src="~/vendor/js/colorpalettepicker.js"></script>
+    <script src="~/vendor/js/jquery.mask.js"></script>
+    <!-- Custom JS -->
+    <script src="~/vendor/js/script.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+
+
+</head>
+<body data-theme="dark">
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper black-theme">
+        <!-- Header -->
+        <div class="header position-relative">
+
+            <!-- Logo -->
+            <div class="logout header-left active">
+                <a href="javascript:void(0);" class="logo logo-normal">
+                    <img src="~/vendor/img/logo.png" alt="">
+                </a>
+                <a href="javascript:void(0);" class="logo logo-white">
+                    <img src="~/vendor/img/logo-white.png" alt="">
+                </a>
+                <a href="javascript:void(0);" class="logo-small">
+                    <img src="~/vendor/img/logo-small.png" alt="">
+                </a>
+            </div>
+            <!-- /Logo -->
+            <!-- Header Menu -->
+            <ul class="nav user-menu">
+                <div class="switch-wrapper"><div id="dark-mode-toggle"><span class="light-mode"> <img src="/vendor/img/icons/sun-icon.svg" class="me-2" alt=""> Light</span><span class="dark-mode active"><i class="far fa-moon me-2"></i> Dark</span></div></div>
+            </ul>
+            <!-- /Header Menu -->
+
+        </div>
+        <div class="content">
+            <div class="header-bar bg-gray py-3">
+                <div class="content-container px-3">
+                    <div class="d-flex justify-content-between">
+                        <div class="header-bar-left d-flex">
+                            <button id="btn-completed" data-completed="0" class="btn btn-secondary h-btn px-2">Show Completed</button>
+                            <div class=" filter-date px-5" style="display:none;">
+                                <div class="d-flex">
+
+                                    <label class="p-2">@ViewLocalizer["Date From"] </label>
+                                    <div class="form-group mb-0">
+                                        <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                                    </div>
+
+
+                                    <label class="p-2">@ViewLocalizer["Date To"] </label>
+                                    <div class="form-group mb-0">
+                                        <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            
+                            <div class="dropdown px-2">
+                                <button class="btn btn-secondary dropdown-toggle kitchen-product-filter" type="button" data-pid="0" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    ALL
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item filter-product" data-text="ALL" data-id="0" href="javascript:void(0);">ALL</a></li>
+                                    @foreach(var p in printerChannels)
+                                    {
+                                        <li><a class="dropdown-item filter-product" data-text="@p.Name" data-id="@p.ID" href="javascript:void(0);">@p.Name</a></li>
+                                    }
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="header-bar-right d-flex gap-4">
+                            <button id="btn-setting" class="btn btn-secondary h-btn">Settings</button>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+            <div class="content-container px-3">
+                <div class="row" style="height: 82vh">
+                    <div class="col-12 overflow-auto">
+                        <div class="card-container kitchen-orders d-flex gap-4">
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Tools -->
+        <div class="modal fade" id="kitchenitemmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="smartbuton-modal-title">@ViewLocalizer["ACTION"]</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6 p-2"><button id="btn-itemdone" class="btn-menu btn btn-primary">@ViewLocalizer["DONE"]</button></div>
+                            <div class="col-6 p-2"><button id="btn-itemrush" class="btn-menu btn btn-danger">@ViewLocalizer["RUSH"]</button></div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="cancelreasonmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="smartbuton-modal-title">@ViewLocalizer["Canceled"]</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <label></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="kitchensettingmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="smartbuton-modal-title">@ViewLocalizer["Settings"]</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <label class="col-6">@ViewLocalizer["Order notification sound"]</label>
+                            <div class="col-6 form-group">
+                                <select id="setting-sound" class="select form-control">
+                                    <option value="">Default(Silent)</option>
+                                    <option value="access-allowed-tone.wav">Access Allowed</option>
+                                    <option value="arabian-mystery-harp-notification.wav">Mystery Harp</option>
+                                    <option value="arcade-magic-notification.wav">Arcade</option>
+                                    <option value="clear-announce-tones.wav">Clear Announce</option>
+                                    <option value="happy-bells-notification.wav">Happy Bell</option>
+                                    <option value="magic-notification.wav">Magic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-6">@ViewLocalizer["Ticket timer displays in orange after(minutes)"]<span class="manitory">*</span></label>
+                            <div class="form-group col-6">
+                                <input id="setting-orange" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-6">@ViewLocalizer["Ticket timer displays in red after(minutes)"]<span class="manitory">*</span></label>
+                            <div class="form-group col-6">
+                                <input id="setting-red" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <label class="col-6">@ViewLocalizer["Ticket Width"]<span class="manitory">*</span></label>
+                            <div class="form-group col-6">
+                                <input id="setting-width" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-6">@ViewLocalizer["Ticket Font Size(px)"]<span class="manitory">*</span></label>
+                            <div class="form-group col-6">
+                                <input id="setting-font" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button id="btn-settingsave" type="button" class="btn btn-primary">@ViewLocalizer["Save"]</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+</body>
+</html>
+
+
+<script>
+    var isUpdating = false;
+    $(document).ready(function () {
+        $(".logout").click(function () {
+            window.location.replace("/POS/KitchenLogout");
+        })
+
+        LoadKitchenItems();
+        setInterval(function () {
+            // update timer
+            $(".kitchen-order").each(function () {
+                var seconds = $(this).find(".item-time").data("second");
+                var now = new Date();
+                var totalSecond = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+                
+
+                var diff = (totalSecond - seconds);
+                $(this).find(".item-time").text(toHHMMSS(diff));
+            })
+
+        }, 1000);
+
+
+        setInterval(function () {
+            // reload orders
+            if (!isUpdating) {
+                LoadKitchenItems();
+            }
+            
+
+        }, 5000)
+    });
+
+    function LoadKitchenItems(update) {
+
+        var completed = $("#btn-completed").data("completed");
+        var pchannel = $(".kitchen-product-filter").data("pid");
+        var datefrom = $("#filter_datefrom").val();
+        var dateto = $("#filter_dateto").val();
+        isUpdating = true;
+        $.ajax({
+            url: "/POS/GetKitchenOrders?completed=" + completed + "&printerChannel=" + pchannel + "&from=" + datefrom + "&to=" + dateto,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                var count = $(".kitchen-order").length;
+                // if (!data.hasNew && data.data.length == count && !update) {
+                //     return;
+                // }
+                if (data.hasNew) {
+                    var audioFile = localStorage.getItem("KitchenOrderNotificationAudio");
+
+                    if (audioFile) {
+                        var audio = new Audio('/vendor/audio/' + audioFile);
+                        audio.play();
+                    }
+                }
+                $(".kitchen-orders").empty();
+                $.each(data.data, function (index, item) {
+
+                    var type = "Dine In";
+
+                    if (item.order.prepareType!= null) {
+                        type = item.order.prepareType.name;
+                    }
+
+                    /*if (item.order.orderType == 1 || item.order.orderType == 2) {
+                        type = "Delivery";
+                    }
+                    else if (item.order.orderType == 3) {
+                        type = "Dine In"
+                    }
+                    else if (item.order.orderType == 4) {
+                        type = "Barcode"
+                    }
+                    else if (item.order.orderType == 5) {
+                        type = "Kiosk"
+                    }*/
+
+                    var orderId = item.order.id;
+                    var name = item.order.clientName;
+                    if (!name) name = "";
+
+                    var tablename = item.tableName;
+                    if (!tablename) tablename = "";
+
+                    var waitername = item.order.waiterName;
+                    if (!waitername) waitername = "";
+
+                    var time = new Date(item.startTime);
+                    var now = new Date();
+                    var totalSecond = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+                    var diff = toHHMMSS((totalSecond - item.totalSecond) );
+
+                    var width = localStorage.getItem("KitchenOrderWidth");
+                    if (!width) width = 300;
+
+                    var font = localStorage.getItem("KitchenFontSize");
+                    if (!font) font = 12;
+                    var fontstr = `font-size: ${font}px !important`;
+                    var color = "";
+                    var minutes = (totalSecond - item.totalSecond) / 60;
+
+                    var orange = localStorage.getItem("KitchenOrderOrangeMinutes");
+                    var red = localStorage.getItem("KitchenOrderRedMinutes");
+                    if (!item.isCompleted) {
+                        if (orange) {
+                            if (minutes > orange) {
+                                color = "orange";
+                            }
+                        }
+                        if (red) {
+                            if (minutes > red) {
+                                color = "red";
+                            }
+                        }
+                    }
+
+                    var blink = '';
+                    if (item.isNew) {
+                        blink = 'blink';
+                    }
+
+                    var html = `<div class="card-item kitchen-order h-auto  ${blink}" style="width:${width}px; min-width:${width}px;" data-id="${item.id}" data-status='${item.status}' data-completed='${item.isCompleted}'><div class="card-container border border-${color}"><div class="card-header p-2 d-flex justify-content-between"><div><span  style='${fontstr}'>#${item.index}</span>${type}</div><span style='${fontstr}'>${orderId}</span></div><div class="card-body"><div class="name p-1 d-flex justify-content-between w-100"><span style='${fontstr}'>${name}</span><span style='${fontstr}'>${tablename}</span></div><div class="name p-1 d-flex justify-content-between w-100"><span></span><span style='${fontstr}'>${waitername}</span></div>`
+                    if (!item.isCompleted) {
+                        html += ` <div class="item-time p-1 text-end" data-time="${item.startTime}" data-second='${item.totalSecond}'>${diff}</div>`
+                    }
+
+                    var item_html = `<div id='kitchen-order-${item.id} ' class="item-container overflow-auto" style='font-size:${font}px !important;'>`;
+                    var course = "";
+                    for (var j = 0; j < item.items.length; j++) {
+                        var d = item.items[j];
+                        var status = "";
+                        var mark = ""
+                       
+                        if (d.status == 2) {
+                            status = "done";
+                            mark = "<span style='${fontstr}' class='text-success'>[DONE]</span>"
+                        }
+                        else if (d.status == 3) {
+                            status = "rush";
+                        }
+                        else if (d.status == 4) {
+                            status = "void";
+                            mark = "<span style='${fontstr}' class='text-danger'>[VOID]</span>"
+                        }
+
+                        if (d.course != course) {
+                            item_html += `<div class='w-100' style='background-color: #555'>${d.course}</div>`;
+                            course = d.course;
+                        }
+                        var servingSize = "";
+                        if (d.servingSizeName) {
+                            servingSize = "(" + d.servingSizeName + ")";
+                        }
+
+                        item_html += `<div class="kitchen-item p-1 ${status}  " data-id="${d.id}" data-status="${d.status}" data-reason='${d.cancelReason}'>${mark}<span style='${fontstr}' class="qty">${d.qty}</span> <span style='${fontstr}' class="item-name">${d.name}${servingSize}</span>`;
+                        var question_html = ``;
+                        if (d.questions) {
+                            var divisor = 0;
+                            for (k = 0; k < d.questions.length; k++) {
+                                var q = d.questions[k];
+                                 if (q.divisor != divisor){
+                                    if (q.divisor == 1) {
+                                        question_html += `<div class="item"><span style='${fontstr}' class="">Completa : </span><span style='${fontstr}' class=""></span></div>`;
+                                    }
+                                    else if (q.divisor == 2) {
+                                        question_html += `<div class="item"><span style='${fontstr}' class="">1 Mitad :</span><span style='${fontstr}' class=""></span></div>`;
+                                    }
+                                    else if (q.divisor == 3) {
+                                        question_html += `<div class="item"><span style='${fontstr}' class="">2 Mitad : </span><span style='${fontstr}' class=""></span></div>`;
+                                    }
+                                        
+                                    divisor = q.divisor;
+                                }
+
+                                if (q.isPreSelect) {
+                                    if (!q.isActive) {
+                                        question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                    }
+                                }
+                                else {
+                                    if (q.canRoll) {
+                                        rollprice += q.price;
+                                        question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                    }
+                                    else {
+                                        var price = q.price * (q.qty - q.freeChoice);
+                                        question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                    }
+                                    if (q.subDescription) {
+                                        question_html += `<div class="item mx-2"><span style='${fontstr}' class="mx-5"> ${q.subDescription}</span><span class=""></span></div>`;
+                                    }
+                                }
+                            }
+                            item_html += question_html;
+                        }
+                        if (d.note) {
+                            item_html += `<div class="kitchen-note mx-2 text-gray">[Note] ${d.note}</div>`;
+                        }
+                        item_html += "</div>";
+                    }
+                    item_html += "</div>"
+                    html += item_html;
+
+                    if (item.isCompleted) {
+                        html += ` </div></div></div>`;
+                    }
+                    else if (item.isNew) {
+                        html += `</div><div class="card-footer p-2 bg-grey d-flex justify-content-center" style="background-color:${color}"><a class="btn btn-success btn-block w-50 btn-okorder">OK</a></div></div></div>`;
+                    }
+                    else{
+                        html += `</div><div class="card-footer p-2 bg-grey d-flex justify-content-around" style="background-color:${color}"><a class="btn btn-success btn-block w-25 btn-print">Print</a><a class="btn btn-primary btn-block w-25 btn-done">Done</a></div></div></div>`;
+                    }
+                   
+
+                    $(".kitchen-orders").append(html);
+                    //LoadKitchenOrderItems(item.id, 'kitchen-order-' + item.id);
+                });
+                isUpdating = false;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    function LoadKitchenOrderItems(id, orderdiv) {
+        var pchannel = $(".kitchen-product-filter").data("pid");
+        $.ajax({
+            url: "/POS/GetKitchenOrderItems?orderId=" + id + "&printerChannel=" + pchannel,
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+
+                var font = localStorage.getItem("KitchenFontSize");
+                if (!font) font = 12;
+                var fontstr = `font-size: ${font}px !important`;
+
+                var item_html = '';
+                $.each(data.data, function (index, item) {
+
+                        var d = item;
+                        var status = "";
+                        var mark = ""
+                        if (d.status == 2) {
+                            status = "done";
+                        }
+                        else if (d.status == 3) {
+                            status = "rush";
+                        }
+                        else if (d.status == 4) {
+                            status = "void";
+                        mark = "<span style='${fontstr}' class='text-danger'>[VOID]</span>"
+                        }
+
+                    item_html += `<div class="kitchen-item p-1 ${status}" data-id="${d.id}" data-status="${d.status}" data-reason='${d.cancelReason}'>${mark}<span style='${fontstr}' class="qty">${d.qty}</span> <span style='${fontstr}' class="item-name">${d.name}</span>`;
+                        var question_html = ``;
+                    var divisor = 0;
+                        if (d.questions) {
+                            for (k = 0; k < d.questions.length; k++) {
+                                var q = d.questions[k];
+                            if (q.divisor != divisor) {
+                                if (q.divisor == 1) {
+                                    question_html += `<div class="item"><span style='${fontstr}' class="">Completa : </span><span class=""></span></div>`;
+                                }
+                                else if (q.divisor == 2) {
+                                    question_html += `<div class="item"><span style='${fontstr}' class="">1 Mitad :</span><span class=""></span></div>`;
+                                }
+                                else if (q.divisor == 3) {
+                                    question_html += `<div class="item"><span style='${fontstr}' class="">2 Mitad : </span><span class=""></span></div>`;
+                                }
+
+                                divisor = q.divisor;
+                            }
+
+                            if (q.isPreSelect) {
+                                if (!q.isActive) {
+                                    question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                }
+                            }
+                            else {
+                                if (q.canRoll) {
+                                    rollprice += q.price;
+                                    question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                }
+                                else {
+                                    var price = q.price * (q.qty - q.freeChoice);
+                                    question_html += `<div class="item mx-2"><span style='${fontstr}' class="">${q.description}</span><span class=""></span></div>`;
+                                }
+                                if (q.subDescription) {
+                                    question_html += `<div class="item mx-2"><span style='${fontstr}' class="mx-5"> ${q.subDescription}</span><span class=""></span></div>`;
+                                }
+                            }
+                            }
+                            item_html += question_html;
+                        }
+
+                        item_html += "</div>";
+                });
+
+                $("#" + orderdiv).append(item_html);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+    $("body").on("click", ".btn-done", function () {
+        var kitchenorder = $(this).closest(".kitchen-order");
+        var orderid = $(this).closest(".kitchen-order").data("id");
+
+        var data = {
+            KitchenOrderID: orderid
+        }
+
+        $.ajax({
+            url: "/POS/FinishKitchenOrder",
+            type: "POST",
+            data: data,
+
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    kitchenorder.remove()
+                }
+                else if (data.status == 1) {
+                    toastr.error(data.message, {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("body").on("click", ".btn-okorder", function () {
+        var kitchenorder = $(this).closest(".kitchen-order");
+        var orderid = $(this).closest(".kitchen-order").data("id");
+
+        var data = {
+            KitchenOrderID: orderid
+        }
+
+        $.ajax({
+            url: "/POS/StartKitchenOrder",
+            type: "POST",
+            data: data,
+
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadKitchenItems(true);
+                }
+                else if (data.status == 1) {
+                    toastr.error(data.message, {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("body").on("click", ".kitchen-item", function () {
+        var kitchenitemid = $(this).data("id");
+        var status = $(this).data("status");
+        if (status == 2) return;
+        if (status == 4) {
+            var reason = $(this).data("reason");
+            toastr.error(reason, {})
+            return
+        }
+        var completed = $(this).closest(".kitchen-order").data("completed")
+        if (completed) {
+            return;
+        }
+        $(this).addClass("selected");
+
+        $("#kitchenitemmodal").data("id", kitchenitemid);
+        $("#kitchenitemmodal").modal("show");
+    })
+
+    $("#btn-itemdone").click(function () {
+        var id = $("#kitchenitemmodal").data("id");
+        var data = {
+            KitchenOrderItemID: id,
+            Status : 2
+        }
+
+        $.ajax({
+            url: "/POS/FinishKitchenOrderItem",
+            type: "POST",
+            data: data,
+
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadKitchenItems(true);
+                    $("#kitchenitemmodal").modal("hide");
+                    $(".kitchen-item").removeClass("selected");
+                }
+                else if (data.status == 1) {
+                    toastr.error(data.message, {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("#btn-itemrush").click(function () {
+        var id = $("#kitchenitemmodal").data("id");
+        var data = {
+            KitchenOrderItemID: id,
+            Status: 3
+        }
+
+        $.ajax({
+            url: "/POS/FinishKitchenOrderItem",
+            type: "POST",
+            data: data,
+
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    LoadKitchenItems(true);
+                    $("#kitchenitemmodal").modal("hide");
+                    $(".kitchen-item").removeClass("selected");
+                }
+                else if (data.status == 1) {
+                    toastr.error(data.message, {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    $("#btn-setting").click(function () {
+        var audio = localStorage.getItem("KitchenOrderNotificationAudio");
+        if (!audio)
+            audio = "";
+
+        $("#setting-sound").val(audio).change();
+
+        var orange = localStorage.getItem("KitchenOrderOrangeMinutes");
+        if (!orange) orange = 5;
+
+        $("#setting-orange").val(orange);
+
+        var red = localStorage.getItem("KitchenOrderRedMinutes");
+        if (!red) red = 10;
+
+        $("#setting-red").val(red);
+
+        var width = localStorage.getItem("KitchenOrderWidth");
+        if (!width) width = 300;
+        isSetting = true;
+        $("#setting-width").val(width);
+
+        var font = localStorage.getItem("KitchenFontSize");
+        if (!font) font = 12;
+        $("#setting-font").val(font);
+
+        $("#kitchensettingmodal").modal("show");
+    })
+
+    $("#btn-settingsave").click(function () {
+        var audio = $("#setting-sound").val();
+        localStorage.setItem("KitchenOrderNotificationAudio", audio);
+
+        var orange = $("#setting-orange").val();
+        localStorage.setItem("KitchenOrderOrangeMinutes", orange);
+
+        var red = $("#setting-red").val();
+        localStorage.setItem("KitchenOrderRedMinutes", red);
+
+        var width = $("#setting-width").val();
+        localStorage.setItem("KitchenOrderWidth", width);
+
+        var font = $("#setting-font").val();
+        localStorage.setItem("KitchenFontSize", font);
+        isSetting = false;
+        LoadKitchenItems();
+        $("#kitchensettingmodal").modal("hide");
+    })
+
+    var isSetting = false;
+    $("#setting-sound").change(function () {
+        var audioFile = $(this).val();
+
+        if (audioFile && isSetting) {
+            var audio = new Audio('/vendor/audio/' + audioFile);
+            audio.play();
+        }
+    })
+
+    $("#btn-completed").click(function () {
+        var c = $(this).data("completed");
+        if (c == "1") {
+            $(this).data("completed", "0");
+            $(".filter-date").hide();
+            $(this).text("Show Completed");
+        }
+        else {
+            $(this).data("completed", "1");
+            $(".filter-date").show();
+            $(this).text("Show Pendings");
+        }
+
+        LoadKitchenItems();
+    })
+
+    $(".filter-product").click(function () {
+        var pid = $(this).data("id");
+        var text = $(this).data("text");
+
+        $(".kitchen-product-filter").data("pid", pid);
+        $(".kitchen-product-filter").text(text)
+        LoadKitchenItems();
+    })
+
+    $("body").on("click", ".btn-print", function() {
+        var orderId = parseInt($(this).closest(".kitchen-order").data("id"));
+        var pid = parseInt($(".kitchen-product-filter").data("pid"));
+
+        var data = {
+            KitchenOrderID: orderId,
+            PrinterChannelID: pid
+        }
+
+        $.ajax({
+            url: "/POS/PrintKitchenOrder",
+            type: "POST",
+            data: data,
+
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    
+                }
+                else if (data.status == 1) {
+                    toastr.error(data.message, {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+</script>

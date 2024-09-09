@@ -1,0 +1,241 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="description" content="POS - Alfa Software">
+        <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+        <meta name="robots" content="noindex, nofollow">
+        <title>Login - Pos admin template</title>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
+        
+	<!-- Toatr CSS -->
+	<link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
+        <!-- Main CSS -->
+       
+        <style>
+            body, html {
+              height: 100%;
+              margin: 0;
+            }
+
+            .bg {
+              /* The image used */
+              background-image: url("/vendor/img/login/background.jpg");
+              position: relative;
+              /* Full height */
+              height: 100%; 
+
+              /* Center and scale the image nicely */
+              background-position: center;
+              background-repeat: no-repeat;
+              background-size: cover;
+            }
+            .logo
+            {
+                position:absolute;
+                top: 50px;
+                right: 50px;
+                height: 125px;
+
+            }
+            .panel
+            {
+                width: 750px;
+                height: 600px;                
+                background-image: url("/vendor/img/login/keyboard-back.png");
+                background-size: 100% 100%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 30px;
+            }
+            .pin
+            {
+                width: 120px;
+                height: 120px;
+                margin: 10px;
+                opacity: 70%;
+                background-size: 100% 100%;
+            }
+
+            .display-pin{
+                color: black;
+                font-size: 40px;
+                margin: 15px;
+                font-weight:800;
+            }
+        </style>
+    </head>
+    <body class="account-page">
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper bg">
+            <img class="logo" src="~/vendor/img/logo-circle.png" />
+            
+            <div class="panel d-flex">
+                <div>
+                    <div class="pin" data-num="1" style="background-image: url('/vendor/img/login/pin1.png');">
+                    </div>
+                    <div class="pin" data-num="4" style="background-image: url('/vendor/img/login/pin4.png');">
+                    </div>
+                    <div class="pin" data-num="7" style="background-image: url('/vendor/img/login/pin7.png');">
+                    </div>
+                    <div class="pin" data-num="" style="background-image: url('/vendor/img/login/pinx.png');">
+                    </div>
+                </div>
+                <div>
+                    <div class="pin"  data-num="2" style="background-image: url('/vendor/img/login/pin2.png');">
+                    </div>
+                    <div class="pin" data-num="5" style="background-image: url('/vendor/img/login/pin5.png');">
+                    </div>
+                    <div class="pin" data-num="8" style="background-image: url('/vendor/img/login/pin8.png');">
+                    </div>
+                    <div class="pin" data-num="0" style="background-image: url('/vendor/img/login/pin0.png');">
+                    </div>
+                </div>
+                <div>
+                    <div class="pin"  data-num="3" style="background-image: url('/vendor/img/login/pin3.png');">
+                    </div>
+                    <div class="pin" data-num="6" style="background-image: url('/vendor/img/login/pin6.png');">
+                    </div>
+                    <div class="pin" data-num="9" style="background-image: url('/vendor/img/login/pin9.png');">
+                    </div>
+                    <div class="pin"  data-num="del" style="background-image: url('/vendor/img/login/pindel.png');">
+                    </div>
+                </div>
+                <div>
+                    <div style="width: 230px; height:170px; margin:30px; padding-top:90px; margin-top: 40px; background-image: url('/vendor/img/login/enter.png');
+                background-size: 100% 100%;">
+                        <div id="input-pin" class="d-flex" data-value="" style="padding-left:14px;" >
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                        </div>
+                    </div>
+                     <div id="enter-pin" style="width: 230px; height:100px; margin:30px; background-image: url('/vendor/img/login/enter-btn.png');
+                background-size: 100% 100%;">
+                    </div>
+                     <div id="cancel-pin" style="width: 230px; height:100px; margin:30px; background-image: url('/vendor/img/login/cancel-btn.png');
+                background-size: 100% 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Main Wrapper -->
+      
+        <!-- jQuery -->
+        <script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+
+         <!-- Feather Icon JS -->
+        <script src="~/vendor/js/feather.min.js"></script>
+
+        <!-- Bootstrap Core JS -->
+        <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Custom JS -->
+        <script src="~/vendor/js/script.js"></script>
+
+        
+	    <!-- Mask JS -->
+	    <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
+	    <script src="~/vendor/plugins/toastr/toastr.js"></script>
+
+          <script>
+            $(".pin").click(function(){
+                var val = $(this).data("num");
+                AddValue(val);
+            });
+            
+            $("#cancel-pin").click(function(){
+                $("#input-pin").data("value", "");
+                UpdateDisplay();
+            });
+
+            $("#enter-pin").click(function(){
+                var pin = $("#input-pin").data("value");
+
+                var data = {
+                    Username: "test",
+                    Password: pin
+                };
+
+                 $.ajax({
+                    url: "/Account/ClientLogin",
+                    type: "POST",
+                    data: data,
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == 0)
+                        {
+                            window.location.replace("/Home/Index")
+                        }
+                        else if(data.status = 1)
+                        {
+                            toastr.error("@ViewLocalizer["Wrong pin was inputed."]", {})
+                        }
+                        else {
+                            toastr.error("@ViewLocalizer["Failed to login."]", {})
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                });
+            });
+
+            function AddValue(num)
+            {
+                var current = $("#input-pin").data("value");
+                if (current.length == 4) return;
+
+                if (num == "del" && current.length > 0)
+                {
+                    $("#input-pin").data("value", current.substring(0, current.length-1));
+                }
+                else
+                {
+                    $("#input-pin").data("value", current + num);
+                }
+
+                UpdateDisplay();
+            }
+
+            function UpdateDisplay()
+            {
+                var value = $("#input-pin").data("value");
+                var index = 0;
+                $(".display-pin").each(function(){
+                    if (index + 1 <= value.length)
+                    {
+                        $(this).text("*")
+                    }
+                    else
+                    {
+                        $(this).text("");
+                    }
+                    index++;
+                })
+            }
+        </script>
+
+    </body>
+</html>
+
