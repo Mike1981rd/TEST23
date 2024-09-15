@@ -22,198 +22,246 @@
     var SelectDatabase = new SelectList(lstDatos, "Key", "Value");
 }
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <meta name="description" content="POS - Alfa Software">
-        <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
-        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-        <meta name="robots" content="noindex, nofollow">
-        <title>Login - Pos admin template</title>
 
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="~/vendor/img/favicon.png">
-        
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="~/vendor/css/bootstrap.min.css">
 
-        <!-- Fontawesome CSS -->
-        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/fontawesome.min.css">
-        <link rel="stylesheet" href="~/vendor/plugins/fontawesome/css/all.min.css">
 
-        <!-- Toatr CSS -->
-        <link rel="stylesheet" href="~/vendor/plugins/toastr/toatr.css">
-        <!-- Main CSS -->
-        
-        <!-- Main CSS -->
-        <link rel="stylesheet" href="~/vendor/css/style.css">
-        <style>
-            body, html {
-              height: 100%;
-              margin: 0;
-            }
+ <!DOCTYPE html>
+<html lang="en"
+      class="light-style layout-wide customizer-hide"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="~/"
+      data-template="horizontal-menu-template"
+      data-style="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-            .bg {
-              /* The image used */
-              background-image: url("/vendor/img/login/background.jpg");
-              position: relative;
-              /* Full height */
-              height: 100%; 
+    <title>Login Cover - Pages | Vuexy - Bootstrap Admin Template</title>
 
-              /* Center and scale the image nicely */
-              background-position: center;
-              background-repeat: no-repeat;
-              background-size: cover;
-            }
-            .logo
-            {
-                position:absolute;
-                bottom: 50px;
-                right: 50px;
-                height: 125px;
-            }
+    <meta name="description" content="" />
 
-            .login-logo{
-                 background-image: url("/vendor/img/logo.png");
-                 margin: 0 auto;
-                 width: 150px;
-                 height: 80px;
-                 background-size: 100% 100%;
-            }
-            .panel
-            {
-                width: 450px;
-                height: 550px;                
-                background-image: url("/vendor/img/login/keyboard-back.png");
-                background-size: 100% 100%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                padding: 30px;
-            }
-           .login-wrapper .login-content{
-                width: 100%;
-                height: 500px;
-                padding: 30px;
-                overflow: auto;
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                align-items: center;
-           }
-        </style>
-    </head>
-    <body class="account-page">
+    <!-- Favicon -->
 
-        <!-- Main Wrapper -->
-        <div class="main-wrapper bg">
-            <img class="logo" src="~/vendor/img/logo-circle.png" />
 
-            <div class="panel">
-                <div class="login-wrapper">
-                    <div class="login-content">
-                        <div class="login-userset">
-                            <form method="post" asp-controller="Account" asp-action="Login">
-                                @Html.AntiForgeryToken()
-                                <div class="login-logo logo-normal">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+          rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="~/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="~/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="~/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS -->
+
+    <link rel="stylesheet" href="~/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+
+    <link rel="stylesheet" href="~/css/demo.css" />
+
+    <!-- Vendors CSS -->
+  
+    <link rel="stylesheet" href="~/vendor/libs/node-waves/node-waves.css" />
+
+    <link rel="stylesheet" href="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/vendor/libs/typeahead-js/typeahead.css" />
+    <!-- Vendor -->
+    <link rel="stylesheet" href="~/vendor/libs/form-validation/form-validation.css" />
+
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="~/vendor/css/pages/page-auth.css" />
+
+    <!-- Helpers -->
+    <script src="~/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="~/vendor/js/template-customizer.js"></script>
+
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="~/js/config.js"></script>
+</head>
+<body class="account-page">
+
+    <!-- Main Wrapper -->
+
+  
+
+
+<div class="authentication-wrapper authentication-cover">
+  <!-- Logo -->
+  <a href="index.html" class="app-brand auth-cover-brand">
+    <span class="app-brand-logo demo">
+      <!-- SVG del logo aquí -->
+    </span>
+    <span class="app-brand-text demo text-heading fw-bold">Vuexy</span>
+  </a>
+  <!-- /Logo -->
+
+  <div class="authentication-inner row m-0">
+    <!-- /Left Text -->
+    <div class="d-none d-lg-flex col-lg-8 p-0">
+      <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
+                    <img src="~/img/illustrations/auth-login-illustration-light.png"
+                         alt="auth-login-cover"
+                         class="my-5 auth-illustration"
+                         data-app-light-img="~/img/illustrations/auth-login-illustration-light.png"
+                         data-app-dark-img="~/img/illustrations/auth-login-illustration-dark.png" />
+
+                    <img src="~/img/illustrations/bg-shape-image-light.png"
+                         alt="auth-login-cover"
+                         class="platform-bg"
+                         data-app-light-img="illustrations/bg-shape-image-light.png"
+                         data-app-dark-img="illustrations/bg-shape-image-dark.png" />
+      </div>
+    </div>
+    <!-- /Left Text -->
+
+    <!-- Login -->     
+    <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
+      <div class="w-px-400 mx-auto mt-12 pt-5">
+        <h4 class="mb-1">Welcome to Vuexy! 👋</h4>
+        <p class="mb-6">Please sign-in to your account and start the adventure</p>
+             
+        <!-- Formulario de Inicio de Sesión -->
+           <form  method="post" asp-controller="Account" asp-action="Login">
+          @Html.AntiForgeryToken()  <!-- Token anti-falsificación -->
+                        @if (Model.SelectDatabase)
+                        {
+                            @Html.HiddenFor(model => model.SelectDatabase)
+                            @Html.HiddenFor(model => model.UserName)
+                            @Html.HiddenFor(model => model.Password)
+                            @Html.HiddenFor(model => model.CaptchaCode)
+                            <div class="form-login">
+                                <label>@ViewLocalizer["Company"]</label>
+                                <div class="pass-group">
+                                    <select asp-for="Database" asp-items="SelectDatabase" class="form-control"></select>
                                 </div>
+                            </div>
+                        }
+                        else
+                        {
 
-
-                                @if (Model.SelectDatabase)
-                                {
-                                    @Html.HiddenFor(model => model.SelectDatabase)
-                                    @Html.HiddenFor(model => model.UserName)
-                                    @Html.HiddenFor(model => model.Password)
-                                    @Html.HiddenFor(model => model.CaptchaCode)
-                                    <div class="form-login">
-                                        <label>@ViewLocalizer["Company"]</label>
-                                        <div class="pass-group">
-                                            <select asp-for="Database" asp-items="SelectDatabase" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="form-login">
-                                        <label>@ViewLocalizer["Username"]</label>
-                                        <div class="form-addons">
-                                            <input type="text" placeholder="@ViewLocalizer["Enter your username or email address"]" asp-for="UserName" required>
-                                            <img src="~/vendor/img/icons/mail.svg" alt="img">
-                                            <span asp-validation-for="UserName" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-login">
-                                        <label>@ViewLocalizer["Password"]</label>
-                                        <div class="pass-group">
-                                            <input type="password" class="pass-input" placeholder="@ViewLocalizer["Enter your password"]" asp-for="Password"
-                                                    required>
-                                            <span class="fas toggle-password fa-eye-slash"></span>
-                                            <span asp-validation-for="Password" class="text-danger"></span><br />
-                                            <span class="form-text text-muted">max 6 number only</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-login">
-                                        <div>
-                                            <div style="float: left; width: 50%; text-align: center;">
-                                                <img id="img-captcha" src='@Url.Action("GetCaptchaImage")' />
-                                            </div>
-                                            <div style=" float: left; width: 50%;">
-                                                <div class="pass-group">
-                                                    <input type="text"
-                                                           asp-for="CaptchaCode"
-                                                           class="form-control"
-                                                           placeholder="Captcha Code"
-                                                           autocomplete="off"
-                                                           minlength="4"
-                                                           maxlength="4" />
-                                                    <span asp-validation-for="CaptchaCode" class="text-danger"></span><br />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-
-                                <div class="form-login pt-5">
-                                    <a id="submit" class="btn btn-login" href="javascript:void(0);">@ViewLocalizer["SignIn"]</a>
+                            <div class="form-login">
+                                <label>@ViewLocalizer["Username"]</label>
+                                <div class="form-addons">
+                                    <input class="form-control" type="text" placeholder="@ViewLocalizer["Enter your username or email address"]" asp-for="UserName" required>
+                               
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            </div>
+                            <div class="mb-6 form-password-toggle">
+                                <label class="form-label" for="password">Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password"
+                                           id="password"
+                                           class="form-control"
+                                           name="password"
+                                           placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                           aria-describedby="password" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <div>
+                                    <div style="float: left; width: 50%; text-align: center;">
+                                        <img id="img-captcha" src='@Url.Action("GetCaptchaImage")' />
+                                    </div>
+                                    <div style=" float: left; width: 50%;">
+                                        <div class="pass-group">
+                                            <input type="text"
+                                                   asp-for="CaptchaCode"
+                                                   class="form-control"
+                                                   placeholder="Captcha Code"
+                                                   autocomplete="off"
+                                                   minlength="4"
+                                                   maxlength="4" />
+                                            <span asp-validation-for="CaptchaCode" class="text-danger"></span><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       
+
+                        
+
+                       
+                        }
+
+
+                        <button class="btn btn-primary d-grid w-100" href="javascript:void(0);">@ViewLocalizer["SignIn"]</button>
+                      
+            
+        </form>
+
+        <p class="text-center">
+          <span>New on our platform?</span>
+          <a href="auth-register-cover.html">
+            <span>Create an account</span>
+          </a>
+        </p>
+
+        <div class="divider my-6">
+          <div class="divider-text">or</div>
         </div>
-        <!-- /Main Wrapper -->
 
-        <!-- jQuery -->
-        <script src="~/vendor/js/jquery-3.6.0.min.js"></script>
+        <div class="d-flex justify-content-center">
+          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-facebook me-1_5">
+            <i class="tf-icons ti ti-brand-facebook-filled"></i>
+          </a>
+          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-twitter me-1_5">
+            <i class="tf-icons ti ti-brand-twitter-filled"></i>
+          </a>
+          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-github me-1_5">
+            <i class="tf-icons ti ti-brand-github-filled"></i>
+          </a>
+          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
+            <i class="tf-icons ti ti-brand-google-filled"></i>
+          </a>
+        </div>
+      </div>
+    </div>               
+    <!-- /Login -->
+  </div>
+</div>
 
-         <!-- Feather Icon JS -->
-        <script src="~/vendor/js/feather.min.js"></script>
+    <!-- /Main Wrapper -->
+  
+    <script src="~/vendor/libs/jquery/jquery.js"> </script>
+    <script src="~/vendor/libs/popper/popper.js"></script>
+    <script src="~/vendor/js/bootstrap.js"></script>
+    <script src="~/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/vendor/libs/hammer/hammer.js"></script>
+    <script src="~/vendor/libs/i18n/i18n.js"></script>
+    <script src="~/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="~/vendor/js/menu.js"></script>
 
-        <!-- Bootstrap Core JS -->
-        <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <script src="~/vendor/libs/form-validation/popular.js"></script>
+    <script src="~/vendor/libs/form-validation/bootstrap5.js"></script>
+    <script src="~/vendor/libs/form-validation/auto-focus.js"></script>
 
-        <!-- Custom JS -->
-        <script src="~/vendor/js/script.js"></script>
+    <!-- Main JS -->
+  @*   <script src="~/js/main.js"></script> *@
+
+    <!-- Page JS -->
+@*     <script src="~/js/pages-auth.js"></script> *@
+    <script>
+        $(document).ready(function () {
+            $("#submit").click(function () {
+                $("form").submit();
+            });
 
 
-        <!-- Mask JS -->
-        <script src="~/vendor/plugins/toastr/toastr.min.js"></script>
-        <script src="~/vendor/plugins/toastr/toastr.js"></script>
+        })
+    </script>
 
-        <script>
-            $(document).ready(function(){
-                $("#submit").click(function(){
-                    $("form").submit();
-                });
-
-      
-            })
-        </script>
-
-    </body>
-</html>
+</body>
+</html> 
