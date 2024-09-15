@@ -138,4 +138,13 @@
   <data name="Username" xml:space="preserve">
     <value>Nombre de usuario</value>
   </data>
+  <data name="Bienvenido" xml:space="preserve">
+    <value>Bienvenido a AURORA POS!</value>
+  </data>
+  <data name="Entrar" xml:space="preserve">
+    <value>Entrar</value>
+  </data>
+  <data name="Captcha Code" xml:space="preserve">
+    <value>Código</value>
+  </data>
 </root>
