@@ -82,80 +82,44 @@
 
           <div class="menu-inner-shadow"></div>
 
-                <ul class="menu-inner py-1 slimscroll">
+             <ul class="menu-inner py-1 slimscroll">
             <!-- Dashboards -->
-            <li class="menu-item">
+            <li class="menu-item active ">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
-                <div data-i18n="Dashboards">Dashboards</div>
-                <div class="badge bg-danger rounded-pill ms-auto">5</div>
+              <div data-i18n="Configuración">Configuración</div>               
               </a>
-              <ul class="menu-sub">
-             
-            
-
-
-
-                            <li class="menu-item">
-                                <a href="/Setting/Preferences" class="menu-link">
-                                    <div data-i18n="@ViewLocalizer["Preferences"]">
-                                        @ViewLocalizer["Preferences"]
-
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                  <a href="app-ecommerce-dashboard.html" class="menu-link">
-                    <div data-i18n="eCommerce">eCommerce</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="app-logistics-dashboard.html" class="menu-link">
-                    <div data-i18n="Logistics">Logistics</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="app-academy-dashboard.html" class="menu-link">
-                    <div data-i18n="Academy">Academy</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <!-- Layouts -->
-            <li class="menu-item active open">
-             
               <ul class="menu-sub">
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Store")).Result.Succeeded)
                             {
-                                   <li class="menu-item active">
-                                      <a href="/Setting/Preferences" class="menu-link">
+                                <li class="menu-item ">
+                                    <a href="/Setting/Preferences" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Preferences"]">
                                             @ViewLocalizer["Preferences"]
                                         </div>
-                                      </a>
-                                    </li>
-                             
+                                    </a>
+                                </li>
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Role")).Result.Succeeded)
                             {
-                                   <li class="menu-item">
+                                <li class="menu-item">
                                     <a href="/Setting/Roles" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Roles"]">@ViewLocalizer["Roles"]</div>
-                                      </a>
-                                    </li>
-                               
+                                    </a>
+                                </li>
+
                             }
-                           @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.User")).Result.Succeeded)
-                                {
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.User")).Result.Succeeded)
+                            {
 
                                 <li class="menu-item">
                                     <a href="/Setting/Users" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Users"]">@ViewLocalizer["Users"]</div>
                                     </a>
                                 </li>
-                                
-                                }
+
+                            }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Printer")).Result.Succeeded)
                             {
                                 <li class="menu-item">
@@ -163,7 +127,7 @@
                                         <div data-i18n="@ViewLocalizer["Printers"]">@ViewLocalizer["Printers"]</div>
                                     </a>
                                 </li>
-                                 
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PrinterChannel")).Result.Succeeded)
                             {
@@ -172,7 +136,7 @@
                                         <div data-i18n="@ViewLocalizer["Printing Channels"]">@ViewLocalizer["Printing Channels"]</div>
                                     </a>
                                 </li>
-                             
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Tax")).Result.Succeeded)
                             {
@@ -181,7 +145,7 @@
                                         <div data-i18n="@ViewLocalizer["Tax Rates"]">@ViewLocalizer["Tax Rates"]</div>
                                     </a>
                                 </li>
-                                
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Propina")).Result.Succeeded)
                             {
@@ -190,7 +154,7 @@
                                         <div data-i18n="@ViewLocalizer["Propina"]">@ViewLocalizer["Propina"]</div>
                                     </a>
                                 </li>
-                               
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Denomination")).Result.Succeeded)
                             {
@@ -199,7 +163,7 @@
                                         <div data-i18n="Denominaciones">Denominaciones</div>
                                     </a>
                                 </li>
-                              
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PaymentMethod")).Result.Succeeded)
                             {
@@ -208,33 +172,33 @@
                                         <div data-i18n="Métodos de pago">Métodos de pago</div>
                                     </a>
                                 </li>
-                           
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.VoidReason")).Result.Succeeded)
                             {
-                             <li class="menu-item">
+                                <li class="menu-item">
                                     <a href="/Setting/Reasons" class="menu-link">
                                         <div data-i18n="Razones de anulación">Razones de anulación</div>
                                     </a>
-                             </li>
-                                
+                                </li>
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Comprobantes")).Result.Succeeded)
                             {
-                              <li class="menu-item">
+                                <li class="menu-item">
                                     <a href="/Setting/Vouchers" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Comprobantes"]">@ViewLocalizer["Comprobantes"]</div>
                                     </a>
                                 </li>
-                            
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
                             {
-                             <li class="menu-item">
+                                <li class="menu-item">
                                     <a href="/Setting/DeliveryCarriers" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Repartidores"]">@ViewLocalizer["Repartidores"]</div>
                                     </a>
-                              </li>                             
+                                </li>
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
                             {
@@ -243,27 +207,39 @@
                                         <div data-i18n="Tipo de ordenes">Tipo de ordenes</div>
                                     </a>
                                 </li>
-                               
+
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.ZonasReparto")).Result.Succeeded)
                             {
-                               <li class="menu-item">
+                                <li class="menu-item">
                                     <a href="/Setting/DeliveryZones" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Zonas de Reparto"]">@ViewLocalizer["Zonas de Reparto"]</div>
                                     </a>
                                 </li>
-                              
-                            }
-                            <li><a href="/Setting/Accounts">Cuentas contables</a></li>
-             
-                
-              </ul>
 
+                            }
+                           
+                            <li class="menu-item">
+                                <a href="/Setting/Accounts" class="menu-link">
+                                    <div data-i18n="Cuentas contables">Cuentas contables</div>
+                                </a>
+                            </li>
+                        </ul>
+            </li>
+
+            <!-- Layouts -->
+            <li class="menu-item ">
+
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-book"></i>
+                            <div data-i18n=" Inventario"> Inventario</div>
+
+                        </a>
                         <ul class="menu-sub">
 
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Group")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Menu/GroupList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Groups"]">
                                             @ViewLocalizer["Groups"]
@@ -274,7 +250,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Category")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Menu/CategoryList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Categories"]">
                                             @ViewLocalizer["Categories"]
@@ -392,12 +368,17 @@
             </li>
                  
             <!-- Front Pages -->
-            <li class="menu-item open">
+            <li class="menu-item ">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-layout-navbar"></i>
+                            <div data-i18n=" Menu"> Menu</div>
+
+                        </a>
                         <ul class="menu-sub">
 
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Warehouse")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/WarehouseList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Warehouse"]">
                                             @ViewLocalizer["Warehouse"]
@@ -408,7 +389,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Supplier")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/SupplierList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Suppliers"]">
                                             @ViewLocalizer["Suppliers"]
@@ -420,7 +401,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Article")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/ArticleList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Articles"]">
                                             @ViewLocalizer["Articles"]
@@ -431,7 +412,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PurchaseOrder")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/PurchaseOrderList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Purchase order"]">
                                             @ViewLocalizer["Purchase order"]
@@ -442,7 +423,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.SubRecipe")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/SubRecipeList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Sub Recipe"]">
                                             @ViewLocalizer["Sub Recipe"]
@@ -453,7 +434,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Move")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/MoveArticleList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Transfer"]">
                                             @ViewLocalizer["Transfer"]
@@ -464,7 +445,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Production")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/ProductionList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Production"]">
                                             @ViewLocalizer["Production"]
@@ -476,7 +457,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Damage")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/DamageArticleList" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Waste"]">
                                             @ViewLocalizer["Waste"]
@@ -487,7 +468,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PhysicalCount")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/ManagePhysicalCount" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Physical Count"]">
                                             @ViewLocalizer["Physical Count"]
@@ -498,14 +479,14 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.StockHistory")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Inventory/Stock" class="menu-link">
                                         <div data-i18n="Tarjeta de Movimientos">
                                             Tarjeta de Movimientos
                                         </div>
                                     </a>
                                 </li>
-                                <li><a href=""></a></li>
+                              
                             }
 
                            
@@ -514,7 +495,12 @@
              
             </li>
 
-                    <li class="menu-item open">
+                    <li class="menu-item ">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                            <div data-i18n="Reportes"> Reportes</div>
+
+                        </a>
                         <ul class="menu-sub">
 
                      
@@ -714,26 +700,6 @@
 
                     </li>
 
-                  @*   <li class="submenu">
-                        <a href="javascript:void(0);"><img src="~/vendor/img/icons/settings.svg" alt="img"><span> @ViewLocalizer["Inventory"]</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                          
-                            
-                        </ul>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="~/vendor/img/icons/purchase1.svg" alt="img"><span> @ViewLocalizer["Menu"]</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                        </ul>
-                    </li>
-
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="~/vendor/img/icons/time.svg" alt="img"><span> @ViewLocalizer["Reports"]</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                         
-                        </ul>
-                    </li>
- *@
        
           </ul>
         </aside>
