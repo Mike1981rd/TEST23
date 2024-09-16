@@ -96,11 +96,15 @@
 
 <div class="authentication-wrapper authentication-cover">
   <!-- Logo -->
-  <a href="index.html" class="app-brand auth-cover-brand">
-    <span class="app-brand-logo demo">
-      <!-- SVG del logo aquí -->
+  <a href="/" class="app-brand auth-cover-brand">
+    <span class="app-brand-logo">
+        <!-- SVG del logo aquí -->
+        <img src="~/logo1.png" style="width: 80px"
+             alt="auth-login-cover"
+             class="my-5 auth-illustration"   />
     </span>
-    <span class="app-brand-text demo text-heading fw-bold">Vuexy</span>
+    @* <span class="app-brand-text demo text-heading fw-bold">Vuexy</span> *@
+    
   </a>
   <!-- /Logo -->
 
@@ -126,8 +130,8 @@
     <!-- Login -->     
     <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
       <div class="w-px-400 mx-auto mt-12 pt-5">
-        <h4 class="mb-1">Welcome to Vuexy! 👋</h4>
-        <p class="mb-6">Please sign-in to your account and start the adventure</p>
+        <h4 class="mb-1">@ViewLocalizer["Bienvenido"] 👋</h4>
+        <p class="mb-6">@ViewLocalizer["Please login into your account"]</p>
              
         <!-- Formulario de Inicio de Sesión -->
            <form  method="post" asp-controller="Account" asp-action="Login">
@@ -156,7 +160,7 @@
                                 </div>
                             </div>
                             <div class="mb-6 form-password-toggle">
-                                <label class="form-label" for="password">Password</label>
+                                <label class="form-label" for="password">@ViewLocalizer["Password"]</label>
                                 <div class="input-group input-group-merge">
                                     <input type="password"
                                            id="password"
@@ -177,7 +181,7 @@
                                             <input type="text"
                                                    asp-for="CaptchaCode"
                                                    class="form-control"
-                                                   placeholder="Captcha Code"
+                                                   placeholder="@ViewLocalizer["Captcha Code"]"
                                                    autocomplete="off"
                                                    minlength="4"
                                                    maxlength="4" />
@@ -194,12 +198,12 @@
                         }
 
 
-                        <button class="btn btn-primary d-grid w-100" href="javascript:void(0);">@ViewLocalizer["SignIn"]</button>
+                        <button class="btn btn-primary d-grid w-100" href="javascript:void(0);">@ViewLocalizer["Entrar"]</button>
                       
             
         </form>
 
-        <p class="text-center">
+        @*<p class="text-center">
           <span>New on our platform?</span>
           <a href="auth-register-cover.html">
             <span>Create an account</span>
@@ -223,7 +227,7 @@
           <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
             <i class="tf-icons ti ti-brand-google-filled"></i>
           </a>
-        </div>
+        </div>*@
       </div>
     </div>               
     <!-- /Login -->
