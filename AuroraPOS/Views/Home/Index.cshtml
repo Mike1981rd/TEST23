@@ -10,7 +10,7 @@
 
 <!-- Button trigger modal -->
 
-<div class="row">
+<div class="container flex-grow-1 container-p-y my-2">
 	<div class="card col-8 m-2">
         <div class="card-body">
             @*<div class="row">
@@ -240,6 +240,8 @@
     }
 
 	$(document).ready(function() {
+
+		debugger;
 		$("#dashboard_filter_datefrom").val('@fromDate.ToString("dd-MM-yyyy")').change();
 		$("#dashboard_filter_dateto").val('@toDate.ToString("dd-MM-yyyy")').change();
 

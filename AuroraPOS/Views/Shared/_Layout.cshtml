@@ -5,7 +5,7 @@
 	  class="light-style layout-navbar-fixed layout-menu-fixed layout-compact layout-menu-collapsed"
 	  dir="ltr"
 	  data-theme="theme-default"
-      data-assets-path="~/"
+      data-assets-path="/"
 	  data-template="vertical-menu-template"
 	  data-style="light">
 <head>
@@ -14,9 +14,9 @@
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 	<title>ALFA POS back office</title>
 
-	<link rel="manifest" href="~/manifest.json">
+	<link rel="manifest" href="/manifest.json">
 
-    <meta name="description" content="" />
+    
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
@@ -28,34 +28,34 @@
           rel="stylesheet" />
 
     <!-- Icons -->
-    <link rel="stylesheet" href="~/vendor/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="~/vendor/fonts/tabler-icons.css" />
-    <link rel="stylesheet" href="~/vendor/fonts/tabler-icons.css" />
-    <link rel="stylesheet" href="~/vendor/fonts/flag-icons.css" />
+    <link rel="stylesheet" href="/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="/vendor/fonts/flag-icons.css" />
 
     <!-- Core CSS -->
 
     
-    <link rel="stylesheet" href="~/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="~/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
 
-    <link rel="stylesheet" href="~/css/demo.css" />
+    <link rel="stylesheet" href="/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="~/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/vendor/libs/node-waves/node-waves.css" />
 
-    <link rel="stylesheet" href="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="~/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/vendor/libs/typeahead-js/typeahead.css" />
 
     <!-- Page CSS -->
     <!-- Helpers -->
-    <script src="~/vendor/js/helpers.js"></script>
+    <script src="/vendor/js/helpers.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
-    <script src="~/vendor/js/template-customizer.js"></script>
+    <script src="/vendor/js/template-customizer.js"></script>
 
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-   @*  <script src="~/js/config.js"></script> *@
+    <script src="/js/config.js"></script>
 </head>
 <body>
 
@@ -103,7 +103,7 @@
 
           <div class="menu-inner-shadow"></div>
 
-          <ul class="menu-inner py-1">
+                <ul class="menu-inner py-1 slimscroll">
             <!-- Dashboards -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -541,7 +541,7 @@
                      
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.SalesReport")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Report/SalesReport" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Sales Report"]">
                                             @ViewLocalizer["Sales Report"]
@@ -552,7 +552,7 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.DetailedSalesReport")).Result.Succeeded)
                             {
-                                <li class="menu-item active">
+                                <li class="menu-item ">
                                     <a href="/Report/DetailedSalesReport" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Detailed Sales Report"]">
                                             @ViewLocalizer["Detailed Sales Report"]
@@ -563,63 +563,169 @@
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.PurchaseReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/PurchaseReport">@ViewLocalizer["Purchase Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/PurchaseReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Purchase Report"]">
+                                            @ViewLocalizer["Purchase Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                               
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.InventoryLevelReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/InventoryLevelREport">@ViewLocalizer["Inventory Level Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/InventoryLevelREport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Inventory Level Report"]">
+                                            @ViewLocalizer["Inventory Level Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.InventoryDepletionReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/InventoryDepletionReport">@ViewLocalizer["Inventory Depletion Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/InventoryDepletionReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Inventory Depletion Report"]">
+                                            @ViewLocalizer["Inventory Depletion Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                               
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CloseDrawerReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/CloseDrawerReport">@ViewLocalizer["Close Drawer Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/CloseDrawerReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Close Drawer Report"]">
+                                            @ViewLocalizer["Close Drawer Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.PaymentMethodReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/PaymentMethodReport">@ViewLocalizer["Payment method Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/PaymentMethodReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Payment method Report"]">
+                                            @ViewLocalizer["Payment method Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                            
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VoidOrdersReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/VoidOrdersReport">@ViewLocalizer["Void Orders Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/VoidOrdersReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Void Orders Report"]">
+                                            @ViewLocalizer["Void Orders Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VoidProductsReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/VoidProductsReport">@ViewLocalizer["Void Products Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/VoidProductsReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Void Products Report"]">
+                                            @ViewLocalizer["Void Products Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.SalesInsightReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/SalesInsightReport">@ViewLocalizer["Sales Insight"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/SalesInsightReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Sales Insight"]">
+                                            @ViewLocalizer["Sales Insight"]
+                                        </div>
+                                    </a>
+                                </li>
+                             
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.WorkDayReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/WorkDayReport">@ViewLocalizer["Work Day Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/WorkDayReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Work Day Report"]">
+                                            @ViewLocalizer["Work Day Report"]
+                                        </div>
+                                    </a>
+                                </li>
+                              
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.OrdersReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/OrdersReport">@ViewLocalizer["Orders Report"]</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/OrdersReport" class="menu-link">
+                                        <div data-i18n="@ViewLocalizer["Orders Report"]">
+                                            @ViewLocalizer["Orders Report"]
+                                        </div>
+                                    </a>
+                                </li>
+
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.ProductCost")).Result.Succeeded)
                             {
-                                <li><a href="/Report/PercentCostReport">Costo de productos</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/PercentCostReport" class="menu-link">
+                                        <div data-i18n="Costo de productos">
+                                            Costo de productos
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CostoDeVenta")).Result.Succeeded)
                             {
-                                <li><a href="/Report/InventoryByGroupReport">Costo de venta</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/InventoryByGroupReport" class="menu-link">
+                                        <div data-i18n="Costo de venta">
+                                            Costo de venta
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.VarianceReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/VarianceReport">Reporte de varianza</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/VarianceReport" class="menu-link">
+                                        <div data-i18n="Reporte de varianza">
+                                            Reporte de varianza
+                                        </div>
+                                    </a>
+                                </li>
+                              
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.ParReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/ParReport">Reporte de mínimos & máximos</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/ParReport" class="menu-link">
+                                        <div data-i18n="Reporte de mínimos & máximos">
+                                            Reporte de mínimos & máximos
+                                        </div>
+                                    </a>
+                                </li>
+                                
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.REPORT.CxCReport")).Result.Succeeded)
                             {
-                                <li><a href="/Report/CXCReport">CxC Reporte</a></li>
+                                <li class="menu-item ">
+                                    <a href="/Report/CXCReport" class="menu-link">
+                                        <div data-i18n="CxC Reporte">
+                                            CxC Reporte
+                                        </div>
+                                    </a>
+                                </li>
+                             
                             }
 
                          
@@ -629,7 +735,7 @@
 
                     </li>
 
-                    <li class="submenu">
+                  @*   <li class="submenu">
                         <a href="javascript:void(0);"><img src="~/vendor/img/icons/settings.svg" alt="img"><span> @ViewLocalizer["Inventory"]</span> <span class="menu-arrow"></span></a>
                         <ul>
                           
@@ -648,7 +754,7 @@
                          
                         </ul>
                     </li>
-
+ *@
        
           </ul>
         </aside>
@@ -657,7 +763,7 @@
         <!-- Layout container -->
         <div class="layout-page">
           <!-- Navbar -->
-
+                @RenderBody()
           <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar">
@@ -918,7 +1024,8 @@
                           <div class="d-flex">
                             <div class="flex-shrink-0 me-3">
                               <div class="avatar">
-                                <img src="../../assets/img/avatars/2.png" alt class="rounded-circle" />
+                                 <img src="~/img/avatars/2.png" alt class="rounded-circle" />
+                             
                               </div>
                             </div>
                             <div class="flex-grow-1">
@@ -964,7 +1071,7 @@
                           <div class="d-flex">
                             <div class="flex-shrink-0 me-3">
                               <div class="avatar">
-                                <img src="../../assets/img/avatars/9.png" alt class="rounded-circle" />
+                                                            <img src="~/img/avatars/9.png" alt class="rounded-circle" />
                               </div>
                             </div>
                             <div class="flex-grow-1">
@@ -1012,7 +1119,7 @@
                           <div class="d-flex">
                             <div class="flex-shrink-0 me-3">
                               <div class="avatar">
-                                <img src="../../assets/img/avatars/5.png" alt class="rounded-circle" />
+                                                            <img src="~/img/avatars/5.png" alt class="rounded-circle" />
                               </div>
                             </div>
                             <div class="flex-grow-1">
@@ -1034,7 +1141,7 @@
                           <div class="d-flex">
                             <div class="flex-shrink-0 me-3">
                               <div class="avatar">
-                                <img src="../../assets/img/avatars/6.png" alt class="rounded-circle" />
+                                                            <img src="~/img/avatars/6.png" alt class="rounded-circle" />
                               </div>
                             </div>
                             <div class="flex-grow-1">
@@ -1182,140 +1289,36 @@
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
-          <div class="content-wrapper">
-            <!-- Content -->
-
-
-            <!-- / Content -->
-
-            <!-- Footer -->
-          
-            <!-- / Footer -->
-
-            <div class="content-backdrop fade"></div>
-          </div>
+     
           <!-- Content wrapper -->
         </div>
         <!-- / Layout page -->
       </div>
 
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
-
-      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-      <div class="drag-target"></div>
-        <div class="page-wrapper">
-            <div class="content">
-                @RenderBody()
-            </div>
-        </div>
+   
+   
  </div>
 
 
 	<!-- Main Wrapper -->
-	<div class="main-wrapper">
-
-		<!-- Header -->
-	@* 	<div class="header">
-			
-			<!-- Logo -->
-			<div class="header-left active">
-				<a href="/Home/Index" class="logo logo-normal">
-					<img src="~/vendor/img/logo.png" alt="">
-				</a>
-				<a href="/Home/Index" class="logo logo-white">
-					<img src="~/vendor/img/logo-white.png" alt="">
-				</a>
-				<a href="/Home/Index" class="logo-small">
-					<img src="~/vendor/img/logo-small.png" alt="">
-				</a>
-				<a id="toggle_btn" href="javascript:void(0);">
-				</a>
-			</div>
-			<!-- /Logo -->
-
-			<a id="mobile_btn" class="mobile_btn" href="#sidebar">
-				<span class="bar-icon">
-					<span></span>
-					<span></span>
-					<span></span>
-				</span>
-			</a>
-
-			<!-- Header Menu -->
-			<ul class="nav user-menu">
-				<div class="switch-wrapper"><div id="dark-mode-toggle"><span class="light-mode"> <img src="/vendor/img/icons/sun-icon.svg" class="me-2" alt=""> Light</span><span class="dark-mode active"><i class="far fa-moon me-2"></i> Dark</span></div></div>
-				<li class="nav-item dropdown has-arrow main-drop">
-					<a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-						<span class="user-img">
-							<img src="~/vendor/img/profiles/avator1.jpg" alt="">
-							<span class="status online"></span>
-						</span>
-					</a>
-					<div class="dropdown-menu menu-drop-user">
-						<div class="profilename">
-							<div class="profileset">
-								<span class="user-img">
-									<img src="~/vendor/img/profiles/avator1.jpg" alt="">
-									<span class="status online"></span>
-								</span>
-								<div class="profilesets">
-									<h6>@User.Identity.GetName()</h6>
-									<h5>@User.Identity.GetRole()</h5>
-								</div>
-							</div>
-							<hr class="m-0">
-							<hr class="m-0">
-							<a class="dropdown-item logout pb-0" href="/Account/Logoff"><img src="~/vendor/img/icons/log-out.svg" class="me-2" alt="img">@ViewLocalizer["Logout"]</a>
-						</div>
-					</div>
-				</li>
-			</ul>
-			<!-- /Header Menu -->
-			<!-- Mobile Menu -->
-			<div class="dropdown mobile-user-menu">
-				<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-				<div class="dropdown-menu dropdown-menu-right">
-					<a class="dropdown-item" href="/Account/Logoff">@ViewLocalizer["Logout"]</a>
-				</div>
-			</div>
-			<!-- /Mobile Menu -->
-		</div> *@
-		<!-- Header -->
-		<!-- Sidebar -->
-		<div class="sidebar" id="sidebar">
-			<div class="sidebar-inner slimscroll">
-				<div id="sidebar-menu" class="sidebar-menu">
-					<ul>
-						
-					
-							
-					</ul>
-				</div>
-			</div>
-		</div>
-		<!-- /Sidebar -->
-
-	
-
-	</div>
 
 
     <!-- build:js assets/vendor/js/core.js -->
 
-    <script src="~/vendor/libs/jquery/jquery.js"></script>
-    <script src="~/vendor/libs/popper/popper.js"></script>
-    <script src="~/vendor/js/bootstrap.js"></script>
-    <script src="~/vendor/libs/node-waves/node-waves.js"></script>
-    <script src="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="~/vendor/libs/hammer/hammer.js"></script>
-    <script src="~/vendor/libs/i18n/i18n.js"></script>
-    <script src="~/vendor/libs/typeahead-js/typeahead.js"></script>
-    <script src="~/vendor/js/menu.js"></script>
+    <script src="/vendor/libs/jquery/jquery.js"></script>
+    <script src="/vendor/libs/popper/popper.js"></script>
+    <script src="/vendor/js/bootstrap.js"></script>
+    <script src="/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/vendor/libs/hammer/hammer.js"></script>
+    <script src="/vendor/libs/i18n/i18n.js"></script>
+    <script src="/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="/vendor/js/menu.js"></script>
 
     <!-- endbuild -->
     <!-- Vendors JS -->
     <!-- Main JS -->
-    <script src="~/js/main.js"></script>
-</body>
+
+    <script src="/js/main.js"></script>
+</body>              
 </html>

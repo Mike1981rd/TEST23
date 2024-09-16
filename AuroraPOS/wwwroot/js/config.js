@@ -88,6 +88,7 @@ TemplateCustomizer.LANGUAGES.fr = { ... };
  */
 
 if (typeof TemplateCustomizer !== 'undefined') {
+    debugger;
   window.templateCustomizer = new TemplateCustomizer({
     cssPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     themesPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
