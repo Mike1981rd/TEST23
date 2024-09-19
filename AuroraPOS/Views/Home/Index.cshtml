@@ -10,7 +10,7 @@
 
 <!-- Button trigger modal -->
 
-<div class="container flex-grow-1 container-p-y my-2">
+<div class="card-widget-separator-wrapper">
 	<div class="card col-12 m-2">
         <div class="card-body">
             @*<div class="row">
@@ -22,10 +22,10 @@
                 </div>
             </div>*@
                 <div class="row">
-				<div class="mb-4 row">
-                        
-                            <label>@ViewLocalizer["Rango de fechas"]</label>
-                            <select id="date-range-selector" class="form-control">
+				<div class="col-sm-6 col-lg-4">
+
+					<label for="html5-date-input" class="col-md-3 col-form-label">@ViewLocalizer["Rango de fechas"]</label>
+					<select id="date-range-selector" class="select2 form-select">
                                 <option value="">Selecciona una fecha</option>
                                 <option value="today">Hoy</option>
                                 <option value="yesterday">Ayer</option>
@@ -37,7 +37,7 @@
                             </select>
                        
                     </div>
-				<div class="mb-4 row">
+				<div class="col-sm-6 col-lg-4">
                          
 						<label for="html5-date-input" class="col-md-2 col-form-label">@ViewLocalizer["Date From"]</label>
 					<div class="col-md-10">
@@ -46,7 +46,7 @@
                           @*   <input  type="text" class="datetimepicker cal-icon" > *@
                      
                     </div>
-				<div class="mb-4 row">
+				<div class="col-sm-6 col-lg-4">
                         
 						<label for="html5-date-input" class="col-md-2 col-form-label">@ViewLocalizer["Date To"]</label>
 					<div class="col-md-10">
@@ -179,14 +179,14 @@
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group category-body">
 							<label>@ViewLocalizer["Category"] </label>
-							<select id="filter-productcategory" class="select">
+							<select id="filter-productcategory" class="select2 form-select">
 							</select>
 						</div>
                     </div>
 					<div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group category-body">
 							<label>@ViewLocalizer["Sucursal"] </label>
-							<select id="filter-branch" class="select ">
+							<select id="filter-branch" class="select2 form-select ">
 								<option>@ViewLocalizer["Choose sucursal"]</option>
 								@foreach (var b in branchs)
 								{
