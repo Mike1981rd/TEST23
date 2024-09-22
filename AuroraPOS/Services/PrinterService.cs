@@ -4,106 +4,168 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Diagnostics;
-using PuppeteerSharp;
-using PuppeteerSharp.Media;
+using System.Net.Sockets;
+using System.Text;
+using System.Net.Http;
+using System.Net.Http.Json;
+using AuroraPOS.Models;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using PdfiumViewer;
+using System.Drawing.Printing;
+using System.IO;
 
 namespace AuroraPOS.Services
 {
     public class PrinterService
     {
-        // Método para procesar la impresión
-        public async Task ProcessPrintJob(string printerName, string htmlContent)
-        {
-            string filePath = await GeneratePdfFromHtml(htmlContent);
-            bool result = PrintToPrinter(printerName, filePath);
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private readonly IConverter _pdfConverter;
 
-            if (result)
-            {
-                Console.WriteLine($"Impresión completada en {printerName}.");
-            }
-            else
-            {
-                Console.WriteLine($"Error al imprimir en {printerName}.");
-            }
+        public PrinterService()
+        {
+            // Inicializar el conversor de PDF
+            var context = new CustomAssemblyLoadContext();
+            context.LoadUnmanagedLibrary(@"./lib/wkhtmltox.dll"); // Ruta a tu archivo wkhtmltox.dll // C:\Program Files\wkhtmltopdf\bin\   // @"./lib/wkhtmltox.dll"
+            _pdfConverter = new SynchronizedConverter(new PdfTools());
         }
 
-
-        // Generar PDF desde contenido HTML
-        private async Task<string> GeneratePdfFromHtml(string htmlContent)
-        {
-            await new BrowserFetcher().DownloadAsync();
-
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-            var page = await browser.NewPageAsync();
-            await page.SetContentAsync(htmlContent);
-
-            string filePath = $"C:\\temp\\printjob_{Guid.NewGuid()}.pdf";
-            await page.PdfAsync(filePath);
-
-            await browser.CloseAsync();
-            return filePath;
-        }
-
-
-        // Imprimir el archivo PDF en la impresora especificada
-        private bool PrintToPrinter(string printerName, string filePath)
+        public async Task StartService()
         {
             try
             {
-                string command;
+                // Establecer la conexión con el servidor Aurora POS
+                _client = new TcpClient("IP", 5000);  
+                _stream = _client.GetStream();
 
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                // Mantener la escucha de nuevas impresiones
+                await ListenForPrintRequests();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al conectar con Aurora POS: " + ex.Message);
+            }
+        }
+
+        private async Task ListenForPrintRequests()
+        {
+            byte[] buffer = new byte[1024];
+            while (true)
+            {
+                try
                 {
-                    // Lógica para Windows
-                    ProcessStartInfo psi = new ProcessStartInfo
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead > 0)
                     {
-                        FileName = filePath, // PDF a imprimir
-                        Verb = "print",
-                        CreateNoWindow = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        Arguments = $"\"{printerName}\"",
-                    };
-                    Process printProcess = Process.Start(psi);
+                        string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                        Console.WriteLine("Solicitud de impresión recibida: " + request);
 
-                    if (printProcess != null)
-                    {
-                        printProcess.WaitForExit();
-                        return true;
+                        // Procesar la solicitud de impresión
+                        await ProcessPrintJob(request);
                     }
-                    return false;
                 }
-                else if (Environment.OSVersion.Platform == PlatformID.Unix)
+                catch (Exception ex)
                 {
-                    // Lógica para Linux/macOS
-                    command = $"lp -d {printerName} {filePath}";
-
-                    ProcessStartInfo psi = new ProcessStartInfo
-                    {
-                        FileName = "/bin/bash",
-                        Arguments = $"-c \"{command}\"",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    Process process = Process.Start(psi);
-                    process.WaitForExit();
-
-                    return process.ExitCode == 0;
+                    Console.WriteLine("Error al leer datos del socket: " + ex.Message);
                 }
-                else
+            }
+        }
+
+        private async Task ProcessPrintJob(string jobId)
+        {
+            // Llamar a la API de Aurora POS para obtener los detalles del trabajo de impresión
+            string apiUrl = $"http://IP:PORT/api/PrinterController/GetPrintJob/{jobId}"; 
+
+            // Obtener los detalles del trabajo de impresión (nombre de la impresora, HTML, etc.)
+            var printJob = await GetPrintJobDetails(apiUrl);
+
+            // Enviar a imprimir
+            if (printJob != null)
+            {
+                await PrintToPrinter(printJob.PrinterName, printJob.HtmlContent);
+            }
+        }
+
+        private async Task<PrintJob> GetPrintJobDetails(string apiUrl)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
                 {
-                    throw new NotSupportedException("Sistema operativo no soportado.");
+                    // Hacer la solicitud GET para obtener los detalles del trabajo de impresión
+                    var printJob = await client.GetFromJsonAsync<PrintJob>(apiUrl);
+                    return printJob;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al imprimir en la impresora {printerName}: {ex.Message}");
-                return false;
+                Console.WriteLine($"Error al obtener detalles de impresión: {ex.Message}");
+                return null;
             }
+        }
+
+        private async Task PrintToPrinter(string printerName, string htmlContent)
+        {
+            try
+            {
+                // Generar el PDF a partir del contenido HTML
+                var pdfBytes = ConvertHtmlToPdf(htmlContent);
+
+                // Crear un archivo temporal para almacenar el PDF
+                string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+                await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
+
+                // Cargar el archivo PDF con PdfiumViewer
+                using (var pdfDocument = PdfDocument.Load(tempFilePath))
+                {
+                    // Crear un PrintDocument a partir del PDF
+                    using (var printDocument = pdfDocument.CreatePrintDocument())
+                    {
+                        printDocument.PrinterSettings.PrinterName = printerName;
+
+                        // Configurar la impresión si es necesario (ajustar márgenes, calidad, etc.)
+                        printDocument.DefaultPageSettings.Landscape = false;
+                        printDocument.Print();
+                    }
+                }
+
+                // Eliminar el archivo temporal después de la impresión
+                File.Delete(tempFilePath);
+
+                Console.WriteLine("Impresión completada.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al imprimir en {printerName}: {ex.Message}");
+            }
+        }
+
+        private byte[] ConvertHtmlToPdf(string htmlContent)
+        {
+            var doc = new HtmlToPdfDocument
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                     PaperSize = DinkToPdf.PaperKind.A4
+                },
+                Objects = {
+                    new ObjectSettings
+                    {
+                        PagesCount = true,
+                        HtmlContent = htmlContent,
+                        WebSettings = { DefaultEncoding = "utf-8" }
+                    }
+                }
+            };
+
+            // Convertir el HTML a PDF y devolver los bytes
+            return _pdfConverter.Convert(doc);
         }
     }
 
 }
+
 
 
