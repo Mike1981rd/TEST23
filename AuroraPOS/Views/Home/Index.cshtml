@@ -62,21 +62,40 @@
 <div class="row">
 	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
 	{
-		<div class="col">
-			<div class="dash-widget" style="background:#FF9F43">
-				<div class="dash-widgetimg">
-					<span><img src="/vendor/img/icons/dash1.svg" alt="img"></span>
-				</div>
-				<div class="dash-widgetcontent">
+        <div class="col-md-3 col-xl-2">
+			<div class="card bg-warning text-white">
+				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash1.svg" alt="img"></span></div>
+				<div class="card-body">
+				
 					<h5 class="total_purchase"></h5>
-					<h6>@ViewLocalizer["Total Purchase Amount"]</h6>
+					<p class="card-text">@ViewLocalizer["Total Purchase Amount"]</p>
 				</div>
 			</div>
 		</div>
+@* 		<div class="col">
+			<div class="dash-widget" style="background:#FF9F43">
+				<div class="dash-widgetimg">
+					
+				</div>
+				<div class="dash-widgetcontent">
+					<h5 class="total_purchase"></h5>
+					<h6></h6>
+				</div>
+			</div>
+		</div> *@
 	}
 	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
 	{
-		<div class="col">
+		<div class="col-md-3 col-xl-2">
+			<div class="card bg-info text-white">
+				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash2.svg" alt="img"></span></div>
+				<div class="card-body">
+					<h5 class="total_purchase_tax"></h5>
+					<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
+				</div>
+			</div>
+		</div>
+@* 		<div class="col">
 			<div class="dash-widget dash1" style="background:#00CFE8">
 				<div class="dash-widgetimg">
 					<span><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
@@ -86,11 +105,20 @@
 					<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
 				</div>
 			</div>
-		</div>
+		</div> *@
 	}
 	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
 	{
-		<div class="col">
+		<div class="col-md-3 col-xl-2">
+			<div class="card bg-primary text-white">
+				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash3.svg" alt="img"></span></div>
+				<div class="card-body">
+					<h5 class="total_sale"></h5>
+					<h6>@ViewLocalizer["Total Sale Amount"]</h6>
+				</div>
+			</div>
+		</div>
+@* 		<div class="col">
 			<div class="dash-widget dash2" style="background:#1B2850; color:white">
 				<div class="dash-widgetimg">
 					<span><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
@@ -100,11 +128,20 @@
 					<h6>@ViewLocalizer["Total Sale Amount"]</h6>
 				</div>
 			</div>
-		</div>
+		</div> *@
 	}
 	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
 	{
-		<div class="col">
+		<div class="col-md-3 col-xl-2">
+			<div class="card bg-success text-white">
+				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash4.svg" alt="img"></span></div>
+				<div class="card-body">
+					<h5 class="total_sale_tax"></h5>
+					<h6>@ViewLocalizer["Total Sale Tax"]</h6>
+				</div>
+			</div>
+		</div>
+@* 		<div class="col">
 			<div class="dash-widget dash3" style="background:#28C76F">
 				<div class="dash-widgetimg">
 					<span><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
@@ -114,10 +151,21 @@
 					<h6>@ViewLocalizer["Total Sale Tax"]</h6>
 				</div>
 			</div>
-		</div>
+		</div> *@
 	}
 	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
 	{
+
+		<div class="col-md-3 col-xl-2">
+			<div class="card bg-black text-white">
+				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash5.svg" alt="img"></span></div>
+				<div class="card-body">
+					<h5 class="total_sale_propina"></h5>
+					<h6>@ViewLocalizer["Total Sale Propina"]</h6>
+				</div>
+			</div>
+		</div>
+@* 
 		<div class="col">
 			<div class="dash-widget dash3" style="background:#88226F">
 				<div class="dash-widgetimg">
@@ -128,7 +176,7 @@
 					<h6>@ViewLocalizer["Total Sale Propina"]</h6>
 				</div>
 			</div>
-		</div>
+		</div> *@
 	}	
 </div>
 

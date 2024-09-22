@@ -102,13 +102,13 @@
 
 					HideLoader()
 					if (data.resultado) {
-						debugger;
+						 
 						var tabla  =document.getElementById("report-productista-list-body");
 						while (tabla.rows.length > 0) {
 							tabla.deleteRow(0); 
 						}
 						for (var c = 0; c < data.listmodelo.length; c++) {
-							debugger;
+						 
 							var modelo = data.listmodelo[c];
 
 							var trElement = document.createElement("tr");

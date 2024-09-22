@@ -18,7 +18,7 @@ function HideLoader() {
 	$("#global-loader").fadeOut("slow");
 }
 
-$(document).ready(function(){
+$(document).ready(function($){
 
 	$('.phone_format').mask('000-000-0000');
 
@@ -26,7 +26,12 @@ $(document).ready(function(){
 	var $wrapper = $('.main-wrapper');
 	var $slimScrolls = $('.slimscroll');
 	var $pageWrapper = $('.page-wrapper');
-	feather.replace();
+    try {
+		feather.replace();
+    } catch (e) {
+
+    }
+	
 
 	// Page Content Height Resize
 	$(window).resize(function () {
@@ -331,16 +336,21 @@ $(document).ready(function(){
 
 
 	// Sidebar Slimscroll
-	if($slimScrolls.length > 0) {
-		$slimScrolls.slimScroll({
-			height: 'auto',
-			width: '100%',
-			position: 'right',
-			size: '7px',
-			color: '#ccc',
-			wheelStep: 10,
-			touchScrollStep: 100
-		});
+	if ($slimScrolls.length > 0) {
+        try {
+			$slimScrolls.slimScroll({
+				height: 'auto',
+				width: '100%',
+				position: 'right',
+				size: '7px',
+				color: '#ccc',
+				wheelStep: 10,
+				touchScrollStep: 100
+			});
+        } catch (e) {
+
+        }
+
 		var wHeight = $(window).height() - 60;
 		$slimScrolls.height(wHeight);
 		$('.sidebar .slimScrollDiv').height(wHeight);
