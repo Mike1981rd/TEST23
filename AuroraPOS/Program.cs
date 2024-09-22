@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using Edi.Captcha;
 using WebEssentials.AspNetCore.Pwa;
+using Microsoft.AspNetCore.SignalR;
+using AuroraPOS.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +65,10 @@ builder.Services.AddSessionBasedCaptcha(option =>
     option.CodeLength = 4;
 });
 
+builder.Services.AddControllers();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<PrinterService>();
+
 const string defaultCulture = "en-GB";
 var supportedCultures = new[]
 {
@@ -100,7 +106,8 @@ var cookiePolicyOptions = new CookiePolicyOptions
     MinimumSameSitePolicy = SameSiteMode.Strict,
 	
 };
-
+app.MapControllers();
+app.MapHub<PrintHub>("/printHub");
 app.UseCookiePolicy(cookiePolicyOptions);
 app.MapControllerRoute(
 	name: "default",
