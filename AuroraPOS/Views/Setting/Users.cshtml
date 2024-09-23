@@ -7,13 +7,18 @@
 	var roles = (List<Role>)ViewBag.Roles;
 	var companies = (List<Company>)ViewBag.Companies;
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/vendor/js/jquery.dataTables.min.js"></script>
+<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js">
+</script>
+
 <div class="page-header">
 	<div class="page-title">
 		<h4>@ViewLocalizer["User List"]</h4>
 		<h6>@ViewLocalizer["Manage users"]</h6>
 	</div>
 	<div class="page-btn">
-		<a href="javascript:void(0);" class="btn btn-added" onclick="AddUser()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add User"]</a>
+		<a href="javascript:void(0);" class="btn btn-added" onclick="AddUser()"><img src="/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add User"]</a>
 	</div>
 </div>
 

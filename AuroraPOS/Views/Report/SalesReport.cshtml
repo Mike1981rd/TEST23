@@ -5,6 +5,11 @@
 	var branchs = (List<t_sucursal>)ViewBag.Branchs;
 	var products = (List<Product>)ViewBag.Products;
 }
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/vendor/js/jquery.dataTables.min.js"></script>
+<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
 <div class="page-header">
 	<div class="page-title">
 		<h3>@ViewLocalizer["Sales Report"]</h3>
@@ -139,8 +144,9 @@
         });
 		// Función para formatear la fecha como "dd-MM-yyyy"
 		function formatDate(date) {
+            debugger;
 			var day = date.getDate();
-			var month = date.getMonth() + 1;
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
 			var year = date.getFullYear();
 			return day + '-' + month + '-' + year;
 		}
@@ -149,6 +155,7 @@
 			var currentDate = new Date();
 			var currentMonth = currentDate.getMonth();
 			var currentYear = currentDate.getFullYear();
+            debugger;
 			switch (selectedValue) {
                 case "today":
                     var formattedDate = formatDate(currentDate); // Formatear la fecha actual
@@ -209,5 +216,11 @@
 
 		});
 	});
+    function ShowLoader() {
+        $('#global-loader').show();
+    }
+    function HideLoader() {
+        $("#global-loader").fadeOut("slow");
+    }
 
 </script>

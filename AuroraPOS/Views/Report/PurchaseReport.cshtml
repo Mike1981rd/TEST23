@@ -4,6 +4,12 @@
 @{
 	var groups = (List<Group>)ViewBag.Groups;
 }
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/vendor/js/jquery.dataTables.min.js"></script>
+<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js">
+</script>
 <div class="page-header">
 	<div class="page-title">
 		<h3>@ViewLocalizer["Purchase Report"]</h3>
@@ -17,7 +23,7 @@
 			<div class="col-lg-3 col-sm-6 col-12">
 				<div class="form-group">
 					<label>@ViewLocalizer["Group"]</label>
-					<select id="report-group" class="select">
+					<select id="report-group" class="select form-control">
 						<option value="">@ViewLocalizer["Choose Group"]</option>
 						@foreach (var g in groups)
 						{
@@ -29,13 +35,13 @@
 			<div class="col-lg-3 col-sm-6 col-12">
 				<div class="form-group">
 					<label>@ViewLocalizer["Date From"] </label>
-					<input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
+					<input id="filter_datefrom" type="date" class="form-control" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
 			</div>
 			<div class="col-lg-3 col-sm-6 col-12">
 				<div class="form-group">
 					<label>@ViewLocalizer["Date To"] </label>
-					<input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+					<input id="filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
 			</div>
 			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
@@ -48,13 +54,19 @@
 
 	$(document).ready(function () {
 		$("#btn-report").click(function () {
+			debugger;
 			var datefrom = $("#filter_datefrom").val();
+			let partesFecha = datefrom.split("-");      // Divide la fecha en ['2022', '08', '02']
+			let fechaFormateada = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`;
 			var dateto = $("#filter_dateto").val();
+
+			let partesFechadateto = dateto.split("-");      // Divide la fecha en ['2022', '08', '02']
+			let fechaFormateadadateto = `${partesFechadateto[2]}-${partesFechadateto[1]}-${partesFechadateto[0]}`;
 			var group = $("#report-group").val();
 			ShowLoader()
 			$.ajax({
 				type: "POST",
-				url: "/Report/GeneratePurchaseReport?from=" + datefrom + "&to=" + dateto + "&group=" + group,
+				url: "/Report/GeneratePurchaseReport?from=" + fechaFormateada + "&to=" + fechaFormateadadateto + "&group=" + group,
 				success: function (data) {
 					HideLoader()
 					if (data.status == 0) {
@@ -68,6 +80,11 @@
 		});
 	});
 
-
+	function ShowLoader() {
+		$('#global-loader').show();
+	}
+	function HideLoader() {
+		$("#global-loader").fadeOut("slow");
+	}
 
 </script>

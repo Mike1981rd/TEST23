@@ -1,4 +1,7 @@
-﻿
+﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/vendor/js/jquery.dataTables.min.js"></script>
+<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js">
+</script>
 <div class="page-header">
 	<div class="page-title">
 		<h4>@ViewLocalizer["Product List"]</h4>
@@ -103,6 +106,20 @@
 			}
 		});
 	});
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
 
 	var producttable = $("#product-list").DataTable({
 		"processing": true, // for show progress bar

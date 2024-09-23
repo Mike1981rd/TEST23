@@ -6,6 +6,11 @@
     var users = (List<User>)ViewBag.Users;
     var vouchers = (List<Voucher>)ViewBag.Vouchers;
 }
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/vendor/js/jquery.dataTables.min.js"></script>
+<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js">
+</script>
 <div class="page-header">
 	<div class="page-title">
 		<h3>@ViewLocalizer["Detailed Sales Report"]</h3>
@@ -104,10 +109,57 @@
 <script>
 
     function SetRangeSelector(valor) {
+        debugger;
         $("#date-range-selector").val(valor).change();
         return false;
     }
+    var damagetable = $("#damage-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Inventory/GetDamageArticleList",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50],
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3' href='/Inventory/AddDamageArticle?damageArticleID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                },
+            },
+            { "data": "id", "name": "id", "autoWidth": true },
+            { "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "qty", "name": "qty", "autoWidth": true },
+            { "data": "unitName", "name": "unitName", "autoWidth": true },
+            { "data": "damageDate", "name": "realDamageDate", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'status',
+                render: function (data, type, row) {
+                    if (row.status == 1) {
+                        return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+                    }
+                    else if (row.status == 2) {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+                    }
+                    else if (row.status == 3) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
 
+        ]
+    });
 	$(document).ready(function () {
 		$("#btn-report").click(function () {
 			var datefrom = $("#filter_datefrom").val();
@@ -156,15 +208,17 @@
         });
 		function formatDate(date) {
 			var day = date.getDate();
-			var month = date.getMonth() + 1;
+            var month =(date.getMonth() + 1).toString().padStart(2, '0');
 			var year = date.getFullYear();
 			return day + '-' + month + '-' + year;
 		}
 		$("#date-range-selector").change(function () {
+        
 			var selectedValue = $(this).val();
 			var currentDate = new Date();
 			var currentMonth = currentDate.getMonth();
 			var currentYear = currentDate.getFullYear();
+            debugger;
 			switch (selectedValue) {
                 case "today":
                     var formattedDate = formatDate(currentDate); // Formatear la fecha actual
@@ -226,5 +280,12 @@
 			damagetable.ajax.reload();
 		});
 	});
+
+    function ShowLoader() {
+        $('#global-loader').show();
+    }
+    function HideLoader() {
+        $("#global-loader").fadeOut("slow");
+    }
 
 </script>

@@ -173,49 +173,49 @@ $(document).ready(function($){
 
 
 	// Datetimepicker
-	if($('.datetimepicker').length > 0 ){
-		$('.datetimepicker').datetimepicker({
-			format: 'DD-MM-YYYY',
-			icons: {
-				up: "fas fa-angle-up",
-				down: "fas fa-angle-down",
-				next: 'fas fa-angle-right',
-				previous: 'fas fa-angle-left'
-			},
-		}
-		).on('dp.change', function (e) {
-			if ($(this).attr('id') == 'purchaseorder_filter_datefrom' || $(this).attr('id') == 'purchaseorder_filter_dateto')
-			{
-				FilterPurchaseOrder()
-			}
-			if ($(this).attr('id') == 'damage_filter_datefrom' || $(this).attr('id') == 'damage_filter_dateto') {
-				FilterDamage()
-			}
+	//if($('.datetimepicker').length > 0 ){
+	//	$('.datetimepicker').datetimepicker({
+	//		format: 'DD-MM-YYYY',
+	//		icons: {
+	//			up: "fas fa-angle-up",
+	//			down: "fas fa-angle-down",
+	//			next: 'fas fa-angle-right',
+	//			previous: 'fas fa-angle-left'
+	//		},
+	//	}
+	//	).on('dp.change', function (e) {
+	//		if ($(this).attr('id') == 'purchaseorder_filter_datefrom' || $(this).attr('id') == 'purchaseorder_filter_dateto')
+	//		{
+	//			FilterPurchaseOrder()
+	//		}
+	//		if ($(this).attr('id') == 'damage_filter_datefrom' || $(this).attr('id') == 'damage_filter_dateto') {
+	//			FilterDamage()
+	//		}
 
-			if ($(this).attr('id') == 'move_filter_datefrom' || $(this).attr('id') == 'move_filter_dateto') {
-				FilterMoveArticle()
-			}
-			if ($(this).attr('id') == 'filter_reprint_datefrom' || $(this).attr('id') == 'filter_reprint_dateto') {
-				LoadPreviousOrders()
-			}
-			if ($(this).attr('id') == 'filter_barcode_datefrom' || $(this).attr('id') == 'filter_barcode_dateto') {
-				LoadPreviousOrdersBarcode()
-			}
-			if ($(this).attr('id') == 'dashboard_filter_datefrom' || $(this).attr('id') == 'dashboard_filter_dateto') {
-				GetSalesTotal();
-				GetPurchaseTotal();
-			}
-			if ($(this).attr('id') == 'report1_datefrom' || $(this).attr('id') == 'report1_dateto') {
-				RefreshDayOfWeekReport();
-			}
-			if ($(this).attr('id') == 'report3_datefrom' || $(this).attr('id') == 'report3_dateto') {
-				RefreshPropinaReport();
-			}
-			if ($(this).attr('id') == 'filter_reservation_datefrom' || $(this).attr('id') == 'filter_reservation_dateto') {
-				FilterReservation();
-			}
-		});
-	}
+	//		if ($(this).attr('id') == 'move_filter_datefrom' || $(this).attr('id') == 'move_filter_dateto') {
+	//			FilterMoveArticle()
+	//		}
+	//		if ($(this).attr('id') == 'filter_reprint_datefrom' || $(this).attr('id') == 'filter_reprint_dateto') {
+	//			LoadPreviousOrders()
+	//		}
+	//		if ($(this).attr('id') == 'filter_barcode_datefrom' || $(this).attr('id') == 'filter_barcode_dateto') {
+	//			LoadPreviousOrdersBarcode()
+	//		}
+	//		if ($(this).attr('id') == 'dashboard_filter_datefrom' || $(this).attr('id') == 'dashboard_filter_dateto') {
+	//			GetSalesTotal();
+	//			GetPurchaseTotal();
+	//		}
+	//		if ($(this).attr('id') == 'report1_datefrom' || $(this).attr('id') == 'report1_dateto') {
+	//			RefreshDayOfWeekReport();
+	//		}
+	//		if ($(this).attr('id') == 'report3_datefrom' || $(this).attr('id') == 'report3_dateto') {
+	//			RefreshPropinaReport();
+	//		}
+	//		if ($(this).attr('id') == 'filter_reservation_datefrom' || $(this).attr('id') == 'filter_reservation_dateto') {
+	//			FilterReservation();
+	//		}
+	//	});
+	//}
 	if ($('.datetimepicker1').length > 0) {
 		$('.datetimepicker1').datetimepicker({
 			format: 'HH:mm',
