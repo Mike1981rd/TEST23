@@ -18,31 +18,30 @@ namespace AuroraPOS.Controllers
 
     public class PrinterController : ControllerBase
     {
-        private readonly IHubContext<PrintHub> _hubContext;
-        private readonly PrinterService _printerService;
-
-        public PrinterController(IHubContext<PrintHub> hubContext, PrinterService printerService)
+        // Método para obtener los detalles del trabajo de impresión
+        [HttpGet("{jobId}")]
+        public IActionResult GetPrintJob(string jobId)
         {
-            _hubContext = hubContext;
-            _printerService = printerService;
+            // Aquí se deberían obtener los detalles de la impresión (de la base de datos)
+
+
+            // Simulación de respuesta de la base de datos
+            var printJob = new PrintJob
+            {
+                JobId = jobId,
+                PrinterName = "Printer1",
+                HtmlContent = "<h1>Impresión Test</h1>"
+            };
+
+            return Ok(printJob);
         }
 
-        // Este método será llamado cuando haya un trabajo de impresión pendiente
-        [HttpPost]
-        public async Task<IActionResult> NotifyPrint([FromBody] PrintJob job)
+        // Método para actualizar el estado de la impresión
+        [HttpPost("update-status")]
+        public IActionResult UpdatePrintStatus([FromBody] PrintJob statusUpdate)
         {
-            if (job == null || string.IsNullOrEmpty(job.PrinterName) || string.IsNullOrEmpty(job.HtmlContent))
-            {
-                return BadRequest("Datos de impresión inválidos.");
-            }
-
-            // Procesa el trabajo de impresión
-            await _printerService.ProcessPrintJob(job.PrinterName, job.HtmlContent);
-
-            // Notifica a los clientes conectados que el trabajo de impresión se completó
-            await _hubContext.Clients.All.SendAsync("PrintComplete", job.PrinterName);
-
-            return Ok(new { message = "Impresión completada", printerName = job.PrinterName });
+            // Aquí se debe actualizar el status en la base de datos
+            return Ok(new { message = "Estado actualizado correctamente" });
         }
 
 

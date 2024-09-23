@@ -8,14 +8,17 @@ using System.Net.Sockets;
 using System.Text;
 using System.Net.Http;
 using System.Net.Http.Json;
-using AuroraPOS.Models;
+using Printer.Models;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using PdfiumViewer;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.InteropServices;
 
-namespace AuroraPOS.Services
+namespace Printer.Services
 {
     public class PrinterService
     {
@@ -23,11 +26,16 @@ namespace AuroraPOS.Services
         private NetworkStream _stream;
         private readonly IConverter _pdfConverter;
 
+        [DllImport("wkhtmltox.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void wkhtml_init(); // Función para inicializar wkhtmltox
+
+        [DllImport("wkhtmltox.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void wkhtml_cleanup(); // Función para limpiar recursos al final
+
         public PrinterService()
         {
             // Inicializar el conversor de PDF
-            var context = new CustomAssemblyLoadContext();
-            context.LoadUnmanagedLibrary(@"./lib/wkhtmltox.dll"); // Ruta a tu archivo wkhtmltox.dll // C:\Program Files\wkhtmltopdf\bin\   // @"./lib/wkhtmltox.dll"
+            wkhtml_init(); // Llama a la función de inicialización
             _pdfConverter = new SynchronizedConverter(new PdfTools());
         }
 
@@ -114,7 +122,7 @@ namespace AuroraPOS.Services
 
                 // Crear un archivo temporal para almacenar el PDF
                 string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-                await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
+                File.WriteAllBytes(tempFilePath, pdfBytes);
 
                 // Cargar el archivo PDF con PdfiumViewer
                 using (var pdfDocument = PdfDocument.Load(tempFilePath))
@@ -163,8 +171,13 @@ namespace AuroraPOS.Services
             // Convertir el HTML a PDF y devolver los bytes
             return _pdfConverter.Convert(doc);
         }
-    }
+        public void StopService()
+        {
+            _stream?.Close();
+            _client?.Close();
+        }
 
+    }
 }
 
 

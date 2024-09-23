@@ -1,4 +1,4 @@
-﻿namespace AuroraPOS.Models
+﻿namespace Printer.Models
 {
     public class PrintJob
     {
