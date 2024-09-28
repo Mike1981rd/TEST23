@@ -7,44 +7,76 @@ using AuroraPOS.ViewModels;
 using AuroraPOS.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using FastReport;
+using Microsoft.EntityFrameworkCore;
+using AuroraPOS.ModelsCentral;
 
 
 namespace AuroraPOS.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-
-
     public class PrinterController : ControllerBase
     {
-        // Método para obtener los detalles del trabajo de impresión
-        [HttpGet("{jobId}")]
-        public IActionResult GetPrintJob(string jobId)
+        private readonly PrinterService _printerService;
+        private AppDbContext _dbContext;
+        private readonly IHttpContextAccessor _context;
+        private readonly DbAlfaCentralContext _dbCentralContext;
+
+        public PrinterController(PrinterService printerService, AppDbContext dbContext)
         {
-            // Aquí se deberían obtener los detalles de la impresión (de la base de datos)
+            _printerService = printerService;
+            _dbContext = dbContext;
+        }
 
+        // Método para crear y enviar un trabajo de impresión
+        [HttpPost]
+        public async Task<IActionResult> PrintJobs()
+        {
+            // Obtiene la lista de trabajos pendientes desde la base de datos
+            var pendingJobs = await _dbContext.PrintJobs
+                .Where(job => job.Status == "Pendiente")
+                .ToListAsync();
 
-            // Simulación de respuesta de la base de datos
-            var printJob = new PrintJob
+            // Verifica si hay trabajos pendientes
+            if (pendingJobs == null || !pendingJobs.Any())
             {
-                JobId = jobId,
-                PrinterName = "Printer1",
-                HtmlContent = "<h1>Impresión Test</h1>"
-            };
+                return NotFound("No hay trabajos de impresión pendientes.");
+            }
 
-            return Ok(printJob);
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Enviar cada trabajo al servicio de impresión
+                    foreach (var job in pendingJobs)
+                    {
+                        await _printerService.SendPrintJobToServiceAsync(job);
+                        job.Status = "En Progreso"; // Cambia el estado a "En Progreso"
+                    }
+
+                    await _dbContext.SaveChangesAsync(); // Guarda los cambios en la base de datos
+                    await transaction.CommitAsync(); // Confirma la transacción
+
+                    return Ok(new { message = "Trabajos de impresión enviados." });
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(); // Revertir en caso de error
+                    return StatusCode(500, $"Error al enviar trabajos de impresión: {ex.Message}");
+                }
+            }
         }
 
-        // Método para actualizar el estado de la impresión
-        [HttpPost("update-status")]
-        public IActionResult UpdatePrintStatus([FromBody] PrintJob statusUpdate)
+        [HttpGet]
+        public async Task<IActionResult> GetPendingPrintJobs()
         {
-            // Aquí se debe actualizar el status en la base de datos
-            return Ok(new { message = "Estado actualizado correctamente" });
+            // Obtiene la lista de trabajos pendientes desde la base de datos
+            var pendingJobs = await _dbContext.PrintJobs
+                .Where(job => job.Status == "Pendiente")
+                .ToListAsync();
+
+            return Ok(pendingJobs);
         }
-
-
     }
 
 }
