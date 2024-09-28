@@ -1,9 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using Printer.Converters;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using Printer.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
 namespace Printer
 {
@@ -12,14 +19,20 @@ namespace Printer
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+            var host = Host.CreateDefaultBuilder(args)
+                .UseWindowsService() // Necesario para que funcione como un servicio de Windows
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton<IConverter, PdfConverter>();
+                    services.AddHttpClient();
+                    services.AddHostedService<PrinterService>();
+                })
+                .Build();
+
+            host.Run();
         }
+
     }
 }

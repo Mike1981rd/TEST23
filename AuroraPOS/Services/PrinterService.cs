@@ -19,153 +19,42 @@ namespace AuroraPOS.Services
 {
     public class PrinterService
     {
-        private TcpClient _client;
-        private NetworkStream _stream;
-        private readonly IConverter _pdfConverter;
-
-        public PrinterService()
+        // Método para enviar un trabajo de impresión al servicio Windows
+        public async Task SendPrintJobToServiceAsync(PrintJob printJob)
         {
-            // Inicializar el conversor de PDF
-            var context = new CustomAssemblyLoadContext();
-            context.LoadUnmanagedLibrary(@"./lib/wkhtmltox.dll"); // Ruta a tu archivo wkhtmltox.dll // C:\Program Files\wkhtmltopdf\bin\   // @"./lib/wkhtmltox.dll"
-            _pdfConverter = new SynchronizedConverter(new PdfTools());
+            // Asegúrate de que PrintJob tenga una propiedad HtmlContent
+            if (printJob == null || string.IsNullOrEmpty(printJob.HtmlContent))
+            {
+                throw new ArgumentException("El trabajo de impresión no es válido.");
+            }
+
+            // Enviar el trabajo al servicio de impresión
+            await SendToPrinterServiceAsync(printJob.HtmlContent);
         }
 
-        public async Task StartService()
+        private async Task SendToPrinterServiceAsync(string htmlContent)
         {
-            try
-            {
-                // Establecer la conexión con el servidor Aurora POS
-                _client = new TcpClient("IP", 5000);  
-                _stream = _client.GetStream();
-
-                // Mantener la escucha de nuevas impresiones
-                await ListenForPrintRequests();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error al conectar con Aurora POS: " + ex.Message);
-            }
-        }
-
-        private async Task ListenForPrintRequests()
-        {
-            byte[] buffer = new byte[1024];
-            while (true)
+            using (var client = new TcpClient())
             {
                 try
                 {
-                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead > 0)
-                    {
-                        string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                        Console.WriteLine("Solicitud de impresión recibida: " + request);
+                    // Configura la dirección y el puerto del servicio de impresión
+                    await client.ConnectAsync("127.0.0.1", 5000); // Cambia la IP y el puerto según sea necesario
 
-                        // Procesar la solicitud de impresión
-                        await ProcessPrintJob(request);
+                    // Convertir el contenido a bytes
+                    var data = Encoding.UTF8.GetBytes(htmlContent);
+
+                    // Enviar los datos al socket
+                    using (var stream = client.GetStream())
+                    {
+                        await stream.WriteAsync(data, 0, data.Length);
                     }
                 }
-                catch (Exception ex)
+                catch (SocketException ex)
                 {
-                    Console.WriteLine("Error al leer datos del socket: " + ex.Message);
+                    throw new Exception("No se pudo conectar al servicio de impresión.", ex);
                 }
             }
-        }
-
-        private async Task ProcessPrintJob(string jobId)
-        {
-            // Llamar a la API de Aurora POS para obtener los detalles del trabajo de impresión
-            string apiUrl = $"http://IP:PORT/api/PrinterController/GetPrintJob/{jobId}"; 
-
-            // Obtener los detalles del trabajo de impresión (nombre de la impresora, HTML, etc.)
-            var printJob = await GetPrintJobDetails(apiUrl);
-
-            // Enviar a imprimir
-            if (printJob != null)
-            {
-                await PrintToPrinter(printJob.PrinterName, printJob.HtmlContent);
-            }
-        }
-
-        private async Task<PrintJob> GetPrintJobDetails(string apiUrl)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    // Hacer la solicitud GET para obtener los detalles del trabajo de impresión
-                    var printJob = await client.GetFromJsonAsync<PrintJob>(apiUrl);
-                    return printJob;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al obtener detalles de impresión: {ex.Message}");
-                return null;
-            }
-        }
-
-        private async Task PrintToPrinter(string printerName, string htmlContent)
-        {
-            try
-            {
-                // Generar el PDF a partir del contenido HTML
-                var pdfBytes = ConvertHtmlToPdf(htmlContent);
-
-                // Crear un archivo temporal para almacenar el PDF
-                string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-                await File.WriteAllBytesAsync(tempFilePath, pdfBytes);
-
-                // Cargar el archivo PDF con PdfiumViewer
-                using (var pdfDocument = PdfDocument.Load(tempFilePath))
-                {
-                    // Crear un PrintDocument a partir del PDF
-                    using (var printDocument = pdfDocument.CreatePrintDocument())
-                    {
-                        printDocument.PrinterSettings.PrinterName = printerName;
-
-                        // Configurar la impresión si es necesario (ajustar márgenes, calidad, etc.)
-                        printDocument.DefaultPageSettings.Landscape = false;
-                        printDocument.Print();
-                    }
-                }
-
-                // Eliminar el archivo temporal después de la impresión
-                File.Delete(tempFilePath);
-
-                Console.WriteLine("Impresión completada.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al imprimir en {printerName}: {ex.Message}");
-            }
-        }
-
-        private byte[] ConvertHtmlToPdf(string htmlContent)
-        {
-            var doc = new HtmlToPdfDocument
-            {
-                GlobalSettings = {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                     PaperSize = DinkToPdf.PaperKind.A4
-                },
-                Objects = {
-                    new ObjectSettings
-                    {
-                        PagesCount = true,
-                        HtmlContent = htmlContent,
-                        WebSettings = { DefaultEncoding = "utf-8" }
-                    }
-                }
-            };
-
-            // Convertir el HTML a PDF y devolver los bytes
-            return _pdfConverter.Convert(doc);
         }
     }
-
 }
-
-
-

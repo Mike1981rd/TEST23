@@ -164,6 +164,7 @@ namespace AuroraPOS.Data
 		public DbSet<Denomination> Denominations { get; set; }
 		public DbSet<Voucher> Vouchers { get; set; }
 		public DbSet<Permission> Permissions { get; set; }
+        public DbSet<PrintJob> PrintJobs { get; set; }
 
         public DbSet<DeliveryCarrier> DeliveryCarriers { get; set; }
         public DbSet<DeliveryZone> DeliveryZones { get; set; }
