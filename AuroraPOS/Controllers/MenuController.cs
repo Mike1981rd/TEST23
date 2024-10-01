@@ -1226,13 +1226,17 @@ namespace AuroraPOS.Controllers
 					{
 						result = result.Where(s => "" + s.CategoryId == category);
 					}
-					if (string.IsNullOrEmpty(status) || status == "1")
+					if ( status == "1")
 					{
 						result = result.Where(s => s.IsActive);
 					}
 					else
 					{
-						result = result.Where(s => s.IsActive == false);
+						if (status == "0")
+						{
+							result = result.Where(s => s.IsActive == false);	
+						}
+						
 					}
 				}
 

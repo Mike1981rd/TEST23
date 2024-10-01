@@ -3,11 +3,6 @@
 *@
 @{
 }
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="/vendor/js/jquery.dataTables.min.js"></script>
-<script scr="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js">
-</script>
 <div class="page-header">
     <div class="page-title">
         <h4>@ViewLocalizer["Groups"]</h4>
@@ -67,13 +62,13 @@
             <div class="table-responsive">
                 <table id="group-list" class="table">
                     <thead>
-                        <tr>
-                            <th>@ViewLocalizer["Action"]</th>
-                            <th>@ViewLocalizer["Group name"]</th>
-                            <th>@ViewLocalizer["Note"]</th>
-                            <th>@ViewLocalizer["Status"]</th>
-                           
-                        </tr>
+                    <tr>
+                        <th>@ViewLocalizer["Action"]</th>
+                        <th>@ViewLocalizer["Group name"]</th>
+                        <th>@ViewLocalizer["Note"]</th>
+                        <th>@ViewLocalizer["Status"]</th>
+
+                    </tr>
                     </thead>
                 </table>
             </div>
@@ -129,19 +124,19 @@
                         </div>
                         <table class="table reordertable">
                             <thead>
-                                <tr>
-                                    <td>
-                                        @ViewLocalizer["Name"]
-                                    </td>
-                                    <td>
-                                        @ViewLocalizer["Type"]
-                                    </td>
-                                    <td>
-                                        @ViewLocalizer["Number"]
-                                    </td>
-                                    <td>
-                                        @ViewLocalizer["Action"]
-                                    </td>
+                            <tr>
+                                <td>
+                                    @ViewLocalizer["Name"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Type"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Number"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Action"]
+                                </td>
                             </thead>
                             <tbody id="accounting-list">
                             </tbody>
@@ -157,7 +152,7 @@
     </div>
 </div>
 @{
-    @await Component.InvokeAsync("Accounting", new { })
+@await Component.InvokeAsync("Accounting", new { })
 }
 <script>
     $(document).ready(function () {
@@ -174,8 +169,6 @@
 
         });
     });
-
-   
     var grouptable = $("#group-list").DataTable({
         "processing": true, // for show progress bar
         "serverSide": true, // for process server side
@@ -213,14 +206,14 @@
                 },
                 "autoWidth": true
             },
-           
+
         ]
     });
 
     $("#add-group").click(function () {
         $("#egroup-name").val("");
         $("#egroup-note").val("");
-      
+
         $("#egroup-status").val(1).change();
         $(".group-modal-title").html("@ViewLocalizer["Add Group"]");
         $("#editgroup").data("id", 0);
@@ -269,7 +262,7 @@
                     SaveAccountItems(13, data.id, function () {
                         grouptable.draw();
                         $("#editgroup").modal("hide");
-                    })                   
+                    })
                 }
                 else if(data.status == 2)
                 {

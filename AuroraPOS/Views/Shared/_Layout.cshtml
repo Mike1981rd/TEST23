@@ -47,6 +47,28 @@
     <link rel="stylesheet" href="/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
     <link rel="stylesheet" href="/vendor/libs/typeahead-js/typeahead.css" />
 
+    <link rel="stylesheet" href="/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css" />
+    <link rel="stylesheet" href="/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="/vendor/libs/flatpickr/flatpickr.css" />
+    <link rel="stylesheet" href="/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css" />
+    <link rel="stylesheet" href="/vendor/libs/jquery-timepicker/jquery-timepicker.css" />
+    <link rel="stylesheet" href="/vendor/libs/pickr/pickr-themes.css" />
+    <link rel="stylesheet" href="/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="/vendor/libs/tagify/tagify.css" />
+    <link rel="stylesheet" href="/vendor/libs/bootstrap-select/bootstrap-select.css" />
+    <!-- Row Group CSS -->
+    <link rel="stylesheet" href="/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
+    <link rel="stylesheet" href="/vendor/plugins/toastr/toatr.css">
+    
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="~/vendor/css/bootstrap-datetimepicker.min.css">
+
+    <!-- range slider -->
+    <link rel="stylesheet" href="~/vendor/plugins/ion-rangeslider/css/ion.rangeSlider.min.css">
+
     <!-- Page CSS -->
     <!-- Helpers -->
     <script src="/vendor/js/helpers.js"></script>
@@ -58,7 +80,22 @@
     <script src="/js/config.js"></script>
 
     <script src="/vendor/js/jquery-3.6.0.min.js"></script>
+
+    <!-- ColorPicker JS -->
+    <script src="~/vendor/js/colorpalettepicker.js"></script>
+    <script src="~/vendor/js/bootstrap-colorpicker.js"></script>
+    
     <script src="/vendor/js/jquery.mask.js"></script>
+
+    <!-- Range Slider -->
+    <script src="~/vendor/plugins/ion-rangeslider/js/ion.rangeSlider.js"></script>
+    <script src="~/vendor/plugins/ion-rangeslider/js/custom-rangeslider.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="~/vendor/js/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/vendor/js/jquery.slimscroll.min.js"></script>
 
     <!-- Custom JS -->
   @*   <script src="/vendor/js/script.js"></script> *@
@@ -69,11 +106,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
 
-    <link rel="stylesheet" href="/vendor/plugins/toastr/toatr.css">
 
+
+
+    <script src="/vendor/libs/popper/popper.js"></script>
+    <script src="/vendor/js/bootstrap.js"></script>
+    <script src="/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/vendor/libs/hammer/hammer.js"></script>
+    <script src="/vendor/libs/i18n/i18n.js"></script>
+    <script src="/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="/vendor/js/menu.js"></script>
+
+    <script src="/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+
+
+
+
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <!-- Main JS -->
+
+    
+    
     <!-- Mask JS -->
     <script src="/vendor/plugins/toastr/toastr.min.js"></script>
     <script src="/vendor/plugins/toastr/toastr.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/vendor/js/script.js" asp-append-version="true"></script>
+    <script src="~/vendor/js/script_old.js" asp-append-version="true"></script>
+    <script src="~/vendor/js/site.js"></script>
 
 </head>
 <body>
@@ -106,7 +169,7 @@
             <li class="menu-item active ">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
-              <div data-i18n="Configuración">Configuración</div>               
+              <div data-i18n="Configuración">@ViewLocalizer["Settings"]</div>               
               </a>
               <ul class="menu-sub">
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Store")).Result.Succeeded)
@@ -139,10 +202,20 @@
                                 </li>
 
                             }
+                  @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Customer")).Result.Succeeded)
+                  {
+
+                  <li class="menu-item">
+                      <a href="/Setting/Users" class="menu-link">
+                          <div data-i18n="@ViewLocalizer["Clientes"]">@ViewLocalizer["Clientes"]</div>
+                      </a>
+                  </li>
+
+                  }
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Printer")).Result.Succeeded)
                             {
                                 <li class="menu-item">
-                                    <a href="/Setting/Users" class="menu-link">
+                                    <a href="/Setting/Printers" class="menu-link">
                                         <div data-i18n="@ViewLocalizer["Printers"]">@ViewLocalizer["Printers"]</div>
                                     </a>
                                 </li>
@@ -256,132 +329,118 @@
                         </a>
                         <ul class="menu-sub">
 
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Group")).Result.Succeeded)
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Warehouse")).Result.Succeeded)
                             {
-                                <li class="menu-item ">
-                                    <a href="/Menu/GroupList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Groups"]">
-                                            @ViewLocalizer["Groups"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Category")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/CategoryList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Categories"]">
-                                            @ViewLocalizer["Categories"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
                             <li class="menu-item ">
-                                <a href="/Menu/ServingSizeList" class="menu-link">
-                                    <div data-i18n="Tamaños">
-                                        Tamaños
+                                <a href="/Inventory/WarehouseList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Warehouse"]">
+                                        @ViewLocalizer["Warehouse"]
                                     </div>
                                 </a>
                             </li>
 
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.SubCategory")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/SubCategoryList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Sub Categories"]">
-                                            @ViewLocalizer["Sub Categories"]
-                                        </div>
-                                    </a>
-                                </li>
-
                             }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Product")).Result.Succeeded)
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Supplier")).Result.Succeeded)
                             {
-                                <li class="menu-item ">
-                                    <a href="/Menu/ProductList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Products"]">
-                                            @ViewLocalizer["Products"]
-                                        </div>
-                                    </a>
-                                </li>
-
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MenuEditor")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/MenuEditor" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Menu Editor"]">
-                                            @ViewLocalizer["Menu Editor"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MapTableEditor")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/MapTableEditor" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Map Table Editor"]">
-                                            @ViewLocalizer["Map Table Editor"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Station")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/StationList" class="menu-link">
-                                        <div data-i18n="Estaciones">
-                                            Estaciones
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
                             <li class="menu-item ">
-                                <a href="/Menu/KitchenList" class="menu-link">
-                                    <div data-i18n="Kds">
-                                        Kds
-                                    </div>
-                                </a>
-                            </li>
-
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Discount")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/DiscountList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Discounts"]">
-                                            @ViewLocalizer["Discounts"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Promotion")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Menu/PromotionList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Promotions"]">
-                                            @ViewLocalizer["Promotions"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                            }
-
-                            <li class="menu-item ">
-                                <a href="/Menu/ReservationList" class="menu-link">
-                                    <div data-i18n="Reservaciones">
-                                        Reservaciones
+                                <a href="/Inventory/SupplierList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Suppliers"]">
+                                        @ViewLocalizer["Suppliers"]
                                     </div>
                                 </a>
                             </li>
 
 
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Article")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/ArticleList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Articles"]">
+                                        @ViewLocalizer["Articles"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PurchaseOrder")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/PurchaseOrderList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Purchase order"]">
+                                        @ViewLocalizer["Purchase order"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.SubRecipe")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/SubRecipeList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Sub Recipe"]">
+                                        @ViewLocalizer["Sub Recipe"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Move")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/MoveArticleList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Transfer"]">
+                                        @ViewLocalizer["Transfer"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Production")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/ProductionList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Production"]">
+                                        @ViewLocalizer["Production"]
+                                    </div>
+                                </a>
+                            </li>
+
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Damage")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/DamageArticleList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Waste"]">
+                                        @ViewLocalizer["Waste"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PhysicalCount")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/ManagePhysicalCount" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Physical Count"]">
+                                        @ViewLocalizer["Physical Count"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.StockHistory")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Inventory/Stock" class="menu-link">
+                                    <div data-i18n="Tarjeta de Movimientos">
+                                        Tarjeta de Movimientos
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
 
                         </ul>
             </li>
@@ -395,120 +454,134 @@
                         </a>
                         <ul class="menu-sub">
 
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Warehouse")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/WarehouseList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Warehouse"]">
-                                            @ViewLocalizer["Warehouse"]
-                                        </div>
-                                    </a>
-                                </li>
-                            
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Supplier")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/SupplierList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Suppliers"]">
-                                            @ViewLocalizer["Suppliers"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                                
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Article")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/ArticleList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Articles"]">
-                                            @ViewLocalizer["Articles"]
-                                        </div>
-                                    </a>
-                                </li>
-                               
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PurchaseOrder")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/PurchaseOrderList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Purchase order"]">
-                                            @ViewLocalizer["Purchase order"]
-                                        </div>
-                                    </a>
-                                </li>
-                                
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.SubRecipe")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/SubRecipeList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Sub Recipe"]">
-                                            @ViewLocalizer["Sub Recipe"]
-                                        </div>
-                                    </a>
-                                </li>
-                               
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Move")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/MoveArticleList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Transfer"]">
-                                            @ViewLocalizer["Transfer"]
-                                        </div>
-                                    </a>
-                                </li>
-                                
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Production")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/ProductionList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Production"]">
-                                            @ViewLocalizer["Production"]
-                                        </div>
-                                    </a>
-                                </li>
-
-                               
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.Damage")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/DamageArticleList" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Waste"]">
-                                            @ViewLocalizer["Waste"]
-                                        </div>
-                                    </a>
-                                </li>
-                                
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.PhysicalCount")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/ManagePhysicalCount" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Physical Count"]">
-                                            @ViewLocalizer["Physical Count"]
-                                        </div>
-                                    </a>
-                                </li>
-                              
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.INVENTORY.StockHistory")).Result.Succeeded)
-                            {
-                                <li class="menu-item ">
-                                    <a href="/Inventory/Stock" class="menu-link">
-                                        <div data-i18n="Tarjeta de Movimientos">
-                                            Tarjeta de Movimientos
-                                        </div>
-                                    </a>
-                                </li>
-                              
-                            }
-
                            
+
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Group")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/GroupList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Groups"]">
+                                        @ViewLocalizer["Groups"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Category")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/CategoryList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Categories"]">
+                                        @ViewLocalizer["Categories"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            <li class="menu-item ">
+                                <a href="/Menu/ServingSizeList" class="menu-link">
+                                    <div data-i18n="Tamaños">
+                                        Tamaños
+                                    </div>
+                                </a>
+                            </li>
+
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.SubCategory")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/SubCategoryList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Sub Categories"]">
+                                        @ViewLocalizer["Sub Categories"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Product")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/ProductList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Products"]">
+                                        @ViewLocalizer["Products"]
+                                    </div>
+                                </a>
+                            </li>
+
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MenuEditor")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/MenuEditor" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Menu Editor"]">
+                                        @ViewLocalizer["Menu Editor"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.MapTableEditor")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/MapTableEditor" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Map Table Editor"]">
+                                        @ViewLocalizer["Map Table Editor"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Station")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/StationList" class="menu-link">
+                                    <div data-i18n="Estaciones">
+                                        Estaciones
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            <li class="menu-item ">
+                                <a href="/Menu/KitchenList" class="menu-link">
+                                    <div data-i18n="Kds">
+                                        Kds
+                                    </div>
+                                </a>
+                            </li>
+
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Discount")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/DiscountList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Discounts"]">
+                                        @ViewLocalizer["Discounts"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.MENU.Promotion")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Menu/PromotionList" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Promotions"]">
+                                        @ViewLocalizer["Promotions"]
+                                    </div>
+                                </a>
+                            </li>
+
+                            }
+
+                            <li class="menu-item ">
+                                <a href="/Menu/ReservationList" class="menu-link">
+                                    <div data-i18n="Reservaciones">
+                                        Reservaciones
+                                    </div>
+                                </a>
+                            </li>
+
+
 
                         </ul>
              
@@ -726,8 +799,12 @@
 
         <!-- Layout container -->
         <div class="layout-page">
-          <!-- Navbar -->
+            <!-- Navbar -->
+            <!-- Content wrapper -->
+            <div class="content-wrapper">
                 @RenderBody()
+                <!-- Content wrapper -->    
+            </div>
           <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar">
@@ -738,7 +815,7 @@
             </div>
 
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
+              @*<!-- Search -->
               <div class="navbar-nav align-items-center">
                 <div class="nav-item navbar-search-wrapper mb-0">
                   <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
@@ -747,7 +824,7 @@
                   </a>
                 </div>
               </div>
-              <!-- /Search -->
+              <!-- /Search -->*@
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <!-- Language -->
@@ -759,17 +836,18 @@
                     <i class="ti ti-language rounded-circle ti-md"></i>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="javascript:void(0);" data-language="en" data-text-direction="ltr">
-                        <span>English</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="javascript:void(0);" data-language="fr" data-text-direction="ltr">
-                        <span>French</span>
-                      </a>
-                    </li>
-                    <li>
+                      <li>
+                          <a class="dropdown-item" href="javascript:void(0);" data-language="es" data-text-direction="ltr">
+                              <span>Español</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item" href="javascript:void(0);" data-language="en" data-text-direction="ltr">
+                              <span>English</span>
+                          </a>
+                      </li>
+
+                      @*<li>
                       <a class="dropdown-item" href="javascript:void(0);" data-language="ar" data-text-direction="rtl">
                         <span>Arabic</span>
                       </a>
@@ -778,7 +856,7 @@
                       <a class="dropdown-item" href="javascript:void(0);" data-language="de" data-text-direction="ltr">
                         <span>German</span>
                       </a>
-                    </li>
+                    </li>*@
                   </ul>
                 </li>
                 <!--/ Language -->
@@ -802,17 +880,18 @@
                         <span class="align-middle"><i class="ti ti-moon-stars ti-md me-3"></i>Dark</span>
                       </a>
                     </li>
-                    <li>
+                    @*<li>
                       <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
                         <span class="align-middle"
                           ><i class="ti ti-device-desktop-analytics ti-md me-3"></i>System</span
                         >
                       </a>
-                    </li>
+                    </li>*@
                   </ul>
                 </li>
                 <!-- / Style Switcher-->
 
+                @*
                 <!-- Quick links  -->
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown">
                   <a
@@ -1160,7 +1239,7 @@
                     </li>
                   </ul>
                 </li>
-                <!--/ Notification -->
+                <!--/ Notification -->*@
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -1267,22 +1346,22 @@
 	<!-- Main Wrapper -->
 
 
-    <!-- build:js assets/vendor/js/core.js -->
-
-    <script src="/vendor/libs/jquery/jquery.js"></script>
-    <script src="/vendor/libs/popper/popper.js"></script>
-    <script src="/vendor/js/bootstrap.js"></script>
-    <script src="/vendor/libs/node-waves/node-waves.js"></script>
-    <script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="/vendor/libs/hammer/hammer.js"></script>
-    <script src="/vendor/libs/i18n/i18n.js"></script>
-    <script src="/vendor/libs/typeahead-js/typeahead.js"></script>
-    <script src="/vendor/js/menu.js"></script>
-
-    <!-- endbuild -->
+    
     <!-- Vendors JS -->
-    <!-- Main JS -->
+    <script src="/vendor/libs/moment/moment.js"></script>
+    <script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/vendor/libs/flatpickr/flatpickr.js"></script>
 
-    <script src="/js/main.js"></script>
+<script src="/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+<script src="/vendor/libs/jquery-timepicker/jquery-timepicker.js"></script>
+<script src="/vendor/libs/pickr/pickr.js"></script>
+
+<!-- Main JS -->
+<script src="/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/js/forms-pickers.js"></script>
+   
 </body>              
 </html>

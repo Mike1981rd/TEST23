@@ -1,156 +1,217 @@
-﻿@*
+﻿
+
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 @model Preference
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Preference"]</h4>
-		<h6>@ViewLocalizer["Manage preference"]</h6>
-	</div>
-</div>
 
-<div class="card">
-    <div class="card-body">
-        <div id="store-id" class="row" data-id="@Model.ID">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Name"]</label>
-                    <input id="store-name" type="text" value="@Model.Name">
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Company"]</label>
-                    <input id="store-company" type="text" value="@Model.Company">
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-4 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["RNC"]</label>
-                    <input id="store-rnc" type="text" value="@Model.RNC">
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-4 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Phone"]</label>
-                    <input id="store-phone" type="text" value="@Model.Phone">
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-4 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Email"]</label>
-                    <input id="store-email" type="text" value="@Model.Email">
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Address"] 1</label>
-                    <input id="store-address1" type="text" value="@Model.Address1">
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Address"] 2</label>
-                    <input id="store-address2" type="text" value="@Model.Address2">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["City"]</label>
-                    <input id="store-city" type="text" value="@Model.City">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["State"]</label>
-                    <input id="store-state" type="text" value="@Model.State">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Zip Code"]</label>
-                    <input id="store-zipcode" type="text" value="@Model.PostalCode">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Country"]</label>
-                    <input id="store-country" type="text" value="@Model.Country">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>Moneda </label>
-                    <input id="store-currency" type="text" value="@Model.Currency">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>Moneda Alterna </label>
-                    <input id="store-secondcurrency" type="text" value="@Model.SecondCurrency">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-6">
-                <div class="form-group">
-                    <label>Tasa </label>
-                    <input id="store-tasa" type="text" value="@Model.Tasa">
-                </div>
-            </div>
-            @if (User.IsInRole("ADMIN"))
-            {
-                <div class="col-lg-3 col-sm-3 col-6">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Limit of Station(0 : no limit)"]</label>
-                        <input id="store-stationlimit" type="text" value="@Model.StationLimit">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row g-6">
+
+    @* Render el menu interno *@
+    @Html.Partial("InternalMenu.cshtml")
+
+    <!-- Options -->
+        <div class="col-12 col-lg-8 pt-6 pt-lg-0">
+            <div class="tab-content p-0">
+                <!-- Store Details Tab -->
+                <div class="tab-pane fade show active" id="store_details" role="tabpanel">
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-title m-0">@ViewLocalizer["General information"]</h5>
+                        </div>
+                        <div  class="card-body">
+                            <div id="store-id" class="row mb-6 g-6" data-id="@Model.ID">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-name">@ViewLocalizer["Name"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-name"
+                                        value="@Model.Name"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-company">@ViewLocalizer["Company"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-company"
+                                        value="@Model.Company"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-rnc">@ViewLocalizer["RNC"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-rnc"
+                                        value="@Model.RNC"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-phone">@ViewLocalizer["Phone"]</label>
+                                    <input
+                                        type="tel"
+                                        class="form-control phone-mask"
+                                        id="store-phone"
+                                        value="@Model.Phone" />
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-email"
+                                    >@ViewLocalizer["Email"]</label
+                                    >
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="store-email"
+                                        value="@Model.Email" />
+                                </div>
+                                <div class="col-12 col-md-12">
+                                    <label class="form-label mb-1" for="store-address1">@ViewLocalizer["Address"] 1</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-address1"
+                                        value="@Model.Address1"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-12">
+                                    <label class="form-label mb-1" for="store-address2">@ViewLocalizer["Address"] 2</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-address2"
+                                        value="@Model.Address2"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-city">@ViewLocalizer["City"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-city"
+                                        value="@Model.City"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-state">@ViewLocalizer["State"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-state"
+                                        value="@Model.State"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-zipcode">@ViewLocalizer["Zip Code"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-zipcode"
+                                        value="@Model.PostalCode"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-country">@ViewLocalizer["Country"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-country"
+                                        value="@Model.Country"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-currency">@ViewLocalizer["Moneda"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-currency"
+                                        value="@Model.Currency"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-secondcurrency">@ViewLocalizer["Moneda Alterna"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-secondcurrency"
+                                        value="@Model.SecondCurrency"
+                                    />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label mb-1" for="store-tasa">@ViewLocalizer["Tasa"]</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="store-tasa"
+                                        value="@Model.Tasa"
+                                    />
+                                </div>
+                                @if (User.IsInRole("ADMIN"))
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label mb-1" for="store-stationlimit">@ViewLocalizer["Limit of Station(0 : no limit)"]</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="store-stationlimit"
+                                            value="@Model.StationLimit"/>
+                                    </div>
+                                }
+
+                            </div>
+                            
+                        </div>
                     </div>
-                </div>
-            }
-            </div>
-            <div class="row">
-                <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
-                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                            <h6 class="text-left pr-5">@ViewLocalizer["Photo"]</h6>
+
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-title m-0">@ViewLocalizer["Photo"]</h5>
                             <div class="del-unit text-danger">
                                 <a class="del-photo " href="javascript:void(0);">
                                     <img src="/vendor/img/icons/minus.svg" alt="img">
                                 </a>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-4 col-4">
-                                @if (string.IsNullOrEmpty(Model.Logo))
-                                {
+                        <div class="card-body">
+                            <div class="row g-6">
+                                <div class="col-sm-4 col-4">
+                                    @if (string.IsNullOrEmpty(Model.Logo))
+                                    {
                                     <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                                }
-                                else
-                                {
+                                    }
+                                    else
+                                    {
                                     <img id="productimg" class="" style="max-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
-                                }
-                            
-                            </div>
-                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                                <input id="imgInpProduct" type="file" name="Files" accept="image/*">
-                                <div class="image-uploads">
-                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                    }
+
+                                </div>
+                                <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                    <input id="imgInpProduct" type="file" name="Files" accept="image/*">
+                                    <div class="image-uploads">
+                                        <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                        <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+
+                    <div class="d-flex justify-content-end gap-4">
+                        <a id="submit-preference" class="btn btn-primary" href="javascript:void(0);">@ViewLocalizer["Update"]</a>
+                    </div>
                 </div>
             </div>
         </div>
-
-      
-        <div class="row pt-3">
-            <div class="col-lg-12">
-                <a id="submit-preference" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Update"]</a>
-            </div>
-        </div>
+        <!-- /Options-->
     </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
