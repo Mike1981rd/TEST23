@@ -7,20 +7,15 @@
 		<div class="card-header">
 			<h5 class="card-title">@ViewLocalizer["Supplier List"]</h5>
 			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
-				<div class="col-md-5">
+				<div class="col-md-6">
 					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-6">
 					<select id="filter-status" class="form-select text-capitalize">
 						<option value="">@ViewLocalizer["Elegir estado"]</option>
 						<option value="1">@ViewLocalizer["Active"]</option>
 						<option value="0">@ViewLocalizer["Inactive"]</option>
 					</select>
-				</div>
-				<div class="col-md-1">
-					<a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-					<a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
 				</div>
 		</div>
 		<div class="card-datatable table-responsive">
