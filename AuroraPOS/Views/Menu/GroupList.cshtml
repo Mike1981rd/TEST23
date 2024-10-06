@@ -1,328 +1,363 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Groups"]</h4>
-        <h6>@ViewLocalizer["Manage your groups"]</h6>
-    </div>
-    <div class="page-btn">
-        <a id="add-group" class="btn btn-added" ><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Group"]</a>
-    </div>
+﻿<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Groups"]</h5>
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+				<div class="col-md-5">
+					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
+				</div>
+				<div class="col-md-5">
+					<select id="filter-status" class="form-select text-capitalize">
+						<option value="">@ViewLocalizer["Elegir estado"]</option>
+						<option value="1">@ViewLocalizer["Active"]</option>
+						<option value="0">@ViewLocalizer["Inactive"]</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+
+				</div>
+			</div>
+		</div>
+		<div class="card-datatable table-responsive">
+			<table id="group-list" class="table">
+				<thead class="border-top">
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Group name"]</th>
+						<th>@ViewLocalizer["Note"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 </div>
-<!-- /product list -->
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="table-top">
-                <div class="search-set">
-                    <div class="search-path">
-                        <a class="btn btn-filter" id="filter_search">
-                            <img src="/vendor/img/icons/filter.svg" alt="img">
-                            <span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-                        </a>
-                    </div>
-                    <div class="search-input">
-                        <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-                        <div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
-                    </div>
-                </div>
-                <div class="wordset">
-                    <ul>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-                        </li>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-                        </li>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /Filter -->
-            <div class="card" id="filter_inputs">
-                <div class="card-body pb-0">
-                    <div class="row">
-                        <div class="col-lg-4 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>@ViewLocalizer["Status"] </label>
-                                <select id="filter-status" class="select">
-                                    <option value="1" selected>@ViewLocalizer["Active"]</option>
-                                    <option value="0">@ViewLocalizer["Inactive"]</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table id="group-list" class="table">
-                    <thead>
-                    <tr>
-                        <th>@ViewLocalizer["Action"]</th>
-                        <th>@ViewLocalizer["Group name"]</th>
-                        <th>@ViewLocalizer["Note"]</th>
-                        <th>@ViewLocalizer["Status"]</th>
-
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 <!-- add / edit Modal -->
 <div class="modal fade" id="editgroup" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="group-modal-title">@ViewLocalizer["Edit Group"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Group name"]<span class="manitory">*</span></label>
-                            <input id="egroup-name" type="text" value="SGST 4.5%	" required>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Note"]</label>
-                            <textarea id="egroup-note" rows="5" cols="5" class="form-control" placeholder="@ViewLocalizer["Enter text here"]"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="egroup-status" class="select">
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row pt-5">
-                    <div class="col-lg-12 col-sm-12 col-12">
-                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                            <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-                            <div class="add-unit">
-                                <a class="add-accounting-item" href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                        <table class="table reordertable">
-                            <thead>
-                            <tr>
-                                <td>
-                                    @ViewLocalizer["Name"]
-                                </td>
-                                <td>
-                                    @ViewLocalizer["Type"]
-                                </td>
-                                <td>
-                                    @ViewLocalizer["Number"]
-                                </td>
-                                <td>
-                                    @ViewLocalizer["Action"]
-                                </td>
-                            </thead>
-                            <tbody id="accounting-list">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="edit-group" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Edit Group"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Group name"]<span class="manitory">*</span></label>
+							<input id="egroup-name" type="text" value="SGST 4.5%	" required>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Note"]</label>
+							<textarea id="egroup-note" rows="5" cols="5" class="form-control" placeholder="@ViewLocalizer["Enter text here"]"></textarea>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="egroup-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row pt-5">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+							<div class="add-unit">
+								<a class="add-accounting-item" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table reordertable">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Name"]
+									</td>
+									<td>
+										@ViewLocalizer["Type"]
+									</td>
+									<td>
+										@ViewLocalizer["Number"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="accounting-list">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="edit-group" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
 </div>
+<!-- / Content -->
+<!-- /product list -->
 @{
-@await Component.InvokeAsync("Accounting", new { })
+	@await Component.InvokeAsync("Accounting", new { })
 }
 <script>
-    $(document).ready(function () {
+
+	$(document).ready(function () {
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterGroup()
+		});
+		$("#filter-status").on("change", function () {
+			FilterGroup()
+		});
+
+		$("#filter_search").click(function () {
+
+		});
+	});
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
 
 
-        $("#filter-searchtext").on("change keyup", function () {
-            FilterGroup()
-        });
-        $("#filter-status").on("change", function () {
-            FilterGroup()
-        });
+	var grouptable = $("#group-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Menu/GetGroupList",
+			"type": "POST",
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
 
-        $("#filter_search").click(function () {
+						popupContent.style.position = "absolute";
 
-        });
-    });
-    var grouptable = $("#group-list").DataTable({
-        "processing": true, // for show progress bar
-        "serverSide": true, // for process server side
-        "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
-        "orderMulti": false, // for disable multiple column at once
-        "ajax": {
-            "url": "/Menu/GetGroupList",
-            "type": "POST",
-            "datatype": "json"
-        },
-        'select': {
-            'style': 'multi'
-        },
-        "pageLength": 10,
-        "lengthMenu": [10, 25, 50],
-        "order": [[1, 'asc']],
-        "columns": [
-            {
-                'data': 'action', 'name': 'action',
-                render: function (data, type, row) {
-                    return "<a class='me-3' href='javascript:void(0);' onclick='EditGroup(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
-                },
-            },
-            { "data": "groupName", "name": "groupName", "autoWidth": true },
-            { "data": "note", "name": "note", "autoWidth": true },
-            {
-                'data': 'status', 'name': 'isActive',
-                render: function (data, type, row) {
-                    if (row.isActive) {
-                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
-                    }
-                    else {
-                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
-                    }
-                },
-                "autoWidth": true
-            },
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
 
-        ]
-    });
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
 
-    $("#add-group").click(function () {
-        $("#egroup-name").val("");
-        $("#egroup-note").val("");
 
-        $("#egroup-status").val(1).change();
-        $(".group-modal-title").html("@ViewLocalizer["Add Group"]");
-        $("#editgroup").data("id", 0);
-        $("#editgroup").modal("show");
 
-        GetAccountItems(13, 0);
-    });
+					});
+				});
 
-    function EditGroup(group) {
-        $("#egroup-name").val(group.groupName);
-        $("#egroup-note").val(group.note);
-        if (group.isActive) {
-            $("#egroup-status").val(1).change();
-        }
-        else {
-            $("#egroup-status").val(0).change();
-        }
-        $(".group-modal-title").html("@ViewLocalizer["Add Group"]");
-        $("#editgroup").data("id", group.id);
+			}
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='me-3' href='javascript:void(0);' onclick='EditGroup(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+			},
+			{ "data": "groupName", "name": "groupName", "autoWidth": true },
+			{ "data": "note", "name": "note", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
 
-        GetAccountItems(13, group.id);
-        $("#editgroup").modal("show");
-    }
+					}
+					else {
+						return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+		],
+		// Buttons with Dropdown
+		buttons: [
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Group"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+					$("#egroup-name").val("");
+					$("#egroup-note").val("");
 
-    $("#edit-group").click(function () {
-        var groupName = $("#egroup-name").val();
-        if (!groupName || groupName == "") {
-            toastr.warning("@ViewLocalizer["Please input the group name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
-            return;
-        }
-        var note = $("#egroup-note").val();
-        var active = $("#egroup-status").val()
-        var data = {
-            ID: $("#editgroup").data("id"),
-            GroupName: groupName,
-            Note: note,
-            IsActive: active == "1"
-        }
+					$("#egroup-status").val(1).change();
+					$(".group-modal-title").html("@ViewLocalizer["Add Group"]");
+					$("#editgroup").data("id", 0);
+					$("#editgroup").modal("show");
 
-        $.ajax({
-            url: "/Menu/EditGroup",
-            type: "POST",
-            data: data,
-            success: function (data, textStatus, jqXHR) {
-                if (data.status == 0) {
-                    SaveAccountItems(13, data.id, function () {
-                        grouptable.draw();
-                        $("#editgroup").modal("hide");
-                    })
-                }
-                else if(data.status == 2)
-                {
-                    toastr.error("@ViewLocalizer["The group name should be unique."]", {})
-                }
-                else {
-                    toastr.error("@ViewLocalizer["Failed to update the group."]", {})
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
-    });
+					GetAccountItems(13, 0);
+				}
+			}
+		]
+	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
-    // function DeleteGroup(id) {
 
-    //     Swal.fire({
-    //         title: "@ViewLocalizer["Are you sure to delete the group?"]",
-    //         text: "",
-    //         type: "warning",
-    //         showCancelButton: !0,
-    //         confirmButtonColor: "#3085d6",
-    //         cancelButtonColor: "#d33",
-    //         confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
-    //         cancelButtonText: "@ViewLocalizer["Cancel"]",
-    //         confirmButtonClass: "btn btn-primary",
-    //         cancelButtonClass: "btn btn-danger ml-1",
-    //         buttonsStyling: !1,
-    //     }).then(function (t) {
-    //         if (t.value) {
-    //             $.ajax({
-    //                 url: "/Menu/DeleteGroup?groupId=" + id,
-    //                 type: "POST",
-    //                 success: function (data, textStatus, jqXHR) {
-    //                     if (data.status == 0) {
-    //                         grouptable.draw();
-    //                     }
-    //                     else {
-    //                         toastr.error("@ViewLocalizer["Failed to delete the group."]", {})
-    //                     }
-    //                 },
-    //                 error: function (jqXHR, textStatus, errorThrown) {
-    //                     toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-    //                 }
-    //             });
-    //         }
+	$("#add-group").click(function () {
+		$("#egroup-name").val("");
+		$("#egroup-note").val("");
 
-    //     });
+		$("#egroup-status").val(1).change();
+		$(".group-modal-title").html("@ViewLocalizer["Add Group"]");
+		$("#editgroup").data("id", 0);
+		$("#editgroup").modal("show");
 
-    // }
+		GetAccountItems(13, 0);
+	});
 
-    function FilterGroup() {
-        var searchText = $("#filter-searchtext").val();
-        var status = $("#filter-status").val();
+	function EditGroup(group) {
+		$("#egroup-name").val(group.groupName);
+		$("#egroup-note").val(group.note);
+		if (group.isActive) {
+			$("#egroup-status").val(1).change();
+		}
+		else {
+			$("#egroup-status").val(0).change();
+		}
+		$(".group-modal-title").html("@ViewLocalizer["Add Group"]");
+		$("#editgroup").data("id", group.id);
 
-        grouptable.columns(0).search(searchText);
-        grouptable.columns(1).search(status);
+		GetAccountItems(13, group.id);
+		$("#editgroup").modal("show");
+	}
 
-        grouptable.draw();
-    }
+	$("#edit-group").click(function () {
+		var groupName = $("#egroup-name").val();
+		if (!groupName || groupName == "") {
+			toastr.warning("@ViewLocalizer["Please input the group name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
+		var note = $("#egroup-note").val();
+		var active = $("#egroup-status").val()
+		var data = {
+			ID: $("#editgroup").data("id"),
+			GroupName: groupName,
+			Note: note,
+			IsActive: active == "1"
+		}
 
+		$.ajax({
+			url: "/Menu/EditGroup",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					SaveAccountItems(13, data.id, function () {
+						grouptable.draw();
+						$("#editgroup").modal("hide");
+					})
+				}
+				else if (data.status == 2) {
+					toastr.error("@ViewLocalizer["The group name should be unique."]", {})
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update the group."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	});
+
+	// function DeleteGroup(id) {
+
+	//     Swal.fire({
+	//         title: "@ViewLocalizer["Are you sure to delete the group?"]",
+	//         text: "",
+	//         type: "warning",
+	//         showCancelButton: !0,
+	//         confirmButtonColor: "#3085d6",
+	//         cancelButtonColor: "#d33",
+	//         confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+	//         cancelButtonText: "@ViewLocalizer["Cancel"]",
+	//         confirmButtonClass: "btn btn-primary",
+	//         cancelButtonClass: "btn btn-danger ml-1",
+	//         buttonsStyling: !1,
+	//     }).then(function (t) {
+	//         if (t.value) {
+	//             $.ajax({
+	//                 url: "/Menu/DeleteGroup?groupId=" + id,
+	//                 type: "POST",
+	//                 success: function (data, textStatus, jqXHR) {
+	//                     if (data.status == 0) {
+	//                         grouptable.draw();
+	//                     }
+	//                     else {
+	//                         toastr.error("@ViewLocalizer["Failed to delete the group."]", {})
+	//                     }
+	//                 },
+	//                 error: function (jqXHR, textStatus, errorThrown) {
+	//                     toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+	//                 }
+	//             });
+	//         }
+
+	//     });
+
+	// }
+
+	function FilterGroup() {
+		var searchText = $("#filter-searchtext").val();
+		var status = $("#filter-status").val();
+
+		grouptable.columns(0).search(searchText);
+		grouptable.columns(1).search(status);
+
+		grouptable.draw();
+	}
 </script>

@@ -1,90 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Production List"]</h4>
-		<h6>@ViewLocalizer["Manage your production"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="/Inventory/AddProduction" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Production"]</a>
-	</div>
-</div>
+﻿<!-- Content -->
 
+<div class="container-xxl flex-grow-1 container-p-y">
 
-<!-- /product list -->
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="table-top">
-				<div class="search-set">
-					<div class="search-path">
-						<a class="btn btn-filter" id="filter_search">
-							<img src="/vendor/img/icons/filter.svg" alt="img">
-							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-						</a>
-					</div>
-					<div class="search-input">
-						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
-					</div>
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Production List"]</h5>
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+				<div class="col-md-3">
+					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
-				<div class="wordset">
-					<ul>
-						<li>
-							<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-						</li>
-						<li>
-							<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-						</li>
-						@*<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-						</li>*@
-					</ul>
+				<div class="col-md-4">
+					<select id="filter-warehouse" class="select">
+					</select>
+				</div>
+				<div class="col-md-4">
+					<select id="filter-status" class="form-select text-capitalize">
+						<option value="">@ViewLocalizer["Elegir estado"]</option>
+						<option value="1">@ViewLocalizer["Pending"]</option>
+						<option value="0">@ViewLocalizer["Canceled"]</option>
+						<option value="0">@ViewLocalizer["Completed"]</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+
 				</div>
 			</div>
-			<!-- /Filter -->
-			<div class="card" id="filter_inputs">
-				<div class="card-body pb-0">
-					<div class="row">
-						
-						<div class="col-lg-4 col-sm-6 col-12">
-							<div class="form-group">
-								<label>@ViewLocalizer["Warehouse"] </label>
-								<select id="filter-warehouse" class="select">
-								</select>
-							</div>
-						</div>
-					
-					</div>
-				</div>
-			</div>
-			<!-- /Filter -->
-			<div class="table-responsive">
-				<table id="production-list" class="table">
-					<thead>
-						<tr>
-							<th>@ViewLocalizer["Action"]</th>
-							<th>@ViewLocalizer["ID"] </th>
-							<th>@ViewLocalizer["Warehouse"] </th>
-							<th>@ViewLocalizer["Sub Recipe"] </th>
-							<th>@ViewLocalizer["Qty"]</th>
-							<th>@ViewLocalizer["Unit"]</th>
-							<th>@ViewLocalizer["Status"]</th>
-							
-						</tr>
-					</thead>
-				</table>
-			</div>
+		</div>
+		<div class="card-datatable table-responsive">
+			<table id="production-list" class="table">
+				<thead class="border-top">
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["ID"] </th>
+						<th>@ViewLocalizer["Warehouse"] </th>
+						<th>@ViewLocalizer["Sub Recipe"] </th>
+						<th>@ViewLocalizer["Qty"]</th>
+						<th>@ViewLocalizer["Unit"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					</tr>
+				</thead>
+			</table>
 		</div>
 	</div>
 </div>
+<!-- / Content -->
 <!-- /product list -->
-
-
-<script>	
+<script>
 
 	$(document).ready(function () {
 		LoadWarehouse();
@@ -103,7 +68,20 @@
 			}
 
 		});
-
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
 		$(".btn-excel").click(function () {
 			var searchText = $("#filter-searchtext").val();
 			var warehouse = $("#filter-warehouse").val();
@@ -151,16 +129,53 @@
 
 
 	})
-
+	
 	var productiontable = $("#production-list").DataTable({
 		"processing": true, // for show progress bar
 		"serverSide": true, // for process server side
-		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
 		"orderMulti": false, // for disable multiple column at once
 		"ajax": {
 			"url": "/Inventory/GetProductionList",
 			"type": "POST",
-			"datatype": "json"
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+						popupContent.style.position = "absolute";
+
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
+
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
+
+
+
+					});
+				});
+
+			}
 		},
 		'select': {
 			'style': 'multi'
@@ -173,7 +188,9 @@
 				'data': 'action', 'name': 'action',
 				render: function (data, type, row) {
 					return "<a class='me-3' href='/Inventory/AddProduction?productionID=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+
 				},
+				"autoWidth": true,
 			},
 			{ "data": "id", "name": "id", "autoWidth": true },
 			{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
@@ -185,7 +202,7 @@
 				render: function (data, type, row) {
 					if (row.status == 1) {
 						return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
-					}					
+					}
 					else if (row.status == 2) {
 						return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
 					}
@@ -195,9 +212,21 @@
 				},
 				"autoWidth": true
 			},
+		],
+		// Buttons with Dropdown
+		buttons: [
 			
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Production"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+					window.location.href = "/Inventory/AddProduction";
+				}
+			}
 		]
 	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
 	function LoadWarehouse() {
 
@@ -220,14 +249,32 @@
 
 	}
 
-	function FilterProduction () {
+
+	function FilterArticle() {
 		var searchText = $("#filter-searchtext").val();
-		var warehouse = $("#filter-warehouse").val();
+		var category = $("#filter-category").val();
+		var subcategory = $("#filter-subcategory").val();
+		var brand = $("#filter-brand").val();
+		var barcode = $("#filter-barcode").val();
+		var status = $("#filter-status").val();
+		var supplier = $("#filter-supplier").val();
 
-		productiontable.columns(0).search(searchText);
-		productiontable.columns(1).search(warehouse);
+		//if (brand && brand !== "")
+		setCookie("prodBrand", brand, 1);
+		//if (category && category !== "")
+		setCookie("prodCategory", category, 1);
+		//if (subcategory && subcategory !== "")
+		setCookie("prodSubCategory", subcategory, 1);
 
-		productiontable.draw();
+
+		articletable.columns(0).search(searchText);
+		articletable.columns(1).search(brand);
+		articletable.columns(2).search(category);
+		articletable.columns(3).search(subcategory)
+		articletable.columns(4).search(barcode)
+		articletable.columns(5).search(status)
+		articletable.columns(6).search(supplier)
+
+		articletable.draw();
 	}
-
 </script>

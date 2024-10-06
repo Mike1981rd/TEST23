@@ -1,4 +1,5 @@
-﻿@*
+﻿<!-- Content -->
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -7,41 +8,29 @@
 	var groups = (List<Group>)ViewBag.Groups;
 	var canadd = (bool)ViewBag.CanAdd;
 }
+<div class="container-xxl flex-grow-1 container-p-y">
 
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Station List"]</h4>
-		<h6>@ViewLocalizer["Manage your Stations"]</h6>
-	</div>
-	@if (canadd)
-	{
-		<div class="page-btn">
-			<a id="add-station-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Station"]</a>
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Station List"]</h5>
 		</div>
-	}
-
-</div>
-
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
+		<div class="card-datatable table-responsive">
 			<table id="station-list" class="table">
-				<thead>
+				<thead class="border-top">
 					<tr>
 						<th>@ViewLocalizer["Action"]</th>
 						<th>@ViewLocalizer["ID"] </th>
 						<th>@ViewLocalizer["Name"] </th>
 						<th>@ViewLocalizer["Menu"] </th>
 						<th>@ViewLocalizer["Status"]</th>
-						
 					</tr>
 				</thead>
 			</table>
 		</div>
 	</div>
 </div>
-
-
+<!-- / Content -->
 <div class="modal fade" id="addstation" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -52,163 +41,163 @@
 				</button>
 			</div>
 			<div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">ID</span>
-                                <input id="station-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-                            </div>
-                        </div>
-                    </div>
+				<div class="row">
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID</span>
+								<input id="station-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+					</div>
 
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Price"]<span class="manitory">*</span></label>
-                            <select id="station-price" class="select">
-                                <option value="1">Price 1</option>
-                                <option value="2">Price 2</option>
-                                <option value="3">Price 3</option>
-                                <option value="4">Price 4</option>
-                                <option value="5">Price 5</option>
-                                <option value="6">Price 6</option>
-                                <option value="7">Price 7</option>
-                                <option value="8">Price 8</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Menu"]</label>
-                            <select id="station-menu" class="select">
-                            </select>
-                        </div>
-                    </div>
-                 
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Price"]<span class="manitory">*</span></label>
+							<select id="station-price" class="select">
+								<option value="1">Price 1</option>
+								<option value="2">Price 2</option>
+								<option value="3">Price 3</option>
+								<option value="4">Price 4</option>
+								<option value="5">Price 5</option>
+								<option value="6">Price 6</option>
+								<option value="7">Price 7</option>
+								<option value="8">Price 8</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Menu"]</label>
+							<select id="station-menu" class="select">
+							</select>
+						</div>
+					</div>
 
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="station-status" class="select">
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Sales Mode"]</label>
-                            <select id="station-mode" class="select">
-                                <option value="0"> @ViewLocalizer["Restaurant"]</option>
-                                <option value="1"> @ViewLocalizer["Barcode"]</option>
-                                <option value="2"> @ViewLocalizer["Kiosk"]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Print Copy"]<span class="manitory">*</span></label>
-                            <input id="station-printcopy" type="number" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Sucursal"]</label>
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10">
-                                    <select id="station-branch" class="select ">
-                                        <option>@ViewLocalizer["Choose sucursal"]</option>
-                                        @foreach (var b in branchs)
-                                        {
-                                            <option value="@b.ID">@b.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                    <div class="add-icon">
-                                        <a id="add-branch" href="javascript:void(0);">
-                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
-                            <select id="imprimir-precuenta-delivery" class="select">
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Precio Delivery"]</label>
-                            <select id="delivery-price" class="select">
-                                <option value="">Ninguno</option>
-                                <option value="1">Price 1</option>
-                                <option value="2">Price 2</option>
-                                <option value="3">Price 3</option>
-                                <option value="4">Price 4</option>
-                                <option value="5">Price 5</option>
-                                <option value="6">Price 6</option>
-                                <option value="7">Price 7</option>
-                                <option value="8">Price 8</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Delivery Prepare Type Default"]</label>
-                            <select id="prepare-type-default" class="select">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-sm-12 col-12">
-                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                            <h6 class="text-left"> @ViewLocalizer["Areas"]</h6>
-                            <div class="add-unit">
-                                <a class="add-area" href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                        <table class="table reordertable">
-                            <thead>
-                                <tr>
-                                    <td>
-                                        @ViewLocalizer["Name"]
-                                    </td>
-                                    <td>
-                                        @ViewLocalizer["Price"]
-                                    </td>
-                                    <td>
-                                        @ViewLocalizer["Action"]
-                                    </td>
-                            </thead>
-                            <tbody id="station-areas">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-lg-12 pt-5">
-                        <label>@ViewLocalizer["Printer Setup"]</label>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>@ViewLocalizer["Channel"]</th>
-                                        <th>@ViewLocalizer["Default"]</th>
-                                        <th>@ViewLocalizer["Printer"]</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="printerchannel-list">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Status"]</label>
+							<select id="station-status" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Sales Mode"]</label>
+							<select id="station-mode" class="select">
+								<option value="0"> @ViewLocalizer["Restaurant"]</option>
+								<option value="1"> @ViewLocalizer["Barcode"]</option>
+								<option value="2"> @ViewLocalizer["Kiosk"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Print Copy"]<span class="manitory">*</span></label>
+							<input id="station-printcopy" type="number" class="form-control" required>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Sucursal"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="station-branch" class="select ">
+										<option>@ViewLocalizer["Choose sucursal"]</option>
+										@foreach (var b in branchs)
+										{
+											<option value="@b.ID">@b.Name</option>
+										}
+									</select>
+								</div>
+								<div class="col-lg-2 col-sm-2 col-2 ps-0">
+									<div class="add-icon">
+										<a id="add-branch" href="javascript:void(0);">
+											<img src="/vendor/img/icons/plus1.svg" alt="img">
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group mb-0">
+							<label>@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
+							<select id="imprimir-precuenta-delivery" class="select">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Precio Delivery"]</label>
+							<select id="delivery-price" class="select">
+								<option value="">Ninguno</option>
+								<option value="1">Price 1</option>
+								<option value="2">Price 2</option>
+								<option value="3">Price 3</option>
+								<option value="4">Price 4</option>
+								<option value="5">Price 5</option>
+								<option value="6">Price 6</option>
+								<option value="7">Price 7</option>
+								<option value="8">Price 8</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Delivery Prepare Type Default"]</label>
+							<select id="prepare-type-default" class="select">
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Areas"]</h6>
+							<div class="add-unit">
+								<a class="add-area" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<table class="table reordertable">
+							<thead>
+								<tr>
+									<td>
+										@ViewLocalizer["Name"]
+									</td>
+									<td>
+										@ViewLocalizer["Price"]
+									</td>
+									<td>
+										@ViewLocalizer["Action"]
+									</td>
+							</thead>
+							<tbody id="station-areas">
+							</tbody>
+						</table>
+					</div>
+					<div class="col-lg-12 pt-5">
+						<label>@ViewLocalizer["Printer Setup"]</label>
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>@ViewLocalizer["Channel"]</th>
+										<th>@ViewLocalizer["Default"]</th>
+										<th>@ViewLocalizer["Printer"]</th>
+									</tr>
+								</thead>
+								<tbody id="printerchannel-list">
+								</tbody>
+							</table>
+						</div>
+					</div>
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="d-flex  align-items-center py-4" style="gap: 5px;">
 							<h6 class="text-left"> @ViewLocalizer["Warehouse"]</h6>
@@ -235,7 +224,7 @@
 							</tbody>
 						</table>
 					</div>
-                </div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button id="edit-station" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
@@ -367,9 +356,11 @@
 		</div>
 	</div>
 </div>
-
 <script>
-	$(document).ready(function(){
+
+	$(document).ready(function () {
+		LoadWarehouse();
+
 		LoadMenu();
 		LoadWarehouse();
 		LoadPreparetypes();
@@ -382,25 +373,76 @@
 		$(".add-warehouse").click(function () {
 			$("#addgroupwarehouse").modal("show");
 		})
+		function getCookie(cname) {
+			let name = cname + "=";
+			let ca = document.cookie.split(';');
+			for (let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
 
-		// question list
+
 		var arealisttable = $("#area-list").DataTable({
-			"processing": true, // for show progress bar
-			"serverSide": true, // for process server side
-			"filter": true, // this is for disable filter (search box)
-			"orderMulti": false, // for disable multiple column at once
-			"ajax": {
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
 				"url": "/Menu/GetAreas",
-				"type": "POST",
-				"datatype": "json"
-			},
-			'select': {
-				'style': 'multi'
-			},
-			"pageLength": 10,
-			"lengthMenu": [10, 25, 50],
-			"order": [[1, 'asc']],
-			"columns": [
+			"type": "POST",
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+						popupContent.style.position = "absolute";
+
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
+
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
+
+
+
+					});
+				});
+
+			}
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
 				{
 					'data': 'action', 'name': 'action',
 					render: function (data, type, row) {
@@ -412,23 +454,32 @@
 					'data': 'status', 'name': 'isActive',
 					render: function (data, type, row) {
 						if (row.isActive) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
 						}
 						else {
-							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
 						}
 					},
 					"autoWidth": true
 				},
+		],
+		// Buttons with Dropdown
+		buttons: [
 
-			]
-		});
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Station"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+						EditStation(0)
+				}
+			}
+		]
+	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
-		$("#add-station-modal").click(function(){
-			EditStation(0)
-		});
-
-		$("#edit-station").click(function(){
+		$("#edit-station").click(function () {
 			var name = $("#station-name").val();
 			if (!name || name == "") {
 				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
@@ -436,18 +487,18 @@
 			}
 
 			var price = parseInt($("#station-price").val());
-            var deliveryprice = parseInt($("#delivery-price").val());
+			var deliveryprice = parseInt($("#delivery-price").val());
 
 			var menu = parseInt($("#station-menu").val());
-		
-            var preparetypedefault = parseInt($("#prepare-type-default").val());
-            
+
+			var preparetypedefault = parseInt($("#prepare-type-default").val());
+
 
 			var mode = parseInt($("#station-mode").val());
 			var typeofsale = "";
 			var business = "";
 			var active = $("#station-status").val() == "1";
-            var imprimirprecuentadelivery = $("#imprimir-precuenta-delivery").val() == "1";
+			var imprimirprecuentadelivery = $("#imprimir-precuenta-delivery").val() == "1";
 			var printcopy = parseInt($("#station-printcopy").val());
 			var branch = parseInt($("#station-branch").val());
 			if (!printcopy) printcopy = 0;
@@ -486,7 +537,7 @@
 				var dc = {
 					GroupID: group,
 					WarehouseID: warehouseid,
-					
+
 				}
 				warehouses.push(dc);
 			})
@@ -496,16 +547,16 @@
 				Name: name,
 				PriceSelect: price,
 				MenuId: menu,
-                prepareTypeDefault: preparetypedefault,
+				prepareTypeDefault: preparetypedefault,
 				SalesMode: mode,
 				IsActive: active,
-                ImprimirPrecuentaDelivery: imprimirprecuentadelivery,
+				ImprimirPrecuentaDelivery: imprimirprecuentadelivery,
 				Areas: areas,
 				PrinterChannels: channels,
-				PrintCopy : printcopy,
+				PrintCopy: printcopy,
 				IDSucursal: branch,
 				PrecioDelivery: deliveryprice,
-				GroupWarehouses : warehouses
+				GroupWarehouses: warehouses
 			}
 
 			$.ajax({
@@ -560,13 +611,14 @@
 				{ "data": "name", "name": "name", "autoWidth": true },
 				{ "data": "menu", "name": "menu", "autoWidth": true },
 				{
-					'data': 'isActive', 'name': 'isActive',
+					'data': 'status', 'name': 'isActive',
 					render: function (data, type, row) {
 						if (row.isActive) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
 						}
 						else {
-							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
 						}
 					},
 					"autoWidth": true
@@ -591,26 +643,26 @@
 		if (!exist) {
 			var html = `<tr data-id='${area.id}'> <td>${area.name}</td>`;
 			html += `
-					<td><div>
-					<select class="area-price select">
-						<option value="0">None</option>
-						<option value="1">Price 1</option>
-						<option value="2">Price 2</option>
-						<option value="3">Price 3</option>
-						<option value="4">Price 4</option>
-						<option value="5">Price 5</option>
-						<option value="6">Price 6</option>
-						<option value="7">Price 7</option>
-						<option value="8">Price 8</option>
-					</select></div></td>
-			`
+						<td><div>
+						<select class="area-price select">
+							<option value="0">None</option>
+							<option value="1">Price 1</option>
+							<option value="2">Price 2</option>
+							<option value="3">Price 3</option>
+							<option value="4">Price 4</option>
+							<option value="5">Price 5</option>
+							<option value="6">Price 6</option>
+							<option value="7">Price 7</option>
+							<option value="8">Price 8</option>
+						</select></div></td>
+				`
 			html += `
-							<td>
-								<div class="delete-btn">
-									<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-								</div>
-							</td>
-						</tr>`;
+								<td>
+									<div class="delete-btn">
+										<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+									</div>
+								</td>
+							</tr>`;
 
 			$("#station-areas").append(html);
 			$("#listareas").modal("hide");
@@ -641,41 +693,40 @@
 		});
 	}
 
-	function LoadMenu()
-    {
-        // load menu
-        $.ajax({
-            url: "/Menu/GetMenuList",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
-                $("#station-menu").empty();
-                $("#station-menu").append("<option value='' selected>@ViewLocalizer["Choose menu"]</option>")
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
+	function LoadMenu() {
+		// load menu
+		$.ajax({
+			url: "/Menu/GetMenuList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$("#station-menu").empty();
+				$("#station-menu").append("<option value='' selected>@ViewLocalizer["Choose menu"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
 
-                    $("#station-menu").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "' data-desc='" + d.description + "'>" + d.name + "</option>")
-                }
-                $("#station-menu").select2();
+					$("#station-menu").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "' data-desc='" + d.description + "'>" + d.name + "</option>")
+				}
+				$("#station-menu").select2();
 			},
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
-    }
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
 
 	function LoadWarehouse() {
-        $.ajax({
-            url: "/Inventory/GetAllActiveWarehouses",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+		$.ajax({
+			url: "/Inventory/GetAllActiveWarehouses",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
 
-                $("#station-warehouse").empty();
-                $("#station-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
-                    $("#station-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
-                }
-                $("#station-warehouse").select2();
+				$("#station-warehouse").empty();
+				$("#station-warehouse").append("<option value='' selected>@ViewLocalizer["Choose warehouse"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#station-warehouse").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
+				}
+				$("#station-warehouse").select2();
 
 				$("#station-warehouse1").empty();
 				for (var i = 0; i < data.length; i++) {
@@ -683,39 +734,38 @@
 					$("#station-warehouse1").append("<option value='" + d.id + "'>" + d.warehouseName + "</option>")
 				}
 				$("#station-warehouse1").select2();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
 
-        $("#listwarehouse").modal("hide");
+		$("#listwarehouse").modal("hide");
 	}
 
 	function LoadPreparetypes() {
-        $.ajax({
-            url: "/Setting/GetPrepareTypesList",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+		$.ajax({
+			url: "/Setting/GetPrepareTypesList",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
 
-                $("#prepare-type-default").empty();
-                $("#prepare-type-default").append("<option value='' selected>@ViewLocalizer["Elegir Prepare Type"]</option>")
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
-                    $("#prepare-type-default").append("<option value='" + d.id + "'>" + d.name + "</option>")
-                }
-                $("#prepare-type-default").select2();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
+				$("#prepare-type-default").empty();
+				$("#prepare-type-default").append("<option value='' selected>@ViewLocalizer["Elegir Prepare Type"]</option>")
+				for (var i = 0; i < data.length; i++) {
+					var d = data[i];
+					$("#prepare-type-default").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				}
+				$("#prepare-type-default").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
 
-        
-    }
 
-	function EditStation(id)
-	{
+	}
+
+	function EditStation(id) {
 		// load menu
 		$.ajax({
 			url: "/Menu/GetStation?stationId=" + id,
@@ -727,23 +777,22 @@
 					$("#station-price").val(data.priceSelect).change();
 					$("#station-menu").val(data.menuSelect.id).change();
 					$("#station-warehouse").val(data.warehouse.id).change();
-                    $("#prepare-type-default").val(data.prepareTypeDefault).change();                    
+					$("#prepare-type-default").val(data.prepareTypeDefault).change();
 					$("#station-mode").val(data.salesMode).change();
 					$("#station-status").val("1").change();
-                    $("#delivery-price").val(data.precioDelivery).change();
+					$("#delivery-price").val(data.precioDelivery).change();
 
 					$("#station-printcopy").val(data.printCopy).change();
 					$("#station-branch").val(data.idSucursal).change();
-					if (!data.isActive)
-					{
+					if (!data.isActive) {
 						$("#station-status").val("0").change();
 					}
 					if (!data.imprimirPrecuentaDelivery) {
 						$("#imprimir-precuenta-delivery").val("0").change();
 					} else {
-                        $("#imprimir-precuenta-delivery").val("1").change();
+						$("#imprimir-precuenta-delivery").val("1").change();
 					}
-					var areas = data.areas.map(s=>s.id);
+					var areas = data.areas.map(s => s.id);
 
 					$("#station-areas").empty();
 
@@ -755,7 +804,7 @@
 
 						if (d.station.areaPrices) {
 							var prices = JSON.parse(d.station.areaPrices);
-							if (prices ){
+							if (prices) {
 								$("#station-areas tr").each(function (index, item) {
 									var id = $(this).data("id");
 									var price = prices.find(obj => {
@@ -777,20 +826,18 @@
 					$("#station-price").val("1").change();
 					$("#station-menu").val("").change();
 					$("#station-warehouse").val("").change();
-                    $("#prepare-type-default").val("").change();                    
+					$("#prepare-type-default").val("").change();
 					$("#station-status").val("1").change();
-                    $("#imprimir-precuenta-delivery").val("0").change();
+					$("#imprimir-precuenta-delivery").val("0").change();
 					$("#station-areas").empty();
 					$("#addstation").data("id", 0);
 					$("#station-printcopy").val(0);
 					$("#station-branch").val(0);
 
 				}
-				if (d.channels && d.channels.length > 0)
-				{
+				if (d.channels && d.channels.length > 0) {
 					$("#printerchannel-list").empty();
-					for(var i = 0; i < d.channels.length; i++)
-					{
+					for (var i = 0; i < d.channels.length; i++) {
 						var c = d.channels[i];
 						var dddd = "";
 						if (c.printerChannel.isDefault) dddd = "Yes";
@@ -798,14 +845,12 @@
 						var phtml = `<select class='printer select'>`;
 						phtml += `<option>Choose the printer</option>`
 						var printers = d.printers;
-						for(var j = 0; j < printers.length; j++)
-						{
+						for (var j = 0; j < printers.length; j++) {
 							var p = printers[j];
-							if (c.printer && c.printer.id == p.id)
-							{
+							if (c.printer && c.printer.id == p.id) {
 								phtml += `<option selected value='${p.id}'>${p.name}</option>`
 							}
-							else{
+							else {
 								phtml += `<option value='${p.id}'>${p.name}</option>`
 							}
 
@@ -824,14 +869,14 @@
 
 						var html = `<tr data-group='${w.group.id}' data-warehouse='${w.warehouse.id}'><td>${w.group.groupName}</td><td>${w.warehouse.warehouseName}</td><td>
 
-									<div class="delete-btn">
-										<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-									</div></td>
-						</tr>`
+										<div class="delete-btn">
+											<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</div></td>
+							</tr>`
 						$("#station-warehouses").append(html);
 					}
 				}
-						
+
 				$("#addstation").modal("show");
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -840,8 +885,7 @@
 		});
 	}
 
-	function DeleteStation(id)
-	{
+	function DeleteStation(id) {
 		Swal.fire({
 			title: "@ViewLocalizer["Are you sure to delete the station?"]",
 			text: "",
@@ -1025,28 +1069,27 @@
 		var warehouseid = parseInt($("#station-warehouse1").val())
 
 		var exist = false
-		$("#station-warehouses tr").each(function() {
+		$("#station-warehouses tr").each(function () {
 			var group = parseInt($(this).data("group"));
-			if (group == groupid){
+			if (group == groupid) {
 				exist = true;
 			}
 		})
 
-		if (exist){
+		if (exist) {
 			toastr.error("@ViewLocalizer["The group already exist."]", {})
 			return;
 		}
 
 		var html = `<tr data-group='${groupid}' data-warehouse='${warehouseid}'><td>${groupname}</td><td>${warehousename}</td><td>
 
-										<div class="delete-btn">
-											<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-										</div></td>
-							</tr>`
+											<div class="delete-btn">
+												<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+											</div></td>
+								</tr>`
 
 		$("#station-warehouses").append(html);
 
 		$("#addgroupwarehouse").modal("hide");
 	});
-
 </script>

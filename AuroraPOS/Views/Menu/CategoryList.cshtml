@@ -1,87 +1,49 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!-- Content -->
 
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Category List"]</h4>
-		<h6>@ViewLocalizer["Manage your Categories"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="/Menu/AddCategory" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Category"]</a>
-	</div>
-</div>
+<div class="container-xxl flex-grow-1 container-p-y">
 
-
-<!-- /product list -->
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="table-top">
-				<div class="search-set">
-					<div class="search-path">
-						<a class="btn btn-filter" id="filter_search">
-							<img src="/vendor/img/icons/filter.svg" alt="img">
-							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-						</a>
-					</div>
-					<div class="search-input">
-						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
-					</div>
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Category List"]</h5>
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+				<div class="col-md-5">
+					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
-				<div class="wordset">
-					<ul>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-						</li>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-						</li>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-						</li>
-					</ul>
+				<div class="col-md-5">
+					<select id="filter-status" class="form-select text-capitalize">
+						<option value="">@ViewLocalizer["Elegir estado"]</option>
+						<option value="1">@ViewLocalizer["Active"]</option>
+						<option value="0">@ViewLocalizer["Inactive"]</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+
 				</div>
 			</div>
-			<!-- /Filter -->
-			<div class="card" id="filter_inputs">
-				<div class="card-body pb-0">
-					<div class="row">
-						<div class="col-lg-4 col-sm-6 col-12">
-							<div class="form-group">
-								<label>@ViewLocalizer["Status"] </label>
-								<select id="filter-status" class="select">
-									<option value="1" selected>@ViewLocalizer["Active"]</option>
-									<option value="0">@ViewLocalizer["Inactive"]</option>
-								</select>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="table-responsive">
-				<table id="category-list" class="table">
-					<thead>
-						<tr>
-							<th>@ViewLocalizer["Action"]</th>
-							<th>@ViewLocalizer["Name"] </th>
-							<th>@ViewLocalizer["Group"] </th>
-							<th>@ViewLocalizer["Plato"]</th>			
-							<th>@ViewLocalizer["Status"]</th>
-						
-						</tr>
-					</thead>
-				</table>
-			</div>
+		</div>
+		<div class="card-datatable table-responsive">
+			<table id="category-list" class="table">
+				<thead class="border-top">
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Name"] </th>
+						<th>@ViewLocalizer["Group"] </th>
+						<th>@ViewLocalizer["Plato"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					</tr>
+				</thead>
+			</table>
 		</div>
 	</div>
 </div>
+<!-- / Content -->
 <!-- /product list -->
-
 <script>
+
 	$(document).ready(function () {
 
 
@@ -97,15 +59,67 @@
 		});
 	});
 
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+
 	var categorytable = $("#category-list").DataTable({
 		"processing": true, // for show progress bar
 		"serverSide": true, // for process server side
-		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
 		"orderMulti": false, // for disable multiple column at once
 		"ajax": {
 			"url": "/Menu/GetCategoryList",
 			"type": "POST",
-			"datatype": "json"
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+						popupContent.style.position = "absolute";
+
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
+
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
+
+
+
+					});
+				});
+
+			}
 		},
 		'select': {
 			'style': 'multi'
@@ -119,26 +133,39 @@
 				render: function (data, type, row) {
 					return "<a class='me-3' href='/Menu/AddCategory?categoryId=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
 				},
+				"autoWidth": true,
 			},
 			{ "data": "name", "name": "name", "autoWidth": true },
 			{ "data": "groupName", "name": "groupName", "autoWidth": true },
-			{ "data": "plato", "name": "plato", "autoWidth": true },						
+			{ "data": "plato", "name": "plato", "autoWidth": true },
 			{
 				'data': 'status', 'name': 'isActive',
 				render: function (data, type, row) {
 					if (row.isActive) {
-						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+						return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
 					}
 					else {
-						return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+						return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
 					}
 				},
 				"autoWidth": true
 			},
+		],
+		// Buttons with Dropdown
+		buttons: [
 			
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Category"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+					window.location.href = "/Menu/AddCategory";
+				}
+			}
 		]
 	});
-
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
 	//function DeleteCategory(id) {
 

@@ -1,44 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!-- Content -->
 
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Discount List"]</h4>
-		<h6>@ViewLocalizer["Manage your Discounts"]</h6>
-	</div>
-	<div class="page-btn">
-		<a id="add-discount-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Discount"]</a>
-	</div>
-</div>
+<div class="container-xxl flex-grow-1 container-p-y">
 
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
-			<table id="discount-list" class="table">
-				<thead>
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Discount List"]</h5>
+		</div>
+		<div class="card-datatable table-responsive">
+			<table id ="discount-list" " class="table">
+				<thead class="border-top">
 					<tr>
 						<th>@ViewLocalizer["Action"]</th>
 						<th>@ViewLocalizer["Name"] </th>
 						<th>@ViewLocalizer["Amount"] </th>
-						<th>@ViewLocalizer["Amount Type"]</th>			
+						<th>@ViewLocalizer["Amount Type"]</th>
 						<th>@ViewLocalizer["Status"]</th>
-
 					</tr>
 				</thead>
 			</table>
 		</div>
 	</div>
 </div>
-
-
+<!-- / Content -->
 <div class="modal fade" id="adddiscount" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -74,7 +58,7 @@
 							</select>
 						</div>
 					</div>
-					
+
 					<div class="col-lg-4 col-sm-6 col-12">
 						<div class="form-group mb-0">
 							<label>@ViewLocalizer["Status"]</label>
@@ -83,7 +67,7 @@
 								<option value="0"> @ViewLocalizer["InActive"]</option>
 							</select>
 						</div>
-					</div>					
+					</div>
 				</div>
 				<div class="row pt-5">
 					<div class="col-lg-12 col-sm-12 col-12">
@@ -99,16 +83,16 @@
 							<thead>
 								<tr>
 									<td>
-										@ViewLocalizer["Name"]
+					@ViewLocalizer["Name"]
 									</td>
 									<td>
-										@ViewLocalizer["Type"]
+					@ViewLocalizer["Type"]
 									</td>
 									<td>
-										@ViewLocalizer["Number"]
+					@ViewLocalizer["Number"]
 									</td>
 									<td>
-										@ViewLocalizer["Action"]
+					@ViewLocalizer["Action"]
 									</td>
 							</thead>
 							<tbody id="accounting-list">
@@ -129,10 +113,11 @@
 	@await Component.InvokeAsync("Accounting", new { })
 }
 
+<!-- /product list -->
 <script>
-	$(document).ready(function(){
 
-		$("#add-discount-modal").click(function(){
+	$(document).ready(function () {
+		$("#add-discount-modal").click(function () {
 			$("#discount-name").val("");
 			$("#discount-amount").val("");
 			$("#discount-type").val("0").change();
@@ -142,7 +127,7 @@
 			$("#adddiscount").modal("show");
 		});
 
-		$("#edit-discount").click(function(){
+		$("#edit-discount").click(function () {
 			var name = $("#discount-name").val();
 			if (!name || name == "") {
 				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
@@ -170,7 +155,7 @@
 						SaveAccountItems(11, data.id, function () {
 							$("#discount-list").DataTable().draw();
 							$("#adddiscount").modal("hide");
-						})						
+						})
 					}
 					else if (data.status == 2) {
 						toastr.error("@ViewLocalizer["The name should be unique."]", {})
@@ -184,16 +169,67 @@
 				}
 			});
 		});
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
 
 		var discounttable = $("#discount-list").DataTable({
 			"processing": true, // for show progress bar
 			"serverSide": true, // for process server side
-			"filter": true, // this is for disable filter (search box)
+			dom:
+				'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+				'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+				'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+				'>t' +
+				'<"row"' +
+				'<"col-sm-12 col-md-6"i>' +
+				'<"col-sm-12 col-md-6"p>' +
+				'>',
 			"orderMulti": false, // for disable multiple column at once
 			"ajax": {
 				"url": "/Menu/GetDiscountList",
 				"type": "POST",
-				"datatype": "json"
+				"datatype": "json",
+				"complete": function () {
+					$(".imgzoom").each(function () {
+						$(this).on("mouseenter", function () {
+							var popupContent = document.createElement("div");
+							popupContent.classList.add("popupDiv");
+							popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+							popupContent.style.position = "absolute";
+
+							popupContent.style.top = ($(this).offset().top + -200) + "px";
+							popupContent.style.left = ($(this).offset().left + 50) + "px";
+							popupContent.style.backgroundColor = "white";
+							popupContent.style.padding = "5px";
+							popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+							popupContent.style.zIndex = "9999";
+							popupContent.style.borderRadius = "10px";
+							document.body.appendChild(popupContent);
+
+							$(this).on("mouseleave", function () {
+								//document.body.removeChild(popupContent);
+								$(".popupDiv").remove();
+							});
+
+
+
+						});
+					});
+
+				}
 			},
 			'select': {
 				'style': 'multi'
@@ -212,25 +248,42 @@
 				{ "data": "amount", "name": "amount", "autoWidth": true },
 				{ "data": "amountType", "name": "amountType", "autoWidth": true },
 				{
-					'data': 'isActive', 'name': 'isActive',
+					'data': 'status', 'name': 'isActive',
 					render: function (data, type, row) {
 						if (row.isActive) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
 						}
 						else {
-							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
 						}
 					},
 					"autoWidth": true
 				},
+			],
+			// Buttons with Dropdown
+			buttons: [
 
+				{
+					text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Discount"]</span>',
+					className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+					action: function () {
+						$("#discount-name").val("");
+						$("#discount-amount").val("");
+						$("#discount-type").val("0").change();
+						$("#discount-status").val("1").change();
+						$("#adddiscount").data("id", 0);
+						GetAccountItems(11, 0);
+						$("#adddiscount").modal("show");
+					}
+				}
 			]
 		});
 	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
-
-	function EditDiscount(id)
-	{
+	function EditDiscount(id) {
 		// load menu
 		$.ajax({
 			url: "/Menu/GetDiscount?discountID=" + id,
@@ -241,8 +294,7 @@
 					$("#discount-amount").val(data.amount);
 					$("#discount-type").val(data.discountAmountType).change();
 					$("#discount-status").val("1").change();
-					if (!data.isActive)
-					{
+					if (!data.isActive) {
 						$("#discount-status").val("0").change();
 					}
 					GetAccountItems(11, data.id);
@@ -256,8 +308,7 @@
 		});
 	}
 
-	function DeleteDiscount(id)
-	{	
+	function DeleteDiscount(id) {
 		Swal.fire({
 			title: "@ViewLocalizer["Are you sure to delete the discount?"]",
 			text: "",

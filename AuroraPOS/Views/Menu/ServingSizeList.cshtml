@@ -5,20 +5,18 @@
 	var printerChannels = (List<PrinterChannel>)ViewBag.PrinterChannels;
 	var branchs = (List<t_sucursal>)ViewBag.Branchs;
 }
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Serving Size"]</h4>
-	</div>
-	<div class="page-btn">
-		<a id="add-servingsize-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Serving Size"]</a>
-	</div>
-</div>
+<!-- Content -->
 
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
+<div class="container-xxl flex-grow-1 container-p-y">
+
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Serving Size"]</h5>
+		</div>
+		<div class="card-datatable table-responsive">
 			<table id="servingsize-list" class="table">
-				<thead>
+				<thead class="border-top">
 					<tr>
 						<th>@ViewLocalizer["Action"]</th>
 						<th>@ViewLocalizer["ID"] </th>
@@ -31,8 +29,7 @@
 		</div>
 	</div>
 </div>
-
-
+<!-- / Content -->
 <div class="modal fade" id="addservingsize" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -74,8 +71,9 @@
 		</div>
 	</div>
 </div>
-
+<!-- /product list -->
 <script>
+
 	$(document).ready(function () {
 
 		$("#add-servingsize-modal").click(function () {
@@ -118,24 +116,75 @@
 				}
 			});
 		});
-
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	
 		var stationtable = $("#servingsize-list").DataTable({
-			"processing": true, // for show progress bar
-			"serverSide": true, // for process server side
-			"filter": true, // this is for disable filter (search box)
-			"orderMulti": false, // for disable multiple column at once
-			"ajax": {
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
 				"url": "/Menu/GetServingSizeList",
-				"type": "POST",
-				"datatype": "json"
-			},
-			'select': {
-				'style': 'multi'
-			},
-			"pageLength": 10,
-			"lengthMenu": [10, 25, 50],
-			"order": [[1, 'asc']],
-			"columns": [
+			"type": "POST",
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+						popupContent.style.position = "absolute";
+
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
+
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
+
+
+
+					});
+				});
+
+			}
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
 				{
 					'data': 'action', 'name': 'action',
 					render: function (data, type, row) {
@@ -145,38 +194,54 @@
 				{ "data": "id", "name": "id", "autoWidth": true },
 				{ "data": "name", "name": "name", "autoWidth": true },
 				{ "data": "description", "name": "description", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
+					}
+					else {
+						return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+		],
+		// Buttons with Dropdown
+		buttons: [
+
 				{
-					'data': 'isActive', 'name': 'isActive',
-					render: function (data, type, row) {
-						if (row.isActive) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
-						}
-						else {
-							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
-						}
-					},
-					"autoWidth": true
+					text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Article"]</span>',
+					className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+					action: function () {
+						window.location.href = "/Inventory/AddArticle";
+					}
 				},
 
 			]
 		});
 	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
-	function EditServingSize(model) {
 
-		if (model) {
-			
-			$("#addservingsize").data("id", model.id);
-			$("#servingsize-name").val(model.name);
-			$("#servingsize-desc").val(model.description);
+
+		function EditServingSize(model) {
+
+			if (model) {
+
+				$("#addservingsize").data("id", model.id);
+				$("#servingsize-name").val(model.name);
+				$("#servingsize-desc").val(model.description);
+			}
+			else {
+				$("#addservingsize").data("id", 0);
+				$("#servingsize-name").val("");
+				$("#servingsize-desc").val("");
+			}
+
+			$("#addservingsize").modal("show");
 		}
-		else {
-			$("#addservingsize").data("id", 0);
-			$("#servingsize-name").val("");
-			$("#servingsize-desc").val("");
-		}
-
-		$("#addservingsize").modal("show");
-	}
-
+		
 </script>

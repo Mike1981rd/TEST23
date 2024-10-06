@@ -1,194 +1,342 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Warehouse List"]</h4>
-        <h6>@ViewLocalizer["Manage your Warehouse"]</h6>
-    </div>
-    <div class="page-btn">
-        <a id="add-warehouse" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Warehouse"]</a>
-    </div>
+﻿<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Warehouse List"]</h5>
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+				<div class="col-md-5">
+					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
+				</div>
+				<div class="col-md-5">
+					<select id="filter-status" class="form-select text-capitalize">
+						<option value="">@ViewLocalizer["Elegir estado"]</option>
+						<option value="1">@ViewLocalizer["Active"]</option>
+						<option value="0">@ViewLocalizer["Inactive"]</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
+				</div>
+				
+			</div>
+		</div>
+		<div class="card-datatable table-responsive">
+			<table id="warehouse-list" class="table">
+				<thead class="border-top">
+					<tr>
+						<th>@ViewLocalizer["Action"]</th>
+						<th>@ViewLocalizer["Warehouse name"] </th>
+						<th>@ViewLocalizer["Email"]</th>
+						<th>@ViewLocalizer["Phone"]</th>
+						<th>@ViewLocalizer["Status"]</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<!-- edit Modal -->
+	<div class="modal fade" id="editwarehouse" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="warehouse-modal-title">@ViewLocalizer["Edit Warehouse"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+						<div class="col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
+								<input id="ew-name" type="text">
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="form-group">
+								<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+								<input id="ew-email" type="text">
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="form-group">
+								<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+								<input id="ew-phone" type="text">
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group mb-0">
+								<label>@ViewLocalizer["Status"]</label>
+								<select id="ew-status" class="select">
+									<option value="">@ViewLocalizer["Choose Status"]</option>
+									<option value="1"> @ViewLocalizer["Active"]</option>
+									<option value="0"> @ViewLocalizer["InActive"]</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="edit-warehouse" type="button" class="btn btn-submit">@ViewLocalizer["Update"]</button>
+					<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-
+<!-- / Content -->
 <!-- /product list -->
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="table-top">
-                <div class="search-set">
-                    <div class="search-path">
-                        <a class="btn btn-filter" id="filter_search">
-                            <img src="/vendor/img/icons/filter.svg" alt="img">
-                            <span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-                        </a>
-                    </div>
-                    <div class="search-input">
-                        <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-                        <div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
-                    </div>
-                </div>
-                <div class="wordset">
-                    <ul>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-                        </li>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-                        </li>
-                        <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /Filter -->
-            <div class="card" id="filter_inputs">
-                <div class="card-body pb-0">
-                    <div class="row">
-                        <div class="col-lg-4 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>@ViewLocalizer["Status"] </label>
-                                <select id="filter-status" class="select">
-                                    <option value="1" selected>@ViewLocalizer["Active"]</option>
-                                    <option value="0">@ViewLocalizer["Inactive"]</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table id="warehouse-list" class="table">
-                    <thead>
-                        <tr>
-                            <th>@ViewLocalizer["Action"]</th>
-                            <th>@ViewLocalizer["Warehouse name"] </th>
-                            <th>@ViewLocalizer["Email"]</th>
-                            <th>@ViewLocalizer["Phone"]</th>
-                            <th>@ViewLocalizer["Status"]</th>
-                            
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /product list -->
-<!-- edit Modal -->
-<div class="modal fade" id="editwarehouse" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="warehouse-modal-title">@ViewLocalizer["Edit Warehouse"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
-                            <input id="ew-name" type="text">
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-                            <input id="ew-email" type="text">
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-                            <input id="ew-phone" type="text">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="ew-status" class="select">
-                                <option value="">@ViewLocalizer["Choose Status"]</option>
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="edit-warehouse" type="button" class="btn btn-submit">@ViewLocalizer["Update"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    $(document).ready(function () {
-      
 
-        $("#filter-searchtext").on("change keyup", function () {
-            FilterWarehouse()
-        });
-        $("#filter-status").on("change", function () {
-            FilterWarehouse()
-        });
+	$(document).ready(function () {
 
-       
-    });
+		$("#filter-searchtext").on("change keyup", function () {
+			FilterWarehouse()
+		});
+		
+		$("#filter-status").on("change", function () {
+			FilterWarehouse()
+		});
+	});
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+
+	var warehousetable = $("#warehouse-list").DataTable({
+		"processing": true, // for show progress bar
+		"serverSide": true, // for process server side
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
+		"orderMulti": false, // for disable multiple column at once
+		"ajax": {
+			"url": "/Inventory/GetWarehouseList",
+			"type": "POST",
+			"datatype": "json",
+			"complete": function () {
+				$(".imgzoom").each(function () {
+					$(this).on("mouseenter", function () {
+						var popupContent = document.createElement("div");
+						popupContent.classList.add("popupDiv");
+						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+
+						popupContent.style.position = "absolute";
+
+						popupContent.style.top = ($(this).offset().top + -200) + "px";
+						popupContent.style.left = ($(this).offset().left + 50) + "px";
+						popupContent.style.backgroundColor = "white";
+						popupContent.style.padding = "5px";
+						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+						popupContent.style.zIndex = "9999";
+						popupContent.style.borderRadius = "10px";
+						document.body.appendChild(popupContent);
+
+						$(this).on("mouseleave", function () {
+							//document.body.removeChild(popupContent);
+							$(".popupDiv").remove();
+						});
 
 
-    var warehousetable = $("#warehouse-list").DataTable({
-        "processing": true, // for show progress bar
-        "serverSide": true, // for process server side
-        "dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
-        "orderMulti": false, // for disable multiple column at once
-        "ajax": {
-            "url": "/Inventory/GetWarehouseList",
-            "type": "POST",
-            "datatype": "json"
-        },
-        'select': {
-            'style': 'multi'
-        },
-        "pageLength": 10,
-        "lengthMenu": [10, 25, 50],
-        "order": [[1, 'asc']],
-        "columns": [
-            {
-            'data': 'action', 'name': 'action',
-            render: function (data, type, row) {
-                return "<a class='me-3' href='javascript:void(0);' onclick='EditWarehouse(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
-            },
-        },
-            { "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
-            { "data": "email", "name": "email", "autoWidth": true },
-            { "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
-            {
-                'data': 'status', 'name': 'isActive',
-                render: function (data, type, row) {
-                    if (row.isActive) {
-                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
-                    }
-                    else {
-                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
-                    }
-                },
-                "autoWidth": true
-            },
-            
-        ]
-    });
 
+					});
+				});
 
-    $("#add-warehouse").click(function () {
+			}
+		},
+		'select': {
+			'style': 'multi'
+		},
+		"pageLength": 10,
+		"lengthMenu": [10, 25, 50],
+		"order": [[1, 'asc']],
+		"columns": [
+			{
+				'data': 'action', 'name': 'action',
+				render: function (data, type, row) {
+					return "<a class='' href='javascript:void(0);' onclick='EditWarehouse(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+				},
+				"autoWidth": true
+			},
+			{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+			{ "data": "email", "name": "email", "autoWidth": true },
+			{ "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
+			{
+				'data': 'status', 'name': 'isActive',
+				render: function (data, type, row) {
+					if (row.isActive) {
+						return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
+					}
+					else {
+						return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
+					}
+				},
+				"autoWidth": true
+			},
+		],
+		// Buttons with Dropdown
+		buttons: [
+			{
+				extend: 'collection',
+				className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+				text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
+				buttons: [
+					{
+						extend: 'print',
+						text: '<i class="ti ti-printer me-2" ></i>Print',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('warehouse-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						},
+						customize: function (win) {
+							// Customize print view for dark
+							$(win.document.body)
+								.css('color', headingColor)
+								.css('border-color', borderColor)
+								.css('background-color', bodyBg);
+							$(win.document.body)
+								.find('table')
+								.addClass('compact')
+								.css('color', 'inherit')
+								.css('border-color', 'inherit')
+								.css('background-color', 'inherit');
+						}
+					},
+					{
+						extend: 'csv',
+						text: '<i class="ti ti-file me-2" ></i>Csv',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('warehouse-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+					{
+						extend: 'excel',
+						text: '<i class="ti ti-file-export me-2"></i>Excel',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('warehouse-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+					{
+						extend: 'pdf',
+						text: '<i class="ti ti-file-text me-2"></i>Pdf',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('warehouse-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+				]
+			},
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Warehouse"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+					// Limpiar los campos del modal
+					$("#ew-name").val("");
+					$("#ew-email").val("");
+					$("#ew-phone").val("");
+					$("#ew-status").val("1").change(); // Resetea el estado
+
+					// Cambiar el título del modal
+					$(".warehouse-modal-title").html("@ViewLocalizer["Add Warehouse"]");
+
+					// Establecer el id en 0, para indicar que es un nuevo elemento
+					$("#editwarehouse").data("id", 0);
+
+					// Mostrar el modal
+					$("#editwarehouse").modal("show");
+				}
+			}
+		]
+	});
+	$('.dataTables_length').addClass('mx-n2');
+	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
+
+	$("#add-warehouse").click(function () {
 
         $("#ew-name").val("");
 
@@ -203,106 +351,103 @@
         $("#editwarehouse").modal("show");
     });
 
-    function EditWarehouse(w) {
-        $("#ew-name").val(w.warehouseName);
+	function EditWarehouse(w) {
+		$("#ew-name").val(w.warehouseName);
 
-        $("#ew-email").val(w.email);
-        $("#ew-phone").val(w.phoneNumber);
-        if (w.isActive) {
-            $("#ew-status").val("1").change();
-        }
-        else {
-            $("#ew-status").val("0").change();
-        }
-        $(".warehouse-modal-title").html("@ViewLocalizer["Edit Warehouse"]");
-        $("#editwarehouse").data("id", w.id);
-        $("#editwarehouse").modal("show");
-    }
-  
-    $("#edit-warehouse").click(function () {
+		$("#ew-email").val(w.email);
+		$("#ew-phone").val(w.phoneNumber);
+		if (w.isActive) {
+			$("#ew-status").val("1").change();
+		}
+		else {
+			$("#ew-status").val("0").change();
+		}
+		$(".warehouse-modal-title").html("@ViewLocalizer["Edit Warehouse"]");
+		$("#editwarehouse").data("id", w.id);
+		$("#editwarehouse").modal("show");
+	}
 
-        var warehouseName = $("#ew-name").val();
-        var email = $("#ew-email").val();
-        var phone = $("#ew-phone").val();
+	$("#edit-warehouse").click(function () {
 
-        if (!warehouseName || !email || !phone) {
-            toastr.warning("@ViewLocalizer["Please fill in the inputs."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
-            return;
-        }
+		var warehouseName = $("#ew-name").val();
+		var email = $("#ew-email").val();
+		var phone = $("#ew-phone").val();
 
-        var active = $("#ew-status").val()
-        var data = {
-            ID: $("#editwarehouse").data("id"),
-            WarehouseName: warehouseName,
-            Email: email,
-            PhoneNumber: phone,
-            IsActive: active == "1"
-        }
+		if (!warehouseName || !email || !phone) {
+			toastr.warning("@ViewLocalizer["Please fill in the inputs."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+			return;
+		}
 
-        $.ajax({
-            url: "/Inventory/EditWarehouse",
-            type: "POST",
-            data: data,
-            success: function (data, textStatus, jqXHR) {
-                if (data.status == 0) {
-                    warehousetable.draw();
-                    $("#editwarehouse").modal("hide");
-                }
-                else {
-                    toastr.error("@ViewLocalizer["Failed to update the warehouse."]", {})
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
-            }
-        });
-    });
+		var active = $("#ew-status").val()
+		var data = {
+			ID: $("#editwarehouse").data("id"),
+			WarehouseName: warehouseName,
+			Email: email,
+			PhoneNumber: phone,
+			IsActive: active == "1"
+		}
 
-    function DeleteWarehouse(id) {
+		$.ajax({
+			url: "/Inventory/EditWarehouse",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+					warehousetable.draw();
+					$("#editwarehouse").modal("hide");
+				}
+				else {
+					toastr.error("@ViewLocalizer["Failed to update the warehouse."]", {})
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+			}
+		});
+	});
 
-        Swal.fire({
-            title: "@ViewLocalizer["Are you sure to delete the warehouse item?"]",
-            text: "",
-            type: "warning",
-            showCancelButton: !0,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
-            confirmButtonClass: "btn btn-primary",
-            cancelButtonText: "@ViewLocalizer["Close"]",
-            cancelButtonClass: "btn btn-danger ml-1",
-            buttonsStyling: !1,
-        }).then(function (t) {
-            if (t.value) {
-                $.ajax({
-                    url: "/Inventory/DeleteWarehouse?warehouseId=" + id,
-                    type: "POST",
-                    success: function (data, textStatus, jqXHR) {
-                        if (data.status == 0) {
-                            warehousetable.draw();
-                        }
-                        else {
-                            toastr.error("@ViewLocalizer["Failed to delete the warehouse."]", {})
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
-                    }
-                });
-            }
-        });
-    }
+	function DeleteWarehouse(id) {
 
-    function FilterWarehouse()
-    {
-        var searchText = $("#filter-searchtext").val();
-        var status = $("#filter-status").val();
-        
-        warehousetable.columns(0).search(searchText);
-        warehousetable.columns(1).search(status);
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the warehouse item?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonText: "@ViewLocalizer["Close"]",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Inventory/DeleteWarehouse?warehouseId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							warehousetable.draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the warehouse."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					}
+				});
+			}
+		});
+	}
 
-        warehousetable.draw();
-    }
+	function FilterWarehouse() {
+		var searchText = $("#filter-searchtext").val();
+		var status = $("#filter-status").val();
 
+		warehousetable.columns(0).search(searchText);
+		warehousetable.columns(1).search(status);
 
+		warehousetable.draw();
+	}
 </script>

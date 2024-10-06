@@ -1,74 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Supplier List"]</h4>
-		<h6>@ViewLocalizer["Manage your Suppliers"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="/Inventory/AddSupplier" class="btn btn-added" ><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Supplier"]</a>
-	</div>
-</div>
+﻿<!-- Content -->
 
+<div class="container-xxl flex-grow-1 container-p-y">
 
-<!-- /product list -->
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="table-top">
-				<div class="search-set">
-					<div class="search-path">
-						<a class="btn btn-filter" id="filter_search">
-							<img src="/vendor/img/icons/filter.svg" alt="img">
-							<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-						</a>
-					</div>
-					<div class="search-input">
-						<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-						<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
-					</div>
+	<!-- Product List Table -->
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Supplier List"]</h5>
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+				<div class="col-md-5">
+					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
-				<div class="wordset">
-					<ul>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-						</li>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-						</li>
-						<li>
-							<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-						</li>
-					</ul>
+				<div class="col-md-5">
+					<select id="filter-status" class="form-select text-capitalize">
+						<option value="">@ViewLocalizer["Elegir estado"]</option>
+						<option value="1">@ViewLocalizer["Active"]</option>
+						<option value="0">@ViewLocalizer["Inactive"]</option>
+					</select>
 				</div>
-			</div>
-			<!-- /Filter -->
-			<div class="card" id="filter_inputs">
-				<div class="card-body pb-0">
-					<div class="row">
-						<div class="col-lg-4 col-sm-6 col-12">
-							<div class="form-group">
-								<label>@ViewLocalizer["Status"] </label>
-								<select id="filter-status" class="select">
-									<option value="1" selected>@ViewLocalizer["Active"]</option>
-									<option value="0">@ViewLocalizer["Inactive"]</option>
-								</select>
-							</div>
-						</div>
-					</div>
+				<div class="col-md-1">
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
+					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
 				</div>
-			</div>
-			<div class="table-responsive">
+		</div>
+		<div class="card-datatable table-responsive">
 				<table id="supplier-list" class="table">
-					<thead>
-						<tr>		
+				<thead class="border-top">
+					<tr>
 							<th>@ViewLocalizer["Action"]</th>
-							<th>@ViewLocalizer["Avatar"] </th>						
-							<th>@ViewLocalizer["Name"] </th>						
-							<th>@ViewLocalizer["RNC"] </th>						
+							<th>@ViewLocalizer["Avatar"] </th>
+							<th>@ViewLocalizer["Name"] </th>
+							<th>@ViewLocalizer["RNC"] </th>
 							<th>@ViewLocalizer["Phone"]</th>
 							<th>@ViewLocalizer["Country"]</th>
 							<th>@ViewLocalizer["City"]</th>
@@ -78,83 +40,102 @@
 							<th>@ViewLocalizer["Seller"]</th>
 							<th>@ViewLocalizer["Cell Phone"]</th>
 							<th>@ViewLocalizer["Status"]</th>
-					
-						</tr>
-					</thead>	
-				</table>
-			</div>
+					</tr>
+				</thead>
+			</table>
 		</div>
 	</div>
 </div>
+<!-- / Content -->
 <!-- /product list -->
-
 <script>
+
 	$(document).ready(function () {
 
-
 		$("#filter-searchtext").on("change keyup", function () {
-			FilterSupplier()
+			FilterSupplier();
 		});
 		$("#filter-status").on("change", function () {
-			FilterSupplier()
-		});
-
-		$("#filter_search").click(function () {
-
+				FilterSupplier()
 		});
 	});
-	var suppliertable = $("#supplier-list").DataTable({
-		"processing": true, // for show progress bar
-		"serverSide": true, // for process server side
-		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
-		"orderMulti": false, // for disable multiple column at once
-		"ajax": {
-			"url": "/Inventory/GetSupplierList",
-			"type": "POST",
-			"datatype": "json",
-			"complete": function () {
-				$( ".imgzoom" ).each(function() {
-					$(this).on( "mouseenter", function() {
-						var popupContent = document.createElement("div");
-						popupContent.classList.add("popupDiv");
-						popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
 
-						popupContent.style.position = "absolute";
+		var suppliertable = $("#supplier-list").DataTable({
+			"processing": true, // for show progress bar
+			"serverSide": true, // for process server side
+			dom:
+				'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+				'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+				'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+				'>t' +
+				'<"row"' +
+				'<"col-sm-12 col-md-6"i>' +
+				'<"col-sm-12 col-md-6"p>' +
+				'>',
+			"orderMulti": false, // for disable multiple column at once
+			"ajax": {
+				"url": "/Inventory/GetSupplierList",
+				"type": "POST",
+				"datatype": "json",
+				"complete": function () {
+					$(".imgzoom").each(function () {
+						$(this).on("mouseenter", function () {
+							var popupContent = document.createElement("div");
+							popupContent.classList.add("popupDiv");
+							popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
 
-						popupContent.style.top = ($(this).offset().top + -200)+ "px";
-						popupContent.style.left = ($(this).offset().left + 50)+ "px";
-						popupContent.style.backgroundColor = "white";
-						popupContent.style.padding = "5px";
-						popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
-						popupContent.style.zIndex = "9999";
-						popupContent.style.borderRadius = "10px";
-						document.body.appendChild(popupContent);
+							popupContent.style.position = "absolute";
 
-						$(this).on( "mouseleave", function() {
-							//document.body.removeChild(popupContent);
-							$(".popupDiv").remove();
+							popupContent.style.top = ($(this).offset().top + -200) + "px";
+							popupContent.style.left = ($(this).offset().left + 50) + "px";
+							popupContent.style.backgroundColor = "white";
+							popupContent.style.padding = "5px";
+							popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
+							popupContent.style.zIndex = "9999";
+							popupContent.style.borderRadius = "10px";
+							document.body.appendChild(popupContent);
+
+							$(this).on("mouseleave", function () {
+								//document.body.removeChild(popupContent);
+								$(".popupDiv").remove();
+							});
+
+
+
 						});
-
-
-
 					});
-				});
+
+				}
 			},
-		},
-		'select': {
-			'style': 'multi'
-		},
-		"pageLength": 10,
-		"lengthMenu": [10, 25, 50],
-		"order": [[1, 'asc']],
-		"columns": [		
-			{
-				'data': 'action', 'name': 'action',
-				render: function (data, type, row) {
-					return "<a class='me-3' href='/Inventory/AddSupplier?supplierId=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteSupplier('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+			'select': {
+				'style': 'multi'
+			},
+			"pageLength": 10,
+			"lengthMenu": [10, 25, 50],
+			"order": [[1, 'asc']],
+			"columns": [
+				{
+					'data': 'action', 'name': 'action',
+					render: function (data, type, row) {
+						return "<a class='me-2' href='/Inventory/AddSupplier?supplierId=" + row.id + "' ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='' href='javascript:void(0);'  onclick=DeleteSupplier('" + row.id + "'); ><img src='/vendor/img/icons/copy.png' width='25' alt='img'></a>";
+					},
+					"autoWidth": true,
 				},
-			},
-			{
+				{
 				'data': 'avatar', 'name': 'avatar',
 				render: function (data, type, row) {
 					if (!row.avatar) {
@@ -166,97 +147,220 @@
 				},
 				"autoWidth": true
 			},
-			{ "data": "name", "name": "name", "autoWidth": true },
-			{ "data": "rnc", "name": "rnc", "autoWidth": true },
-			{ "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
-			{ "data": "country", "name": "country", "autoWidth": true },
-			{ "data": "city", "name": "city", "autoWidth": true },
-			{ "data": "direction", "name": "direction", "autoWidth": true },
-			{
-				'data': 'status', 'name': 'isTaxIncluded',
-				render: function (data, type, row) {
-					if (row.isTaxIncluded) {
-					return "<span class='badges bg-lightgreen'>@ViewLocalizer["Yes"]</span>";
-					}
-					else {
-					return "<span class='badges bg-lightred'>@ViewLocalizer["No"]</span>";
-					}
-				},
-				"autoWidth": true
-			},
-			{
-				'data': 'status', 'name': 'isFormalSupplier',
-				render: function (data, type, row) {
-					if (row.isFormalSupplier) {
-					return "<span class='badges bg-lightgreen'>@ViewLocalizer["Yes"]</span>";
-					}
-					else {
-					return "<span class='badges bg-lightred'>@ViewLocalizer["No"]</span>";
-					}
-				},
-				"autoWidth": true
-			},
-			{ "data": "seller", "name": "seller", "autoWidth": true },
-			{ "data": "cellPhone", "name": "cellPhone", "autoWidth": true },
-			{
-				'data': 'status', 'name': 'isActive',
-				render: function (data, type, row) {
-					if (row.isActive) {
-					return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
-					}
-					else {
-					return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
-					}
-				},
-				"autoWidth": true
-			},
-			
-		]
-	});
-
-	
-	function DeleteSupplier(id) {
-
-		Swal.fire({
-			title: "@ViewLocalizer["Are you sure to delete the supplier?"]",
-			text: "",
-			type: "warning",
-			showCancelButton: !0,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
-			confirmButtonClass: "btn btn-primary",
-			cancelButtonText: "@ViewLocalizer["Close"]",
-			cancelButtonClass: "btn btn-danger ml-1",
-			buttonsStyling: !1,
-		}).then(function (t) {
-			if (t.value) {
-				$.ajax({
-					url: "/Inventory/DeleteSupplier?supplierId=" + id,
-					type: "POST",
-					success: function (data, textStatus, jqXHR) {
-						if (data.status == 0) {
-							suppliertable.draw();
+				{ "data": "name", "name": "name", "autoWidth": true },
+				{ "data": "rnc", "name": "rnc", "autoWidth": true },
+				{ "data": "phoneNumber", "name": "phoneNumber", "autoWidth": true },
+				{ "data": "country", "name": "country", "autoWidth": true },
+				{ "data": "city", "name": "city", "autoWidth": true },
+				{ "data": "direction", "name": "direction", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isTaxIncluded',
+					render: function (data, type, row) {
+						if (row.isTaxIncluded) {
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Yes"]</span>";
 						}
 						else {
-							toastr.error("@ViewLocalizer["Failed to delete the supplier."]", {})
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["No"]</span>";
 						}
 					},
-					error: function (jqXHR, textStatus, errorThrown) {
-						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					"autoWidth": true
+				},
+				{
+					'data': 'status', 'name': 'isFormalSupplier',
+					render: function (data, type, row) {
+						if (row.isFormalSupplier) {
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Yes"]</span>";
+						}
+						else {
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["No"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+				{ "data": "seller", "name": "seller", "autoWidth": true },
+				{ "data": "cellPhone", "name": "cellPhone", "autoWidth": true },
+				{
+					'data': 'status', 'name': 'isActive',
+					render: function (data, type, row) {
+						if (row.isActive) {
+							return "<span class='badge bg-label-success' text-capitalized=''>@ViewLocalizer["Active"]</span>";
+
+						}
+						else {
+							return "<span class='badge bg-label-danger' text-capitalized=''>@ViewLocalizer["InActive"]</span>";
+						}
+					},
+					"autoWidth": true
+				},
+			],
+			// Buttons with Dropdown
+			buttons: [
+				{
+					extend: 'collection',
+					className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+					text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
+					buttons: [
+						{
+							extend: 'print',
+							text: '<i class="ti ti-printer me-2" ></i>Print',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('article-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							},
+							customize: function (win) {
+								// Customize print view for dark
+								$(win.document.body)
+									.css('color', headingColor)
+									.css('border-color', borderColor)
+									.css('background-color', bodyBg);
+								$(win.document.body)
+									.find('table')
+									.addClass('compact')
+									.css('color', 'inherit')
+									.css('border-color', 'inherit')
+									.css('background-color', 'inherit');
+							}
+						},
+						{
+							extend: 'csv',
+							text: '<i class="ti ti-file me-2" ></i>Csv',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('article-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+						{
+							extend: 'excel',
+							text: '<i class="ti ti-file-export me-2"></i>Excel',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('article-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+						{
+							extend: 'pdf',
+							text: '<i class="ti ti-file-text me-2"></i>Pdf',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('article-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+					]
+				},
+				{
+					text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Supplier"]</span>',
+					className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+					action: function () {
+						window.location.href = "/Inventory/AddSupplier";
 					}
-				});
-			}
+				}
+			]
 		});
-	}
+		$('.dataTables_length').addClass('mx-n2');
+		$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
-	function FilterSupplier() {
-		var searchText = $("#filter-searchtext").val();
-		var status = $("#filter-status").val();
+		function DeleteSupplier(id) {
 
-		suppliertable.columns(0).search(searchText);
-		suppliertable.columns(1).search(status);
+			Swal.fire({
+				title: "@ViewLocalizer["Are you sure to delete the supplier?"]",
+				text: "",
+				type: "warning",
+				showCancelButton: !0,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+				confirmButtonClass: "btn btn-primary",
+				cancelButtonText: "@ViewLocalizer["Close"]",
+				cancelButtonClass: "btn btn-danger ml-1",
+				buttonsStyling: !1,
+			}).then(function (t) {
+				if (t.value) {
+					$.ajax({
+						url: "/Inventory/DeleteSupplier?supplierId=" + id,
+						type: "POST",
+						success: function (data, textStatus, jqXHR) {
+							if (data.status == 0) {
+								suppliertable.draw();
+							}
+							else {
+								toastr.error("@ViewLocalizer["Failed to delete the supplier."]", {})
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+						}
+					});
+				}
+			});
+		}
 
-		suppliertable.draw();
-	}
+		function FilterSupplier() {
+			var searchText = $("#filter-searchtext").val();
+			var status = $("#filter-status").val();
+
+			suppliertable.columns(0).search(searchText);
+			suppliertable.columns(1).search(status);
+
+			suppliertable.draw();
+		}
 </script>
