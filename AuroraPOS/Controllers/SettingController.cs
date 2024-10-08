@@ -58,20 +58,34 @@ namespace AuroraPOS.Controllers
 		{
 			try
 			{
-				var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
-				// Skiping number of Rows count  
-				var start = Request.Form["start"].FirstOrDefault();
-				// Paging Length 10,20  
-				var length = Request.Form["length"].FirstOrDefault();
-				// Sort Column Name  
-				var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-				// Sort Column Direction ( asc ,desc)  
-				var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-				// Search Value from (Search box)  
-				var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+				string? draw=null;
+				string? start=null;
+				string? length=null;
+				string? sortColumn=null;
+				string? sortColumnDirection=null;
+				string? searchValue=null;
+
+				if (HttpContext.Request.ContentLength>0)
+				{
+					draw = HttpContext.Request.Form["draw"].FirstOrDefault(); 
+					
+					// Skiping number of Rows count  
+					start = Request.Form["start"].FirstOrDefault();
+					// Paging Length 10,20  
+					length = Request.Form["length"].FirstOrDefault();
+					// Sort Column Name  
+					sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+					// Sort Column Direction ( asc ,desc)  
+					sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+					// Search Value from (Search box)  
+					searchValue = Request.Form["search[value]"].FirstOrDefault();
+				}
+					
+				
 
 				//Paging Size (10,20,50,100)  
-				int pageSize = length != null ? Convert.ToInt32(length) : 0;
+				int pageSize = length != null ? Convert.ToInt32(length) : -1;
 				int skip = start != null ? Convert.ToInt32(start) : 0;
 				int recordsTotal = 0;
 

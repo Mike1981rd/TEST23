@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
+@model int
 <!-- Navigation -->
 <div class="col-12 col-lg-4">
     <div class="d-flex justify-content-between flex-column mb-4 mb-md-0">
@@ -9,7 +10,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Store")).Result.Succeeded)
             {
             <li class="nav-item mb-1">
-                <a class="nav-link active" href="/Setting/Preferences">
+                <a class="nav-link @Html.Raw(Model==1?"active":"")" href="/Setting/Preferences">
                     <i class="ti ti-building-store ti-sm me-1_5"></i>
                     <span class="align-middle">@ViewLocalizer["Preference"]</span>
                 </a>
@@ -18,7 +19,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PaymentMethod")).Result.Succeeded)
             {
                 <li class="nav-item mb-1">
-                    <a class="nav-link" href="/Setting/PaymentMethods">
+                    <a class="nav-link @Html.Raw(Model==2?"active":"")" href="/Setting/PaymentMethods">
                         <i class="ti ti-credit-card ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Métodos de pago"]</span>
                     </a>
@@ -27,7 +28,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Comprobantes")).Result.Succeeded)
             {
                 <li class="nav-item mb-1">
-                    <a class="nav-link" href="/Setting/Vouchers">
+                    <a class="nav-link @Html.Raw(Model==3?"active":"")" href="/Setting/Vouchers">
                         <i class="ti ti-shopping-cart ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Comprobantes"]</span>
                     </a>
@@ -36,7 +37,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
             {
                 <li class="nav-item mb-1">
-                    <a class="nav-link" href="/Setting/DeliveryCarriers">
+                    <a class="nav-link @Html.Raw(Model==4?"active":"")" href="/Setting/DeliveryCarriers">
                         <i class="ti ti-discount-2 ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Repartidores"]</span>
                     </a>
@@ -45,7 +46,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.ZonasReparto")).Result.Succeeded)
             {
                 <li class="nav-item mb-1">
-                    <a class="nav-link" href="/Setting/DeliveryZones">
+                    <a class="nav-link @Html.Raw(Model==5?"active":"")" href="/Setting/DeliveryZones">
                         <i class="ti ti-map-pin ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Zonas de Reparto"]</span>
                     </a>
@@ -54,7 +55,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="/Setting/PrepareTypes">
+                    <a class="nav-link @Html.Raw(Model==6?"active":"")" href="/Setting/PrepareTypes">
                         <i class="ti ti-bell-ringing ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Tipo de ordenes"]</span>
                     </a>
@@ -63,7 +64,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Tax")).Result.Succeeded)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="/Setting/Taxrates">
+                    <a class="nav-link @Html.Raw(Model==7?"active":"")" href="/Setting/Taxrates">
                         <i class="ti ti-bell-ringing ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Tax Rates"]</span>
                     </a>
@@ -72,7 +73,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Propina")).Result.Succeeded)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="/Setting/Propinas">
+                    <a class="nav-link @Html.Raw(Model==8?"active":"")" href="/Setting/Propinas">
                         <i class="ti ti-bell-ringing ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Propina"]</span>
                     </a>
@@ -81,7 +82,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Printer")).Result.Succeeded)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="/Setting/Printers">
+                    <a class="nav-link @Html.Raw(Model==9?"active":"")" href="/Setting/Printers">
                         <i class="ti ti-bell-ringing ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Printers"]</span>
                     </a>
@@ -90,7 +91,7 @@
             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PrinterChannel")).Result.Succeeded)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="/Setting/PrinterChannels">
+                    <a class="nav-link @Html.Raw(Model==10?"active":"")" href="/Setting/PrinterChannels">
                         <i class="ti ti-bell-ringing ti-sm me-1_5"></i>
                         <span class="align-middle">@ViewLocalizer["Printing Channels"]</span>
                     </a>

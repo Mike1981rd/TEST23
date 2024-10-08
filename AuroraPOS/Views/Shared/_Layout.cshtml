@@ -59,6 +59,8 @@
     <link rel="stylesheet" href="/vendor/libs/select2/select2.css" />
     <link rel="stylesheet" href="/vendor/libs/tagify/tagify.css" />
     <link rel="stylesheet" href="/vendor/libs/bootstrap-select/bootstrap-select.css" />
+    <link rel="stylesheet" href="/vendor/libs/sweetalert2/sweetalert2.css" />
+    <link rel="stylesheet" href="/vendor/libs/node-waves/node-waves.css" />
     <!-- Row Group CSS -->
     <link rel="stylesheet" href="/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
     <link rel="stylesheet" href="/vendor/plugins/toastr/toatr.css">
@@ -212,42 +214,9 @@
                   </li>
 
                   }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Printer")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/Printers" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Printers"]">@ViewLocalizer["Printers"]</div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PrinterChannel")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/PrinterChannels" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Printing Channels"]">@ViewLocalizer["Printing Channels"]</div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Tax")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/Taxrates" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Tax Rates"]">@ViewLocalizer["Tax Rates"]</div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Propina")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/Propinas" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Propina"]">@ViewLocalizer["Propina"]</div>
-                                    </a>
-                                </li>
-
-                            }
+                           
+                            
+                          
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Denomination")).Result.Succeeded)
                             {
                                 <li class="menu-item">
@@ -257,15 +226,7 @@
                                 </li>
 
                             }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.PaymentMethod")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/PaymentMethods" class="menu-link">
-                                        <div data-i18n="Métodos de pago">Métodos de pago</div>
-                                    </a>
-                                </li>
-
-                            }
+                            
                             @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.VoidReason")).Result.Succeeded)
                             {
                                 <li class="menu-item">
@@ -275,41 +236,10 @@
                                 </li>
 
                             }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Comprobantes")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/Vouchers" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Comprobantes"]">@ViewLocalizer["Comprobantes"]</div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/DeliveryCarriers" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Repartidores"]">@ViewLocalizer["Repartidores"]</div>
-                                    </a>
-                                </li>
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.Repartidores")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/PrepareTypes" class="menu-link">
-                                        <div data-i18n="Tipo de ordenes">Tipo de ordenes</div>
-                                    </a>
-                                </li>
-
-                            }
-                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.BACKOFFICE.ZonasReparto")).Result.Succeeded)
-                            {
-                                <li class="menu-item">
-                                    <a href="/Setting/DeliveryZones" class="menu-link">
-                                        <div data-i18n="@ViewLocalizer["Zonas de Reparto"]">@ViewLocalizer["Zonas de Reparto"]</div>
-                                    </a>
-                                </li>
-
-                            }
+                            
+                            
+                          
+                            
                            
                             <li class="menu-item">
                                 <a href="/Setting/Accounts" class="menu-link">
@@ -1351,6 +1281,8 @@
     <script src="/vendor/libs/moment/moment.js"></script>
     <script src="~/vendor/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/vendor/libs/flatpickr/flatpickr.js"></script>
+    <script src="/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="/vendor/libs/node-waves/node-waves.js"></script>
 
 <script src="/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 <script src="/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>

@@ -3,37 +3,96 @@
 *@
 @{
 }
-<div class="page-header">
-    <div class="page-title">
-		<h4>métodos de pago</h4>
-        <h6>@ViewLocalizer["Manage Payment Methods"]</h6>
-    </div>
-    <div class="page-btn">
-        <a class="btn btn-added" onclick="AddPaymentMethod()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Payment Method"]</a>
-    </div>
-</div>
-<!-- /product list -->
-<div class="card">
-    <div class="card-body">
 
-        <div class="table-responsive">
-            <table id="paymentmethod-list" class="table">
-                <thead>
-                    <tr>
-                        <th>@ViewLocalizer["Action"]</th>
-                        <th>@ViewLocalizer["Image"]</th>
-                        <th>@ViewLocalizer["Name"]</th>
-                        <th>@ViewLocalizer["Type"]</th>
-                        <th>@ViewLocalizer["Tasa"]</th>
-                        <th>@ViewLocalizer["Status"]</th>
-                        
-                    </tr>
-                </thead>
-				<tbody></tbody>
-            </table>
-        </div>
-    </div>
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row g-6">
+
+		@* Render el menu interno *@
+		@Html.Partial("InternalMenu.cshtml",2)
+
+		<!-- Options -->
+		<div class="col-12 col-lg-8 pt-6 pt-lg-0">
+			<div class="tab-content p-0">
+				<!-- Store Details Tab -->
+				<div class="tab-pane fade show active" id="store_details" role="tabpanel">
+
+
+					<div class="card mb-6">
+						<div class="card-header">
+							<div class="card-title m-0">
+								<h5 class="m-0">@ViewLocalizer["Métodos de pago"]</h5>
+								<p class="my-0 card-subtitle">
+									@ViewLocalizer["Manage Payment Methods"]
+								</p>
+							</div>
+						</div>
+						<div class="card-body">
+
+							<button class="btn btn-label-primary"  onclick="AddPaymentMethod()">
+								@ViewLocalizer["Add New Payment Method"]
+							</button>
+							<br></br>
+
+							<div class="divloading" style="display: none">
+								<div class="spinner-border text-primary "  role="status">
+									<span class="visually-hidden">Loading...</span>
+								</div>
+								Cargando...
+							</div>
+							
+							
+							<div id="lista">
+								
+							</div>
+							
+							<div id="original" class="row mb-5 g-6 bg-label-secondary px-6 rounded-2 mx-0 mt-0 bg-lighter" style="display: none">
+								<div
+									class="col-12 d-flex justify-content-between align-items-center border-bottom p-0 pb-6">
+									<img
+										src=""
+										alt="Paypal"
+										class="txtImagen gray-shadow-sm rounded" style="background: white;"
+										width="57"/>
+
+									<span class="fw-medium">
+										<a class="me-3 paymentmethod-tr" data-id="txtID" href="javascript:void(0);" onclick="EditPaymentMethod('txtID');"><img src="/vendor/img/icons/edit.svg" alt="img"></a>
+										<a class="me-3" href="javascript:void(0);" onclick="DeletePaymentMethod('txtID');"><img src="/vendor/img/icons/delete.svg" alt="img"></a>
+									</span>
+								</div>
+								<div class="col-12 p-0">
+									<div class="row">
+										<div class="col-3">
+											<p class="mb-2 small">@ViewLocalizer["Name"]</p>
+											<p class="txtNombre text-heading fw-medium"></p>
+										</div>
+										<div class="col-3">
+											<p class="mb-2 small">@ViewLocalizer["Type"]</p>
+											<p class="txtTipo text-heading fw-medium"></p>
+										</div>
+										<div class="col-3">
+											<p class="mb-2 small">@ViewLocalizer["Status"]</p>
+											<p class="txtStatus badge bg-label-warning fw-medium">Inactive</p>
+										</div>
+										<div class="col-3">
+											<p class="mb-2 small">@ViewLocalizer["Tasa"]</p>
+											<p class="txtTasa text-heading fw-medium">2.99%</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+		<!-- /Options-->
+	</div>
 </div>
+
+
 
 <div class="modal fade" id="addpaymentmethod" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -206,6 +265,8 @@
 
 
 
+		cargaDatos();
+
 		var pmethodtable = $("#paymentmethod-list").DataTable({
 			"processing": true, // for show progress bar
 			"serverSide": true, // for process server side
@@ -319,6 +380,36 @@
 		});
 
 	});
+	
+	function cargaDatos(){
+		$(".divloading").show();
+		$.ajax({
+			url: "/Setting/GetPaymentMethods",
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$(".divloading").hide();
+				if (data) {
+					$(data.data).each(function() {
+						var $dElemento = $("#original").clone();
+
+						$dElemento.show();
+						$dElemento.find(".txtImagen").attr('src',this.image);
+						$dElemento.find(".txtNombre").html(this.name);
+						$dElemento.find(".txtTipo").html(this.paymentType);
+						$dElemento.find(".txtStatus").html(this.isActive ? "@ViewLocalizer["Active"]" : "@ViewLocalizer["InActive"]" );
+						$dElemento.find(".txtTasa").html(this.tasa);
+
+						$dElemento.html($dElemento.html().replace('txtID',this.id));
+
+						$("#lista").append($dElemento);
+					});
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
 
 	function readProductBackURL(input) {
 		if (input.files && input.files[0]) {
@@ -382,17 +473,18 @@
 
 	function DeletePaymentMethod(id) {
 		Swal.fire({
-			title: "@ViewLocalizer["Are you sure to delete the payment method?"]",
-			text: "",
+			title: "",
+			text: "@ViewLocalizer["Are you sure to delete the payment method?"]",
 			type: "warning",
 			showCancelButton: !0,
 			confirmButtonColor: "#3085d6",
 			cancelButtonColor: "#d33",
 			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
 			cancelButtonText: "@ViewLocalizer["Cancel"]",
-			confirmButtonClass: "btn btn-primary",
-			cancelButtonClass: "btn btn-danger ml-1",
-			buttonsStyling: !1,
+			customClass: {
+				confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+				cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+			},
 		}).then(function (t) {
 			if (t.value) {
 				$.ajax({
