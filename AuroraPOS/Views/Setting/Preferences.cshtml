@@ -169,38 +169,33 @@
                     </div>
 
                     <div class="card mb-6">
-                        <div class="card-header">
-                            <h5 class="card-title m-0">@ViewLocalizer["Photo"]</h5>
-                            <div class="del-unit text-danger">
-                                <a class="del-photo " href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/minus.svg" alt="img">
-                                </a>
-                            </div>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+                            <a href="javascript:void(0);" class="fw-medium">Add media from URL</a>
                         </div>
-                        <div class="card-body">
-                            <div class="row g-6">
-                                <div class="col-sm-4 col-4">
-                                    @if (string.IsNullOrEmpty(Model.Logo))
-                                    {
+                        <div class="card-body text-center  justify-content-center align-items-center">
+                         @*   <div class="col-sm-4 col-4 text-center ">
+                                @if (string.IsNullOrEmpty(Model.Logo))
+                                {
                                     <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                                    }
-                                    else
-                                    {
+                                }
+                                else
+                                {
                                     <img id="productimg" class="" style="max-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
-                                    }
+                                }
 
+                               </div> *@
+                            <form action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
+                                <div class="dz-message needsclick">
+                                    <p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
+                                    <p class="h6 text-muted d-block fw-normal mb-2">or</p>
+                                    <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">Browse image</span>
                                 </div>
-                                <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                                    <input id="imgInpProduct" type="file" name="Files" accept="image/*">
-                                    <div class="image-uploads">
-                                        <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                        <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-                                    </div>
-                                </div>
-                            </div>
+
+                            </form>
                         </div>
                     </div>
-                    
+                   
 
                     <div class="d-flex justify-content-end gap-4">
                         <a id="submit-preference" class="btn btn-primary" href="javascript:void(0);">@ViewLocalizer["Update"]</a>

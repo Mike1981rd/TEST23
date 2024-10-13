@@ -86,6 +86,12 @@
 
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="~/js/config.js"></script>
+
+    <style>
+        .icon-black {
+            color: black;
+        }
+    </style>
 </head>
 <body class="account-page">
 
@@ -126,6 +132,8 @@
       </div>
     </div>
     <!-- /Left Text -->
+
+
 
     <!-- Login -->     
     <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
@@ -202,6 +210,20 @@
                       
             
         </form>
+                    <div class="d-flex justify-content-between">
+                        <div class="p-2">
+                            <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
+                                <span class="align-middle"><i class="ti ti-sun ti-md me-3"></i>Light</span>
+                            </a>
+                        </div>
+                        <div class="p-2">
+                            <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
+                                <span class="align-middle"><i class="ti ti-moon-stars ti-md me-3"></i>Dark</span>
+                            </a>
+                        </div>
+                    </div>
+
+                  
 
         @*<p class="text-center">
           <span>New on our platform?</span>
@@ -232,6 +254,7 @@
     </div>               
     <!-- /Login -->
   </div>
+        
 </div>
 
     <!-- /Main Wrapper -->
@@ -264,7 +287,46 @@
             });
 
 
-        })
+        });
+
+        // Selecciona todos los enlaces del tema
+        const themeLinks = document.querySelectorAll('.dropdown-item');
+
+        // Agrega un evento a cada enlace
+        themeLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                const selectedTheme = this.getAttribute('data-theme');
+                const htmlElement = document.documentElement; // <html>
+
+                if (selectedTheme === 'dark') {
+                    // Cambia el atributo data-style a "dark" y la clase a "dark-style"
+                    htmlElement.setAttribute('data-style', 'dark');
+                    htmlElement.classList.add('dark-style');
+                    htmlElement.classList.remove('light-style');
+                } else if (selectedTheme === 'light') {
+                    // Cambia el atributo data-style a "light" y la clase a "light-style"
+                    htmlElement.setAttribute('data-style', 'light');
+                    htmlElement.classList.add('light-style');
+                    htmlElement.classList.remove('dark-style');
+                }
+
+                // Opcional: Guardar la selección en el almacenamiento local para que persista
+                localStorage.setItem('theme', selectedTheme);
+            });
+        });
+
+        // Aplicar el tema guardado al cargar la página
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            const htmlElement = document.documentElement;
+            if (savedTheme === 'dark') {
+                htmlElement.setAttribute('data-style', 'dark');
+                htmlElement.classList.add('dark-style');
+            } else if (savedTheme === 'light') {
+                htmlElement.setAttribute('data-style', 'light');
+                htmlElement.classList.add('light-style');
+            }
+        }
     </script>
 
 </body>

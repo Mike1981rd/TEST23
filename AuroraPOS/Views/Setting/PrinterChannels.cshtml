@@ -4,80 +4,92 @@
 @{
     var printers = (List<Printer>)ViewBag.Printers;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Printer Channels"]</h4>
-        <h6>@ViewLocalizer["Manage Printer Channels"]</h6>
-    </div>
-    <div class="page-btn">
-        <a id="add-printerchannel" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer Channel"]</a>
-    </div>
-</div>
-<!-- /product list -->
-<div class="card">
-    <div class="card-body">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row g-6">
 
-        <div class="table-responsive">
-            <table id="printerchannel-list" class="table">
-                <thead>
-                    <tr>
-                        <th>@ViewLocalizer["Action"]</th>
-                        <th>@ViewLocalizer["Name"]</th>
-                        <th>@ViewLocalizer["Default"]</th>
-                        <th>@ViewLocalizer["Status"]</th>
-                      
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</div>
+        @* Render el menu interno *@
+        @Html.Partial("InternalMenu.cshtml", 10)
 
-<!-- edit Modal -->
-<div class="modal fade" id="editprinterchannel" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="printerchannel-modal-title">@ViewLocalizer["Edit Printer Channel"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <!-- Options -->
+        <div class="col-12 col-lg-8 pt-6 pt-lg-0">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Printer Channels"]</h4>
+                    <h6>@ViewLocalizer["Manage Printer Channels"]</h6>
+                </div>
+                <div class="page-btn">
+                    <a id="add-printerchannel" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer Channel"]</a>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                            <input id="eprinterchannel-name" type="text" required>
-                        </div>
+            <!-- /product list -->
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table id="printerchannel-list" class="table">
+                            <thead>
+                                <tr>
+                                    <th>@ViewLocalizer["Action"]</th>
+                                    <th>@ViewLocalizer["Name"]</th>
+                                    <th>@ViewLocalizer["Default"]</th>
+                                    <th>@ViewLocalizer["Status"]</th>
+
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
-                  
-                    <div class="col-12">
-                        <div class="form-group">
-                            <div class="form-check form-switch pt-4 px-5">
-                                <input class="form-check-input" type="checkbox" role="switch" id="eprinterchannel-default">
-                                <label class="form-check-label">Default</label>
+                </div>
+            </div>
+
+            <!-- edit Modal -->
+            <div class="modal fade" id="editprinterchannel" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="printerchannel-modal-title">@ViewLocalizer["Edit Printer Channel"]</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                                        <input id="eprinterchannel-name" type="text" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <div class="form-check form-switch pt-4 px-5">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="eprinterchannel-default">
+                                            <label class="form-check-label">Default</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group mb-0">
+                                        <label>@ViewLocalizer["Status"]</label>
+                                        <select id="eprinterchannel-status" class="select">
+                                            <option value="1"> @ViewLocalizer["Active"]</option>
+                                            <option value="0"> @ViewLocalizer["InActive"]</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="eprinterchannel-status" class="select">
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
+                        <div class="modal-footer">
+                            <button id="edit-printerchannel" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button id="edit-printerchannel" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
-        </div>
-    </div>
-</div>
+            </div>
+            </div>
+
 
 <script>
 

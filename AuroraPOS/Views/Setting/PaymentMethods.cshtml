@@ -214,7 +214,11 @@
 	@await Component.InvokeAsync("Accounting", new { })
 }
 <script>
+	var activeLabel = "@ViewLocalizer["Active"]";
+	var inactiveLabel = "@ViewLocalizer["InActive"]";
+	var errorMessage = "@ViewLocalizer["There was an error in processing the request."]";
 	$(document).ready(function () {
+
 		////
 		var fixHelperModified = function (e, tr) {
 			var $originals = tr.children();
@@ -381,7 +385,7 @@
 
 	});
 	
-	function cargaDatos(){
+	function cargaDatos() {
 		$(".divloading").show();
 		$.ajax({
 			url: "/Setting/GetPaymentMethods",
@@ -389,24 +393,37 @@
 			success: function (data, textStatus, jqXHR) {
 				$(".divloading").hide();
 				if (data) {
-					$(data.data).each(function() {
+					$("#lista").empty(); // Limpia la lista antes de agregar nuevos elementos
+					$(data.data).each(function () {
 						var $dElemento = $("#original").clone();
-
+						$dElemento.addClass('card');
+						$dElemento.attr('id', 'payment-method-' + this.id); // Asigna un ID único
 						$dElemento.show();
-						$dElemento.find(".txtImagen").attr('src',this.image);
+						$dElemento.find(".txtImagen").attr('src', this.image);
 						$dElemento.find(".txtNombre").html(this.name);
 						$dElemento.find(".txtTipo").html(this.paymentType);
-						$dElemento.find(".txtStatus").html(this.isActive ? "@ViewLocalizer["Active"]" : "@ViewLocalizer["InActive"]" );
+						$dElemento.find(".txtStatus").html(this.isActive ? activeLabel : inactiveLabel);
 						$dElemento.find(".txtTasa").html(this.tasa);
 
-						$dElemento.html($dElemento.html().replace('txtID',this.id));
+						$dElemento.html($dElemento.html().replace('txtID', this.id));
 
 						$("#lista").append($dElemento);
 					});
+					$("#lista").sortable({
+						items: '.card', // Asegúrate de que cada tarjeta tenga la clase 'card'
+						cursor: 'move',
+						update: function (event, ui) {
+							var order = $(this).sortable('toArray');
+							console.log(order); // Aquí puedes manejar el nuevo orden si es necesario
+						}
+					});
+
+					$("#lista").disableSelection(); // Desactiva la selección de texto
 				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				$(".divloading").hide();
+				toastr.error(errorMessage, {});
 			}
 		});
 	}

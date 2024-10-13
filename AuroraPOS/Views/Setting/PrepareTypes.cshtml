@@ -3,80 +3,92 @@
 *@
 @{
 }
-<div class="page-header">
-    <div class="page-title">
-		<h4>Tipo de ordenes</h4>
-		<h6>@ViewLocalizer["Edición de tipo de ordenes"]</h6>
-    </div>
-    <div class="page-btn">
-        <a href="javascript:void(0);" class="btn btn-added" onclick="AddCarrier()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Agregar Repartidor"]</a>
-    </div>
-</div>
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row g-6">
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="carrier-list" class="table">
-                <thead>
-                    <tr>
-                        <th>@ViewLocalizer["Acción"]</th>
-                        <th>@ViewLocalizer["Nombre"] </th>
-                        <th>@ViewLocalizer["Activo"] </th>
-                        <th>@ViewLocalizer["Sin Chofer"] </th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</div>
+		@* Render el menu interno *@
+		@Html.Partial("InternalMenu.cshtml", 6)
 
-<div class="modal fade" id="AddCarrier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="supplier-modal-title">@ViewLocalizer["Agregar/Editar Repartidor"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Nombre"]<span class="manitory">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">ID</span>
-                                <input id="carrier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Activo"]</label>
-                            <select id="carrier-is-active" class="select">
-                                <option value="1"> @ViewLocalizer["Activo"]</option>
-                                <option value="0"> @ViewLocalizer["Inactivo"]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Sin Chofer"]</label>
-                            <select id="carrier-sin-chofer" class="select">
-                                <option value="1"> @ViewLocalizer["Si"]</option>
-                                <option value="0"> @ViewLocalizer["No"]</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="edit-carrier" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
-        </div>
-    </div>
-</div>
+		<!-- Options -->
+		<div class="col-12 col-lg-8 pt-6 pt-lg-0">
+
+			<div class="page-header">
+				<div class="page-title">
+					<h4>Tipo de ordenes</h4>
+					<h6>@ViewLocalizer["Edición de tipo de ordenes"]</h6>
+				</div>
+				<div class="page-btn">
+					<a href="javascript:void(0);" class="btn btn-added" onclick="AddCarrier()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Agregar Repartidor"]</a>
+				</div>
+			</div>
+
+			<div class="card">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table id="carrier-list" class="table">
+							<thead>
+								<tr>
+									<th>@ViewLocalizer["Acción"]</th>
+									<th>@ViewLocalizer["Nombre"] </th>
+									<th>@ViewLocalizer["Activo"] </th>
+									<th>@ViewLocalizer["Sin Chofer"] </th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="AddCarrier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="supplier-modal-title">@ViewLocalizer["Agregar/Editar Repartidor"]</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-lg-6 col-sm-6 col-12">
+									<div class="form-group">
+										<label>@ViewLocalizer["Nombre"]<span class="manitory">*</span></label>
+										<div class="input-group">
+											<span class="input-group-text" id="basic-addon1">ID</span>
+											<input id="carrier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group mb-0">
+										<label>@ViewLocalizer["Activo"]</label>
+										<select id="carrier-is-active" class="select">
+											<option value="1"> @ViewLocalizer["Activo"]</option>
+											<option value="0"> @ViewLocalizer["Inactivo"]</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group mb-0">
+										<label>@ViewLocalizer["Sin Chofer"]</label>
+										<select id="carrier-sin-chofer" class="select">
+											<option value="1"> @ViewLocalizer["Si"]</option>
+											<option value="0"> @ViewLocalizer["No"]</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button id="edit-carrier" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+							<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+			</div>
+			</div>
 <script>
 	$(document).ready(function(){
 		var stationtable = $("#carrier-list").DataTable({
