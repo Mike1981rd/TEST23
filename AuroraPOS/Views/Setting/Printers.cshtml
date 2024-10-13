@@ -4,91 +4,103 @@
 @{
     var installedPrinters = (List<string>)ViewBag.Printers;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Printers"]</h4>
-        <h6>@ViewLocalizer["Manage Printers"]</h6>
-    </div>
-    <div class="page-btn">
-        <a id="add-printer" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer"]</a>
-    </div>
-</div>
-<!-- /product list -->
-<div class="card">
-    <div class="card-body">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row g-6">
 
-        <div class="table-responsive">
-            <table id="printer-list" class="table">
-                <thead>
-                    <tr>
-                        <th>@ViewLocalizer["Action"]</th>
-                        <th>@ViewLocalizer["Name"]</th>
-                        <th>@ViewLocalizer["Model"]</th>
-                        <th>@ViewLocalizer["Physical Routes"]</th>
-                        <th>@ViewLocalizer["Status"]</th>
-                       
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</div>
+        @* Render el menu interno *@
+        @Html.Partial("InternalMenu.cshtml", 9)
 
-<!-- edit Modal -->
-<div class="modal fade" id="editprinter" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="printer-modal-title">@ViewLocalizer["Edit Printer"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <!-- Options -->
+        <div class="col-12 col-lg-8 pt-6 pt-lg-0">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Printers"]</h4>
+                    <h6>@ViewLocalizer["Manage Printers"]</h6>
+                </div>
+                <div class="page-btn">
+                    <a id="add-printer" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-1">@ViewLocalizer["Add New Printer"]</a>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                            <input id="eprinter-name" type="text" required>
-                        </div>
+            <!-- /product list -->
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table id="printer-list" class="table">
+                            <thead>
+                                <tr>
+                                    <th>@ViewLocalizer["Action"]</th>
+                                    <th>@ViewLocalizer["Name"]</th>
+                                    <th>@ViewLocalizer["Model"]</th>
+                                    <th>@ViewLocalizer["Physical Routes"]</th>
+                                    <th>@ViewLocalizer["Status"]</th>
+
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Model"]<span class="manitory">*</span></label>
-                            <input id="eprinter-model" type="text" required>
+                </div>
+            </div>
+
+            <!-- edit Modal -->
+            <div class="modal fade" id="editprinter" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="printer-modal-title">@ViewLocalizer["Edit Printer"]</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Physical Routes"]</label>
-                            <select id="eprinter-route" class="select">
-                                <option value="">@ViewLocalizer["Choose Physical Printer"]</option>
-                                @foreach (var p in installedPrinters)
-                                {
-                                    <option value="@p.ToString()"> @p.ToString()</option>
-                                }
-                            </select>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                                        <input id="eprinter-name" type="text" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>@ViewLocalizer["Model"]<span class="manitory">*</span></label>
+                                        <input id="eprinter-model" type="text" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>@ViewLocalizer["Physical Routes"]</label>
+                                        <select id="eprinter-route" class="select">
+                                            <option value="">@ViewLocalizer["Choose Physical Printer"]</option>
+                                            @foreach (var p in installedPrinters)
+                                            {
+                                                <option value="@p.ToString()"> @p.ToString()</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group mb-0">
+                                        <label>@ViewLocalizer["Status"]</label>
+                                        <select id="eprinter-status" class="select">
+                                            <option value="1"> @ViewLocalizer["Active"]</option>
+                                            <option value="0"> @ViewLocalizer["InActive"]</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="eprinter-status" class="select">
-                                <option value="1"> @ViewLocalizer["Active"]</option>
-                                <option value="0"> @ViewLocalizer["InActive"]</option>
-                            </select>
+                        <div class="modal-footer">
+                            <button id="test-printer" type="button" class="btn btn-submit btn-secondary">@ViewLocalizer["Test"]</button>
+                            <button id="edit-printer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button id="test-printer" type="button" class="btn btn-submit btn-secondary">@ViewLocalizer["Test"]</button>
-                <button id="edit-printer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
-        </div>
-    </div>
-</div>
+            </div>
+            </div>
+
 
 <script>
     $("#test-printer").click(function () {
