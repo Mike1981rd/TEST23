@@ -405,7 +405,7 @@
 						$dElemento.find(".txtStatus").html(this.isActive ? activeLabel : inactiveLabel);
 						$dElemento.find(".txtTasa").html(this.tasa);
 
-						$dElemento.html($dElemento.html().replace('txtID', this.id));
+						$dElemento.html($dElemento.html().replaceAll('txtID', this.id));
 
 						$("#lista").append($dElemento);
 					});
