@@ -144,6 +144,9 @@
 }
 
 <script>
+    $(".add-accounting-item").on("click", function () {
+        $("#edittax").modal("hide");
+    });
 
     var taxtable = $("#tax-list").DataTable({
         "processing": true, // for show progress bar

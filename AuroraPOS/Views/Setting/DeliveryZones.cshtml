@@ -128,6 +128,9 @@
 
 <script>
 	$(document).ready(function(){
+        $(".add-accounting-item").on("click", function () {
+            $("#AddZone").modal("hide");
+        });
 		var stationtable = $("#zone-list").DataTable({
 			"processing": true, // for show progress bar
 			"serverSide": true, // for process server side
