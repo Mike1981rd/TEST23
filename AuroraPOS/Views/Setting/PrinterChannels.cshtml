@@ -42,50 +42,49 @@
             </div>
 
             <!-- edit Modal -->
-            <div class="modal fade" id="editprinterchannel" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="printerchannel-modal-title">@ViewLocalizer["Edit Printer Channel"]</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                                        <input id="eprinterchannel-name" type="text" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <div class="form-check form-switch pt-4 px-5">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="eprinterchannel-default">
-                                            <label class="form-check-label">Default</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>@ViewLocalizer["Status"]</label>
-                                        <select id="eprinterchannel-status" class="select">
-                                            <option value="1"> @ViewLocalizer["Active"]</option>
-                                            <option value="0"> @ViewLocalizer["InActive"]</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="edit-printerchannel" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal fade show" id="editprinterchannel" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+  <div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-6">
+          <h4 class="mb-2">@ViewLocalizer["Edit Printer Channel"]</h4>
+        </div>
+        <form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false"
+          novalidate="novalidate">
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Name"]</label>
+            <input type="text" id="eprinterchannel-name" class="form-control" required>
+          </div>
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserLastName">Default</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="eprinterchannel-default">
             </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserStatus">@ViewLocalizer["Status"]</label>
+            <div class="position-relative">
+              <div class="position-relative"><select id="eprinterchannel-status" class="select form-select">
+                  <option value="1"> @ViewLocalizer["Active"]</option>
+                  <option value="0"> @ViewLocalizer["InActive"]</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 text-center">
+            <button id="edit-printerchannel" type="submit"
+              class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+            <button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal"
+              aria-label="Close">Cancel</button>
+          </div>
+          <input type="hidden">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
             </div>
             </div>
             </div>
@@ -113,7 +112,7 @@
             {
                 'data': 'action', 'name': 'action',
                 render: function (data, type, row) {
-                    return "<a class='me-3' href='javascript:void(0);' onclick='EditPrinterChannel(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                    return "<a class='me-3' href='javascript:void(0);' onclick='EditPrinterChannel(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeletePrinterChannel('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
                 },
             },
             { "data": "name", "name": "name", "autoWidth": true },

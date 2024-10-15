@@ -39,57 +39,49 @@
 				</div>
 			</div>
 
-			<div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-				<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal fade" id="addvoucher" tabindex="-1" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
+				<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Comprobantes"]</h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
 						<div class="modal-body">
-							<div class="row">
-								<div class="col-lg-8 col-sm-8 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-										<div class="input-group">
-											<span class="input-group-text" id="basic-addon1">ID</span>
-											<input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<div class="text-center mb-6">
+								<h4 class="mb-2">@ViewLocalizer["Add/Edit Comprobantes"]</h4>
+							</div>
+							<form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
+								<div class="col-12 col-md-6 fv-plugins-icon-container">
+									<label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Name"]</label>
+									<input type="text" id="voucher-name" aria-describedby="basic-addon1" required class="form-control">
+								</div>
+								<div class="col-12 col-md-6 fv-plugins-icon-container">
+									<div class="form-check form-switch mt-8">
+										<label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Primary"]</label>
+										<input type="checkbox" id="voucher-primary" class="form-check-input">
+									</div>
+									
+								</div>
+								<div class="col-12 fv-plugins-icon-container">
+									<label class="form-label" for="modalEditUserName">@ViewLocalizer["Prefix"]</label>
+									<input type="text" id="voucher-class" class="form-control">
+								</div>
+								<div class="col-12 col-md-6">
+									<label class="form-label" for="modalEditUserEmail">@ViewLocalizer["Sequence"]</label>
+									<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
+								</div>
+								<div class="col-12 col-md-6">
+									<label class="form-label" for="modalEditUserStatus">@ViewLocalizer["Require RNC"]</label>
+									<div class="position-relative">
+										<div class="position-relative">
+											<select id="voucher-requirernc"  class="select form-select" >
+												<option value="1"> @ViewLocalizer["Yes"]</option>
+												<option value="0"> @ViewLocalizer["No"]</option>
+											</select>
 										</div>
 									</div>
 								</div>
-								<div class="col-lg-4 col-sm-4 col-12">
-									<div class="form-check form-switch pt-4 px-5">
-										<input class="form-check-input" type="checkbox" role="switch" id="voucher-primary">
-										<label class="form-check-label">@ViewLocalizer["Primary"]</label>
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-6 col-12 pt-2">
-									<div class="form-group">
-										<label>@ViewLocalizer["Prefix"]</label>
-										<input id="voucher-class" type="text" class="form-control">
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-6 col-12 pt-2">
-									<div class="form-group">
-										<label>@ViewLocalizer["Sequence"]</label>
-										<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-6 col-12  pt-2">
-									<div class="form-group mb-0">
-										<label>@ViewLocalizer["Require RNC"]</label>
-										<select id="voucher-requirernc" class="select">
-											<option value="1"> @ViewLocalizer["Yes"]</option>
-											<option value="0"> @ViewLocalizer["No"]</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-lg-12 col-sm-12 col-12 pt-2">
-									<div class="form-group">
-										<label>@ViewLocalizer["Tax exempt"]</label>
-										<select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								<div class="col-12 col-md-6">
+									<label class="form-label" for="modalEditTaxID">@ViewLocalizer["Tax exempt"]</label>
+									<div class="position-relative">
+										<select id="voucher-taxes" class="form-control select">
 											@foreach (var t in taxes)
 											{
 												<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
@@ -97,25 +89,24 @@
 										</select>
 									</div>
 								</div>
-
-								<div class="col-6 pt-2">
-									<div class="form-group mb-0">
-										<label>@ViewLocalizer["Status"]</label>
-										<select id="voucher-status" class="select">
+								<div class="col-12 col-md-6">
+									<label class="form-label" for="modalEditUserPhone">@ViewLocalizer["Status"]</label>
+									<div class ="position-relative">
+										<select id="voucher-status" class="select form-select">
 											<option value="1"> @ViewLocalizer["Active"]</option>
 											<option value="0"> @ViewLocalizer["InActive"]</option>
 										</select>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button id="edit-voucher" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-							<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+								<div class="col-12 text-center">
+									<button type="submit" id="edit-voucher" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+									<button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+								</div>
+								<input type="hidden">
+							</form>
 						</div>
 					</div>
 				</div>
-			</div>
 			</div>
 		
 	</div>
@@ -146,7 +137,7 @@
 				{
 					'data': 'action', 'name': 'action',
 					render: function (data, type, row) {
-						return "<a class='me-3' href='javascript:void(0);'  onclick=EditVoucher('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+						return "<a class='' href='javascript:void(0);'  onclick=EditVoucher('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteVoucher('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
 					},
 				},
 				{ "data": "name", "name": "name", "autoWidth": true },

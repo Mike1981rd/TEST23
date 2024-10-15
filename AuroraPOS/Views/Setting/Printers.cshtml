@@ -43,60 +43,61 @@
             </div>
 
             <!-- edit Modal -->
-            <div class="modal fade" id="editprinter" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="printer-modal-title">@ViewLocalizer["Edit Printer"]</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                                        <input id="eprinter-name" type="text" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Model"]<span class="manitory">*</span></label>
-                                        <input id="eprinter-model" type="text" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Physical Routes"]</label>
-                                        <select id="eprinter-route" class="select">
-                                            <option value="">@ViewLocalizer["Choose Physical Printer"]</option>
-                                            @foreach (var p in installedPrinters)
-                                            {
-                                                <option value="@p.ToString()"> @p.ToString()</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>@ViewLocalizer["Status"]</label>
-                                        <select id="eprinter-status" class="select">
-                                            <option value="1"> @ViewLocalizer["Active"]</option>
-                                            <option value="0"> @ViewLocalizer["InActive"]</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="test-printer" type="button" class="btn btn-submit btn-secondary">@ViewLocalizer["Test"]</button>
-                            <button id="edit-printer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal fade " id="editprinter" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+  <div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-6">
+          <h4 class="mb-2">@ViewLocalizer["Edit Printer"]</h4>
+        </div>
+        <form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false"
+          novalidate="novalidate">
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Name"]</label>
+            <input type="text" id="eprinter-name" class="form-control" required>
+          </div>
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Model"]</label>
+            <input type="text" id="eprinter-model" class="form-control" required>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserStatus">@ViewLocalizer["Physical Routes"]</label>
+            <div class="position-relative">
+              <div class="position-relative"><select id="eprinter-route" class="select form-select">
+                  <option value="">@ViewLocalizer["Choose Physical Printer"]</option>
+                  @foreach (var p in installedPrinters)
+                  {
+                  <option value="@p.ToString()"> @p.ToString()</option>
+                  }
+                </select>
+              </div>
             </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserStatus">@ViewLocalizer["Status"]</label>
+            <div class="position-relative">
+              <div class="position-relative"><select id="eprinter-status" class="select form-select">
+                  <option value="1"> @ViewLocalizer["Active"]</option>
+                  <option value="0"> @ViewLocalizer["InActive"]</option>
+
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-12 text-center mt-5">
+            <button id="test-printer" type="button" class="btn me-3 btn-submit btn-secondary">@ViewLocalizer["Test"]</button>
+            <button type="submit" class="btn btn-primary me-3 waves-effect waves-light">Submit</button>
+            <button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal"
+              aria-label="Close">Cancel</button>
+          </div>
+          <input type="hidden">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
             </div>
             </div>
             </div>
