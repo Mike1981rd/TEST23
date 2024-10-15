@@ -2030,7 +2030,14 @@ namespace AuroraPOS.Controllers
 			}
 		}
 
-		[HttpPost]
+        [HttpPost]
+        public JsonResult GetTax(int id)
+        {
+            var tax = _dbContext.Taxs.FirstOrDefault(s => s.ID == id);
+            return Json(tax);
+        }
+
+        [HttpPost]
 		public JsonResult EditTax(Tax request)
 		{
 			try
@@ -2170,7 +2177,14 @@ namespace AuroraPOS.Controllers
             }
         }
 
-        [HttpPost]
+		[HttpPost]
+		public JsonResult GetPropina(int id)
+		{
+			var propina = _dbContext.Taxs.FirstOrDefault(s => s.ID == id);
+			return Json(propina);
+		}
+
+		[HttpPost]
         public JsonResult EditPropina(Propina request)
         {
             try

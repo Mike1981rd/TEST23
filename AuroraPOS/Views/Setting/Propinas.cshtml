@@ -43,7 +43,7 @@
             </div>
 
             <!-- edit Modal -->
-            <div class="modal fade show" id="editpropina" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+            <div class="modal fade" id="editpropina" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
   <div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
     <div class="modal-content">
       <div class="modal-body">
@@ -54,7 +54,7 @@
         <form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
           <div class="col-12 col-md-6 fv-plugins-icon-container">
             <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Propina Name"]</label>
-            <input type="text" id="epropina-name" type="text" value="SGST 4.5%	" required class="form-control">
+            <input type="text" id="epropina-name" value="SGST 4.5%	" required class="form-control">
           </div>
           <div class="col-12 col-md-6 fv-plugins-icon-container">
             <label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Propina (%)"]</label>
@@ -201,55 +201,50 @@
         $("#editpropina").modal("show");
     }
 
-    function Editpropina(propina) {
-        $("#epropina-name").val(propina.propinaName);
-        $("#epropina-value").val(propina.propinaValue);
-        if (propina.isActive) {
-            $("#epropina-status").val(1).change();
-        }
-        else {
-            $("#epropina-status").val(0).change();
-        }
-        if (propina.isInPurchaseOrder) {
-            $("#epropina-porder").prop("checked", true);
-        }
-        else{
-            $("#epropina-porder").prop("checked", false);
-        }
-        if (propina.isInArticle) {
-            $("#epropina-article").prop("checked", true);
-        }
-        else{
-            $("#epropina-article").prop("checked", false);
-        }
-        if (propina.isShipping) {
-            $("#epropina-shipping").prop("checked", true);
-        }
-        else{
-            $("#epropina-shipping").prop("checked", false);
-        } 
-        if (propina.isToGoExclude) {
-            $("#epropina-togo").prop("checked", true);
-        }
-        else{
-            $("#epropina-togo").prop("checked", false);
-        }
-        if (propina.isBarcodeExclude) {
-            $("#epropina-barcode").prop("checked", true);
-        }
-        else {
-            $("#epropina-barcode").prop("checked", false);
-        }
-        if (propina.isKioskExclude) {
-            $("#epropina-kiosk").prop("checked", true);
-        }
-        else {
-            $("#epropina-kiosk").prop("checked", false);
-        }
-        $(".propina-modal-title").html("@ViewLocalizer["Edit propina"]");
-        GetAccountItems(7, propina.id)
-        $("#editpropina").data("id", propina.id);
-        $("#editpropina").modal("show");
+    function Editpropina(id) {
+        $.ajax({
+            url: "/Setting/GetPropina?id=" + id, // Asegúrate de que la URL sea correcta.
+            type: "POST",
+            success: function (propina, textStatus, jqXHR) {
+                if (propina) {
+
+                    console.log(propina);
+                    // Asignación de valores a los campos correspondientes
+                    $("#epropina-name").val(propina.taxName);
+                    $("#epropina-value").val(propina.taxValue);
+
+                    // Estado de "Activo"
+                    if (propina.isActive) {
+                        $("#epropina-status").val(1).change();
+                    } else {
+                        $("#epropina-status").val(0).change();
+                    }
+
+                    // Condicionales para los checkboxes
+                    $("#epropina-porder").prop("checked", propina.IsInPurchaseOrder);
+                    $("#epropina-article").prop("checked", propina.isInArticle);
+                    $("#epropina-shipping").prop("checked", propina.isShipping);
+                    $("#epropina-togo").prop("checked", propina.isToGoExclude);
+                    $("#epropina-barcode").prop("checked", propina.IsBarcodeExclude);
+                    $("#epropina-kiosk").prop("checked", propina.isKioskExclude);
+
+                    // Cambiar el título del modal
+                    $(".propina-modal-title").html("@ViewLocalizer["Edit propina"]");
+
+                    // Llama a GetAccountItems con los parámetros necesarios
+                    GetAccountItems(7, propina.id);
+
+                    // Almacena el ID de propina en el modal
+                    $("#editpropina").data("id", propina.id);
+
+                    // Muestra el modal
+                    $("#editpropina").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]");
+            }
+        });
     }
 
     $("#edit-propina").click(function () {

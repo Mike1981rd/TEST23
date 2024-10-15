@@ -52,6 +52,10 @@
                             <form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
                                 <div class="col-12 col-md-6 fv-plugins-icon-container">
                                     <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Tax Name"]</label>
+                                    <input id="etax-name" type="text" value="4.50" required class="form-control">
+                                </div>
+                                <div class="col-12 col-md-6 fv-plugins-icon-container">
+                                    <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Tax Value"]</label>
                                     <input id="etax-value" type="text" value="4.50" required class="form-control">
                                 </div>
                                 <div class="col-12 col-md-6 fv-plugins-icon-container">
@@ -205,55 +209,49 @@
         $("#edittax").modal("show");
     }
 
-    function EditTax(tax) {
-        $("#etax-name").val(tax.taxName);
-        $("#etax-value").val(tax.taxValue);
-        if (tax.isActive) {
-            $("#etax-status").val(1).change();
-        }
-        else {
-            $("#etax-status").val(0).change();
-        }
-        if (tax.isInPurchaseOrder) {
-            $("#etax-porder").prop("checked", true);
-        }
-        else{
-            $("#etax-porder").prop("checked", false);
-        }
-        if (tax.isInArticle) {
-            $("#etax-article").prop("checked", true);
-        }
-        else{
-            $("#etax-article").prop("checked", false);
-        }
-        if (tax.isShipping) {
-            $("#etax-shipping").prop("checked", true);
-        }
-        else{
-            $("#etax-shipping").prop("checked", false);
-        } 
-        if (tax.isToGoExclude) {
-            $("#etax-togo").prop("checked", true);
-        }
-        else{
-            $("#etax-togo").prop("checked", false);
-        }
-        if (tax.isBarcodeExclude) {
-            $("#etax-barcode").prop("checked", true);
-        }
-        else {
-            $("#etax-barcode").prop("checked", false);
-        } 
-        if (tax.isKioskExclude) {
-            $("#etax-kiosk").prop("checked", true);
-        }
-        else {
-            $("#etax-kiosk").prop("checked", false);
-        }
-        $(".tax-modal-title").html("@ViewLocalizer["Edit Tax"]");
-        GetAccountItems(6, tax.id)
-        $("#edittax").data("id", tax.id);
-        $("#edittax").modal("show");
+    function EditTax(id) {
+        $.ajax({
+            url: "/Setting/GetTax?id=" + id, // Asegúrate de que la URL sea correcta
+            type: "POST",
+            success: function (tax, textStatus, jqXHR) {
+                if (tax) {
+                    console.log(tax);
+                    // Asignación de valores a los campos correspondientes
+                    $("#etax-name").val(tax.taxName);
+                    $("#etax-value").val(tax.taxValue);
+
+                    // Estado de "Activo"
+                    if (tax.isActive) {
+                        $("#etax-status").val(1).change();
+                    } else {
+                        $("#etax-status").val(0).change();
+                    }
+
+                    // Condicionales para los checkboxes
+                    $("#etax-porder").prop("checked", tax.isInPurchaseOrder);
+                    $("#etax-article").prop("checked", tax.isInArticle);
+                    $("#etax-shipping").prop("checked", tax.isShipping);
+                    $("#etax-togo").prop("checked", tax.isToGoExclude);
+                    $("#etax-barcode").prop("checked", tax.isBarcodeExclude);
+                    $("#etax-kiosk").prop("checked", tax.isKioskExclude);
+
+                    // Cambiar el título del modal
+                    $(".tax-modal-title").html("@ViewLocalizer["Edit Tax"]");
+
+                    // Llama a GetAccountItems con los parámetros necesarios
+                    GetAccountItems(6, tax.id);
+
+                    // Almacena el ID de tax en el modal
+                    $("#edittax").data("id", tax.id);
+
+                    // Muestra el modal
+                    $("#edittax").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]");
+            }
+        });
     }
 
     $("#edit-tax").click(function () {
