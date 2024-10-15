@@ -93,92 +93,55 @@
 </div>
 
 
-
-<div class="modal fade" id="addpaymentmethod" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="addpaymentmethod" tabindex="-1"  role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Payment Method"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
 			<div class="modal-body">
-				<div class="row">
-					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-							<div class="input-group">
-								<input id="pmethod-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-							</div>
-						</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Payment Method"]</h4>
+				</div>
+				<form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
+						<label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Name"]</label>
+						<input type="text" id="pmethod-name" class="form-control" plaria-describedby="basic-addon1" required>
 					</div>
-				
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Exchange Rate"]</label>
-							<input id="pmethod-tasa" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-						</div>
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
+						<label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Exchange Rate"]</label>
+						<input id="pmethod-tasa" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+						<div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
 					</div>
-					<div class="row">
-						<div class="form-group px-3">
-							<div class="d-flex  align-items-center" style="gap: 5px;">
-								<h6 class="text-left pr-5">@ViewLocalizer["Photo"]</h6>
-								<div class="del-unit text-danger">
-									<a class="del-photo " href="javascript:void(0);">
-										<img src="/vendor/img/icons/minus.svg" alt="img">
-									</a>
-								</div>
+					
+					<div class="col-12 col-md-6">
+						<label class="form-label" for="modalEditUserEmail">@ViewLocalizer["Payment Type"]</label>
+						<select id="pmethod-type" class="select form-select">
+							<option value="Effectivo"> Effectivo</option>
+							<option value="Tarjeta"> Tarjeta</option>
+							<option value="C X C"> C X C</option>
+							<option value="Cheque"> Cheque</option>
+							<option value="Transferencia"> Transferencia</option>
+							<option value="Cuenta de la Casa"> Cuenta de la Casa</option>
+							<option value="Conduce">Conduce</option>
+						</select>
+											</div>
+					<div class="col-12 col-md-6">
+						<label class="form-label" for="modalEditUserStatus">@ViewLocalizer["Status"]</label>
+						<div class="position-relative">
+							<div class="position-relative">
+								<select id="pmethod-status" class="select form-select" tabindex="-1" aria-hidden="true">
+									<option value="1"> @ViewLocalizer["Active"]</option>
+									<option value="0"> @ViewLocalizer["InActive"]</option>
+								</select>
 							</div>
-
-							<div class="row">
-								<div class="col-sm-4 col-4">
-									<img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-								</div>
-								<div class="col-sm-8 col-8 image-upload" style="height: 100%">
-									<input id="imgInpProduct" type="file" name="Files" accept="image/*">
-									<div class="image-uploads">
-										<img src="~/vendor/img/icons/upload.svg" alt="img">
-										<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-									</div>
-								</div>
-							</div>
-
 						</div>
 					</div>
 					<div class="col-12">
-						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Payment Type"]</label>
-							<select id="pmethod-type" class="select">
-								<option value="Effectivo"> Effectivo</option>
-								<option value="Tarjeta"> Tarjeta</option>
-								<option value="C X C"> C X C</option>
-								<option value="Cheque"> Cheque</option>
-								<option value="Transferencia"> Transferencia</option>
-								<option value="Cuenta de la Casa"> Cuenta de la Casa</option>
-								<option value="Conduce">Conduce</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-12 pt-2">
-						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="pmethod-status" class="select">
-								<option value="1"> @ViewLocalizer["Active"]</option>
-								<option value="0"> @ViewLocalizer["InActive"]</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="row pt-3">
-					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-							<div class="add-unit">
-								<a class="add-accounting-item" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
+						<label class="form-label" for="modalEditTaxID">@ViewLocalizer["Accounting"]</label>
+						<div class="add-unit">
+							<a class="add-accounting-item" href="javascript:void(0);">
+								<img src="/vendor/img/icons/plus1.svg" alt="img">
+							</a>
 						</div>
 						<table class="table reordertable">
 							<thead>
@@ -200,15 +163,35 @@
 							</tbody>
 						</table>
 					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button id="edit-pmethod" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+					<div class="col-12 fv-plugins-icon-container">
+						<label class="form-label" for="modalEditUserName">@ViewLocalizer["Photo"]</label>
+						<div class="del-unit text-danger">
+							<a class="del-photo " href="javascript:void(0);">
+								<img src="/vendor/img/icons/minus.svg" alt="img">
+							</a>
+						</div>
+						<div class="row">
+							<div class="">
+								<img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+							</div>
+							<div class="image-upload" style="height: 100%">
+								<input id="imgInpProduct" type="file" name="Files" accept="image/*">
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-12 text-center">
+						<button type="submit" id="edit-pmethod" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+						<button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">@ViewLocalizer["Cancel"]</button>
+					</div>
+					<input type="hidden">
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
+
+
 
 @{
 	@await Component.InvokeAsync("Accounting", new { })
@@ -384,6 +367,38 @@
 		});
 
 	});
+
+
+	function updateIndex(e, ui) {
+		var data = [];
+		$(".paymentmethod-tr").each(function (index, item) {
+			var id = $(this).data("id");
+			var d = {
+				ID: id,
+				DisplayOrder: index + 1
+			};
+			data.push(d);
+		});
+
+		console.log("a");
+		console.log(data);
+
+		$.ajax({
+			url: "/Setting/UpdatePaymentMethodOrder",
+			type: "POST",
+			data: JSON.stringify(data),
+			contentType: 'application/json;',
+			dataType: 'json',
+			success: function (data, textStatus, jqXHR) {
+				if (data.status == 0) {
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+			}
+		});
+	}
+
+
 	
 	function cargaDatos() {
 		$(".divloading").show();
@@ -413,6 +428,7 @@
 						items: '.card', // Asegúrate de que cada tarjeta tenga la clase 'card'
 						cursor: 'move',
 						update: function (event, ui) {
+							updateIndex(event, ui);
 							var order = $(this).sortable('toArray');
 							console.log(order); // Aquí puedes manejar el nuevo orden si es necesario
 						}

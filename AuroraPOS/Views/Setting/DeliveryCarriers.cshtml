@@ -38,39 +38,33 @@
 			</div>
 
 			<div class="modal fade" id="AddCarrier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-				<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="supplier-modal-title">@ViewLocalizer["Agregar/Editar Repartidor"]</h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
 						<div class="modal-body">
-							<div class="row">
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Nombre"]<span class="manitory">*</span></label>
-										<div class="input-group">
-											<span class="input-group-text" id="basic-addon1">ID</span>
-											<input id="carrier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-										</div>
-									</div>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<div class="text-center mb-6">
+								<h4 class="mb-2">@ViewLocalizer["Agregar/Editar Repartidor"]</h4>
+							</div>
+							<form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
+								<div class="col-12 col-md-6 fv-plugins-icon-container">
+									<label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Nombre"]</label>
+									<input id="carrier-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
 								</div>
-								<div class="col-12">
-									<div class="form-group mb-0">
-										<label>@ViewLocalizer["Activo"]</label>
-										<select id="carrier-is-active" class="select">
+								<div class="col-12 col-md-6 fv-plugins-icon-container">
+									<label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Activo"]</label>
+									<div class="position-relative">
+										<select id="carrier-is-active" class="select form-select">
 											<option value="1"> @ViewLocalizer["Activo"]</option>
 											<option value="0"> @ViewLocalizer["Inactivo"]</option>
 										</select>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button id="edit-carrier" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-							<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+								<div class="col-12 text-center">
+									<button type="submit" class="btn btn-primary me-3 waves-effect waves-light" id="edit-carrier">@ViewLocalizer["Submit"]</button>
+									<button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+								</div>
+								<input type="hidden">
+							</form>
 						</div>
 					</div>
 				</div>

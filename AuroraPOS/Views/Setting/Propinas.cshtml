@@ -43,108 +43,96 @@
             </div>
 
             <!-- edit Modal -->
-            <div class="modal fade" id="editpropina" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="propina-modal-title">@ViewLocalizer["Edit Propina"]</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Propina Name"]<span class="manitory">*</span></label>
-                                        <input id="epropina-name" type="text" value="SGST 4.5%	" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label>@ViewLocalizer["Propina (%)"]<span class="manitory">*</span></label>
-                                        <input id="epropina-value" type="text" value="4.50" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group row">
-                                        <input id="epropina-article" type="checkbox" class="col-sm-4 col-4">
-                                        <label class="col-sm-8 col-8">@ViewLocalizer["Article"]  </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group row">
-                                        <input id="epropina-shipping" type="checkbox" class="col-sm-4 col-4">
-                                        <label class="col-sm-8 col-8">@ViewLocalizer["Sales"]  </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-6 col-12">
-                                    <div class="form-group row">
-                                        <input id="epropina-togo" type="checkbox" class="col-sm-4 col-4">
-                                        <label class="col-sm-8 col-8">@ViewLocalizer["To go exclude"]  </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-6 col-12">
-                                    <div class="form-group row">
-                                        <input id="epropina-barcode" type="checkbox" class="col-sm-4 col-4">
-                                        <label class="col-sm-8 col-8">@ViewLocalizer["Barcode exclude"]  </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-6 col-12">
-                                    <div class="form-group row">
-                                        <input id="epropina-kiosk" type="checkbox" class="col-sm-4 col-4">
-                                        <label class="col-sm-8 col-8">@ViewLocalizer["Kiosk exclude"]  </label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-0">
-                                        <label>@ViewLocalizer["Status"]</label>
-                                        <select id="epropina-status" class="select">
-                                            <option value="1"> @ViewLocalizer["Active"]</option>
-                                            <option value="0"> @ViewLocalizer["InActive"]</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row pt-5">
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                                        <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-                                        <div class="add-unit">
-                                            <a class="add-accounting-item" href="javascript:void(0);">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <table class="table reordertable">
-                                        <thead>
-                                            <tr>
-                                                <td>
-                                                    @ViewLocalizer["Name"]
-                                                </td>
-                                                <td>
-                                                    @ViewLocalizer["Type"]
-                                                </td>
-                                                <td>
-                                                    @ViewLocalizer["Number"]
-                                                </td>
-                                                <td>
-                                                    @ViewLocalizer["Action"]
-                                                </td>
-                                        </thead>
-                                        <tbody id="accounting-list">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="edit-propina" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal fade show" id="editpropina" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+  <div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-6">
+          <h4 class="mb-2">@ViewLocalizer["Edit Propina"]</h4>
+        </div>
+        <form id="editUserForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework" onsubmit="return false" novalidate="novalidate">
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserFirstName">@ViewLocalizer["Propina Name"]</label>
+            <input type="text" id="epropina-name" type="text" value="SGST 4.5%	" required class="form-control">
+          </div>
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserLastName">@ViewLocalizer["Propina (%)"]</label>
+            <input id="epropina-value" type="text" value="4.50" required class="form-control">
+          </div>
+          <div class="col-12 col-md-6 fv-plugins-icon-container">
+            <label class="form-label" for="modalEditUserName">@ViewLocalizer["Article"]</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="epropina-article">
             </div>
+       </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserName">@ViewLocalizer["Sales"]</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="epropina-shipping">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserName">@ViewLocalizer["To go exclude"]</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input"  id="epropina-togo">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserName">@ViewLocalizer["Barcode exclude"]</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="epropina-barcode">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserName">@ViewLocalizer["Kiosk exclude"]</label>
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="epropina-kiosk">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditUserLanguage">@ViewLocalizer["Status"]</label>
+            <div class="position-relative"><div class="position-relative"><select id="epropina-status"  class="select form-select">
+              <option value="1"> @ViewLocalizer["Active"]</option>
+                                <option value="0"> @ViewLocalizer["InActive"]</option>
+            </select> </div></div>
+          </div>
+           <div class="col-12">
+            <label class="form-label" for="modalEditUserLanguage">@ViewLocalizer["Accounting"]</label>
+             <div class="add-unit">
+                                <a class="add-accounting-item" href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                            <table class="table reordertable">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        @ViewLocalizer["Name"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Type"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Number"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Action"]
+                                    </td>
+                            </thead>
+                            <tbody id="accounting-list">
+                            </tbody>
+                        </table>
+          </div>
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary me-3 waves-effect waves-light" id="edit-propina" >@ViewLocalizer["Submit"]</button>
+            <button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+          </div>
+        <input type="hidden"></form>
+      </div>
+    </div>
+  </div>
+</div>
             </div>
             </div>
             </div>
@@ -176,7 +164,7 @@
             {
                 'data': 'action', 'name': 'action',
                 render: function (data, type, row) {
-                    return "<a class='me-3' href='javascript:void(0);' onclick='Editpropina(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                    return "<a class=paymentmethod-tr' data-id='" + row.id + "' href='javascript:void(0);'  onclick=Editpropina('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=Deletepropina('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
                 },
             },
             { "data": "propinaName", "name": "propinaName", "autoWidth": true },
