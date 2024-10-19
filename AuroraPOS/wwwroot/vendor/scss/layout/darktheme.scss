@@ -2,6 +2,10 @@ body[data-theme="dark"] {
     background-color: $__black_color;
     color: $__black_grey;
 
+    h4, p {
+        color: $__white !important;
+    }
+
     .header {
         background: $__black_color;
 
@@ -871,7 +875,7 @@ body[data-theme="dark"] {
 
         .form-login {
             label {
-                color: $__black_grey;
+                color: $__white;
             }
         }
 

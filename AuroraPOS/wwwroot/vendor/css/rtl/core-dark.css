@@ -3285,6 +3285,8 @@ textarea.form-control-lg {
   margin-left: 0;
 }
 
+
+
 .dropdown-menu {
   --bs-dropdown-zindex: 1000;
   --bs-dropdown-min-width: 10rem;
@@ -13303,6 +13305,14 @@ button.list-group-item-gray.active {
 
 .card hr {
   color: #44485e;
+}
+
+.mb-1 h4 {
+    color: #fff !important;
+}
+
+.mb-6 p {
+    color: #fff !important;
 }
 
 .card .row-bordered > [class*=" col "] .card .row-bordered > [class$=" col"], .card .row-bordered > [class*=" col "]::before, .card .row-bordered > [class*=" col "]::after,
