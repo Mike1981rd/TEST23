@@ -3,66 +3,65 @@
 *@
 @{
 }
-<div class="page-header">
-	<div class="page-title">
-		<h4>Denominaciones</h4>
-		<h6>@ViewLocalizer["Manage denominations"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="javascript:void(0);" class="btn btn-added" onclick="AddDenomination()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Denomination"]</a>
-	</div>
-</div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
-			<table id="denomination-list" class="table mb-3" >
-				<thead>
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Manage denominations"]</h5>
+			<div class="page-btn">
+				<a href="javascript:void(0);" class="btn btn-added" onclick="AddDenomination()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Denomination"]</a>
+			</div>
+			</div>
+		<div class="card-datatable table-responsive">
+			<table id="denomination-list" class="table">
+				<thead class="border-top">
 					<tr>
 						<th>@ViewLocalizer["Action"]</th>
 						<th>@ViewLocalizer["Name"] </th>
 						<th>@ViewLocalizer["Amount"] </th>
 					</tr>
 				</thead>
-				<tbody>
-				</tbody>
 			</table>
-		
 		</div>
+		
 	</div>
 </div>
 
-<div class="modal fade" id="adddenomination" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+
+
+
+<div class="modal fade" id="adddenomination" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Denomination"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
 			<div class="modal-body">
-				<div class="row">
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-							<div class="input-group">
-								<span class="input-group-text" id="basic-addon1">ID</span>
-								<input id="denomination-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Denomination"]
+					</h4>
+				</div>
+					<div class="row">
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
+							<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+								<div class="input-group">
+									<span class="input-group-text" id="basic-addon1">ID</span>
+									<input class="form-control"id="denomination-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+								</div>
+							</div>
+						</div>
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
+							<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
+								<input id="denomination-amount" type="text" onkeypress="return onlyDecimalKey(event)" max="4" class="form-control" required>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
-							<input id="denomination-amount" type="text" onkeypress="return onlyDecimalKey(event)" max="4" class="form-control" required>
-						</div>
-					</div>
+					<br />
+				<div class="col-12 text-center">
+					<button id="edit-denomination" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+					<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button id="edit-denomination" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

@@ -1,56 +1,54 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Account List"]</h4>
-		<h6>@ViewLocalizer["Manage accounts"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="javascript:void(0);" class="btn btn-added" id="add-account"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Account"]</a>
-	</div>
-</div>
+﻿<div class="container-xxl flex-grow-1 container-p-y">
 
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
-			<table id="account-list" class="table" style="position:relative;">
-				<thead style="position: sticky; top: 0; z-index:2;">
-					<tr>
-						<th>@ViewLocalizer["Action"]</th>
-						<th>@ViewLocalizer["Description"] </th>
-						<th>@ViewLocalizer["Type"] </th>
-						<th>@ViewLocalizer["Number"]</th>
-						<th>@ViewLocalizer["Credit / Debit"]</th>
-						<th>@ViewLocalizer["Status"]</th>
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Account List"]</h5>
+			<h6>@ViewLocalizer["Manage accounts"]</h6>
+			</div>
+		<div class="card-body">
+			<div class="page-btn">
+				<a href="javascript:void(0);" class="btn btn-added" id="add-account"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Account"]</a>
+			</div>
+			<div class="card-datatable table-responsive">
+				<table id="account-list" class="table" style="position:relative;">
+					<thead class="border-top">
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["Description"] </th>
+							<th>@ViewLocalizer["Type"] </th>
+							<th>@ViewLocalizer["Number"]</th>
+							<th>@ViewLocalizer["Credit / Debit"]</th>
+							<th>@ViewLocalizer["Status"]</th>
 
-					</tr>
-				</thead>
-			</table>
+						</tr>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+
+	</div>
 
 
-<div class="modal fade" id="editaccount" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+
+<div class="modal fade" id="editaccount" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="category-modal-title">@ViewLocalizer["Add/Edit Account"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body m-3">
+			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Account"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Description"]</label>
+							<label class="form-label">@ViewLocalizer["Description"]</label>
 							<div class="row">
 								<div class="col-lg-10 col-sm-10 col-10">
-									<select id="account-desc" class="select ">
+									<select id="account-desc" class="select form-select">
 										<option>Choose description</option>
 									</select>
 								</div>
@@ -66,7 +64,7 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Type"]</label>
+							<label class="form-label">@ViewLocalizer["Type"]</label>
 							<div class="row">
 								<div class="col-lg-10 col-sm-10 col-10">
 									<select id="account-type" class="select ">
@@ -85,14 +83,14 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Number"]<span class="manitory">*</span></label>
-							<input id="account-number" type="text">
+							<label class="form-label">@ViewLocalizer["Number"]<span class="manitory">*</span></label>
+							<input id="account-number" type="text" class="form-control">
 						</div>
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12 pb-3">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Credit or Debit"]</label>
-							<select id="account-creditordebit" class="select">
+							<label class="form-label">@ViewLocalizer["Credit or Debit"]</label>
+							<select id="account-creditordebit" class="select form-select">
 								<option value="0"> @ViewLocalizer["Credit"]</option>
 								<option value="1"> @ViewLocalizer["Debit"]</option>
 							</select>
@@ -100,8 +98,8 @@
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12 pb-3">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="account-status" class="select">
+							<label class="form-label">@ViewLocalizer["Status"]</label>
+							<select id="account-status" class="select form-select">
 								<option value="1"> @ViewLocalizer["Active"]</option>
 								<option value="0"> @ViewLocalizer["InActive"]</option>
 							</select>
@@ -109,8 +107,8 @@
 					</div>
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Defaults"]<span class="manitory">*</span></label>
-							<select id="account-defaults" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+							<label class="form-label">@ViewLocalizer["Defaults"]<span class="manitory">*</span></label>
+							<select id="account-defaults" class="select form-select" multiple tabindex="-1" aria-hidden="true">
 								<option value="3">Article</option>
 								<option value="4">Supplier</option>
 								<option value="5">Client</option>
@@ -127,9 +125,9 @@
 
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button id="edit-account" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			<div class="col-12 text-center">
+				<button id="edit-account" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

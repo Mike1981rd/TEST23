@@ -91,6 +91,27 @@
         .icon-black {
             color: black;
         }
+
+        [data-style="dark"] .form-label,
+        [data-style="dark"] .form-control,
+        [data-style="dark"] .form-addons,
+        [data-style="dark"] .icon-black,
+        [data-style="dark"] h4,
+        [data-style="dark"] p,
+        [data-style="dark"] label,
+        [data-style="dark"] span {
+            color: #fff; /* Cambia los textos de las etiquetas y entradas a blanco */
+        }
+
+        [data-style="dark"] input::placeholder {
+            color: #fff; /* Opcional: Cambia el color del texto placeholder en modo oscuro */
+        }
+
+        [data-style="dark"] select.form-control,
+        [data-style="dark"] .input-group-text {
+            color: #fff; /* Asegúrate que el texto en los selects también sea blanco */
+            background-color: #333; /* Opcional: Cambia el fondo de los inputs/selects en modo oscuro */
+        }
     </style>
 </head>
 <body class="account-page">

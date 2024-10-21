@@ -34,51 +34,54 @@
 		</div>
 	</div>
 	<!-- edit Modal -->
-	<div class="modal fade" id="editwarehouse" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="warehouse-modal-title">@ViewLocalizer["Edit Warehouse"]</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
 
-						<div class="col-12">
-							<div class="form-group">
-								<label>@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
-								<input id="ew-name" type="text">
+	<div class="modal fade" id="editwarehouse" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<div class="text-center mb-6">
+						<h4 class="mb-2">
+							@ViewLocalizer["Edit Warehouse"]
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+
+							<div class="col-12 col-md-6 fv-plugins-icon-container">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
+									<input id="ew-name" type="text" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="col-6">
-							<div class="form-group">
-								<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-								<input id="ew-email" type="text">
+							<div class="col-12 col-md-6 fv-plugins-icon-container">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+									<input id="ew-email" type="text" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="col-6">
-							<div class="form-group">
-								<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-								<input id="ew-phone" type="text">
+							<div class="col-12 col-md-6 fv-plugins-icon-container">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+									<input id="ew-phone" type="text" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-group mb-0">
-								<label>@ViewLocalizer["Status"]</label>
-								<select id="ew-status" class="select">
-									<option value="">@ViewLocalizer["Choose Status"]</option>
-									<option value="1"> @ViewLocalizer["Active"]</option>
-									<option value="0"> @ViewLocalizer["InActive"]</option>
-								</select>
+							<div class="col-12 col-md-6">
+								<div class="form-group mb-0">
+									<label class="form-label">@ViewLocalizer["Status"]</label>
+									<select id="ew-status" class="select form-select">
+										<option value="">@ViewLocalizer["Choose Status"]</option>
+										<option value="1"> @ViewLocalizer["Active"]</option>
+										<option value="0"> @ViewLocalizer["InActive"]</option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button id="edit-warehouse" type="button" class="btn btn-submit">@ViewLocalizer["Update"]</button>
-					<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+					<div class="modal-footer">
+						<button id="edit-warehouse" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Update"]</button>
+						<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+					</div>
 				</div>
 			</div>
 		</div>

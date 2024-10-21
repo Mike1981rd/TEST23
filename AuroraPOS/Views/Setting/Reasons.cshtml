@@ -1,50 +1,47 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Void Reason List"]</h4>
-		<h6>@ViewLocalizer["Manage your reasons"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="javascript:void(0);" class="btn btn-added" onclick="AddReason()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add New Reason"]</a>
-	</div>
-</div>
-
-
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
-			<table id="reason-list" class="table">
-				<thead>
-					<tr>
-						<th>@ViewLocalizer["Action"]</th>
-						<th>@ViewLocalizer["Reason"] </th>
-						<th>@ViewLocalizer["Inventory Reduce"] </th>
-						<th>@ViewLocalizer["Status"] </th>
-					</tr>
-				</thead>
-			</table>
+﻿
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title">@ViewLocalizer["Void Reason List"]</h5>
+			<h6>@ViewLocalizer["Manage your reasons"]</h6>
+			</div>
+		<div class="card-body">
+			<div class="page-btn">
+				<a href="javascript:void(0);" class="btn btn-added" onclick="AddReason()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add New Reason"]</a>
+			</div>
+			<div class="card-datatable table-responsive">
+				<table id="reason-list" class="table">
+					<thead class="border-top">
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["Reason"] </th>
+							<th>@ViewLocalizer["Inventory Reduce"] </th>
+							<th>@ViewLocalizer["Status"] </th>
+						</tr>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="addreason" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+
+
+<div class="modal fade" id="addreason" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Void Reasons"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Void Reasons"]
+					</h4>
+				</div>
 				<div class="row">
-					<div class="col-lg-12 col-sm-12 col-12">
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
 						<div class="form-group">
-							<label>@ViewLocalizer["Reason"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Reason"]<span class="manitory">*</span></label>
 							<div class="input-group">
 								<span class="input-group-text" id="basic-addon1">ID</span>
 								<input id="reason-desc" type="text" class="form-control" aria-describedby="basic-addon1" required>
@@ -69,10 +66,10 @@
 							</select>
 						</div>
 					</div> *@
-					<div class="col-4">
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Inventory Reduce"]</label>
-							<select id="reason-inventoryreduce" class="select">
+							<label class="form-label">@ViewLocalizer["Inventory Reduce"]</label>
+							<select id="reason-inventoryreduce" class="select form-select">
 								<option value="1"> @ViewLocalizer["Yes"]</option>
 								<option value="0"> @ViewLocalizer["No"]</option>
 							</select>
@@ -84,51 +81,49 @@
 							<input id="reason-level" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
 						</div>
 					</div> *@
-					<div class="col-6 pt-2">
+					<div class="col-12 col-md-6 fv-plugins-icon-container">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="reason-status" class="select">
+							<label class="form-label">@ViewLocalizer["Status"]</label>
+							<select id="reason-status" class="select form-select">
 								<option value="1"> @ViewLocalizer["Active"]</option>
 								<option value="0"> @ViewLocalizer["InActive"]</option>
 							</select>
 						</div>
 					</div>
 				</div>
-				<div class="row pt-3">
-					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-							<div class="add-unit">
-								<a class="add-accounting-item" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
+				<div class="col-12 fv-plugins-icon-container">
+					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+						<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+						<div class="add-unit">
+							<a class="add-accounting-item" href="javascript:void(0);">
+								<img src="/vendor/img/icons/plus1.svg" alt="img">
+							</a>
 						</div>
-						<table class="table reordertable">
-							<thead>
-								<tr>
-									<td>
-										@ViewLocalizer["Name"]
-									</td>
-									<td>
-										@ViewLocalizer["Type"]
-									</td>
-									<td>
-										@ViewLocalizer["Number"]
-									</td>
-									<td>
-										@ViewLocalizer["Action"]
-									</td>
-							</thead>
-							<tbody id="accounting-list">
-							</tbody>
-						</table>
 					</div>
+					<table class="table reordertable">
+						<thead class="border-top">
+							<tr>
+								<td>
+									@ViewLocalizer["Name"]
+								</td>
+								<td>
+									@ViewLocalizer["Type"]
+								</td>
+								<td>
+									@ViewLocalizer["Number"]
+								</td>
+								<td>
+									@ViewLocalizer["Action"]
+								</td>
+						</thead>
+						<tbody id="accounting-list">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button id="edit-reason" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			<div class="col-12 text-center">
+				<button id="edit-reason" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

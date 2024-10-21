@@ -35,74 +35,74 @@
 </div>
 
 <!-- add / edit Modal -->
-<div class="modal fade" id="editgroup" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="editgroup" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true" data-id="">
+	<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="group-modal-title">@ViewLocalizer["Edit Group"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
+			
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Edit Group"]
+					</h4>
+				</div>
 				<div class="row">
-					<div class="col-12">
+					<div class="col-12 col-md-6">
 						<div class="form-group">
-							<label>@ViewLocalizer["Group name"]<span class="manitory">*</span></label>
-							<input id="egroup-name" type="text" value="SGST 4.5%	" required>
+							<label class="form-label">@ViewLocalizer["Group name"]<span class="manitory">*</span></label>
+							<input id="egroup-name" type="text" value="SGST 4.5%	" required class="form-control">
 						</div>
 					</div>
-					<div class="col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Note"]</label>
-							<textarea id="egroup-note" rows="5" cols="5" class="form-control" placeholder="@ViewLocalizer["Enter text here"]"></textarea>
-						</div>
-					</div>
-					<div class="col-12">
+					
+					<div class="col-12 col-md-6">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="egroup-status" class="select">
+							<label class="form-label">@ViewLocalizer["Status"]</label>
+							<select id="egroup-status" class="select form-select">
 								<option value="1"> @ViewLocalizer["Active"]</option>
 								<option value="0"> @ViewLocalizer["InActive"]</option>
 							</select>
 						</div>
 					</div>
-				</div>
-				<div class="row pt-5">
-					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-							<div class="add-unit">
-								<a class="add-accounting-item" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
+					<div class="col-12 ">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Note"]</label>
+							<textarea id="egroup-note" rows="5" cols="5" class="form-control" placeholder="@ViewLocalizer["Enter text here"]"></textarea>
 						</div>
-						<table class="table reordertable">
-							<thead>
-								<tr>
-									<td>
-										@ViewLocalizer["Name"]
-									</td>
-									<td>
-										@ViewLocalizer["Type"]
-									</td>
-									<td>
-										@ViewLocalizer["Number"]
-									</td>
-									<td>
-										@ViewLocalizer["Action"]
-									</td>
-							</thead>
-							<tbody id="accounting-list">
-							</tbody>
-						</table>
 					</div>
 				</div>
+				<div class="col-12 ">
+					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+						<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+						<div class="add-unit">
+							<a class="add-accounting-item" href="javascript:void(0);">
+								<img src="/vendor/img/icons/plus1.svg" alt="img">
+							</a>
+						</div>
+					</div>
+					<table class="table reordertable">
+						<thead>
+							<tr>
+								<td>
+									@ViewLocalizer["Name"]
+								</td>
+								<td>
+									@ViewLocalizer["Type"]
+								</td>
+								<td>
+									@ViewLocalizer["Number"]
+								</td>
+								<td>
+									@ViewLocalizer["Action"]
+								</td>
+						</thead>
+						<tbody id="accounting-list">
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="modal-footer">
-				<button id="edit-group" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			<div class="col-12 text-center">
+				<button type="submit" id="edit-group" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="reset" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" aria-label="Close">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

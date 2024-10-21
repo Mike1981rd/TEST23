@@ -174,16 +174,29 @@
                             <a href="javascript:void(0);" class="fw-medium">Add media from URL</a>
                         </div>
                         <div class="card-body text-center justify-content-center align-items-center">
-                            <form action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
+                           
+                            <div action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
                                 <div class="dz-message needsclick">
                                     <p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
                                     <p class="h6 text-muted d-block fw-normal mb-2">or</p>
                                     <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">Browse image</span>
                                 </div>
-                            </form>
+                            </div>
                             <!-- Input hidden para almacenar la imagen subida -->
-                            <input type="hidden" id="imgInpProduct" name="productImageUrl">
+                            <input type="hidden" id="imgInpProduct"  name="Files">
                         </div>
+                       
+                         <div class="col-sm-4 col-4 text-center ">
+                        <div class="fw-medium">Imagen anterior cargada</div>
+                        @if (string.IsNullOrEmpty(Model.Logo))
+                        {
+                        <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                        }
+                        else
+                        {
+                        <img id="productimg" class="" style="max-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
+                        }
+                        </div> 
                     </div>
 
                    
@@ -201,6 +214,11 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#dropzone-basic').on('submit', function (e) {
+            e.preventDefault(); // Prevenir el envío del formulario
+        });
+
         $(".del-photo").click(function () {
             $("#productimg").attr("src", "/vendor/img/product/noimage.png");
             $("#productimg").data("logo", "");
@@ -214,20 +232,9 @@
         Dropzone.options.dropzoneBasic = {
             paramName: "file", // El nombre que será usado para enviar el archivo
             maxFilesize: 2, // Tamaño máximo del archivo en MB
-            acceptedFiles: "image/*", // Solo aceptar imágenes
+            acceptedFiles: "image/*",// Solo aceptar imágenes
+            autoProcessQueue: false,
             init: function () {
-                this.on("success", function (file, response) {
-                    // Supongamos que la respuesta del servidor tiene la URL de la imagen
-                    let imageUrl = response.imageUrl;
-
-                    // Establecer la URL de la imagen subida en el input hidden
-                    document.getElementById('imgInpProduct').value = imageUrl;
-
-                    // Previsualizar la imagen cargada en el input hidden
-                    $('#productimg').attr('src', imageUrl);
-                    $('#productimg').data('logo', imageUrl);
-                });
-
                 this.on("addedfile", function (file) {
                     // Usar FileReader para la previsualización local
                     var reader = new FileReader();
@@ -237,6 +244,18 @@
                         $("#productimg").data("logo", e.target.result);
                     }
                     reader.readAsDataURL(file);
+                });
+
+                this.on("success", function (file, response) {
+                    // Supongamos que la respuesta del servidor tiene la URL de la imagen
+                    let imageUrl = response.imageUrl;
+
+                    // Establecer la URL de la imagen subida en el input hidden
+                    document.getElementById('imgInpProduct').value = imageUrl;
+
+                    // Previsualizar la imagen cargada
+                    $('#productimg').attr('src', imageUrl);
+                    $('#productimg').data('logo', imageUrl);
                 });
 
                 this.on("error", function (file, response) {

@@ -163,21 +163,28 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="col-12 fv-plugins-icon-container">
-						<label class="form-label" for="modalEditUserName">@ViewLocalizer["Photo"]</label>
-						<div class="del-unit text-danger">
-							<a class="del-photo " href="javascript:void(0);">
-								<img src="/vendor/img/icons/minus.svg" alt="img">
-							</a>
-						</div>
-						<div class="row">
-							<div class="">
-								<img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-							</div>
-							<div class="image-upload" style="height: 100%">
-								<input id="imgInpProduct" type="file" name="Files" accept="image/*">
+					<div class="card mb-6">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+							<div class="del-unit text-danger">
+								<a class="del-photo " href="javascript:void(0);">
+									<img src="/vendor/img/icons/minus.svg" alt="img">
+								</a>
 							</div>
 						</div>
+						<div class="card-body text-center justify-content-center align-items-center">
+
+							<div action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
+								<div class="dz-message needsclick">
+									<p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
+									<p class="h6 text-muted d-block fw-normal mb-2">or</p>
+									<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">Browse image</span>
+								</div>
+							</div>
+							<!-- Input hidden para almacenar la imagen subida -->
+							<input type="hidden" id="imgInpProduct" name="Files">
+						</div>
+						<br />
 					</div>
 					
 					<div class="col-12 text-center">
