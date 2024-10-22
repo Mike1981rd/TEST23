@@ -254,7 +254,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row recipe-info pt-2">
+                            <div class="row pt-2">
                                 <div class="table-responsive" style="min-height: 200px; overflow: auto">
                                     <table id="" class="table purchase-item">
                                         <thead style=" ">
@@ -706,7 +706,7 @@
         var barcode = $("#product-barcode").val();
         var servingsize = $("#product-serving-size").val()
         var recipes = [];
-        $(".recipe-info .article-item").each(function (i, e) {
+        $(".article-item").each(function (i, e) {
             var qty = parseFloatCorrect($(this).find(".item-qty").val());
             if (!qty) qty = 0;
 
@@ -716,7 +716,7 @@
             var unitId = parseInt($(this).find(".item-payunit option:selected").data("id"));
             if (!unitId) unitId = 0;
             var type = parseInt($(this).data("type"));
-          
+            debugger;
             var servingSizeID = parseInt($(this).closest(".product-item-container").data("id"));
             if (servingsize == "1") {
                 if (servingSizeID == 0) return;
@@ -2507,11 +2507,23 @@
                         UpdateItems(id);
                         
                         //Buscamos la fila en la receta para ocultarla
-                        $($(".purchase-item")[0]).find("td:first-child").each(function(){
+
+                        $($(".purchase-item")[0]).find("tr").each(function(){
+                            var rFila = $(this).find("td");
+                            if (rFila.length>0){
+                            var m = $(this).data("id");
+                                if ($(this).data("id") == data1.id){
+                                    $(this).closest("tr").hide();
+                                }
+                            }
+                            
+                        });
+                        
+                        /*$($(".purchase-item")[0]).find("td:first-child").each(function(){
                             if (data1.name.replace(/\s/g, '') == $(this).html().replace(/\s/g, '')){
                                 $(this).closest("tr").hide();
                             }
-                        });
+                        });*/
                     }
 
                     $("#no-serving-size").find(".po-price2").text("$ " + (Math.round(total * 100) / 100).toFixed(2));
