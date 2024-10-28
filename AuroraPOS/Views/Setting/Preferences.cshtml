@@ -168,35 +168,38 @@
                         </div>
                     </div>
 
+
+                    @* ----- Control para subir archivos ----- *@
+                    
                     <div class="card mb-6">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
-                            <a href="javascript:void(0);" class="fw-medium">Add media from URL</a>
-                        </div>
-                        <div class="card-body text-center justify-content-center align-items-center">
-                           
-                            <div action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
-                                <div class="dz-message needsclick">
-                                    <p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
-                                    <p class="h6 text-muted d-block fw-normal mb-2">or</p>
-                                    <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">Browse image</span>
+                            <div href="javascript:void(0);" class="fw-medium">
+                                <div class="del-unit text-danger">
+                                    <a class="del-photo " href="javascript:void(0);">
+                                        @ViewLocalizer["Limpiar"]
+                                    </a>
                                 </div>
                             </div>
-                            <!-- Input hidden para almacenar la imagen subida -->
-                            <input type="hidden" id="imgInpProduct"  name="Files">
                         </div>
-                       
-                         <div class="col-sm-4 col-4 text-center ">
-                        <div class="fw-medium">Imagen anterior cargada</div>
-                        @if (string.IsNullOrEmpty(Model.Logo))
-                        {
-                        <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                        }
-                        else
-                        {
-                        <img id="productimg" class="" style="max-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
-                        }
-                        </div> 
+                        <div class="card-body text-center justify-content-center align-items-center">
+                            <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                <input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                    @if (string.IsNullOrEmpty(Model.Logo))
+                                    {
+                                    <img id="productimg" class="" style="max-height: 100px; min-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                                    }
+                                    else
+                                    {
+                                    <img id="productimg" class="" style="max-height: 100px; min-height: 100px;" src="@Model.Logo" data-logo="@Model.Logo" alt="No image">
+                                    }
+                                    <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                    <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                    <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                    
