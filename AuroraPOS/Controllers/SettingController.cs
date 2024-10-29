@@ -623,8 +623,17 @@ namespace AuroraPOS.Controllers
             
 			ViewBag.Roles = _dbContext.Role.Where(s=>!s.IsDeleted).ToList();
 			ViewBag.Companies = objCentral.GetAllCompanies();
-			
-			
+
+
+			// Obtener totales de usuarios
+			var totalUsuarios = _dbContext.User.Count(u => !u.IsDeleted);
+			var totalUsuariosActivos = _dbContext.User.Count(u => u.IsActive && !u.IsDeleted);
+			var totalUsuariosInactivos = totalUsuarios - totalUsuariosActivos;
+
+			// Asignar totales al ViewBag
+			ViewBag.TotalUsuarios = totalUsuarios;
+			ViewBag.TotalUsuariosActivos = totalUsuariosActivos;
+			ViewBag.TotalUsuariosInactivos = totalUsuariosInactivos;
 
 			if (User.Identity.GetName().ToLower() != "admin")
 			{
@@ -658,12 +667,14 @@ namespace AuroraPOS.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int recordsTotal = 0;
 
+
                 // Getting all Customer data  
                 var customerData = (from s in _dbContext.User.Include(s=>s.Roles)
 									where s.IsDeleted == false
                                     select s);
-                
-                if (validateAdmin && User.Identity.GetName().ToLower()!="admin")
+
+
+				if (validateAdmin && User.Identity.GetName().ToLower()!="admin")
                 {
 	                customerData = (from m in customerData where m.Username.ToLower()!="alfaadmin" select m);
                 }
@@ -692,7 +703,8 @@ namespace AuroraPOS.Controllers
                     data = data.Take(pageSize).ToList();
                 }
                 //Returning Json Data  
-                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data
+				});
 
             }
             catch (Exception ex)
@@ -1190,6 +1202,61 @@ namespace AuroraPOS.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetRolesForCards()
+        {
+            try
+            {
+                // Obtener todos los roles que no están eliminados
+                var roles = await _dbContext.Role
+                    .Where(s => !s.IsDeleted)
+                    .Select(role => new {
+                        role.ID,
+                        role.RoleName,
+                        role.Priority
+                    })
+                    .ToListAsync();
+
+                // Retornar los datos en formato JSON
+                return Json(new { data = roles });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores, registrar el error
+                // Puedes usar logging aquí para capturar el error
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+		[HttpGet]
+        public async Task<IActionResult> GetUsersWithRoles()
+        {
+            try
+            {
+                // Obtener la lista de usuarios, filtrando aquellos que no están eliminados
+                var userData = await _dbContext.User
+                    .Where(u => !u.IsDeleted)
+                    .Select(u => new
+                    {
+                        u.ID,
+                        u.FullName, // Este es el nombre que deseas mostrar
+                        u.IsActive, // Estado del usuario
+                        RoleName = u.Roles.Select(r => r.RoleName).FirstOrDefault() // Selecciona el primer rol o maneja múltiples roles como prefieras
+                    })
+                    .ToListAsync();
+
+                // Devolver la lista en formato JSON
+                return Json(new { data = userData });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores (puedes personalizar el manejo según tu necesidad)
+                return Json(new { error = ex.Message });
+            }
+        }
+
 
 
         [HttpPost]

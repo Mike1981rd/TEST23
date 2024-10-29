@@ -4,83 +4,86 @@
 @{
 }
 @model RoleViewModel
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Add/Edit Role"]</h4>
-		<h6>@ViewLocalizer["Manage roles"]</h6>
-	</div>
-</div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="col-lg-4 col-sm-6 col-12">
-				<input type="hidden" id="role-id" value="@Model.Role.ID" />
-				<div class="form-group">
-					<label>@ViewLocalizer["Role Name"]<span class="manitory">*</span></label>
-					<input type="text" class="form-control" aria-describedby="basic-addon1" id="role-name" value="@Model.Role.RoleName" required><br />
-				</div>
-			</div>
-			<div class="col-lg-4 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Priority"]<span class="manitory">*</span></label>
-                    <input type="text" class="form-control" aria-describedby="basic-addon1" id="role-priority" value="@Model.Role.Priority" required onkeypress="return onlyNumberKey(event)">
-				</div>
-			</div>
-		</div>
-        <h6 class="p-2">@ViewLocalizer["Permissions"]</h6>
-        <div class="accordion pb-3" id="accordionPanelsStayOpenExample">
-            @foreach(var q in Model.PermissionGroups)
-            {
-                <div class="accordion-item">
-                    <h2 class="accordion-header" >
-                        <button class="accordion-button  collapsed" type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-@q.Name.Replace(" ", "_")" aria-controls="panelsStayOpen-@q.Name.Replace(" ", "_")">
-                            @q.Name                            
-                        </button>
-                        
-                    </h2>
-                    <div id="panelsStayOpen-@q.Name.Replace(" ", "_")" class="accordion-collapse collapse" >
-                        <div class="accordion-body group-body">
-                            <div class="form-check form-switch">
-                                @if(q.IsSelected)
-                                {
-                                    <input class="form-check-input group-all" type="checkbox" role="switch" checked>
-                                }
-                                else
-                                {
-                                    <input class="form-check-input group-all" type="checkbox" role="switch">
-                                }
-                                <label class="form-check-label" >ALL</label>
-                            </div>
-                            @foreach(var p in q.Permissions)
-                            {
-                                <div class="form-check form-switch mx-4">
-                                    @if (p.IsSelected)
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="page-header">
+        <div class="page-title">
+            <h4>@ViewLocalizer["Add/Edit Role"]</h4>
+            <h6>@ViewLocalizer["Manage roles"]</h6>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-4 col-sm-6 col-12">
+                    <input type="hidden" id="role-id" value="@Model.Role.ID" />
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Role Name"]<span class="manitory">*</span></label>
+                        <input type="text" class="form-control" aria-describedby="basic-addon1" id="role-name" value="@Model.Role.RoleName" required><br />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label>@ViewLocalizer["Priority"]<span class="manitory">*</span></label>
+                        <input type="text" class="form-control" aria-describedby="basic-addon1" id="role-priority" value="@Model.Role.Priority" required onkeypress="return onlyNumberKey(event)">
+                    </div>
+                </div>
+            </div>
+            <h6 class="p-2">@ViewLocalizer["Permissions"]</h6>
+            <div class="accordion pb-3" id="accordionPanelsStayOpenExample">
+                @foreach (var q in Model.PermissionGroups)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button  collapsed" type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-@q.Name.Replace(" ", "_")" aria-controls="panelsStayOpen-@q.Name.Replace(" ", "_")">
+                                @q.Name
+                            </button>
+
+                        </h2>
+                        <div id="panelsStayOpen-@q.Name.Replace(" ", "_")" class="accordion-collapse collapse">
+                            <div class="accordion-body group-body">
+                                <div class="form-check form-switch">
+                                    @if (q.IsSelected)
                                     {
-                                        <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch"  checked>
+                                        <input class="form-check-input group-all" type="checkbox" role="switch" checked>
                                     }
                                     else
                                     {
-                                        <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch">
+                                        <input class="form-check-input group-all" type="checkbox" role="switch">
                                     }
-                                    
-                                    <label class="form-check-label" >@p.Name</label>
+                                    <label class="form-check-label">ALL</label>
                                 </div>
-                            }
+                                @foreach (var p in q.Permissions)
+                                {
+                                    <div class="form-check form-switch mx-4">
+                                        @if (p.IsSelected)
+                                        {
+                                            <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch" checked>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input permission-item" data-id="@p.ID" type="checkbox" role="switch">
+                                        }
+
+                                        <label class="form-check-label">@p.Name</label>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
+                }
+
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a id="submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+                    <a id="cancel" href="/Setting/Roles" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Cancel"]</a>
                 </div>
-            }
-                      
+            </div>
         </div>
-		<div class="row">
-			<div class="col-lg-12">
-				<a id="submit" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-				<a id="cancel" href="/Setting/Roles" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
-			</div>
-		</div>
-	</div>
 </div>
+
 
 <script>
     $(document).ready(function () {

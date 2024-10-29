@@ -6,9 +6,7 @@
 			<h6>@ViewLocalizer["Manage accounts"]</h6>
 			</div>
 		<div class="card-body">
-			<div class="page-btn">
-				<a href="javascript:void(0);" class="btn btn-added" id="add-account"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Account"]</a>
-			</div>
+
 			<div class="card-datatable table-responsive">
 				<table id="account-list" class="table" style="position:relative;">
 					<thead class="border-top">
@@ -388,6 +386,15 @@
 			"orderMulti": false, // for disable multiple column at once
 			"paging": false,
 			"destroy": true,
+			dom:
+				'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+				'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+				'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+				'>t' +
+				'<"row"' +
+				'<"col-sm-12 col-md-6"i>' +
+				'<"col-sm-12 col-md-6"p>' +
+				'>',
 			"ajax": {
 				"url": "/Setting/GetAccountDescriptionList",
 				"type": "POST",
@@ -406,7 +413,8 @@
 						return "<div class='d-flex align-items-center'><span class='me-3 d-inline-block'  onclick='EditAccountDescription(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></span><span class='me-3 icons-box d-inline-block'  onclick='SelectAccountDescription(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></span></div>";
 					},
 				},
-			]
+			],
+			
 		});
 
 	}
@@ -449,6 +457,15 @@
 			"orderMulti": false, // for disable multiple column at once
 			"paging": false,
 			"destroy": true,
+			dom:
+				'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+				'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+				'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+				'>t' +
+				'<"row"' +
+				'<"col-sm-12 col-md-6"i>' +
+				'<"col-sm-12 col-md-6"p>' +
+				'>',
 			"ajax": {
 				"url": "/Setting/GetAccountList",
 				"type": "POST",
@@ -481,6 +498,128 @@
 					},
 					"autoWidth": true
 				},
+			],
+			buttons: [
+				{
+					extend: 'collection',
+					className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+					text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
+					buttons: [
+						{
+							extend: 'print',
+							text: '<i class="ti ti-printer me-2" ></i>Print',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('account-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							},
+							customize: function (win) {
+								// Customize print view for dark
+								$(win.document.body)
+									.css('color', headingColor)
+									.css('border-color', borderColor)
+									.css('background-color', bodyBg);
+								$(win.document.body)
+									.find('table')
+									.addClass('compact')
+									.css('color', 'inherit')
+									.css('border-color', 'inherit')
+									.css('background-color', 'inherit');
+							}
+						},
+						{
+							extend: 'csv',
+							text: '<i class="ti ti-file me-2" ></i>Csv',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('account-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+						{
+							extend: 'excel',
+							text: '<i class="ti ti-file-export me-2"></i>Excel',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('account-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+						{
+							extend: 'pdf',
+							text: '<i class="ti ti-file-text me-2"></i>Pdf',
+							className: 'dropdown-item',
+							exportOptions: {
+								columns: [1, 3, 4, 5, 6],
+								format: {
+									body: function (inner, coldex, rowdex) {
+										if (inner.length <= 0) return inner;
+										var el = $.parseHTML(inner);
+										var result = '';
+										$.each(el, function (index, item) {
+											if (item.classList !== undefined && item.classList.contains('account-name')) {
+												result = result + item.lastChild.firstChild.textContent;
+											} else if (item.innerText === undefined) {
+												result = result + item.textContent;
+											} else result = result + item.innerText;
+										});
+										return result;
+									}
+								}
+							}
+						},
+					]
+				},
+				{
+					text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Añadir Cuenta</span>',
+					className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+					action: function () {
+							EditAccount();
+
+					}
+				}
 			]
 		});
 	}
