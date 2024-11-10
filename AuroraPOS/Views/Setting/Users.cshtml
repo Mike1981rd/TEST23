@@ -236,7 +236,7 @@
 											<div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
 												<input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
 												<div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
-													
+													<img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
 													<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
 													<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
 													<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
@@ -693,7 +693,7 @@
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-				}
+				} 
 			});
 		}
 

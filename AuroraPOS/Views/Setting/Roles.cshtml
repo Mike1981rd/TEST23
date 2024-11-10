@@ -69,21 +69,38 @@
             success: function (response) {
                 console.log(response); // Verifica la respuesta aquí
                 var cardsHtml = '';
-
                 // Verifica si hay datos en la respuesta
                 if (response.data && response.data.length > 0) {
                     // Generar tarjetas con los datos recibidos
                     $.each(response.data, function (index, role) {
+                        console.log(role);
                         cardsHtml += `
                             <div class="col-xl-4 col-lg-6 col-md-6">
                                 <div class="card">
                                     <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                      <h6 class="fw-normal mb-0 text-body">Total ${role.userCount} users</h6>
+              <ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
+                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Andrew Tye" data-bs-original-title="Andrew Tye">
+                  <img class="rounded-circle" src="../../assets/img/avatars/6.png" alt="Avatar">
+                </li>
+                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Rishi Swaat" data-bs-original-title="Rishi Swaat">
+                  <img class="rounded-circle" src="../../assets/img/avatars/9.png" alt="Avatar">
+                </li>
+                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Rossie Kim" data-bs-original-title="Rossie Kim">
+                  <img class="rounded-circle" src="../../assets/img/avatars/12.png" alt="Avatar">
+                </li>
+                <li class="avatar">
+                  <span class="avatar-initial rounded-circle pull-up" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="2 more">+2</span>
+                </li>
+              </ul>
+            </div>
                                         <div class="d-flex justify-content-between align-items-end mb-4">
                                             <h5 class="mb-1">${role.roleName}</h5>
                                             <span class="badge badge-primary">${role.priority}</span>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-end">
-                                            <a href="/Setting/AddRole?roleId=${role.id}" class="btn btn-warning btn-sm">Edit Role</a>
+                                            <a href="/Setting/AddRole?roleId=${role.id}" class="role-edit-modal">Edit Role</a>
                                         </div>
                                     </div>
                                 </div>
@@ -100,14 +117,21 @@
                 // Agregar la tarjeta "Add New Role" al final
                 $('#roles-container').append(`
                     <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card ">
-   
-                                    <div class="card-body text-sm-end text-center ">
-                                                <button data-bs-target="#addRoleModal" data-bs-toggle="modal" class="btn btn-warning btn-smt">Add New Role</button>
-                                        <p class="mb-0">Add new role, <br> if it doesn't exist.</p>
-                                    </div>
-                        </div>
-                    </div>
+                        <div class="card h-100">
+          <div class="row h-100">
+            <div class="col-sm-5">
+              <div class="d-flex align-items-end h-100 justify-content-center mt-sm-0 mt-4">
+                <img src="../../assets/img/illustrations/add-new-roles.png" class="img-fluid mt-sm-4 mt-md-0" alt="add-new-roles" width="83">
+              </div>
+            </div>
+            <div class="col-sm-7">
+              <div class="card-body text-sm-end text-center ps-sm-0">
+                    <button data-bs-target="#addRoleModal" data-bs-toggle="modal" class="btn btn-primary me-3 waves-effect waves-light">Add New Role</button>
+                <p class="mb-0"> Add new role, <br> if it doesn't exist.</p>
+              </div>
+            </div>
+          </div>
+        </div>
                 `);
             },
             error: function (xhr, status, error) {

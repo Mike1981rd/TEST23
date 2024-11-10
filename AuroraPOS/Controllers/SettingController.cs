@@ -1208,13 +1208,14 @@ namespace AuroraPOS.Controllers
         {
             try
             {
-                // Obtener todos los roles que no están eliminados
+                // Obtener todos los roles que no están eliminados junto con el conteo de usuarios asociados a cada rol
                 var roles = await _dbContext.Role
                     .Where(s => !s.IsDeleted)
                     .Select(role => new {
                         role.ID,
                         role.RoleName,
-                        role.Priority
+                        role.Priority,
+                        UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)) // Contar usuarios por rol
                     })
                     .ToListAsync();
 
@@ -1224,13 +1225,13 @@ namespace AuroraPOS.Controllers
             catch (Exception ex)
             {
                 // Manejo de errores, registrar el error
-                // Puedes usar logging aquí para capturar el error
                 Console.WriteLine(ex.Message);
                 return StatusCode(500, "Internal server error");
             }
         }
 
-		[HttpGet]
+
+        [HttpGet]
         public async Task<IActionResult> GetUsersWithRoles()
         {
             try

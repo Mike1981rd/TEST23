@@ -23,440 +23,417 @@
 		}
 
 </style>
-<div class="page-header">
-	<div class="page-title">
-		<h4>Clientes</h4>
-		<h6>@ViewLocalizer["Manage your customers"]</h6>
-	</div>
-	<div class="page-btn">
-		<a href="javascript:void(0);" class="btn btn-added" onclick="AddCustomer()"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Customer"]</a>
-	</div>
-</div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-		<div class="table-top">
-			<div class="search-set">
-				<div class="search-path">
-					<a class="btn btn-filter" id="filter_search">
-						<img src="/vendor/img/icons/filter.svg" alt="img">
-						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-					</a>
+<div class="content-wrapper">
+
+	<!-- Content -->
+
+	<div class="container-xxl flex-grow-1 container-p-y">
+
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title">Lista de Clientes</h5>
+				<h6>
+					@ViewLocalizer["Manage your customers" ]</ h6 >
+			</div>
+			<div class="card-body">
+
+				<div class="card-datatable table-responsive">
+					<table id="customer-list" class="table">
+						<thead>
+							<tr>
+								<th>@ViewLocalizer["Action"]</th>
+								<th>@ViewLocalizer["Avatar"] </th>
+								<th>@ViewLocalizer["Name"] </th>
+								<th>@ViewLocalizer["Status"] </th>
+								<th>@ViewLocalizer["Phone"] </th>
+								<th>@ViewLocalizer["Email"]</th>
+								<th>@ViewLocalizer["RNC"]</th>
+								<th>@ViewLocalizer["Balance"]</th>
+								<th>@ViewLocalizer["Address"]</th>
+							</tr>
+						</thead>
+					</table>
 				</div>
-				<div class="search-input">
-					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-					<div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]..."></label></div>
-				</div>
 			</div>
-			<div class="wordset">
-				<ul>
-					<li>
-						<a href="javascript:void(0);" class="btn-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/vendor/img/icons/pdf.svg" alt="img"></a>
-					</li>
-					<li>
-						<a href="javascript:void(0);" class="btn-excel" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/vendor/img/icons/excel.svg" alt="img"></a>
-					</li>
-					@*<li>
-					<a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/vendor/img/icons/printer.svg" alt="img"></a>
-					</li>*@
-				</ul>
-			</div>
-		</div>
-		<div class="table-responsive">
-			<table id="customer-list" class="table">
-				<thead>
-					<tr>
-						<th>@ViewLocalizer["Action"]</th>
-						<th>@ViewLocalizer["Avatar"] </th>
-						<th>@ViewLocalizer["Name"] </th>
-						<th>@ViewLocalizer["Status"] </th>
-						<th>@ViewLocalizer["Phone"] </th>
-						<th>@ViewLocalizer["Email"]</th>
-						<th>@ViewLocalizer["RNC"]</th>
-						<th>@ViewLocalizer["Balance"]</th>
-						<th>@ViewLocalizer["Address"]</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
 		</div>
 	</div>
-</div>
+	<div class="modal fade" id="addcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg  modal-simple modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<div class="text-center mb-6">
+						<h4 class="mb-2">@ViewLocalizer["Add/Edit Customer"]</h4>
+					</div>
+					<div class="row">
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+								<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+								<input id="customer-rnc" type="text" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+								<input id="customer-phone" type="text" class="form-control phone_format" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+								<input id="customer-email" type="text" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Address"]</label>
+								<input id="customer-address1" type="text" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["City"]</label>
+								<input id="customer-city" type="text" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Limit of Credit"]</label>
+								<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Credit Days"]</label>
+								<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-3 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Balance"]</label>
+								<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
 
-<div class="modal fade" id="addcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Customer"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-							<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+							</div>
 						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
-							<input id="customer-rnc" type="text"  class="form-control" required>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-							<input id="customer-phone" type="text" class="form-control phone_format" required>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-							<input id="customer-email" type="text"  class="form-control" required>
-						</div>
-					</div>
-					<div class="col-lg-8 col-sm-8 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Address"]</label>
-							<input id="customer-address1" type="text" class="form-control" required>
-						</div>
-					</div>					
-					<div class="col-lg-4 col-sm-4 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["City"]</label>
-							<input id="customer-city" type="text" class="form-control" required>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-2 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Limit of Credit"]</label>
-							<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-						</div>
-					</div>
-					<div class="col-lg-2 col-sm-2 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Credit Days"]</label>
-							<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-3 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Balance"]</label>
-							<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
 
+						<div class="col-lg-2 col-sm-2 col-12">
+							<div class="form-group">
+								<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
+							</div>
 						</div>
-					</div>
+						<div class="col-lg-2 col-sm-2 col-12">
+							<div class="form-group">
+								<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Comprobantes"]</label>
+								<div class="row">
+									<div class="col-lg-10 col-sm-10 col-10">
+										<select id="customer-voucher" class="select ">
+											<option value="">Choose comprobantes</option>
 
-					<div class="col-lg-2 col-sm-2 col-12">
-						<div class="form-group">
-							<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
-						</div>
-					</div>
-					<div class="col-lg-2 col-sm-2 col-12">
-						<div class="form-group">
-							<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Comprobantes"]</label>
-							<div class="row">
-								<div class="col-lg-10 col-sm-10 col-10">
-									<select id="customer-voucher" class="select ">
-										<option value="">Choose comprobantes</option>
-									
 
-									</select>
+										</select>
+									</div>
+									<div class="col-lg-2 col-sm-2 col-2 ps-0">
+										<div class="add-icon">
+											<a id="add-voucher-modal" href="javascript:void(0);">
+												<img src="/vendor/img/icons/plus1.svg" alt="img">
+											</a>
+										</div>
+									</div>
 								</div>
-								<div class="col-lg-2 col-sm-2 col-2 ps-0">
-									<div class="add-icon">
-										<a id="add-voucher-modal" href="javascript:void(0);">
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label>@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
+								<select id="customer-zone" class="select ">
+									<option value="">Zonas</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group mb-2">
+								<label>@ViewLocalizer["Status"]</label>
+								<select id="customer-status" class="select">
+									<option value="1"> @ViewLocalizer["Active"]</option>
+									<option value="0"> @ViewLocalizer["InActive"]</option>
+								</select>
+							</div>
+						</div>
+						<div class="row mt-4">
+							@* ----- Control para subir archivos ----- *@
+
+							<div class="card mb-6">
+								<div class="card-header d-flex justify-content-between align-items-center">
+									<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+									<div href="javascript:void(0);" class="fw-medium">
+										<div class="del-unit text-danger">
+											<a class="del-photo " href="javascript:void(0);">
+												@ViewLocalizer["Limpiar"]
+											</a>
+										</div>
+									</div>
+								</div>
+								<div class="card-body text-center justify-content-center align-items-center">
+									<div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+										<input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+										<div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+											<img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+											<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+											<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+											<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="row py-1">
+							<div class="col-lg-12 col-sm-12 col-12">
+								<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+									<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+									<div class="add-unit">
+										<a class="add-accounting-item" href="javascript:void(0);">
 											<img src="/vendor/img/icons/plus1.svg" alt="img">
 										</a>
 									</div>
 								</div>
+								<table class="table reordertable">
+									<thead>
+										<tr>
+											<td>
+												@ViewLocalizer["Name"]
+											</td>
+											<td>
+												@ViewLocalizer["Type"]
+											</td>
+											<td>
+												@ViewLocalizer["Number"]
+											</td>
+											<td>
+												@ViewLocalizer["Action"]
+											</td>
+									</thead>
+									<tbody id="accounting-list">
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
-							<select id="customer-zone" class="select ">
-								<option value="">Zonas</option>
-							</select>
-						</div>
+				</div>
+				<div class="modal-footer">
+					<button id="edit-customer" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+					<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="cxcmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Movimientos de CxC's"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="filter-row">
+						<!-- Campo de filtro por fecha inicial -->
+						<input type="date" id="start-date" class="form-control">
+
+						<!-- Campo de filtro por fecha final -->
+						<input type="date" id="end-date" class="form-control">
+
+						<!-- Campo de filtro por ID de orden -->
+						<input type="text" id="order-id" placeholder="ID de Trans." class="form-control">
+
+						<!-- Botón para aplicar filtros -->
+						<button id="apply-filters" class="btn btn-submit">Aplicar filtros</button>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group mb-2">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="customer-status" class="select">
-								<option value="1"> @ViewLocalizer["Active"]</option>
-								<option value="0"> @ViewLocalizer["InActive"]</option>
-							</select>
-						</div>
+
+					<div class="table-responsive">
+						<table id="cxc-list" class="table" style="overflow-x: hidden;">
+							<thead>
+								<tr>
+									<th>@ViewLocalizer["Type"] </th>
+									<th>@ViewLocalizer["CXC"] </th>
+									<th>@ViewLocalizer["ID Trans."] </th>
+									<th>@ViewLocalizer["Date"] </th>
+									<th>@ViewLocalizer["Amount"] </th>
+									<th>@ViewLocalizer["Method"]</th>
+									<th>@ViewLocalizer["Payment Type"]</th>
+								</tr>
+							</thead>
+						</table>
 					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="cxcdetalle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Estado de Cuentas x Cobrar"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="table-responsive">
+						<table id="cxc-list-movimientos" class="table" style="overflow-x: hidden;">
+							<thead>
+								<tr>
+									<th>@ViewLocalizer["CXC"] </th>
+									<th>@ViewLocalizer["Fecha"] </th>
+									<th>@ViewLocalizer["Vence"] </th>
+									<th>@ViewLocalizer["Días vencimiento"] </th>
+									<th>@ViewLocalizer["Monto"] </th>
+									<th>@ViewLocalizer["Abono"]</th>
+									<th>@ViewLocalizer["Balance"]</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="listvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Recipe List"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
 					<div class="row">
-						<div class="form-group px-3">
-							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-								<h6 class="text-left pr-5">@ViewLocalizer["Avatar"]</h6>
-								<div class="del-unit text-danger">
-									<a class="del-photo " href="javascript:void(0);">
-										<img src="/vendor/img/icons/minus.svg" alt="img">
-									</a>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-sm-4 col-4">
-									<img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-								</div>
-								<div class="col-sm-8 col-8 image-upload" style="height: 100%">
-									<input id="imgInpProduct" type="file" name="Files" accept="image/*">
-									<div class="image-uploads">
-										<img src="~/vendor/img/icons/upload.svg" alt="img">
-										<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-									</div>
-								</div>
-							</div>
-
+						<div class="col-12">
+							<a id="add-voucher" href="javascript:void(0);" onclick="AddVoucher()" class="btn btn-adds"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Recipe"]</a>
 						</div>
+						<div class="col-12">
+							<div class="table-responsive w-100" style="max-height:400px;">
+								<table id="voucher-list" class="table" style="position:relative;">
+									<thead style="position: sticky; top: 0; z-index:2;">
+										<tr>
+											<th>@ViewLocalizer["Action"] </th>
+											<th>@ViewLocalizer["Name"] </th>
+											<th>@ViewLocalizer["Class"] </th>
+											<th>@ViewLocalizer["Reorder"] </th>
+											<th>@ViewLocalizer["Sequence"] </th>
+											<th>@ViewLocalizer["Require RNC"] </th>
+											<th>@ViewLocalizer["Status"] </th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</div>
+
 					</div>
-					<div class="row py-1">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Voucher"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
 						<div class="col-lg-12 col-sm-12 col-12">
-							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-								<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-								<div class="add-unit">
-									<a class="add-accounting-item" href="javascript:void(0);">
-										<img src="/vendor/img/icons/plus1.svg" alt="img">
-									</a>
+							<div class="form-group">
+								<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+								<div class="input-group">
+									<span class="input-group-text" id="basic-addon1">ID</span>
+									<input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
 								</div>
 							</div>
-							<table class="table reordertable">
-								<thead>
-									<tr>
-										<td>
-											@ViewLocalizer["Name"]
-										</td>
-										<td>
-											@ViewLocalizer["Type"]
-										</td>
-										<td>
-											@ViewLocalizer["Number"]
-										</td>
-										<td>
-											@ViewLocalizer["Action"]
-										</td>
-								</thead>
-								<tbody id="accounting-list">
-								</tbody>
-							</table>
 						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button id="edit-customer" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="cxcmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="group-modal-title">@ViewLocalizer["Movimientos de CxC's"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="filter-row">
-					<!-- Campo de filtro por fecha inicial -->
-					<input type="date" id="start-date" class="form-control">
-
-					<!-- Campo de filtro por fecha final -->
-					<input type="date" id="end-date" class="form-control">
-
-					<!-- Campo de filtro por ID de orden -->
-					<input type="text" id="order-id" placeholder="ID de Trans." class="form-control">
-
-					<!-- Botón para aplicar filtros -->
-					<button id="apply-filters" class="btn btn-submit">Aplicar filtros</button>
-				</div>
-
-				<div class="table-responsive">
-					<table id="cxc-list" class="table" style="overflow-x: hidden;">
-						<thead>
-							<tr>
-								<th>@ViewLocalizer["Type"] </th>
-								<th>@ViewLocalizer["CXC"] </th>
-								<th>@ViewLocalizer["ID Trans."] </th>
-								<th>@ViewLocalizer["Date"] </th>
-								<th>@ViewLocalizer["Amount"] </th>
-								<th>@ViewLocalizer["Method"]</th>
-								<th>@ViewLocalizer["Payment Type"]</th>
-							</tr>
-						</thead>
-					</table>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="cxcdetalle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:1000px;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="group-modal-title">@ViewLocalizer["Estado de Cuentas x Cobrar"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="table-responsive">
-					<table id="cxc-list-movimientos" class="table" style="overflow-x: hidden;">
-						<thead>
-							<tr>
-								<th>@ViewLocalizer["CXC"] </th>
-								<th>@ViewLocalizer["Fecha"] </th>
-								<th>@ViewLocalizer["Vence"] </th>
-								<th>@ViewLocalizer["Días vencimiento"] </th>
-								<th>@ViewLocalizer["Monto"] </th>
-								<th>@ViewLocalizer["Abono"]</th>
-								<th>@ViewLocalizer["Balance"]</th>
-							</tr>
-						</thead>
-					</table>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="listvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="group-modal-title">@ViewLocalizer["Recipe List"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-12">
-						<a id="add-voucher" href="javascript:void(0);" onclick="AddVoucher()" class="btn btn-adds"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Recipe"]</a>
-					</div>
-					<div class="col-12">
-						<div class="table-responsive w-100" style="max-height:400px;">
-							<table id="voucher-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
-									<tr>
-										<th>@ViewLocalizer["Action"] </th>
-										<th>@ViewLocalizer["Name"] </th>
-										<th>@ViewLocalizer["Class"] </th>
-										<th>@ViewLocalizer["Reorder"] </th>
-										<th>@ViewLocalizer["Sequence"] </th>
-										<th>@ViewLocalizer["Require RNC"] </th>
-										<th>@ViewLocalizer["Status"] </th>
-									</tr>
-								</thead>
-							</table>
+						<div class="col-lg-4 col-sm-6 col-12 pt-2">
+							<div class="form-group">
+								<label>@ViewLocalizer["Prefix"]</label>
+								<input id="voucher-class" type="text" class="form-control">
+							</div>
 						</div>
-					</div>
-
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Voucher"]</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="form-group">
-							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-							<div class="input-group">
-								<span class="input-group-text" id="basic-addon1">ID</span>
-								<input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						<div class="col-lg-4 col-sm-6 col-12 pt-2">
+							<div class="form-group">
+								<label>@ViewLocalizer["Sequence"]</label>
+								<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
+							</div>
+						</div>
+						<div class="col-lg-4 col-sm-6 col-12  pt-2">
+							<div class="form-group mb-0">
+								<label>@ViewLocalizer["Require RNC"]</label>
+								<select id="voucher-requirernc" class="select">
+									<option value="1"> @ViewLocalizer["Yes"]</option>
+									<option value="0"> @ViewLocalizer["No"]</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-12 col-sm-12 col-12 pt-2">
+							<div class="form-group">
+								<label>@ViewLocalizer["Tax exempt"]</label>
+								<select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+									@foreach (var t in taxes)
+									{
+										<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col-6 pt-2">
+							<div class="form-group mb-0">
+								<label>@ViewLocalizer["Status"]</label>
+								<select id="voucher-status" class="select">
+									<option value="1"> @ViewLocalizer["Active"]</option>
+									<option value="0"> @ViewLocalizer["InActive"]</option>
+								</select>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12 pt-2">
-						<div class="form-group">
-							<label>@ViewLocalizer["Prefix"]</label>
-							<input id="voucher-class" type="text" class="form-control">
-						</div>
-					</div>
-					<div class="col-lg-4 col-sm-6 col-12 pt-2">
-						<div class="form-group">
-							<label>@ViewLocalizer["Sequence"]</label>
-							<input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
-						</div>
-					</div>
-					<div class="col-lg-4 col-sm-6 col-12  pt-2">
-						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Require RNC"]</label>
-							<select id="voucher-requirernc" class="select">
-								<option value="1"> @ViewLocalizer["Yes"]</option>
-								<option value="0"> @ViewLocalizer["No"]</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-12 col-sm-12 col-12 pt-2">
-						<div class="form-group">
-							<label>@ViewLocalizer["Tax exempt"]</label>
-							<select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
-								@foreach (var t in taxes)
-								{
-									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="col-6 pt-2">
-						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
-							<select id="voucher-status" class="select">
-								<option value="1"> @ViewLocalizer["Active"]</option>
-								<option value="0"> @ViewLocalizer["InActive"]</option>
-							</select>
-						</div>
-					</div>
+
 				</div>
-				
-			</div>
-			<div class="modal-footer">
-				<button id="edit-voucher" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<div class="modal-footer">
+					<button id="edit-voucher" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+					<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				</div>
 			</div>
 		</div>
 	</div>
+
 </div>
+
 
 @{
 	@await Component.InvokeAsync("Accounting", new { })
@@ -1072,7 +1049,15 @@
 	var customertable = $("#customer-list").DataTable({
 		"processing": true,
 		"serverSide": true,
-		"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		dom:
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+			'>t' +
+			'<"row"' +
+			'<"col-sm-12 col-md-6"i>' +
+			'<"col-sm-12 col-md-6"p>' +
+			'>',
 		"orderMulti": false,
 		"ajax": {
 			"url": "/Setting/GetCustomers",
@@ -1082,8 +1067,8 @@
 		'select': {
 			'style': 'multi'
 		},
-		"pageLength": 50,
-		"lengthMenu": [50, 75, 100],
+		"pageLength": 30,
+		"lengthMenu": [30,50, 75, 100],
 		"order": [[2, 'desc']],
 		"columns": [
 			{
@@ -1128,6 +1113,127 @@
 				},
 			},
 			{ "data": "address1", "name": "address1", "autoWidth": true },
+		],
+		buttons: [
+			{
+				extend: 'collection',
+				className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+				text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
+				buttons: [
+					{
+						extend: 'print',
+						text: '<i class="ti ti-printer me-2" ></i>Print',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('customer-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						},
+						customize: function (win) {
+							// Customize print view for dark
+							$(win.document.body)
+								.css('color', headingColor)
+								.css('border-color', borderColor)
+								.css('background-color', bodyBg);
+							$(win.document.body)
+								.find('table')
+								.addClass('compact')
+								.css('color', 'inherit')
+								.css('border-color', 'inherit')
+								.css('background-color', 'inherit');
+						}
+					},
+					{
+						extend: 'csv',
+						text: '<i class="ti ti-file me-2" ></i>Csv',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('customer-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+					{
+						extend: 'excel',
+						text: '<i class="ti ti-file-export me-2"></i>Excel',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('customer-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+					{
+						extend: 'pdf',
+						text: '<i class="ti ti-file-text me-2"></i>Pdf',
+						className: 'dropdown-item',
+						exportOptions: {
+							columns: [1, 3, 4, 5, 6],
+							format: {
+								body: function (inner, coldex, rowdex) {
+									if (inner.length <= 0) return inner;
+									var el = $.parseHTML(inner);
+									var result = '';
+									$.each(el, function (index, item) {
+										if (item.classList !== undefined && item.classList.contains('customer-name')) {
+											result = result + item.lastChild.firstChild.textContent;
+										} else if (item.innerText === undefined) {
+											result = result + item.textContent;
+										} else result = result + item.innerText;
+									});
+									return result;
+								}
+							}
+						}
+					},
+				]
+			},
+			{
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Customer"]</span>',
+				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+				action: function () {
+					AddCustomer();
+				}
+			}
 		]
 	});
 

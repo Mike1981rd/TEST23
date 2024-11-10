@@ -137,7 +137,9 @@
 				{
 					'data': 'action', 'name': 'action',
 					render: function (data, type, row) {
-						return "<a class='' href='javascript:void(0);'  onclick=EditVoucher('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteVoucher('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+							return "<a href='javascript:void(0);' onclick=EditVoucher('" + row.id + "'); style='margin-right: 10px;'><img src='/vendor/img/icons/edit.svg' alt='img'></a>" +
+								"<a href='javascript:void(0);' onclick=DeleteVoucher('" + row.id + "');><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
+
 					},
 				},
 				{ "data": "name", "name": "name", "autoWidth": true },
@@ -160,7 +162,7 @@
 					'data': 'status', 'name': 'isActive',
 					render: function (data, type, row) {
 						if (row.isActive) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+								return "<span class='badges bg-lightgreen' >@ViewLocalizer["Active"]</span>";
 						}
 						else {
 							return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";

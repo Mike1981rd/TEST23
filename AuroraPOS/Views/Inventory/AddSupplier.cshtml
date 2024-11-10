@@ -4,201 +4,226 @@
 @{
 }
 @model Supplier
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Supplier Management"]</h4>
-		<h6>@ViewLocalizer["Add/Update Supplier"]</h6>
-	</div>
-</div>
-<!-- /add -->
-<div class="card">
-	<div class="card-body">
-		<form method="post" asp-controller="Inventory" asp-action="AddSupplier" enctype="multipart/form-data">
-			@Html.AntiForgeryToken()
-		<div class="row">
-			<div class="col-lg-3 col-sm-6 col-12">
-					<input type="hidden" asp-for="ID" />
-					<input type="hidden" asp-for="Avatar" />
-				<div class="form-group">
-						<label>@ViewLocalizer["Supplier Name"]<span class="manitory">*</span></label>
-					<div class="input-group">
-					<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
-					<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required>
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
-					<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="RNC" required>
-					<span asp-validation-for="RNC" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["Phone"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="PhoneNumber">
-						<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-				</div>
-			</div>
-				<div class="col-lg-3 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Email"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="PhoneNumber">
-						<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-					</div>
-				</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["Country"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Country">
-						<span asp-validation-for="Country" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["City"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="City">
-						<span asp-validation-for="City" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["Address"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Direction">
-						<span asp-validation-for="Direction" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-4 col-sm-6 col-12 pt-3">
-				<div class="form-group row">
-						<input type="checkbox" class="col-sm-4 col-4" asp-for="IsTaxIncluded">
-						<label class="col-sm-8 col-8">@ViewLocalizer["Tax Included"]  </label>
-					
-						<span asp-validation-for="IsTaxIncluded" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-4 col-sm-6 col-12 pt-3">
-				<div class="form-group row">
-					<input type="checkbox" class="col-sm-4 col-4" asp-for="IsFormalSupplier">
-						<label class="col-sm-8 col-8">@ViewLocalizer["Supplier Formula"]  </label>
-						
-						<span asp-validation-for="IsFormalSupplier" class="text-danger"></span>
-				</div>
-			</div>
-				<div class="col-lg-4 col-sm-6 col-12 pt-3">
-					<div class="form-group row">
-						<label class="col-sm-8 col-8">@ViewLocalizer["Tiempo de entrega(days)"]  </label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="DeliveryTime">
-						
-
-						<span asp-validation-for="DeliveryTime" class="text-danger"></span>
-					</div>
-				</div>
-			
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["Seller"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Seller">
-						<span asp-validation-for="Seller" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-						<label>@ViewLocalizer["Cell Phone"]</label>
-						<input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="CellPhone">
-						<span asp-validation-for="CellPhone" class="text-danger"></span>
-				</div>
-			</div>
-				<div class="col-lg-3 col-sm-6 col-12">
-					<div class="form-group mb-0">
-						<label>@ViewLocalizer["Status"]</label>
-						<select id="egroup-status" class="select" asp-for="IsActive">
-							<option value="true"> @ViewLocalizer["Active"]</option>
-							<option value="false"> @ViewLocalizer["InActive"]</option>
-						</select>
-					</div>
-				</div>
-			<div class="col-lg-12 px-3">
-				<div class="form-group px-3">
-						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-							<h6 class="text-left pr-5">@ViewLocalizer["Avatar"]</h6>
-							<div class="del-unit text-danger">
-								<a class="del-photo " href="javascript:void(0);">
-									<img src="/vendor/img/icons/minus.svg" alt="img">
-								</a>
-							</div>
-						</div>
-					<div class="row">
-						<div class="col-sm-4 col-2">
-								@if(string.IsNullOrEmpty(Model.Avatar))
-								{
-									<img id="avatarimg" class="" style="max-height: 300px;" src="~/vendor/img/profiles/avatar-15.jpg" alt="img">
-								}
-								else
-								{
-									<img id="avatarimg" class="" data-avatar="1" style="max-height: 300px;" src="@Model.Avatar" alt="img">
-								}
-								
-						</div>
-							<div class="col-sm-8 col-10 image-upload" style="height: 100%">
-								<input id="avatarimgInp" type="file" name="Files" accept="image/*">
-							<div class="image-uploads">
-								<img src="~/vendor/img/icons/upload.svg" alt="img">
-									<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-			</div>
-			<div class="row pt-3">
-				<div class="col-lg-12 col-sm-12 col-12">
-					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-						<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-						<div class="add-unit">
-							<a class="add-accounting-item" href="javascript:void(0);">
-								<img src="/vendor/img/icons/plus1.svg" alt="img">
-							</a>
-						</div>
-					</div>
-					<table class="table reordertable">
-						<thead>
-							<tr>
-								<td>
-									@ViewLocalizer["Name"]
-								</td>
-								<td>
-									@ViewLocalizer["Type"]
-								</td>
-								<td>
-									@ViewLocalizer["Number"]
-								</td>
-								<td>
-									@ViewLocalizer["Action"]
-								</td>
-						</thead>
-						<tbody id="accounting-list">
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-12 pt-3">
-					<a id="submit" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-					<a id="cancel" href="javascript:void(0);" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
-				</div>
-			</div>
-		
-		</form>
-		
-	</div>
-</div>
 
 @{
 	@await Component.InvokeAsync("Accounting", new { })
 }
+<div class="content-wrapper">
+
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+
+        <div class="row fv-plugins-icon-container">
+            <div class="col-md-12">
+                <div class="nav-align-top">
+                    <ul class="nav nav-pills flex-column flex-md-row mb-6 gap-2 gap-lg-0">
+                        <li class="nav-item"><a class="nav-link active waves-effect waves-light" href="javascript:void(0);"><i class="ti-sm ti ti-users me-1_5"></i> Account</a></li>
+                    </ul>
+                </div>
+                <div class="card mb-6">
+                    <!-- Account -->
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-6">
+                            <img src="../../assets/img/avatars/1.png" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="avatarimgInp">
+                            <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-3 mb-4 waves-effect waves-light" tabindex="0">
+                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <i class="ti ti-upload d-block d-sm-none"></i>
+                                    <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                                </label>
+                                <button type="button" class="btn btn-label-secondary account-image-reset mb-4 waves-effect">
+                                    <i class="ti ti-refresh-dot d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button>
+
+                                <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-4">
+                        <form method="post" asp-controller="Inventory" asp-action="AddSupplier" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="ID" />
+                            <input type="hidden" asp-for="Avatar" />
+                            <div class="row">
+                                <div class="mb-4 col-md-6 fv-plugins-icon-container">
+                                    <label for="firstName" class="form-label">
+                                        @ViewLocalizer["Supplier Name"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                                </div>
+                                <div class="mb-4 col-md-6 fv-plugins-icon-container">
+                                    <label for="lastName" class="form-label">@ViewLocalizer["RNC"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="RNC" required>
+                                    <span asp-validation-for="RNC" class="text-danger"></span>
+                                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="email" class="form-label">@ViewLocalizer["Phone"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="PhoneNumber">
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="organization" class="form-label">@ViewLocalizer["Country"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Country">
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label class="form-label" for="phoneNumber">@ViewLocalizer["Email"]</label>
+                                    <input type="email" class="form-control" aria-describedby="basic-addon1" asp-for="Email">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="address" class="form-label">@ViewLocalizer["City"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="City">
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="state" class="form-label">@ViewLocalizer["Address"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Direction">
+                                    <span asp-validation-for="Direction" class="text-danger"></span>
+                                </div>
+                                <div class="mt-4 col-md-2">
+                                    <label for="zipCode" class="form-label">@ViewLocalizer["Tax Included"] </label>
+                                    <input type="checkbox" class="col-sm-4 col-4" asp-for="IsTaxIncluded">
+                                    <span asp-validation-for="IsTaxIncluded" class="text-danger"></span>
+                                </div>
+                                <div class="mt-4 col-md-2">
+                                    <label class="form-label" for="country">@ViewLocalizer["Supplier Formula"]</label>
+                                    <input type="checkbox" class="col-sm-4 col-4" asp-for="IsFormalSupplier">
+                                    <span asp-validation-for="IsFormalSupplier" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="language" class="form-label">@ViewLocalizer["Tiempo de entrega(days)"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="DeliveryTime">
+
+
+                                    <span asp-validation-for="DeliveryTime" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="timeZones" class="form-label">@ViewLocalizer["Seller"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Seller">
+                                    <span asp-validation-for="Seller" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="currency" class="form-label">@ViewLocalizer["Cell Phone"]</label>
+                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="CellPhone">
+                                    <span asp-validation-for="CellPhone" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                    <label for="currency" class="form-label">@ViewLocalizer["Status"]</label>
+                                    <select id="egroup-status" class="select" asp-for="IsActive">
+                                        <option value="true"> @ViewLocalizer["Active"]</option>
+                                        <option value="false"> @ViewLocalizer["InActive"]</option>
+                                    </select>
+                                </div>
+                                <div class="row mt-4">
+                                    @* ----- Control para subir archivos ----- *@
+
+                                    <div class="card mb-6">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+                                            <div href="javascript:void(0);" class="fw-medium">
+                                                <div class="del-unit text-danger">
+                                                    <a class="del-photo " href="javascript:void(0);">
+                                                        @ViewLocalizer["Limpiar"]
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body text-center justify-content-center align-items-center">
+                                            <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                                <input id="avatarimgInp" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                                <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                                    @if (string.IsNullOrEmpty(Model.Avatar))
+                                                    {
+                                                        <img id="avatarimg" class="" style="max-height: 100px;" src="~/vendor/img/profiles/avatar-15.jpg" alt="img">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img id="avatarimg" class="" data-avatar="1" style="max-height: 100px;" src="@Model.Avatar" alt="img">
+                                                    }
+                                                    <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                                    <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                                    <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                        <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+                                        <div class="add-unit">
+                                            <a class="add-accounting-item" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <table class="table reordertable">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    @ViewLocalizer["Name"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Type"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Number"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Action"]
+                                                </td>
+                                        </thead>
+                                        <tbody id="accounting-list">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-3 waves-effect waves-light">Save changes</button>
+                                <button type="reset" class="btn btn-label-secondary waves-effect">Cancel</button>
+                            </div>
+                            <input type="hidden">
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+                <div class="card">
+                    <h5 class="card-header">Delete Account</h5>
+                    <div class="card-body">
+                        <div class="mb-6 col-12 mb-0">
+                            <div class="alert alert-warning">
+                                <h5 class="alert-heading mb-1">Are you sure you want to delete your account?</h5>
+                                <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                            </div>
+                        </div>
+                        <form id="formAccountDeactivation" onsubmit="return false" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+                            <div class="form-check my-8">
+                                <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation">
+                                <label class="form-check-label" for="accountActivation">I confirm my account deactivation</label>
+                                <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                            </div>
+                            <br />
+                            <button type="submit" class="btn btn-danger deactivate-account waves-effect waves-light" disabled="">Deactivate Account</button>
+                            <input type="hidden">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- / Content -->
+</div>
 
 <!-- /add -->
 <script>

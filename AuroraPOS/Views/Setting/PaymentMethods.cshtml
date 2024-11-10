@@ -163,29 +163,33 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="card mb-6">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
-							<div class="del-unit text-danger">
-								<a class="del-photo " href="javascript:void(0);">
-									<img src="/vendor/img/icons/minus.svg" alt="img">
-								</a>
-							</div>
-						</div>
-						<div class="card-body text-center justify-content-center align-items-center">
+					<div class="row mt-4">
+						@* ----- Control para subir archivos ----- *@
 
-							<div action="/upload" class="dropzone needsclick p-0 dz-clickable" id="dropzone-basic">
-								<div class="dz-message needsclick">
-									<p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
-									<p class="h6 text-muted d-block fw-normal mb-2">or</p>
-									<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">Browse image</span>
+						<div class="card mb-6">
+							<div class="card-header d-flex justify-content-between align-items-center">
+								<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+								<div href="javascript:void(0);" class="fw-medium">
+									<div class="del-unit text-danger">
+										<a class="del-photo " href="javascript:void(0);">
+											@ViewLocalizer["Limpiar"]
+										</a>
+									</div>
 								</div>
 							</div>
-							<!-- Input hidden para almacenar la imagen subida -->
-							<input type="hidden" id="imgInpProduct" name="Files">
+							<div class="card-body text-center justify-content-center align-items-center">
+								<div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+									<input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+									<div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+										<img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+										<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+										<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+										<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+									</div>
+								</div>
+							</div>
 						</div>
-						<br />
-					</div>
+
 					
 					<div class="col-12 text-center">
 						<button type="submit" id="edit-pmethod" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
