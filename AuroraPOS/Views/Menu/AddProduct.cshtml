@@ -8,460 +8,517 @@
     var categories = (List<Category>)ViewBag.Categories;
     var courses = (List<Course>)ViewBag.Courses;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Create Product"]</h4>
-        <h6>@ViewLocalizer["Add/Update Product"]</h6>
+<div class="content-wrapper">
+
+        <!-- Content -->
+        
+          <div class="container-xxl flex-grow-1 container-p-y">
+            
+            
+<div class="app-ecommerce">
+
+  <!-- Add Product -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+    <div class="d-flex flex-column justify-content-center">
+      <h4 class="mb-1">@ViewLocalizer["Create Product"]</h4>
+      <p class="mb-0">@ViewLocalizer["Add/Update Product"]</p>
     </div>
-</div>
+    <div class="d-flex align-content-center flex-wrap gap-4">
+                    <a id="submit-product" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+                    <a id="cancel" href="/Menu/ProductList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Cancel"]</a>
+    </div>
 
-<div class="card">
-    <div class="card-body">
-        <div id="product-id" class="row" data-productid="0">
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                    <input id="product-name" type="text">
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Category"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="product-category" class="select ">
-                                <option value="">@ViewLocalizer["Choose category"]</option>
-                                @foreach (var t in categories)
-                                {
-                                    <option value="@t.ID">@t.Name</option>
-                                }
+  </div>
 
-                            </select>
+        <div class="row">
+                <!-- First column-->
+                <div class="col-12 col-lg-8">
+                    <!-- Product Information -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-tile mb-0">Información de producto</h5>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-category-modal" href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                </a>
+                        <div class="card-body">
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-name">@ViewLocalizer["Name"]</label>
+                                <input type="text" class="form-control" id="product-name" placeholder="Product title">
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Sub Category"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="product-subcategory" class="select ">
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-subcategory-modal" href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Printer Name"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <input id="product-printername" type="text">
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <button id="printer-capital" class="btn btn-primary">
-                                Aa
-                            </button>
-                        </div>
-                    </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
+                                    <div class="d-flex">
+                                        <select id="product-category" class="select form-control ">
+                                            <option value="">@ViewLocalizer["Choose category"]</option>
+                                            @foreach (var t in categories)
+                                            {
+                                                <option value="@t.ID">@t.Name</option>
+                                            }
 
-                    
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Taxes"]</label>
-                    <select id="product-taxes" class="form-control tagging select" multiple aria-hidden="true">
-                        @foreach (var t in taxs)
-                        {
-                            <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Propinas"]</label>
-                    <select id="product-propinas" class="form-control tagging select" multiple aria-hidden="true">
-                        @foreach (var t in propinas)
-                        {
-                            <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Printer Channels"]</label>
-                    <select id="product-printerChannels" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
-                        @foreach (var p in printerChannels)
-                        {
-                            <option value="@p.ID">@p.Name </option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Course"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="product-course" class="select ">
-                                <option value="">@ViewLocalizer["Choose course"]</option>
-                                @foreach (var t in courses)
-                                {
-                                    <option value="@t.ID">@t.Name</option>
-                                }
-
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-course-modal" href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Barcode"]</label>
-                    <div class="row">
-                        <div class="col-8">
-                            <input id="product-barcode" type="text">
-                        </div>
-                        <div class="col-4">
-                            <button id="print-label" class="btn btn-primary">Print Label</button>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-           
-            <div class="col-lg-6 px-3">
-                <div class="form-group px-3">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left pr-5">@ViewLocalizer["Photo"]</h6>
-                        <div class="del-unit text-danger">
-                            <a class="del-photo " href="javascript:void(0);">
-                                <img src="/vendor/img/icons/minus.svg" alt="img">
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-4 col-4">
-                            <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-
-                        </div>
-                        <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                            <input id="imgInpProduct" type="file" name="Files" accept="image/*">
-                            <div class="image-uploads">
-                                <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-lg-3 px-3">
-                <div class="form-group px-3">
-                    <label>	@ViewLocalizer["Background Color"]</label>
-                    <div id="product-bcolor" class="col-lg-4 text-start w-100">
-                        <input id="product-backcolor" type="text" class="form-control" value=" /">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 px-3">
-                <div class="form-group px-3">
-                    <label>	@ViewLocalizer["Text Color"]</label>
-                    <div id="product-tcolor" class="col-lg-4 text-start w-100">
-                        <input id="product-textcolor" type="text" class="form-control" value="#FFFFFF">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 px-3">
-
-                <div class="form-group">
-                    <label>@ViewLocalizer["Serving Size"]</label>
-                    <select id="product-serving-size" class="select ">
-                        <option value="0">@ViewLocalizer["No"]</option>
-                        <option value="1">@ViewLocalizer["Yes"]</option>
-                    </select>
-
-                </div>
-            </div>
-            <div class="col-lg-3 px-3">
-
-                <div class="form-group">
-                    <label>@ViewLocalizer["Status"]</label>
-                    <select id="product-status" class="select ">
-                        <option value="1">@ViewLocalizer["Active"]</option>
-                        <option value="0">@ViewLocalizer["Inactive"]</option>
-                    </select>
-
-                </div>
-            </div>
-
-        </div>
-        <div id="no-serving-size" class="product-item-container" data-id="0">
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-                <div class="">
-                    <h2 class="accordion-header" id="flush-headingOne">
-                        <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            <a href="javascript:void(0);" class="btn btn-success">Recipe</a>
-                        </button>
-                    </h2>
-                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                    <div class="">
-                                        <button data-id="0" class="add-article-modal btn btn-submit me-2 p-2">Add Article</button>
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-category-modal" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
                                     </div>
+
                                 </div>
-                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                    <div class="">
-                                        <button data-id="0" class="add-subrecipe-modal btn btn-submit me-2 p-2">Add Sub Recipe</button>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
+                                    <div class="d-flex">
+                                        <select id="product-subcategory" class="select form-control">
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-subcategory-modal" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
                                     </div>
+
                                 </div>
-                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                    <div class="">
-                                        <button data-id="0" class="add-product-modal btn btn-submit me-2 p-2">Add Product</button>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                    <div class="">
-                                        <button data-id="0" class="btn-submit btn btn-print-recipe me-2 p-2">Print recipe</button>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Printer Name"]</label>
+                                    <div class="d-flex">
+                                        <input type="text" class="form-control me-2" id="product-printername" placeholder="Printer title">
+                                        <button id="printer-capital" class="btn btn-primary">
+                                            Aa
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row pt-2">
-                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
-                                    <table id="" class="table purchase-item">
-                                        <thead style=" ">
-                                            <tr>
-                                                <th>@ViewLocalizer["Name"]</th>
-                                                <th>@ViewLocalizer["Type"]</th>
-                                                <th>@ViewLocalizer["Brand"]</th>
-                                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
-                                                <th>@ViewLocalizer["Unit"]	</th>
-                                                <th>@ViewLocalizer["Price"]	</th>
-                                                <th>@ViewLocalizer["SubTotal"]	</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="item-list-0">
-                                        </tbody>
-                                    </table>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
+                                    <select id="product-taxes" class="form-control  select">
+                                        @foreach (var t in taxs)
+                                        {
+                                            <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row">                               
-                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                    <div class="">
-                                        <button data-id="0" class="btn-submit btn btn-question-info me-2 p-2">Show Question Info</button>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Propinas"]</label>
+                                    <select id="product-propinas" class="form-control  select">
+                                        @foreach (var t in propinas)
+                                        {
+                                            <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Printer Channels"]</label>
+                                    <select id="product-printerChannels" class="form-control tagging select">
+                                        @foreach (var p in printerChannels)
+                                        {
+                                            <option value="@p.ID">@p.Name </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Course"]</label>
+                                    <div class="d-flex">
+                                        <select id="product-course" class="select form-control ">
+                                            <option value="">@ViewLocalizer["Choose course"]</option>
+                                            @foreach (var t in courses)
+                                            {
+                                                <option value="@t.ID">@t.Name</option>
+                                            }
+
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-course-modal" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Barcode"]</label>
+                                    <div class="d-flex">
+                                        <input id="product-barcode" type="text" class="form-control me-2">
+                                        <button id="print-label" class="btn btn-primary">Print Label</button>
+
                                     </div>
                                 </div>
                             </div>
-                            <div class="row question-info pt-2" style="display:none">
-                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
-                                    <table id="question-items-info" class="table">
-                                        <thead style=" ">
-                                        <tr>
-                                            <th>@ViewLocalizer["Name"]</th>
-                                            <th>@ViewLocalizer["Type"]</th>
-                                            <th>@ViewLocalizer["Categoria"]</th>
-                                            <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
-                                            <th>@ViewLocalizer["Price"]	</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="item-list-0">
-                                        </tbody>
-                                    </table>
+                        </div>
+                        <!-- /Product Information -->
+                        <!-- Media -->
+                        <div class="card mb-6">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+                                <div href="javascript:void(0);" class="fw-medium">
+                                    <div class="del-unit text-danger">
+                                        <a class="del-photo " href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/minus.svg" alt="img">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12 justify-content-center">
-                                    <div class="total-order">
-                                        <ul>
-                                            <li class="total">
-                                                <h4>@ViewLocalizer["Total"]</h4>
-                                                <h5 class="po-total">$ 0.00</h5>
-                                            </li>
-                                            <li class="total">
-                                                <h4>Precio Venta Producto</h4>
-                                                <h5 class="po-price1">$ 0.00</h5>
-                                            </li>
-                                            <li class="total">
-                                                <h4>Precio Questions</h4>
-                                                <h5 class="po-price2">$ 0.00</h5>
-                                            </li>
-                                            <li class="total">
-                                                <h4>Precio de Venta Sugerido</h4>
-                                                <h5 class="po-price-suggested">$ 0.00</h5>
-                                            </li>
-                                        </ul>
-                                        <div class="card-body range py-2">
-                                            <input type="text" class="price-suggest-percent js-range-slider irs--modern" name="my_range" value="" />
+                            <div class="card-body text-center justify-content-center align-items-center">
+                                <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                    <input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                    <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                        <img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+                                        <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                        <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                        <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Media -->
+                        <!-- Variants -->
+                        <div class="card mb-6">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Características</h5>
+                            </div>
+                            <div class="card-body">
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Background Color"]</label>
+                                                    <input type="text" class="form-control me-2" id="product-bcolor" placeholder="Background color">
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Text Color"]</label>
+                                                    <input type="text" class="form-control me-2" id="product-textcolor" placeholder="Background color">
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Serving Size"]</label>
+                                                    <select id="product-serving-size" class="select form-control ">
+                                                        <option value="0">@ViewLocalizer["No"]</option>
+                                                        <option value="1">@ViewLocalizer["Yes"]</option>
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Status"]</label>
+                                                    <select id="product-status" class="select form-control">
+                                                        <option value="1">@ViewLocalizer["Active"]</option>
+                                                        <option value="0">@ViewLocalizer["Inactive"]</option>
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /Variants -->
+                        <div id="no-serving-size" class="product-item-container" data-id="0">
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                <div class="">
+                                    <h2 class="accordion-header" id="flush-headingOne">
+                                        <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                            <a href="javascript:void(0);" class="btn btn-primary">Recipe</a>
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                    <div class="">
+                                                        <button data-id="0" class="add-article-modal btn btn-submit me-2 p-2">Add Article</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                    <div class="">
+                                                        <button data-id="0" class="add-subrecipe-modal btn btn-submit me-2 p-2">Add Sub Recipe</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                    <div class="">
+                                                        <button data-id="0" class="add-product-modal btn btn-submit me-2 p-2">Add Product</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                    <div class="">
+                                                        <button data-id="0" class="btn-submit btn btn-print-recipe me-2 p-2">Print recipe</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
+                                                    <table id="" class="table purchase-item">
+                                                        <thead style=" ">
+                                                            <tr>
+                                                                <th>@ViewLocalizer["Name"]</th>
+                                                                <th>@ViewLocalizer["Type"]</th>
+                                                                <th>@ViewLocalizer["Brand"]</th>
+                                                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
+                                                                <th>@ViewLocalizer["Unit"]	</th>
+                                                                <th>@ViewLocalizer["Price"]	</th>
+                                                                <th>@ViewLocalizer["SubTotal"]	</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="item-list-0">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                    <div class="">
+                                                        <button data-id="0" class="btn-submit btn btn-question-info me-2 p-2">Show Question Info</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row question-info pt-2" style="display:none">
+                                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
+                                                    <table id="question-items-info" class="table">
+                                                        <thead style=" ">
+                                                            <tr>
+                                                                <th>@ViewLocalizer["Name"]</th>
+                                                                <th>@ViewLocalizer["Type"]</th>
+                                                                <th>@ViewLocalizer["Categoria"]</th>
+                                                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
+                                                                <th>@ViewLocalizer["Price"]	</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="item-list-0">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 justify-content-center">
+                                                    <div class="total-order">
+                                                        <ul>
+                                                            <li class="total">
+                                                                <h4>@ViewLocalizer["Total"]</h4>
+                                                                <h5 class="po-total">$ 0.00</h5>
+                                                            </li>
+                                                            <li class="total">
+                                                                <h4>Precio Venta Producto</h4>
+                                                                <h5 class="po-price1">$ 0.00</h5>
+                                                            </li>
+                                                            <li class="total">
+                                                                <h4>Precio Questions</h4>
+                                                                <h5 class="po-price2">$ 0.00</h5>
+                                                            </li>
+                                                            <li class="total">
+                                                                <h4>Precio de Venta Sugerido</h4>
+                                                                <h5 class="po-price-suggested">$ 0.00</h5>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="card-body range py-2">
+                                                            <input type="text" class="price-suggest-percent js-range-slider irs--modern" name="my_range" value="" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+
+                            <!-- /Navigation -->
+                            <!-- /Options-->
+                        </div>
+                    </div>
+                </div>
+                <!-- /Inventory -->
+            <!-- /Second column -->
+            <!-- Second column -->
+            <div class="col-12 col-lg-4">
+                <!-- Pricing Card -->
+                <div class="card mb-6">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Precios</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Base Price -->
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Price"] 1</label>
+                            <input type="text" class="form-control product-price1" id="product-price1">
+                        </div>
+                        <!-- Discounted Price -->
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 2</label>
+                            <input type="text" class="form-control" id="product-price2">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 3</label>
+                            <input type="text" class="form-control" id="product-price3">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 4</label>
+                            <input type="text" class="form-control" id="product-price4">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 5</label>
+                            <input type="text" class="form-control" id="product-price5">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 6</label>
+                            <input type="text" class="form-control" id="product-price6">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 7</label>
+                            <input type="text" class="form-control" id="product-price7">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 8</label>
+                            <input type="text" class="form-control" id="product-price8">
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
+                            <input type="text" class="form-control" id="product-cost" readonly>
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
+                            <input type="text" class="form-control" id="product-cost-barcode" readonly>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Pricing Card -->
+
+            </div>
+            </div>
+            <!-- Organize Card -->
+            <div class="card mb-6 col-lg-8">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Organize</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Vendor -->
+                    <div class="mb-6 col ecommerce-select2-dropdown">
+                        <div id="has-serving-size" class="row pt-3" style="display:none;">
+
+                            <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                <h6 class="text-left"> @ViewLocalizer["Serving Sizes"]</h6>
+                                <div class="add-unit">
+                                    <a class="add-serving-size" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="serving-size-container">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Category -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="mb-6 col ecommerce-select2-dropdown">
+                            <div class="row pt-5">
+                                <div class="col">
+
+                                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                        <h6 class="text-left"> @ViewLocalizer["Questions and Modifiers"]</h6>
+                                        <div class="add-unit">
+                                            <a class="add-new-question" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <table class="table reordertable">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    @ViewLocalizer["Name"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Type"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Action"]
+                                                </td>
+                                                <td>
+                                                </td>
+                                        </thead>
+                                        <tbody id="product-questions">
+                                        </tbody>
+
+
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row pt-5">
+                        <div class="col-lg-12 col-sm-12 col-12">
+                            <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+                                <div class="add-unit">
+                                    <a class="add-accounting-item" href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                            <table class="table reordertable">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            @ViewLocalizer["Name"]
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Type"]
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Number"]
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Action"]
+                                        </td>
+                                </thead>
+                                <tbody id="accounting-list">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row pt-3">
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 1</label>
-                    <input class="product-price1" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 2</label>
-                    <input class="product-price2" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 3</label>
-                    <input class="product-price3" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 4</label>
-                    <input class="product-price4" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 5</label>
-                    <input class="product-price5" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 6</label>
-                    <input class="product-price6" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 7</label>
-                    <input class="product-price7" type="text">
-                </div>
-                <div class="col-lg-1 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Price"] 8</label>
-                    <input class="product-price8" type="text">
-                </div>
-                <div class="col-lg-2 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
-                    <input class="product-cost" readonly type="text">
-                </div>
-                <div class="col-lg-2 col-sm-3 col-3 form-group">
-                    <label>@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
-                    <input class="product-cost-barcode" readonly type="text">
-                </div>
-            </div>
-
+            <!-- /Organize Card -->
         </div>
-        <div id="has-serving-size" class="row pt-3" style="display:none;">
-
-            <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                <h6 class="text-left"> @ViewLocalizer["Serving Sizes"]</h6>
-                <div class="add-unit">
-                    <a class="add-serving-size" href="javascript:void(0);">
-                        <img src="/vendor/img/icons/plus1.svg" alt="img">
-                    </a>
-                </div>
-            </div>
-            <div class="serving-size-container">
-            </div>
-        </div>
-
-        <div class="row pt-5">
-            <div class="col-lg-12 col-sm-12 col-12">
-
-                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                    <h6 class="text-left"> @ViewLocalizer["Questions and Modifiers"]</h6>
-                    <div class="add-unit">
-                        <a class="add-new-question" href="javascript:void(0);">
-                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                        </a>
-                    </div>
-                </div>
-                <table class="table reordertable">
-                    <thead>
-                        <tr>
-                            <td>
-                                @ViewLocalizer["Name"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Type"]
-                            </td>
-                        <td>
-                            @ViewLocalizer["Action"]
-                        </td>
-                            <td>
-                                
-                            </td>
-                    </thead>
-                    <tbody id="product-questions">
-                    </tbody>
-
-
-
-                </table>
-            </div>
-
-        </div>
-        <div class="row pt-5">
-            <div class="col-lg-12 col-sm-12 col-12">
-                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                    <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-                    <div class="add-unit">
-                        <a class="add-accounting-item" href="javascript:void(0);">
-                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                        </a>
-                    </div>
-                </div>
-                <table class="table reordertable">
-                    <thead>
-                        <tr>
-                            <td>
-                                @ViewLocalizer["Name"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Type"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Number"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Action"]
-                            </td>
-                    </thead>
-                    <tbody id="accounting-list">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row pt-3">
-            <div class="col-lg-12">
-                <a id="submit-product" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-                <a id="cancel" href="/Menu/ProductList" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
-            </div>
-        </div>
+        <!-- /Second column -->
     </div>
-</div>
+        </div>   
+
+  </div>
+  </div>
+  </div>
+
+          <!-- / Content -->
 
 <!-- Category Modal -->
 @{
@@ -672,7 +729,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>          
 
 @{
     @await Component.InvokeAsync("Accounting", new { })
