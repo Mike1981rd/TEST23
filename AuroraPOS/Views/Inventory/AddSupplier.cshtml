@@ -24,24 +24,7 @@
                 </div>
                 <div class="card mb-6">
                     <!-- Account -->
-                    <div class="card-body">
-                        <div class="d-flex align-items-start align-items-sm-center gap-6">
-                            <img src="../../assets/img/avatars/1.png" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="avatarimgInp">
-                            <div class="button-wrapper">
-                                <label for="upload" class="btn btn-primary me-3 mb-4 waves-effect waves-light" tabindex="0">
-                                    <span class="d-none d-sm-block">Upload new photo</span>
-                                    <i class="ti ti-upload d-block d-sm-none"></i>
-                                    <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
-                                </label>
-                                <button type="button" class="btn btn-label-secondary account-image-reset mb-4 waves-effect">
-                                    <i class="ti ti-refresh-dot d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Reset</span>
-                                </button>
-
-                                <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="card-body pt-4">
                         <form method="post" asp-controller="Inventory" asp-action="AddSupplier" enctype="multipart/form-data">
                             @Html.AntiForgeryToken()
@@ -196,28 +179,7 @@
                     </div>
                     <!-- /Account -->
                 </div>
-                <div class="card">
-                    <h5 class="card-header">Delete Account</h5>
-                    <div class="card-body">
-                        <div class="mb-6 col-12 mb-0">
-                            <div class="alert alert-warning">
-                                <h5 class="alert-heading mb-1">Are you sure you want to delete your account?</h5>
-                                <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
-                            </div>
-                        </div>
-                        <form id="formAccountDeactivation" onsubmit="return false" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
-                            <div class="form-check my-8">
-                                <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation">
-                                <label class="form-check-label" for="accountActivation">I confirm my account deactivation</label>
-                                <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
-                            </div>
-                            <br />
-                            <button type="submit" class="btn btn-danger deactivate-account waves-effect waves-light" disabled="">Deactivate Account</button>
-                            <input type="hidden">
-                        </form>
-                    </div>
-                </div>
-            </div>
+               
         </div>
 
 
