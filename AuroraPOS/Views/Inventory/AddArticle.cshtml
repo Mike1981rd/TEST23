@@ -12,464 +12,510 @@
 	var phistory = (List<PurchaseHistoryViewModel>)ViewBag.PurchaseOrderHistory;
 
 }
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Create Article"]</h4>
-		<h6>@ViewLocalizer["Add/Update Article"]</h6>
-	</div>
-</div>
-<div class="card">
-	<div class="card-body">
-		<div id="article-id" class="row" data-articleid="0">
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-					<input id="article-name" type="text">
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Category"]</label>
-					<div class="row">
-						<div class="col-lg-10 col-sm-10 col-10">
-							<select id="article-category" class="select ">
-								<option value="">Choose category</option>
-								@foreach(var c in categories)
-								{
-									<option value="@c.ID">@c.Name</option>
-								}
-							</select>
-						</div>
-						<div class="col-lg-2 col-sm-2 col-2 ps-0">
-							<div class="add-icon">
-								<a id="add-category-modal" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Sub Category"]</label>
-					<div class="row">
-						<div class="col-lg-10 col-sm-10 col-10">
-							<select id="article-subcategory" class="select ">
-						
-							</select>
-						</div>
-						<div class="col-lg-2 col-sm-2 col-2 ps-0">
-							<div class="add-icon">
-								<a id="add-subcategory-modal" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Brand"]</label>
-					<div class="row">
-						<div class="col-lg-10 col-sm-10 col-10">
-							<select id="article-brand" class="select ">
-								<option>Choose Brand</option>
-								@foreach(var b in brands)
-								{
-									if (b.IsSystemDefault)
-									{
-										<option value="@b.ID" selected>@b.Name</option>
-									}
-									else
-									{
-										<option value="@b.ID">@b.Name</option>
-									}
-									
-								}
-							</select>
-						</div>
-						<div class="col-lg-2 col-sm-2 col-2 ps-0">
-							<div class="add-icon">
-								<a id="add-brand" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Tax"]</label>
-					<select id="article-tax" class="select ">
-							<option>Choose Tax</option>
-								@foreach(var b in taxs)
-								{
-									<option value="@b.ID">@b.TaxName - @b.TaxValue</option>
-								}
-					</select>
-				
-				</div>
-			</div>
-		
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>Rendimiento (%)</label>
-					<input id="article-performance" onkeypress="return onlyDecimalKey(event)"  value="100" type="text">
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Minimum"]</label>
-					<input id="article-min" onkeypress="return onlyDecimalKey(event)"  type="text">
-				</div>
-			</div>			
-		
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Maximum"]</label>
-					<input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text">
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Unit"]</label>
-					<select id="max-unit" class="select ">
-					</select>
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<label>&nbsp;</label>
-				<div class="form-group">
-					<button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Existencia de seguridad(%)"]</label>
-					<input id="article-saftystock" onkeypress="return onlyDecimalKey(event)" type="text">
-				</div>
-			</div>
-			
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Order By"]</label>
-					<select id="default-unit" class="select ">
-					</select>
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Deplete Condition"]</label>
-					<select id="article-deplete" class="select ">
-						<option value="0">@ViewLocalizer["All"]</option>
-						<option value="1">@ViewLocalizer["Delivery"]</option>
-					</select>
+<div class="content-wrapper">
 
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Status"]</label>
-					<select id="article-status" class="select ">
-						<option value="1">@ViewLocalizer["Active"]</option>
-						<option value="0">@ViewLocalizer["Inactive"]</option>
-					</select>
-				</div>
-			</div>
-			<div class="col-lg-4 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Barcode"]</label>
-					<div class="row">
-						<div class="col-6">
-							<input id="article-barcode" type="text">
-						</div>
-						<div class="col-6">
-							<button id="print-label" class="btn btn-primary">Generate Barcode</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-6 px-3">
-                <div class="form-group px-3">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left pr-5">@ViewLocalizer["Photo"]</h6>
-                        <div  class="del-unit text-danger">
-                            <a  class="del-photo "  href="javascript:void(0);" >
-                                <img src="/vendor/img/icons/minus.svg" alt="img">
-                            </a>
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+
+        <div class="app-ecommerce">
+
+            <!-- Add Product -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+                <div class="d-flex flex-column justify-content-center">
+                    <h4 class="mb-1">@ViewLocalizer["Create Article"]</h4>
+                    <p class="mb-0">@ViewLocalizer["Add/Update Article"]</p>
+                </div>
+                <div class="d-flex align-content-center flex-wrap gap-4">
+					<a id="submit2" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Submit"]</a>
+					@if (ViewBag.ArticleID > 0)
+					{
+						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Product"]</a>
+					}
+					else
+					{
+						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2 hidden">@ViewLocalizer["Add Product"]</a>
+					}
+
+					<a id="cancel" href="/Inventory/ArticleList" class="btn btn-label-secondary waves-effect   me-2">@ViewLocalizer["Complete"]</a>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <!-- First column-->
+                <div class="col-12 col-lg-8">
+                    <!-- Product Information -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-tile mb-0">Información del artículo</h5>
                         </div>
-                    </div>
-                   
-                    <div class="row">
-                        <div class="col-sm-4 col-4">
-                            <img id="productimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                           
-                        </div>
-                        <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                            <input id="imgInpProduct" type="file" name="Files" accept="image/*">
-                            <div class="image-uploads">
-                                <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                        <div class="card-body">
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-name">@ViewLocalizer["Name"]</label>
+                                <input type="text" class="form-control" id="article-name" placeholder="Article title">
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
+                                    <div class="d-flex">
+                                        <select id="article-category" class="select form-control ">
+                                            <option value="">@ViewLocalizer["Choose category"]</option>
+                                            @foreach (var c in categories)
+                                            {
+                                                <option value="@c.ID">@c.Name</option>
+                                            }
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-category-modal" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
+                                    <div class="d-flex">
+                                        <select id="article-subcategory" class="select form-control">
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-subcategory-modal" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Brand"]</label>
+                                   
+                                    <div class="d-flex">
+                                        <select id="article-brand" class="select form-control ">
+                                            <option>Choose Brand</option>
+                                            @foreach (var b in brands)
+                                            {
+                                                if (b.IsSystemDefault)
+                                                {
+                                                    <option value="@b.ID" selected>@b.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@b.ID">@b.Name</option>
+                                                }
+
+                                            }
+                                        </select>
+                                        <div class="add-icon">
+                                            <a id="add-brand" href="javascript:void(0);">
+                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
+                                    <select id="article-tax" class="form-control  select">
+                                        @foreach (var b in taxs)
+                                        {
+                                            <option value="@b.ID">@b.TaxName - @b.TaxValue</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcotaggingde">Rendimiento (%)</label>
+                                    <input id="article-performance" onkeypress="return onlyDecimalKey(event)" value="100" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Minimum"]</label>
+                                    <input id="article-min" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Maximum"]</label>
+                                    <input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Unit"]</label>
+                                    <select id="max-unit" class="select form-control ">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label>&nbsp;</label>
+                                    <div class="form-group">
+                                        <button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">@ViewLocalizer["Existencia de seguridad(%)"]</label>
+                                    <input id="article-saftystock" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="form-group">
+                                        <button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">@ViewLocalizer["Order By"]</label>
+                                    <select id="default-unit" class="select form-control">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">@ViewLocalizer["Deplete Condition"]</label>
+                                    <select id="article-deplete" class="select form-control ">
+                                        <option value="0">@ViewLocalizer["All"]</option>
+                                        <option value="1">@ViewLocalizer["Delivery"]</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">@ViewLocalizer["Status"]</label>
+                                    <select id="article-status" class="select form-control">
+                                        <option value="1">@ViewLocalizer["Active"]</option>
+                                        <option value="0">@ViewLocalizer["Inactive"]</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label">@ViewLocalizer["Status"]</label>
+                                    <div class="col">
+                                        <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Barcode"]</label>
+                                        <div class="d-flex">
+                                            <input type="text" class="form-control me-2" id="article-barcode">
+                                            <button id="print-label" class="btn btn-primary">Generate Barcode</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- /Product Information -->
+                        <!-- Media -->
+                        <div class="card mb-6">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+                                <div href="javascript:void(0);" class="fw-medium">
+                                    <div class="del-unit text-danger">
+                                        <a class="del-photo " href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/minus.svg" alt="img">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center justify-content-center align-items-center">
+                                <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                    <input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                    <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                        <img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+                                        <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                        <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                        <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Media -->
+                        <!-- Variants -->
+                       
+                    <div class="card mb-6 " >
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Características</h5>
+                        </div>
+                        <div class="card-body">
+                            <form class="form-repeater">
+                                <div data-repeater-list="group-a">
+                                    <div data-repeater-item="">
+                                        <div class="row mb-6">
+                                            <div class="col">
+                                                <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Units"] </label>
+                                                <div class="add-icon mx-1">
+                                                    <a id="unit-plus" href="javascript:void(0);">
+                                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                                    </a>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </form>
+                            <div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
+                                <table class="table" style="position:relative;">
+                                    <thead class="" style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>No </th>
+                                            <th>@ViewLocalizer["Name"] </th>
+                                            <th style="width:150px;">@ViewLocalizer["Label"]</th>
+                                            <th>@ViewLocalizer["Qty"]</th>
+                                            <th>@ViewLocalizer["Cost"]</th>
+                                            <th>@ViewLocalizer["Tara"]</th>
+                                            <th>@ViewLocalizer["Price"]</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unit-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        <form class="form-repeater">
+                            <div data-repeater-list="group-a">
+                                <div data-repeater-item="">
+                                    <div class="row mb-6">
+                                        <div class="col">
+                                            <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Suppliers"] </label>
+                                            <div class="add-icon mx-1">
+                                                <a id="add-supplier-modal" href="javascript:void(0);">
+                                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                                </a>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </form>
+                        <div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
+                            <table class="table" style="position:relative;">
+                                <thead class="" style="position: sticky; top: 0; z-index:2;">
+                                    <tr>
+                                        <th>ID </th>
+                                        <th>@ViewLocalizer["Supplier"] </th>
+                                        <th>@ViewLocalizer["Vendor"]	</th>
+                                        <th>@ViewLocalizer["Primary"]</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="article-supplier">
+                                </tbody>
+                            </table>
+                        </div>
+
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Stocks"]  </label>
+                                                   
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Almacen </th>
+                                                <th>Unidad	</th>
+                                                <th>Disponible</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="warehouse-stock">
+                                            @foreach (var s in stocks)
+                                            {
+                                                <tr data-qty="@s.Qty.ToString("0.0000")">
+                                                    <td>@s.Warehouse.WarehouseName</td>
+                                                    <td>
+                                                        <select class="warehouse-stock-unit select">
+                                                        </select>
+                                                    <td class="stock-qty">@s.Qty.ToString("0.0000")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Products"]</label>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive" style="max-height: 300px; overflow:auto;">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID </th>
+                                                <th>@ViewLocalizer["Name"]	</th>
+                                                <th>@ViewLocalizer["Category"]</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var s in products)
+                                            {
+                                                <tr>
+                                                    <td>@s.ID</td>
+                                                    <td>@s.Name</td>
+                                                    <td>@s.Category.Name</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Purchase Order History"]</label>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive" style="max-height: 500px; overflow:auto;">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>@ViewLocalizer["Date"] </th>
+                                                <th>@ViewLocalizer["Supplier"]</th>
+                                                <th>@ViewLocalizer["Qty"]</th>
+                                                <th>@ViewLocalizer["Unit"]</th>
+                                                <th>@ViewLocalizer["Unit Cost"]</th>
+                                                <th>@ViewLocalizer["Total"]</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var s in phistory)
+                                            {
+                                                <tr>
+                                                    <td>@s.PurchaseDate.ToString("dd-MM-yyyy")</td>
+                                                    <td>@s.Supplier</td>
+                                                    <td>@s.Qty.ToString("N2")</td>
+                                                    <td>@s.Unit</td>
+                                                    <td>@s.Cost.ToString("N2")</td>
+                                                    <td>@s.Total.ToString("N2")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Units"]</label>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th> </th>
+                                                <th>Unidad	</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr>
+                                                <td>Balanza</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Scanner</td>
+                                                <td>
+                                                    <select id="scanner-unit" class="select ">
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                     </div>
                 </div>
-            </div>		
-		</div>
-		<div class="row">
-			<div class="p-4 ">
-				<div class="d-flex mb-2">
-					<h5 class="text-bold p-1 mr-4">@ViewLocalizer["Units"]  </h5>
-					<div class="add-icon mx-1">
-						<a id="unit-plus" href="javascript:void(0);">
-							<img src="/vendor/img/icons/plus1.svg" alt="img">
-						</a>
-					</div>
-
-				</div>
-
-				<div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
-					<table class="table" style="position:relative;">
-						<thead class="" style="position: sticky; top: 0; z-index:2;">
-							<tr>
-								<th>No </th>
-								<th>@ViewLocalizer["Name"] </th>
-								<th style="width:150px;">@ViewLocalizer["Label"]</th>
-								<th>@ViewLocalizer["Qty"]</th>
-								<th>@ViewLocalizer["Cost"]</th>								
-								<th>@ViewLocalizer["Tara"]</th>
-								<th>@ViewLocalizer["Price"]</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody id="unit-body">
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-6 col-sm-12 col-12 p-4">
-				<div class="p-4 ">
-					<div class="d-flex justify-content-between align-items-end mb-2">
-						<h5 class="text-bold p-1">@ViewLocalizer["Suppliers"]  </h5>
-						<div class="text-end">
-							<div class="add-icon">
-								<a id="add-supplier-modal" href="javascript:void(0);">
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
-							</div>
-						</div>
-				
-					</div>
-
-                    <div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
-						<table class="table" style="position:relative;">
-							<thead class="" style="position: sticky; top: 0; z-index:2;">
-							<tr>
-								<th>ID </th>
-								<th>@ViewLocalizer["Supplier"] </th>
-								<th>@ViewLocalizer["Vendor"]	</th>
-								<th>@ViewLocalizer["Primary"]</th>							
-								<th></th>
-							</tr>
-						</thead>
-						<tbody class="article-supplier">					
-				
-						</tbody>
-						</table>
+                      
+                            <!-- /Navigation -->
+                            <!-- /Options-->
+                        </div>
                     </div>
                 </div>
-			</div>
-			<div class="col-lg-6 col-sm-12 col-12 p-4">
-                <div class=" p-4  ">
-					<label class="px-5">@ViewLocalizer["Stocks"]  </label>					
-				
-				<div class="table-responsive">
-					<table class="table">
-						<thead>
-							<tr>
-								<th>Almacen </th>
-								<th>Unidad	</th>
-								<th>Disponible</th>							
-							</tr>
-						</thead>
-						<tbody id="warehouse-stock">
-						@foreach(var s in stocks)
-						{
-									<tr data-qty="@s.Qty.ToString("0.0000")">
-								<td>@s.Warehouse.WarehouseName</td>	
-								<td>
-									<select class="warehouse-stock-unit select">
+                <!-- /Inventory -->
+                <!-- /Second column -->
+                <!-- Second column -->
+                
+                    <!-- /Pricing Card -->
 
-									</select>
-								<td class="stock-qty">@s.Qty.ToString("0.0000")</td>	
-							</tr>
-						}
-						</tbody>
-					</table>
-                    </div>
                 </div>
-			</div>
-			<div class="col-lg-6 col-sm-12 col-12 p-4">
-				<div class=" p-4 ">
-					<label class="px-5">@ViewLocalizer["Products"]  </label>
-
-					<div class="table-responsive" style="max-height: 300px; overflow:auto;">
-						<table class="table">
-							<thead>
-								<tr>
-									<th>ID </th>
-									<th>@ViewLocalizer["Name"]	</th>
-									<th>@ViewLocalizer["Category"]</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach (var s in products)
-								{
-									<tr>
-										<td>@s.ID</td>
-										<td>@s.Name</td>
-										<td>@s.Category.Name</td>
-									</tr>
-								}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-6 col-sm-12 col-12 p-4">
-				<div class=" p-4 ">
-					<label class="px-5">@ViewLocalizer["Purchase Order History"]  </label>
-
-					<div class="table-responsive" style="max-height: 500px; overflow:auto;">
-						<table class="table">
-							<thead>
-								<tr>
-									<th>@ViewLocalizer["Date"] </th>
-									<th>@ViewLocalizer["Supplier"]</th>
-									<th>@ViewLocalizer["Qty"]</th>
-									<th>@ViewLocalizer["Unit"]</th>
-									<th>@ViewLocalizer["Unit Cost"]</th>
-									<th>@ViewLocalizer["Total"]</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach (var s in phistory)
-								{
-									<tr>
-										<td>@s.PurchaseDate.ToString("dd-MM-yyyy")</td>
-										<td>@s.Supplier</td>
-										<td>@s.Qty.ToString("N2")</td>
-										<td>@s.Unit</td>
-										<td>@s.Cost.ToString("N2")</td>
-										<td>@s.Total.ToString("N2")</td>
-									</tr>
-								}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-6 col-sm-12 col-12 p-4">
-				<div class=" p-4 ">
-					<label class="px-5">@ViewLocalizer["Units"]  </label>
-
-					<div class="table-responsive">
-						<table class="table">
-							<thead>
-								<tr>
-									<th> </th>
-									<th>Unidad	</th>
-								</tr>
-							</thead>
-							<tbody>
-								
-								<tr>
-									<td>Balanza</td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>Scanner</td>
-									<td>
-										<select id="scanner-unit" class="select ">
-										</select>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row py-3">
-			<div class="col-lg-12 col-sm-12 col-12">
-				<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-					<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-					<div class="add-unit">
-						<a class="add-accounting-item" href="javascript:void(0);">
-							<img src="/vendor/img/icons/plus1.svg" alt="img">
-						</a>
-					</div>
-				</div>
-				<table class="table reordertable">
-					<thead>
-						<tr>
-							<td>
-								@ViewLocalizer["Name"]
-							</td>
-							<td>
-								@ViewLocalizer["Type"]
-							</td>
-							<td>
-								@ViewLocalizer["Number"]
-							</td>
-							<td>
-								@ViewLocalizer["Action"]
-							</td>
-					</thead>
-					<tbody id="accounting-list">
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row pt-2">
-			<div class="col-lg-12">
-				<a id="submit2" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-				@if(ViewBag.ArticleID > 0)
-				{
-					<a id="submit3" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Add Product"]</a>
-				}
-				else
-				{
-					<a id="submit3" href="javascript:void(0);" class="btn btn-submit me-2 hidden">@ViewLocalizer["Add Product"]</a>
-				}
-			
-				<a id="cancel" href="/Inventory/ArticleList" class="btn btn-cancel   me-2">@ViewLocalizer["Complete"]</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-
+            </div>
+           
+        </div>
+        <!-- /Second column -->
 <!-- Add Product Modal -->
 <div class="modal fade" id="addproductmodal" tabindex="-1" role="dialog" aria-hidden="true" data-articleid="@ViewBag.ArticleID">
-    <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width:1000px" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="group-modal-title">@ViewLocalizer["Add Product"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-6 col-sm-6 col-12">
+	<div class="modal-dialog modal-lg modal-dialog-centered" style="max-width:1000px" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Add Product"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
 							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
 							<input id="product-name" type="text">
@@ -493,7 +539,7 @@
 							</select>
 						</div>
 					</div>
-						<div class="col-lg-3 col-sm-6 col-12">
+					<div class="col-lg-3 col-sm-6 col-12">
 						<div class="form-group">
 							<label>@ViewLocalizer["Barcode"]</label>
 							<input id="product-barcode" type="text">
@@ -508,26 +554,26 @@
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
 							<label>@ViewLocalizer["Printer Channels"]</label>
-							<select id="product-printerChannels" class="form-control tagging select"  multiple tabindex="-1" aria-hidden="true">
+							<select id="product-printerChannels" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var p in printerChannels)
 								{
 									<option value="@p.ID">@p.Name </option>
 								}
 							</select>
-							</div>
+						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
 							<label>@ViewLocalizer["Taxes"]</label>
-							<select id="product-taxes" class="form-control tagging select"  multiple tabindex="-1" aria-hidden="true">
-							@foreach (var t in taxs)
-							{
-								<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
-							}
+							<select id="product-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in taxs)
+								{
+									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+								}
 							</select>
 						</div>
 					</div>
-                </div>
+				</div>
 				<div class="accordion-body">
 					<div class="row">
 						<div class="col-lg-3 col-sm-4 col-4 p-3">
@@ -574,17 +620,17 @@
 						</div>
 					</div>
 				</div>
-            </div>
-            <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<button id="submit-product" type="button" class="btn btn-submit" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
-        </div>
-    </div>
+				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- Article Modal -->
 @{
-	@await Component.InvokeAsync("ArticleList", new {  })
+	@await Component.InvokeAsync("ArticleList", new { })
 }
 
 <!-- Sub Recipe Modal -->
@@ -628,29 +674,29 @@
 
 <!-- Brand Modal -->
 <div class="modal fade" id="editbrand" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="group-modal-title">@ViewLocalizer["Add/Edit Brand"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Brand name"]<span class="manitory">*</span></label>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Brand"]</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<div class="form-group">
+							<label>@ViewLocalizer["Brand name"]<span class="manitory">*</span></label>
 							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 								<div class="input-group">
 									<span class="input-group-text" id="brand-id" data-id="">ID</span>
 									<input id="brand-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
 								</div>
 								<button id="edit-brand" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-							</div>                            
-                        </div>				
-                    </div>
-                    <div class="col-12">
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
 						<div class="table-responsive w-100" style="max-height:400px;">
 							<table id="brand-list" class="table" style="position:relative;">
 								<thead style="position: sticky; top: 0; z-index:2;">
@@ -661,15 +707,15 @@
 								</thead>
 							</table>
 						</div>
-                    </div>
-                   
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="cancel-brand" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
-        </div>
-    </div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="cancel-brand" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Product Confirm Modal-->
@@ -781,7 +827,7 @@
 								<option value="3x3"> 3x3</option>
 								<option value="3x2"> 3x2</option>
 								<option value="2x2"> 2x2</option>
-								
+
 								<option value="2x4"> 2x4</option>
 							</select>
 						</div>
@@ -799,31 +845,31 @@
 	@await Component.InvokeAsync("Accounting", new { })
 }
 <!-- Category Modal -->
-    @{
-	@await Component.InvokeAsync("AddCategory", new {  })
-    }
+@{
+	@await Component.InvokeAsync("AddCategory", new { })
+}
 <!-- Sub Category Modal -->
-    @{
-	@await Component.InvokeAsync("AddSubCategory", new {  })
-    }
+@{
+	@await Component.InvokeAsync("AddSubCategory", new { })
+}
 <!-- Supplier Modal -->
-   @{
-	@await Component.InvokeAsync("AddSupplier", new {  })
-    }
+@{
+	@await Component.InvokeAsync("AddSupplier", new { })
+}
 
 
-   <script>
-							
-	$(document).ready(function() {
-		$("#productimg").on( "mouseenter", function() {
+<script>
+
+	$(document).ready(function () {
+		$("#productimg").on("mouseenter", function () {
 			var popupContent = document.createElement("div");
 			popupContent.classList.add("popupDiv");
 			popupContent.innerHTML = "<img src='" + $(this).attr('src') + "' alt = 'zoomimg' style='height: 450px'> ";
 
 			popupContent.style.position = "absolute";
 
-			popupContent.style.top = ($(this).offset().top + -200)+ "px";
-			popupContent.style.left = ($(this).offset().left + 50)+ "px";
+			popupContent.style.top = ($(this).offset().top + -200) + "px";
+			popupContent.style.left = ($(this).offset().left + 50) + "px";
 			popupContent.style.backgroundColor = "white";
 			popupContent.style.padding = "5px";
 			popupContent.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
@@ -831,17 +877,17 @@
 			popupContent.style.borderRadius = "10px";
 			document.body.appendChild(popupContent);
 
-			$(this).on( "mouseleave", function() {
+			$(this).on("mouseleave", function () {
 				//document.body.removeChild(popupContent);
 				$(".popupDiv").remove();
 			});
 
 		});
-	
+
 		$("#article-category").select2();
 		$("#article-brand").select2();
-		
-	
+
+
 		$("#arti-sub").click(function () {
 			window.location.replace("/Inventory/ArticleList");
 		})
@@ -865,7 +911,7 @@
 				toastr.warning("Seleccione la categoría.", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
 				return;
 			}
-			
+
 			var category = parseInt($("#article-category").val());
 			var subcategory = parseInt($("#article-subcategory").val());
 			var tax = parseInt($("#article-tax").val());
@@ -950,7 +996,7 @@
 				Performance: performance,
 				MinQty: min,
 				MaxQty: max,
-                ImageUpload: photo,
+				ImageUpload: photo,
 				MaxUnitID: maxunit,
 				MinUnitID: minunit,
 				DefaultUnitID: defaultunit,
@@ -993,7 +1039,7 @@
 				}
 			});
 		});
-		
+
 		// brand
 		$("#add-brand").click(function () {
 			$("#editbrand").modal("show");
@@ -1018,8 +1064,8 @@
 			"order": [[0, 'asc']],
 			"columns": [
 
-				{ "data": "name", "name": "name", "autoWidth": true },		
-				
+				{ "data": "name", "name": "name", "autoWidth": true },
+
 				{
 					'data': 'action', 'name': 'action', "orderable": "false",
 					render: function (data, type, row) {
@@ -1031,13 +1077,13 @@
 
 		$("#edit-brand").click(function () {
 			var brandName = $("#brand-name").val();
-				if (!brandName || brandName == "") {
+			if (!brandName || brandName == "") {
 				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
 				return;
 			}
 			var data = {
 				ID: $("#brand-id").data("id"),
-					Name: brandName,
+				Name: brandName,
 			}
 
 			$.ajax({
@@ -1048,8 +1094,7 @@
 					if (data.status == 0) {
 						brandtable.draw();
 					}
-					else if(data.status == 2)
-					{
+					else if (data.status == 2) {
 						toastr.error("@ViewLocalizer["The name should be unique."]", {})
 					}
 					else {
@@ -1062,7 +1107,7 @@
 			});
 		});
 
-		$("#cancel-brand").click(function(){
+		$("#cancel-brand").click(function () {
 			SelectBrand();
 		});
 
@@ -1074,52 +1119,51 @@
 
 			$("#unit-body").append(
 				`
-						<tr>
-								<td><label class="unit-num">${num}</label></td>
-								<td>
-									<div class="d-flex justify-content-between align-items-center" style="gap: 5px;">
-										<div class="select-container">
-											<select class="unit-name form-control form-control-sm" data-num="${num}">
-												<option>Choose Name</option>
-											</select>
+							<tr>
+									<td><label class="unit-num">${num}</label></td>
+									<td>
+										<div class="d-flex justify-content-between align-items-center" style="gap: 5px;">
+											<div class="select-container">
+												<select class="unit-name form-control form-control-sm" data-num="${num}">
+													<option>Choose Name</option>
+												</select>
+											</div>
+
+											<div  class="add-unit">
+												<a  class="add-new-unit" data-num="${num}"  href="javascript:void(0);" >
+													<img src="/vendor/img/icons/plus1.svg" alt="img">
+												</a>
+											</div>
 										</div>
 
-										<div  class="add-unit">
-											<a  class="add-new-unit" data-num="${num}"  href="javascript:void(0);" >
-												<img src="/vendor/img/icons/plus1.svg" alt="img">
-											</a>
+									</td>
+									<td>
+										<label class="unit-label"></label>
+									</td>
+									<td>
+											<input class="unit-rate   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text"/>
+									</td>
+									<td>
+										<input class="unit-cost   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" readonly />
+									</td>
+									<td>
+										<input class="unit-pay   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" />
+									</td>
+									<td>
+											<input class="unit-price   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" />
+									</td>
+									<td>
+										<div class="remove-btn">
+											<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
 										</div>
-									</div>
 
-								</td>
-								<td>
-									<label class="unit-label"></label>
-								</td>
-								<td>
-										<input class="unit-rate   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text"/>
-								</td>
-								<td>
-									<input class="unit-cost   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" readonly />
-								</td>
-								<td>
-									<input class="unit-pay   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" />
-								</td>
-								<td>
-										<input class="unit-price   form-control form-control-sm" onkeypress="return onlyDecimalKey(event)" type="text" />
-								</td>
-								<td>
-									<div class="remove-btn">
-										<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-									</div>
-
-								</td>
-							</tr>
-						`
+									</td>
+								</tr>
+							`
 			)
 			$("#unit-body tr").each(function (index, element) {
 				$(this).find(".unit-num").text("" + (index + 1))
-				if (index == 0)
-				{
+				if (index == 0) {
 					$(this).find(".unit-cost").prop("readonly", false);
 				}
 			})
@@ -1161,8 +1205,7 @@
 					if (data.status == 0) {
 						element.text(data.qty);
 					}
-					else if(data.status == 2)
-					{
+					else if (data.status == 2) {
 						toastr.error("@ViewLocalizer["The name should be unique."]", {})
 					}
 					else {
@@ -1174,7 +1217,7 @@
 				}
 			});
 
-			
+
 		});
 
 		$("body").on("change", ".unit-cost", function () {
@@ -1210,8 +1253,8 @@
 			"order": [[0, 'asc']],
 			"columns": [
 
-				{ "data": "name", "name": "name", "autoWidth": true },		
-				
+				{ "data": "name", "name": "name", "autoWidth": true },
+
 				{
 					'data': 'action', 'name': 'action', "orderable": "false",
 					render: function (data, type, row) {
@@ -1229,7 +1272,7 @@
 			}
 			var data = {
 				ID: $("#unit-id").data("id"),
-					Name: name,
+				Name: name,
 			}
 
 			$.ajax({
@@ -1240,8 +1283,7 @@
 					if (data.status == 0) {
 						$("#unit-list").DataTable().draw();
 					}
-					else if(data.status == 2)
-					{
+					else if (data.status == 2) {
 						toastr.error("@ViewLocalizer["The name should be unique."]", {})
 					}
 					else {
@@ -1265,7 +1307,7 @@
 		//SelectTax() ;
 
 		// category
-		
+
 
 		$("#add-category-modal").click(function () {
 			$("#listcategory").modal("show");
@@ -1278,18 +1320,18 @@
 
 		$("#add-subcategory-modal").click(function () {
 			$("#listsubcategory").modal("show");
-		});	
+		});
 
 		$("#article-category").change(function () {
 			SelectSubCategory();
 			var category = $("#article-category").val();
-				if (!category) return;
+			if (!category) return;
 			var subcategorytable = $("#subcategory-list").DataTable({
 				"processing": true, // for show progress bar
 				"serverSide": true, // for process server side
 				"filter": true, // this is for disable filter (search box)
 				"orderMulti": false, // for disable multiple column at once
-				"destroy" : true,
+				"destroy": true,
 				"ajax": {
 					"url": "/Menu/GetSubCategoryList?categoryID=" + category,
 					"type": "POST",
@@ -1329,16 +1371,15 @@
 		// supplier
 
 		// initialize
-		if (@ViewBag.ArticleID != 0)
-		{
+		if (@ViewBag.ArticleID != 0) {
 			$.ajax({
 				url: "/Inventory/GetArticle?articleID=" + @ViewBag.ArticleID,
 				type: "GET",
 				success: function (data, textStatus, jqXHR) {
-					if (data){
+					if (data) {
 						$("#article-id").data("articleid", data.id)
 						$("#article-name").val(data.name);
-						if (data.category){
+						if (data.category) {
 							SelectCategory(data.category);
 						}
 						if (data.subCategory)
@@ -1365,29 +1406,24 @@
 							$("#productimg").attr("src", data.photo);
 							$("#productimg").data("color", data.photo);
 						}
-						else	{
-								$("#productimg").attr("src", "/vendor/img/product/noimage.png");
+						else {
+							$("#productimg").attr("src", "/vendor/img/product/noimage.png");
 						}
-					
-						if (data.isActive)
-						{
+
+						if (data.isActive) {
 							$("#article-status").val("1").change();
 						}
-						else
-						{
+						else {
 							$("#article-status").val("0").change();
 						}
-					
-						if (data.suppliers)
-						{
-							for(var i = 0; i < data.suppliers.length; i++)
-							{
+
+						if (data.suppliers) {
+							for (var i = 0; i < data.suppliers.length; i++) {
 								var supplier = data.suppliers[i];
 								SelectSupplier(supplier, data.primarySupplier);
 							}
 						}
-						if (data.items)
-						{
+						if (data.items) {
 							var hasStock = false;
 							$("#warehouse-stock tr").each(function () {
 
@@ -1409,8 +1445,7 @@
 							})
 
 							$("#unit-body").empty();
-							for(var i = 0; i < data.items.length; i++)
-							{
+							for (var i = 0; i < data.items.length; i++) {
 								var item = data.items[i];
 								AddUnitItems(item, hasStock);
 
@@ -1419,13 +1454,13 @@
 							$("#max-unit").val(data.maximumUnit).change();
 
 
-						
-							
+
+
 
 						}
 
 
-				
+
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
@@ -1435,7 +1470,7 @@
 
 			GetAccountItems(3, @ViewBag.ArticleID)
 		}
-		else{
+		else {
 			GetAccountItems(3, 0);
 			SelectCategory();
 		}
@@ -1446,10 +1481,10 @@
 	// brand function
 	function EditBrand(brand) {
 		$("#brand-name").val(brand.name);
-		$("#brand-id").data("id",brand.id);
+		$("#brand-id").data("id", brand.id);
 		$("#brand-id").text("ID: " + brand.id);
 	}
-	
+
 	function DeleteBrand(id) {
 
 		Swal.fire({
@@ -1486,38 +1521,36 @@
 		});
 
 	}
-	
+
 	function SelectBrand(brand) {
 		$.ajax({
 			url: "/Inventory/GetAllBrands",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
 				$("#article-brand").empty();
 				$("#article-brand").append("<option value='0' selected>Choose brand</option>")
-				for(var i =0; i < data.length; i++)
-				{
+				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					$("#article-brand").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
-				if (brand)
-				{
+				if (brand) {
 					$("#article-brand").val(brand.id).change();
 				}
-				else{
+				else {
 					$("#article-brand").val(0).change();
 				}
-			
+
 				$("#article-brand").select2();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
-		
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
 		$("#editbrand").modal("hide");
 	}
 
-	// unit functions	
+	// unit functions
 	function EditUnit(unit) {
 		$("#unit-name").val(unit.name);
 		$("#unit-id").data("id", unit.id);
@@ -1565,84 +1598,78 @@
 		var num = $("#editunit").data("num");
 		$.ajax({
 			url: "/Inventory/GetAllUnits",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
-				$(".unit-name").each(function(){
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
+				$(".unit-name").each(function () {
 					var origin = $(this).val();
 					$(this).empty();
-					
-					for(var i =0; i < data.length; i++)
-					{
+
+					for (var i = 0; i < data.length; i++) {
 						var d = data[i];
 						$(this).append("<option value='" + d.id + "'>" + d.name + "</option>")
 					}
 
-					if (unit && $(this).data("num") == num)
-					{
+					if (unit && $(this).data("num") == num) {
 						$(this).val(unit.id).change();
 					}
-					else{
+					else {
 						$(this).val(origin);
 					}
-					if (item && $(this).data("num") == item.number)
-					{
+					if (item && $(this).data("num") == item.number) {
 						$(this).val(item.unitID);
 					}
 				})
 
-				
+
 
 				RefreshItemUnit();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
-		
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
 		$("#editunit").modal("hide");
 	}
-	
+
 	//tax
 	function SelectTax() {
 		$.ajax({
 			url: "/Setting/GetActiveTaxList?type=2",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
 				$("#article-tax").empty();
 				$("#article-tax").append("<option value='' selected>Choose tax</option>")
-				for(var i =0; i < data.length; i++)
-				{
+				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					$("#article-tax").append("<option value='" + d.id + "'>" + d.taxName + "  -  (" + d.taxValue + "%)</option>")
 				}
-				$("#article-tax").select2();								
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });	
-		
+				$("#article-tax").select2();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
 	}
 
 	//category
 	function SelectCategory(category) {
 		$.ajax({
 			url: "/Menu/GetAllActiveCategoryList",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+			type: "POST",
+			success: function (data, textStatus, jqXHR) {
 				$("#article-category").empty();
 				$("#article-category").append("<option value='' selected>Choose category</option>")
-				for(var i =0; i < data.length; i++)
-				{
+				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					$("#article-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#article-category").select2();
-				if (category)
-				{
+				if (category) {
 					$("#article-category").val(category.id).change();
 				}
-				else{
+				else {
 					$("#article-category").val('').change();
 				}
 
@@ -1655,13 +1682,13 @@
 					$("#product-category").append("<option value='" + d.id + "' data-taxes='" + JSON.stringify(d.taxes) + "' data-pchannels='" + JSON.stringify(d.printerChannels) + "'>" + d.name + "</option>")
 				}
 				$("#product-category").select2();
-				
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
-		
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+
 		$("#listcategory").modal("hide");
 	}
 
@@ -1680,18 +1707,18 @@
 					$("#article-subcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#article-subcategory").select2();
-				
+
 				if (subcategory) {
 					$("#article-subcategory").val(subcategory.id).change();
 				}
 				else if ('@ViewBag.SubCategory' !== '') {
 					$("#article-subcategory").val('@ViewBag.SubCategory').change();
 				}
-				else{
+				else {
 					$("#article-subcategory").val('').change();
 				}
 
-				
+
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
@@ -1704,10 +1731,9 @@
 	// supplier functions
 	function SelectSupplier(supplier, primary) {
 		var exist = false;
-		$(".article-supplier tr").each(function(i, e) {
+		$(".article-supplier tr").each(function (i, e) {
 			var supplierid = $(this).data("supplierid");
-			if (supplierid == supplier.id)
-			{
+			if (supplierid == supplier.id) {
 				exist = true;
 			}
 		});
@@ -1720,27 +1746,27 @@
 		}
 
 		var element = `
-			<tr data-supplierid="${supplier.id}">
-				<td>${supplier.id}</td>
-				<td>${supplier.name}</td>
-				<td>${supplier.seller}</td>
-				<td>
-					<div class="status-toggle d-flex justify-content-between align-items-center">
-						<input type="checkbox" class="primary-supplier id="supplier${supplier.id}" ${checked}>
-					</div>
-				</td>			
-				<td>
-					<a href="javascript:void(0);" class="delete-article-supplier"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-				</td>
-			</tr>
-		`
+				<tr data-supplierid="${supplier.id}">
+					<td>${supplier.id}</td>
+					<td>${supplier.name}</td>
+					<td>${supplier.seller}</td>
+					<td>
+						<div class="status-toggle d-flex justify-content-between align-items-center">
+							<input type="checkbox" class="primary-supplier id="supplier${supplier.id}" ${checked}>
+						</div>
+					</td>
+					<td>
+						<a href="javascript:void(0);" class="delete-article-supplier"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+					</td>
+				</tr>
+			`
 
 		$(".article-supplier").append(element);
 
 		$("#listsupplier").modal("hide");
 	}
-	
-	$("body").on("click", ".delete-article-supplier", function(){
+
+	$("body").on("click", ".delete-article-supplier", function () {
 		$(this).closest("tr").remove();
 	});
 
@@ -1785,28 +1811,25 @@
 	}
 
 	// item unit
-	function RefreshItemUnit()
-	{
+	function RefreshItemUnit() {
 		var units = [];
 		var before = ""
 		$("#unit-body tr").each(function (index, element) {
 			$(this).find(".unit-num").text("" + (index + 1))
 			var id = $(this).find(".unit-name  option:selected").val();
 			var uval = $(this).find(".unit-name  option:selected").text();
-			if (uval){
+			if (uval) {
 
-				if (before !== "")
-				{
+				if (before !== "") {
 					$(this).find(".unit-label").text(uval + " / " + before);
 				}
-				else
-				{
+				else {
 					$(this).find(".unit-label").text(uval);
 				}
 				before = uval;
 				units.push({
 					id: id,
-					num: index +1,
+					num: index + 1,
 					name: uval
 				})
 			}
@@ -1817,9 +1840,9 @@
 				var d = units[i];
 				$("#max-unit").append("<option value='" + d.num + "'>" + d.name + "</option>")
 			}
-				
+
 			if ('@ViewBag.MaxUnit' !== '') {
-					$("#max-unit").val('@ViewBag.MaxUnit').change();
+				$("#max-unit").val('@ViewBag.MaxUnit').change();
 			}
 			$("#min-unit").empty();
 			$("#min-unit").append("<option value='' selected>Choose unit</option>")
@@ -1828,7 +1851,7 @@
 				$("#min-unit").append("<option value='" + d.num + "'>" + d.name + "</option>")
 			}
 			if ('@ViewBag.MinUnit' !== '') {
-					$("#min-unit").val('@ViewBag.MinUnit').change();
+				$("#min-unit").val('@ViewBag.MinUnit').change();
 			}
 			$("#default-unit").empty();
 			$("#default-unit").append("<option value='' selected>Choose unit</option>")
@@ -1837,7 +1860,7 @@
 				$("#default-unit").append("<option value='" + d.num + "'>" + d.name + "</option>")
 			}
 			if ('@ViewBag.DefaultUnit' !== '') {
-					$("#default-unit").val('@ViewBag.DefaultUnit').change();
+				$("#default-unit").val('@ViewBag.DefaultUnit').change();
 			}
 			$("#scanner-unit").empty();
 			$("#scanner-unit").append("<option value='' selected>Choose unit</option>")
@@ -1852,12 +1875,10 @@
 		})
 	}
 
-	function AddUnitItems(item, hasStock)
-	{
+	function AddUnitItems(item, hasStock) {
 		var num = 0;
 		var readonly = "readonly";
-		if (item.number == 1)
-		{
+		if (item.number == 1) {
 			readonly = '';
 		}
 		var readonlystock = "";
@@ -1866,73 +1887,70 @@
 		}
 		$("#unit-body").append(
 			`
-			<tr>
-					<td><label class="unit-num">${item.number}</label></td>
-					<td>
-						<div class="d-flex justify-content-between align-items-center" style="gap: 5px;">
-							<div class="select-container">
-								<select class="unit-name form-control form-control-sm" data-num="${item.number}">
-									<option>Choose Name</option>
-								</select>
-							</div>
+				<tr>
+						<td><label class="unit-num">${item.number}</label></td>
+						<td>
+							<div class="d-flex justify-content-between align-items-center" style="gap: 5px;">
+								<div class="select-container">
+									<select class="unit-name form-control form-control-sm" data-num="${item.number}">
+										<option>Choose Name</option>
+									</select>
+								</div>
 
-							<div  class="add-unit">
-								<a  class="add-new-unit" data-num="${item.number}"  href="javascript:void(0);" >
-									<img src="/vendor/img/icons/plus1.svg" alt="img">
-								</a>
+								<div  class="add-unit">
+									<a  class="add-new-unit" data-num="${item.number}"  href="javascript:void(0);" >
+										<img src="/vendor/img/icons/plus1.svg" alt="img">
+									</a>
+								</div>
 							</div>
-						</div>
-					</td>
-					<td>
-						<label class="unit-label">${item.name}</label>
-					</td>
-					<td>
-						<input class="unit-rate  form-control form-control-sm" ${readonlystock}  value="${item.rate}" onkeypress="return onlyDecimalKey(event)" type="text"/>
-					</td>
-					<td>
-						<input class="unit-cost   form-control form-control-sm" value="${item.cost}" onkeypress="return onlyDecimalKey(event)" ${readonlystock} ${readonly} type="text" />
-					</td>
-					<td>
-						<input class="unit-pay   form-control form-control-sm" value="${item.payItem}"  onkeypress="return onlyDecimalKey(event)" type="text" />
-					</td>
-					<td>
-						<input class="unit-price   form-control form-control-sm" value="${item.price}"  onkeypress="return onlyDecimalKey(event)" type="text" />
-					</td>
-					<td>
-						<div class="remove-btn">
-							<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-						</div>
-					</td>
-				</tr>
-			`
+						</td>
+						<td>
+							<label class="unit-label">${item.name}</label>
+						</td>
+						<td>
+							<input class="unit-rate  form-control form-control-sm" ${readonlystock}  value="${item.rate}" onkeypress="return onlyDecimalKey(event)" type="text"/>
+						</td>
+						<td>
+							<input class="unit-cost   form-control form-control-sm" value="${item.cost}" onkeypress="return onlyDecimalKey(event)" ${readonlystock} ${readonly} type="text" />
+						</td>
+						<td>
+							<input class="unit-pay   form-control form-control-sm" value="${item.payItem}"  onkeypress="return onlyDecimalKey(event)" type="text" />
+						</td>
+						<td>
+							<input class="unit-price   form-control form-control-sm" value="${item.price}"  onkeypress="return onlyDecimalKey(event)" type="text" />
+						</td>
+						<td>
+							<div class="remove-btn">
+								<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+							</div>
+						</td>
+					</tr>
+				`
 		)
-	
+
 		SelectUnit(null, item);
 	}
 
-	function UpdateItemUnitCosts()
-	{
+	function UpdateItemUnitCosts() {
 		var beforecost = 0;
 		var beforerate = 0;
-		$("#unit-body tr").each(function (index, element){
-			if (index == 0)
-			{
+		$("#unit-body tr").each(function (index, element) {
+			if (index == 0) {
 				beforecost = parseFloatCorrect($(this).find(".unit-cost").val());
 				beforerate = parseFloatCorrect($(this).find(".unit-rate").val());
 			}
-			else{
-				if (beforecost > 0 && beforerate > 0)
-				{
+			else {
+				if (beforecost > 0 && beforerate > 0) {
 					var secondrate = parseFloatCorrect($(this).find(".unit-rate").val());
-					if (secondrate !=0){
-						var secondcost = beforecost  / secondrate;					
+					if (secondrate != 0) {
+						var secondcost = beforecost / secondrate;
 						$(this).find(".unit-cost").val(secondcost.toFixed(4));
 						beforerate = secondrate;
 						beforecost = secondcost;
 					}
-					
+
 				}
-				
+
 			}
 		});
 	}
@@ -2006,35 +2024,35 @@
 			success: function (data, textStatus, jqXHR) {
 				if (data) {
 					var html = `
-								<tr class="article-item" data-id="${data.id}" data-article='1' data-itemid="">
-									<td>
-										${data.name}
-									</td>
-									<td>
-										Article
-									</td>
-									<td>${data.brand.name}</td>
-									<td>
-										<input class="item-qty form-control form-control-sm" placeholder="0" value="${current}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
-									<td>
-										<div class=" select-container">
-												<select class="item-payunit form-control form-control-sm"  data-performance='${data.performance}'>
-													
-												`
+									<tr class="article-item" data-id="${data.id}" data-article='1' data-itemid="">
+										<td>
+											${data.name}
+										</td>
+										<td>
+											Article
+										</td>
+										<td>${data.brand.name}</td>
+										<td>
+											<input class="item-qty form-control form-control-sm" placeholder="0" value="${current}" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+										<td>
+											<div class=" select-container">
+													<select class="item-payunit form-control form-control-sm"  data-performance='${data.performance}'>
+
+													`
 					for (var i = 0; i < data.items.length; i++) {
 						var item = data.items[i];
 						html += `<option value="${item.number}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
 					}
 					html += `	</select>
-										</div>
-									</td>
-									<td><input class="item-price1 form-control form-control-sm" placeholder="0" value="" readonly type="text" /></td>
-										<td><label class="item-subtotal"></lable></td>
-									<td>
-										<a class="delete-item"><img width='65' src="/vendor/img/icons/delete.svg" alt="svg"></a>
-									</td>
-								</tr>
-									`;
+											</div>
+										</td>
+										<td><input class="item-price1 form-control form-control-sm" placeholder="0" value="" readonly type="text" /></td>
+											<td><label class="item-subtotal"></lable></td>
+										<td>
+											<a class="delete-item"><img width='65' src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</td>
+									</tr>
+										`;
 					var firstItem = data.items[0];
 					$(".item-payunit").change();
 					$("#product-price").val(firstItem.price);
@@ -2063,34 +2081,34 @@
 			success: function (data, textStatus, jqXHR) {
 				if (data) {
 					var html = `
-									<tr class="article-item" data-id="${data.id}" data-article='' data-itemid="">
-										<td>
-											${data.name}
-										</td>
-										<td>Sub Recipe</td>
-										<td></td>
+										<tr class="article-item" data-id="${data.id}" data-article='' data-itemid="">
+											<td>
+												${data.name}
+											</td>
+											<td>Sub Recipe</td>
+											<td></td>
 
-										<td>
-											<input class="item-qty form-control form-control-sm" placeholder="0" value="" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
-										<td>
-											<div class=" select-container">
-													<select class="item-payunit form-control form-control-sm">
-														<option value="">Choose unit</option>
-													`
+											<td>
+												<input class="item-qty form-control form-control-sm" placeholder="0" value="" onkeypress="return onlyDecimalKey(event)" type="text" /></td>
+											<td>
+												<div class=" select-container">
+														<select class="item-payunit form-control form-control-sm">
+															<option value="">Choose unit</option>
+														`
 					for (var i = 0; i < data.itemUnits.length; i++) {
 						var item = data.itemUnits[i];
 						html += `<option value="${item.number}" data-id="${item.number}" data-cost="${item.cost}">${item.name}</option>`;
 					}
 					html += `	</select>
-											</div>
-										</td>
-										<td><input class="item-price1 form-control form-control-sm" placeholder="0" value="" readonly type="text" /></td>
-											<td><label class="item-subtotal"></lable></td>
-										<td>
-											<a class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-										</td>
-									</tr>
-										`;
+												</div>
+											</td>
+											<td><input class="item-price1 form-control form-control-sm" placeholder="0" value="" readonly type="text" /></td>
+												<td><label class="item-subtotal"></lable></td>
+											<td>
+												<a class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+											</td>
+										</tr>
+											`;
 					$("#item-list").append(html);
 					$("#listsubrecipe").modal("hide");
 					UpdateItems();
@@ -2164,34 +2182,34 @@
 			$(".product-cost").val(0);
 		}
 
-		@*if ($("#unit-body tr").length > 0)
+	@*if ($("#unit-body tr").length > 0)
 			$("#unit-body tr").first().find(".unit-cost").val(allSubTotal.toFixed(4))
-*@
-	}
+			*@
+		}
 
-	     //category
-    $("#product-category").change(function () {
-       
-        var category = $("#product-category").val();
-        if (!category) return;
+	//category
+	$("#product-category").change(function () {
 
-        var selectedCategoryOption = $("#product-category option:selected");
-        var taxs = selectedCategoryOption.data("taxes");
-        var pchannels = selectedCategoryOption.data("pchannels");
+		var category = $("#product-category").val();
+		if (!category) return;
 
-        $("#product-taxes").val(taxs).change();
-        $("#product-printerChannels").val(pchannels).change();
-       
-    })
-    
+		var selectedCategoryOption = $("#product-category option:selected");
+		var taxs = selectedCategoryOption.data("taxes");
+		var pchannels = selectedCategoryOption.data("pchannels");
+
+		$("#product-taxes").val(taxs).change();
+		$("#product-printerChannels").val(pchannels).change();
+
+	})
+
 
 	function ShowAddProduct() {
 		$("#product-name").val($("#article-name").val());
 		$("#product-printername").val($("#article-name").val());
 		$("#product-category").val("");
 		$("#product-category").val($("#article-category").val()).change();
-		
-		
+
+
 		$("#item-list").empty();
 		var id = $('#addproductmodal').data('articleid');
 		if (!id) {
@@ -2207,10 +2225,10 @@
 
 		$("#addproductmodal").modal("show");
 	}
-	
-	$("#submit-product").click(function(){
-        SubmitProduct();
-    })
+
+	$("#submit-product").click(function () {
+		SubmitProduct();
+	})
 
 	function SubmitProduct() {
 		var name = $("#product-name").val();
@@ -2225,12 +2243,12 @@
 		}
 
 		var printername = $("#product-printername").val();
-		
+
 		var cost = parseFloatCorrect($("#po-total").data("cost"));
 		var recipes = [];
 		$("#item-list tr").each(function (i, e) {
 			var qty = parseFloatCorrect($(this).find(".item-qty").val());
-			
+
 			var articleId = parseInt($(this).data("id"));
 			if (!articleId) articleId = 0;
 
@@ -2248,7 +2266,7 @@
 			recipes.push(item);
 		});
 
-		
+
 		var active = $("#product-status").val()
 		console.log(active);
 		var data = {
@@ -2367,7 +2385,7 @@
 	$("#calculate-minmax").click(function () {
 
 		$.ajax({
-			url: "/Inventory/CalculateArticleMinMax?articleID=@ViewBag.ArticleID" ,
+			url: "/Inventory/CalculateArticleMinMax?articleID=@ViewBag.ArticleID",
 			type: "POST",
 			success: function (data, textStatus, jqXHR) {
 				if (data.status == 0) {
@@ -2379,5 +2397,6 @@
 				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
 			}
 		});
-	   });
+	});
 </script>
+<!-- / Content -->
