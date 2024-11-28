@@ -4,263 +4,315 @@
 @{
     var orderStatus = (PurchaseOrderStatus)ViewBag.Status;
 }
-<div class="content">
-    <div class="page-header">
-        <div class="page-title">
-            <h4>@ViewLocalizer["Add/Update Purchase Order"]</h4>
+<div class="content-wrapper">
 
-        </div>
-        <div class="page-btn">
-            <h5 id="purchase-id" data-id="@ViewBag.PurchaseOrderID"></h5>
-            @if (orderStatus == PurchaseOrderStatus.Pending)
-            {
-                <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
-            }
-            else if (orderStatus == PurchaseOrderStatus.Ordered)
-            {
-                <span class='badges bg-lightpurple'>@ViewLocalizer["Ordered"]</span>
-            }
-            else if (orderStatus == PurchaseOrderStatus.Cancelled)
-            {
-                <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
-            }
-            else if (orderStatus == PurchaseOrderStatus.Received)
-            {
-                <span class='badges bg-lightgreen'>@ViewLocalizer["Received"]</span>
-            }
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Supplier"]</label>
-                        <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
-                                <select id="purchase-supplier" class="select">
-                                </select>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                <div class="add-icon">
-                                    <a id="add-supplier-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Warehouse"]</label>
-                        <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
-                                <select id="purchase-warehouse" class="select">
-                                </select>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                <div class="add-icon">
-                                    <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["NCF"]</label>
-                        <input id="purchase-ncf" min="11" max="13" type="text">
-                        <span class="form-text text-muted">11 ~ 13 digits | eg. 123133122221</span>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Terms"]</label>
-                        <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
-                                <select id="purchase-terms" class="select">
-                                    <option value="Contado">Contado</option>
-                                    <option value="Consignacion">Consignacion</option>
-                                    <option value="Credito">Credito</option>
-                                    <option value="Produccion">Produccion</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Order Date"] </label>
-                        <div class="input-groupicon">
-                            <input id="purchase-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker">
-                            <div class="addonset">
-                                <img src="/vendor/img/icons/calendars.svg" alt="img">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-4 col-4 px-3">
-                        <div class="">
-                            <a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">@ViewLocalizer["Add Item"] </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row pt-2">
-                <div class="table-responsive" style="overflow-x: auto;">
-                    <table id="purchase-item" class="table">
-                        <thead style=" ">
-                            <tr>
-                                <th>@ViewLocalizer["Article"]</th>
-                                <th>@ViewLocalizer["Brand"]</th>
-                                <th style="max-width:100px;">@ViewLocalizer["Qty"]    </th>
-                                <th>@ViewLocalizer["Unit"]	</th>
-                                <th>@ViewLocalizer["Price"]	</th>
-                                <th>
-                                    <div>
-                                        @ViewLocalizer["Discount"]
-                                        <select id="item-discountunit">
-                                            <option selected value="%">%</option>
-                                            <option value="$">$</option>
-                                        </select>
-                                    </div>
-                                </th>
-                                <th>@ViewLocalizer["Total"]</th>
-                                <th>@ViewLocalizer["Tax"]</th>
-                                <th>@ViewLocalizer["Imported"]</th>
-                                <th>@ViewLocalizer["Tax Amount"]</th>
-                                <th class="text-end">@ViewLocalizer["Net Total"]	</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="item-list">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 float-md-right">
-                    <div class="total-order">
-                        <ul>
-                            <li>
-                                <h4>@ViewLocalizer["Base Taxable"]</h4>
-                                <h5 id="po-basetaxable">$ 0.00</h5>
-                            </li>
-                            <li>
-                                <h4>@ViewLocalizer["Extra Amount"]</h4>
-                                <h5 id="po-extent">$ 0.00</h5>
-                            </li>
-                            <li>
-                                <h4>@ViewLocalizer["Shipping"]</h4>
-                                <h5 id="po-shipping">$ 0.00</h5>
-                            </li>
-                            <li>
-                                <h4>@ViewLocalizer["Discount"]	</h4>
-                                <h5 id="po-discount">$ 0.00</h5>
-                            </li>
-                            <li>
-                                <h4>@ViewLocalizer["Sub Total"]</h4>
-                                <h5 id="po-subtotal">$ 0.00</h5>
-                            </li>
-                            <li>
-                                <h4>@ViewLocalizer["Tax"]</h4>
-                                <h5 id="po-tax">$ 0.00</h5>
-                            </li>
-                            <li class="total">
-                                <h4>@ViewLocalizer["Net Total"]</h4>
-                                <h5 id="po-total">$ 0.00</h5>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>
-                            @ViewLocalizer["Discount"]
-                            <select id="item-discountunit-total">
-                                <option selected value="%">%</option>
-                                <option value="$">$</option>
-                            </select>
-                        </label>
-                        <input id="order-discount" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text">
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Shipping"]</label>
-                        <input id="order-shipping" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text">
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Tax"]</label>
-                        <select id="shipping-tax" class="select">
-                        </select>
-                    </div>
-                </div>
+    <!-- Content -->
 
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12 table-responsive mb-3">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>@ViewLocalizer["Tax Name"]</th>
-                                    <th>@ViewLocalizer["Tax"] (%)</th>
-                                    <th>@ViewLocalizer["Value"]</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tax-result-table">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="container-xxl flex-grow-1 container-p-y">
 
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Description"]</label>
-                        <textarea id="purchase-description" class="form-control"></textarea>
-                    </div>
+
+        <div class="app-ecommerce">
+
+            <!-- Add Product -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+                <div class="d-flex flex-column justify-content-center">
+                    <h4 class="mb-1">@ViewLocalizer["Add/Update Purchase Order"]</h4>
+                    <p class="mb-0">@ViewLocalizer["Add/Update Purchase Order"]</p>
                 </div>
-                <div class="col-lg-12">
+                <div class="d-flex align-content-center flex-wrap gap-4">
+                    <h5 id="purchase-id" data-id="@ViewBag.PurchaseOrderID"></h5>
                     @if (orderStatus == PurchaseOrderStatus.Pending)
                     {
-                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
-                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
-                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
-                        <button id="purchase-cancel2" class="btn btn-default btn-danger">Cancel</button>
+                        <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
                     }
                     else if (orderStatus == PurchaseOrderStatus.Ordered)
                     {
-                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                        <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
-                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                        <span class='badges bg-lightpurple'>@ViewLocalizer["Ordered"]</span>
                     }
                     else if (orderStatus == PurchaseOrderStatus.Cancelled)
                     {
-                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                    }
-                    else if (orderStatus == PurchaseOrderStatus.None)
-                    {
-                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
-                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-
+                        <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
                     }
                     else if (orderStatus == PurchaseOrderStatus.Received)
                     {
-                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                        <span class='badges bg-lightgreen'>@ViewLocalizer["Received"]</span>
                     }
-                    <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
+@*                     <a id="submit-product" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+                    <a id="cancel" href="/Menu/ProductList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Cancel"]</a> *@
                 </div>
+
             </div>
 
+            <div class="row">
+                <!-- First column-->
+                <div class="col-12 col-lg-8">
+                    <!-- Product Information -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-tile mb-0">Información de producto</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Supplier"]</label>
+                                <div class="d-flex">
+                                    
+                                    <select id="purchase-supplier" class="select form-control">
+                                    </select>
+                                    <div class="add-icon">
+                                        <a id="add-supplier-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Warehouse"]</label>
+                                    <div class="d-flex">
+                                        <select id="purchase-warehouse" class="select form-control">
+                                        </select>
+                                        <div class="add-icon">
+                                            <div class="add-icon">
+                                                <a id="add-warehouse-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["NCF"]</label>
+                                    <input id="purchase-ncf" min="11" max="13" type="text" class="form-control">
+                                    <span class="form-text text-muted">11 ~ 13 digits | eg. 123133122221</span>
+
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Terms"]</label>
+                                    <select id="purchase-terms" class="select form-select">
+                                        <option value="Contado">Contado</option>
+                                        <option value="Consignacion">Consignacion</option>
+                                        <option value="Credito">Credito</option>
+                                        <option value="Produccion">Produccion</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="col">
+                                    <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Order Date"] </label>
+                                    <div class="d-flex">
+                                        <input id="purchase-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker form-control">
+                                        <div class="addonset">
+                                            <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-6">
+                                <div class="">
+                                    <a id="add-article-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Add Item"] </a>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="table-responsive" style="overflow-x: auto;">
+                                        <table id="purchase-item" class="table">
+                                            <thead style=" ">
+                                                <tr>
+                                                    <th>@ViewLocalizer["Article"]</th>
+                                                    <th>@ViewLocalizer["Brand"]</th>
+                                                    <th style="max-width:100px;">@ViewLocalizer["Qty"]    </th>
+                                                    <th>@ViewLocalizer["Unit"]	</th>
+                                                    <th>@ViewLocalizer["Price"]	</th>
+                                                    <th>
+                                                        <div>
+                                                            @ViewLocalizer["Discount"]
+                                                            <select id="item-discountunit">
+                                                                <option selected value="%">%</option>
+                                                                <option value="$">$</option>
+                                                            </select>
+                                                        </div>
+                                                    </th>
+                                                    <th>@ViewLocalizer["Total"]</th>
+                                                    <th>@ViewLocalizer["Tax"]</th>
+                                                    <th>@ViewLocalizer["Imported"]</th>
+                                                    <th>@ViewLocalizer["Tax Amount"]</th>
+                                                    <th class="text-end">@ViewLocalizer["Net Total"]	</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="item-list">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 float-md-right">
+                                    <div class="total-order">
+                                        <ul>
+                                            <li>
+                                                <h4>@ViewLocalizer["Base Taxable"]</h4>
+                                                <h5 id="po-basetaxable">$ 0.00</h5>
+                                            </li>
+                                            <li>
+                                                <h4>@ViewLocalizer["Extra Amount"]</h4>
+                                                <h5 id="po-extent">$ 0.00</h5>
+                                            </li>
+                                            <li>
+                                                <h4>@ViewLocalizer["Shipping"]</h4>
+                                                <h5 id="po-shipping">$ 0.00</h5>
+                                            </li>
+                                            <li>
+                                                <h4>@ViewLocalizer["Discount"]	</h4>
+                                                <h5 id="po-discount">$ 0.00</h5>
+                                            </li>
+                                            <li>
+                                                <h4>@ViewLocalizer["Sub Total"]</h4>
+                                                <h5 id="po-subtotal">$ 0.00</h5>
+                                            </li>
+                                            <li>
+                                                <h4>@ViewLocalizer["Tax"]</h4>
+                                                <h5 id="po-tax">$ 0.00</h5>
+                                            </li>
+                                            <li class="total">
+                                                <h4>@ViewLocalizer["Net Total"]</h4>
+                                                <h5 id="po-total">$ 0.00</h5>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Product Information -->
+                        <!-- Variants -->
+                        <div class=" mb-6">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Características</h5>
+                            </div>
+                            <div class="card-body">
+                                <form class="form-repeater">
+                                    <div data-repeater-list="group-a">
+                                        <div data-repeater-item="">
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode"> @ViewLocalizer["Discount"]</label>
+                                                    <div class="d-flex">
+                                                        <select id="item-discountunit-total" class="select form-control">
+                                                            <option selected value="%">%</option>
+                                                            <option value="$">$</option>
+                                                        </select>
+                                                        <input id="order-discount" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control">
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Shipping"]</label>
+                                                    <input id="order-shipping" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control">
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Tax"]</label>
+                                                    <select id="shipping-tax" class="select form-control">
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-8 col-sm-6 col-12 table-responsive mb-3">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>@ViewLocalizer["Tax Name"]</th>
+                                                                <th>@ViewLocalizer["Tax"] (%)</th>
+                                                                <th>@ViewLocalizer["Value"]</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tax-result-table">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                            <!-- /Options-->
+                        </div>
+                    </div>
+                <div class="col-12 col-lg-4">
+                    <!-- Pricing Card -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Información</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Base Price -->
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
+                                <textarea id="purchase-description" class="form-control"></textarea>
+                            </div>
+                            <!-- Discounted Price -->
+                            <div class="mb-6">
+                                @if (orderStatus == PurchaseOrderStatus.Pending)
+                                {
+                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" >@ViewLocalizer["Save"]</a>
+                                    <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                    <button id="purchase-cancel2" class="btn btn-default btn-danger">Cancel</button>
+                                }
+                                else if (orderStatus == PurchaseOrderStatus.Ordered)
+                                {
+                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                    <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
+                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                }
+                                else if (orderStatus == PurchaseOrderStatus.Cancelled)
+                                {
+                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                                }
+                                else if (orderStatus == PurchaseOrderStatus.None)
+                                {
+                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                    <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+
+                                }
+                                else if (orderStatus == PurchaseOrderStatus.Received)
+                                {
+                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                }
+                                <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Pricing Card -->
+
+                </div>
+                </div>
+                <!-- /Inventory -->
+                <!-- /Second column -->
+                <!-- Second column -->
+                
+            </div>
+          
         </div>
+        <!-- /Second column -->
     </div>
-</div>
+
 
 <!-- Article Modal -->
 @{
