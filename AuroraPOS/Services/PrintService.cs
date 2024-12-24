@@ -596,23 +596,35 @@ namespace AuroraPOS.Services
 
         public bool PrintOrder(long stationId, long OrderID, int DivideNum, int SeatNum, string empresa)
         {
-
             var preference = _dbContext.Preferences.First();
             var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.Table).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).FirstOrDefault(o => o.ID == OrderID);
-            var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
+            /*var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
             var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
             var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
             order.GetTotalPrice(voucher, DivideNum, SeatNum);
+            */
+            
             var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel).Include(s => s.Printers).ThenInclude(s => s.Printer).FirstOrDefault(s => s.ID == stationId);
             var defaultPrinter = station.Printers.FirstOrDefault(s => s.PrinterChannel.IsDefault);
-
             var items = order.Items.Where(s => !s.IsDeleted).ToList();
 
-            Debug.WriteLine(voucher);
             if (defaultPrinter != null && defaultPrinter.Printer != null)
             {
+                //INICIA: Manda a imprimir, nuevo metodo
+                var objPrint = new PrinterTasks();
+                objPrint.ObjectID = OrderID;
+                objPrint.Status = (int)PrinterTasksStatus.Pendiente;
+                objPrint.Type = (int)PrinterTasksType.TicketOrden;
+                objPrint.PhysicalName = defaultPrinter.Printer.PhysicalName;
+                objPrint.StationId = stationId;
+                objPrint.SucursalId = station.IDSucursal;
+                objPrint.DivideNum = DivideNum;
+                objPrint.SeatNum = SeatNum;
+                _dbContext.PrinterTasks.Add(objPrint);
+                _dbContext.SaveChanges();
+                //TERMINA: Manda a imprimir, nuevo metodo
 
-                {
+                /*{
                     try
                     {
                         DataSet ds = new DataSet("general");
@@ -804,7 +816,7 @@ namespace AuroraPOS.Services
                     catch
                     {
                     }
-                }
+                }*/
             }
             return false;
         }

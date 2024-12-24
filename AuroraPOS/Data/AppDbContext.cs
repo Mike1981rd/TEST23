@@ -113,6 +113,7 @@ namespace AuroraPOS.Data
 		public DbSet<Group> Groups { get; set; }
 		public DbSet<Supplier> Suppliers { get; set; }
 		public DbSet<Printer> Printers { get; set; }
+		public DbSet<PrinterTasks> PrinterTasks { get; set; }
 		public DbSet<PrinterChannel> PrinterChannels { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<SubCategory> SubCategories { get; set; }
