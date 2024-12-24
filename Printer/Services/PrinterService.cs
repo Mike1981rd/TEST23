@@ -11,16 +11,13 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using QuestPDF.Elements;
-using static System.Net.Mime.MediaTypeNames;
-using QuestPDF.Helpers;
-using PdfiumViewer;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using RestSharp;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Printing;
 
 namespace Printer.Services
 {
@@ -43,6 +40,9 @@ namespace Printer.Services
         {
             _logger.LogInformation("El servicio de impresión se ha iniciado.");
 
+            //PrintToPrinter("POS-80", "");
+            PrintToPrinter("Microsoft Print to PDF", "");
+
             try
             {
                 _logger.LogInformation("Conectando a Aurora POS...");
@@ -58,7 +58,7 @@ namespace Printer.Services
 
         private async Task StartService(CancellationToken stoppingToken)
         {
-            try
+            /*try
             {
                 // Iniciar la conexión con el servidor TCP para recibir solicitudes de impresión en tiempo real
                 _client = new TcpClient(ServerIp, ServerPort);
@@ -70,7 +70,60 @@ namespace Printer.Services
             catch (Exception ex)
             {
                 Console.WriteLine("Error al conectar con Aurora POS: " + ex.Message);
+            }*/
+
+            bool isBusy = false;
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    if (!isBusy)
+                    {
+                        isBusy = true;
+                        ConsultaImpresionEImprime();
+                        isBusy = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Write("Error: " + ex.Message);
+                }
+
+                await Task.Delay(1500);
             }
+        }
+
+        private void ConsultaImpresionEImprime()
+        {
+            // send POST request with RestSharp
+            var client = new RestClient("https://localhost:7205");
+            var request = new RestRequest("pendingimpressions");
+            /*request.AddBody(new
+            {
+                sucursal = "1"
+            });*/
+
+            var response = client.ExecutePost(request);
+
+            // deserialize json string response to Product object
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var respuesta = JsonSerializer.Deserialize<ResponsePrintingsModel>(response.Content, options);
+
+            if (respuesta.Cantidad > 0)
+            {
+                foreach (var objImpresion in respuesta.Impresiones)
+                {
+                    Imprimir(objImpresion);
+                }
+            }
+        }
+
+        private void Imprimir(PrintModel objImpresion )
+        {
+            PrintToPrinter(objImpresion.Impresora, objImpresion.Html); // Imprimir trabajo pendiente
         }
 
         private async Task ListenForPrintRequests(CancellationToken stoppingToken)
@@ -145,41 +198,81 @@ namespace Printer.Services
             }
         }
 
+        private string HtmlToPlainText(string html)
+        {
+            const string tagWhiteSpace = @"(>|$)(\W|\n|\r)+<";//matches one or more (white space or line breaks) between '>' and '<'
+            const string stripFormatting = @"<[^>]*(>|$)";//match any character between '<' and '>', even when end tag is missing
+            const string lineBreak = @"<(br|BR)\s{0,1}\/{0,1}>";//matches: <br>,<br/>,<br />,<BR>,<BR/>,<BR />
+            var lineBreakRegex = new Regex(lineBreak, RegexOptions.Multiline);
+            var stripFormattingRegex = new Regex(stripFormatting, RegexOptions.Multiline);
+            var tagWhiteSpaceRegex = new Regex(tagWhiteSpace, RegexOptions.Multiline);
+
+            var text = html;
+            //Decode html specific characters
+            text = System.Net.WebUtility.HtmlDecode(text);
+            //Remove tag whitespace/line breaks
+            text = tagWhiteSpaceRegex.Replace(text, "><");
+            //Replace <br /> with line breaks
+            text = lineBreakRegex.Replace(text, Environment.NewLine);
+            //Strip formatting
+            text = stripFormattingRegex.Replace(text, string.Empty);
+
+            return text;
+        }
+
         private async Task PrintToPrinter(string printerName, string htmlContent)
         {
             try
             {
                 // Generar el PDF a partir del contenido HTML utilizando QuestPDF o iText.
-                var pdfBytes = GeneratePdf(htmlContent);
+                //var pdfBytes = GeneratePdf(htmlContent);
+                //string str = HtmlToPlainText(htmlContent);
 
                 // Crear un archivo temporal para guardar el PDF generado.
-                string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-                File.WriteAllBytes(tempFilePath, pdfBytes);
+                //string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+                //File.WriteAllBytes(tempFilePath, pdfBytes);
+
+                //HtmlConverter.ConvertToPdf(htmlContent, new FileStream(tempFilePath, FileMode.Create));
 
 
                 // Configurar el proceso de impresión.
-                using (var printDocument = new System.Drawing.Printing.PrintDocument())
-                {
-                    printDocument.PrinterSettings.PrinterName = printerName;  // Especificar la impresora por nombre.
+                
 
-                    // Configurar la acción que se llevará a cabo durante el evento PrintPage.
-                    printDocument.PrintPage += (sender, e) =>
-                    {
-                        using (var pdfDocument = PdfiumViewer.PdfDocument.Load(tempFilePath))
-                        {
-                            var pageImage = pdfDocument.Render(0, e.PageBounds.Width, e.PageBounds.Height, true);
-                            e.Graphics.DrawImage(pageImage, e.PageBounds);  // Dibujar el PDF en la página de impresión.
-                        }
-                    };
 
-                    // Enviar el documento a la impresora.
-                    printDocument.Print();
-                }
+                TicketPrinter ticketPrinter = new TicketPrinter();
 
-                // Eliminar el archivo temporal después de la impresión.
-                File.Delete(tempFilePath);
+                // Agregar un logotipo
+                Image logo = Image.FromFile("logo.png"); // Asegúrate de que el archivo exista
+                ticketPrinter.AddImage(logo); // Tamaño: ancho = 100, alto = 50                
 
-                Console.WriteLine($"Impresión completada en la impresora: {printerName}");
+                // Agregar líneas de texto con alineación
+                ticketPrinter.AddLine("TIENDA XYZ", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString(), new Font("Arial", 8), TextAlign.Center);
+                ticketPrinter.AddEmptyLine();
+
+                // Agregar columnas con alineación
+                ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddLine("--------------------------------------------------------");
+
+                // Agregar filas de tabla
+                ticketPrinter.AddColumns(new[] { "Artículo 1", "2", "$10.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Artículo 2 Artículo 2 Artículo 2 Artículo 2", "1", "$15.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f },new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddLine("--------------------------------------------------------");
+
+                // Total
+                ticketPrinter.AddColumns(new[] { "Total", "","", "$35.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddEmptyLine();
+
+                // Agregar texto multilínea
+                string longText = "Este es un texto muy largo que necesita dividirse en varias líneas para ajustarse al ancho del ticket.";
+                ticketPrinter.AddMultilineText(longText, new Font("Arial", 10));
+
+                // Mensaje de agradecimiento
+                ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
+
+                // Imprimir
+                //string printerName = "NombreDeLaImpresora"; // Cambia esto por el nombre de tu impresora
+                ticketPrinter.Print(printerName);
             }
             catch (Exception ex)
             {
@@ -188,26 +281,7 @@ namespace Printer.Services
         }
 
 
-        public byte[] GeneratePdf(string htmlContent)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var writer = new iText.Kernel.Pdf.PdfWriter(memoryStream)) // Asegúrate de usar iText
-                {
-                    using (var pdf = new iText.Kernel.Pdf.PdfDocument(writer))
-                    {
-                        var document = new iText.Layout.Document(pdf);
-                        var lines = htmlContent.Split(new[] { "<br>", "<br/>", "<br />" }, StringSplitOptions.None);
-
-                        foreach (var line in lines)
-                        {
-                            document.Add(new iText.Layout.Element.Paragraph(line)); // Asegúrate de usar el tipo correcto
-                        }
-                    }
-                }
-                return memoryStream.ToArray();
-            }
-        }
+        
 
         // Detener el servicio y limpiar recursos
         public void StopService()
