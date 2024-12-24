@@ -86,6 +86,11 @@
                     foreach (var objPending in pendingJobs)
                     {
                         var objPrintJob = new PrintJobModel();
+                        objPrintJob.Type =  objPending.Type.Value;
+                        objPrintJob.PhysicalName =  objPending.PhysicalName;
+                        objPrintJob.StationId =  objPending.StationId.HasValue ? objPending.StationId.Value : -1;
+                        objPrintJob.SucursalId = objPending.SucursalId.HasValue ? objPending.SucursalId.Value : -1;
+                        objPrintJob.ObjectId =  objPending.ObjectID.HasValue ? objPending.ObjectID.Value : -1;
 
                         var preference = _dbContext.Preferences.First();
                         var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.Table)
