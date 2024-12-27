@@ -18,6 +18,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Diagnostics;
 
 namespace Printer.Services
 {
@@ -29,6 +30,7 @@ namespace Printer.Services
         private const string ServerIp = "127.0.0.1"; // Cambia a la IP real
         private const int ServerPort = 7205; // Cambia al puerto real
         private readonly ILogger<PrinterService> _logger; // Inyectar el logger
+        private Timer _timer;
 
         public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory)
         {
@@ -40,38 +42,154 @@ namespace Printer.Services
         {
             _logger.LogInformation("El servicio de impresión se ha iniciado.");
 
-            //PrintToPrinter("POS-80", "");
-            PrintToPrinter("Microsoft Print to PDF", "");
-
             try
             {
-                _logger.LogInformation("Conectando a Aurora POS...");
-                await StartService(stoppingToken);
+                // Iniciar la aplicación de la bandeja del sistema
+                await StartTrayApplication();
+
+                // Configurar el Timer para ejecutar el método cada 2 segundos
+                _timer = new Timer(state => ConsultaImpresionEImprime(state), null, 0, 2000); // Intervalo en milisegundos
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al conectar con Aurora POS.");
-                _logger.LogError(ex, "Error en el servicio de impresión.");
+                _logger.LogError(ex, "Error al intentar iniciar el servicio de impresión.");
+            }
+
+            // Mantener el servicio ejecutándose hasta que se solicite la cancelación
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(1000, stoppingToken); // Usar Task.Delay en lugar de Thread.Sleep
+            }
+
+            // Detener el Timer cuando el servicio se detenga
+            _timer?.Change(Timeout.Infinite, 0);
+            _logger.LogInformation("El servicio de impresión se ha detenido.");
+        }
+
+
+
+        //Iniciar el programa de fondo que contiene la lógica del icono en UI
+        private async Task StartTrayApplication()
+        {
+            try
+            {
+                string projectDirectory = AppDomain.CurrentDomain.BaseDirectory; // Obtener el directorio donde está el ejecutable
+                string iconsExePath = Path.Combine(projectDirectory, "Resources", "Icons.exe");
+
+                if (File.Exists(iconsExePath))
+                {
+                    Process.Start(iconsExePath); // Iniciar la aplicación de la bandeja
+                    _logger.LogInformation("Aplicación de bandeja del sistema iniciada.");
+                }
+                else
+                {
+                    _logger.LogError($"No se encontró el archivo {iconsExePath}. Asegúrate de que el .exe esté en el directorio correcto.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al iniciar la aplicación de bandeja del sistema.");
+            }
+        }
+
+
+   private async Task ConsultaImpresionEImprime(object state)
+{
+    try
+    {
+        // Solicitar trabajos pendientes desde el servidor.
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetAsync("https://localhost:7205/api/Printer/GetPendingPrintJobs");
+
+        // Asegúrate de que la respuesta fue exitosa.
+        if (response.IsSuccessStatusCode)
+        {
+            var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
+
+            if (respuesta?.Cantidad > 0)
+            {
+                foreach (var objImpresion in respuesta.Impresiones)
+                {
+                    PrintToPrinter(objImpresion.Impresora, objImpresion.Html);
+                }
+            }
+        }
+        else
+        {
+            _logger.LogWarning($"No se pudieron obtener las impresiones pendientes. Código de estado: {response.StatusCode}");
+        }
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error al consultar impresiones pendientes.");
+    }
+}
+
+
+
+        private async Task PrintToPrinter(string printerName, string htmlContent)
+        {
+            try
+            {
+                // Generar el PDF a partir del contenido HTML utilizando QuestPDF o iText.
+                //var pdfBytes = GeneratePdf(htmlContent);
+                //string str = HtmlToPlainText(htmlContent);
+
+                // Crear un archivo temporal para guardar el PDF generado.
+                //string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+                //File.WriteAllBytes(tempFilePath, pdfBytes);
+
+                //HtmlConverter.ConvertToPdf(htmlContent, new FileStream(tempFilePath, FileMode.Create));
+
+
+                // Configurar el proceso de impresión.
+
+
+
+                TicketPrinter ticketPrinter = new TicketPrinter();
+
+                // Agregar un logotipo
+                Image logo = Image.FromFile("logo.png"); // Asegúrate de que el archivo exista
+                ticketPrinter.AddImage(logo); // Tamaño: ancho = 100, alto = 50                
+
+                // Agregar líneas de texto con alineación
+                ticketPrinter.AddLine("TIENDA XYZ", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString(), new Font("Arial", 8), TextAlign.Center);
+                ticketPrinter.AddEmptyLine();
+
+                // Agregar columnas con alineación
+                ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddLine("--------------------------------------------------------");
+
+                // Agregar filas de tabla
+                ticketPrinter.AddColumns(new[] { "Artículo 1", "2", "$10.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Artículo 2 Artículo 2 Artículo 2 Artículo 2", "1", "$15.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddLine("--------------------------------------------------------");
+
+                // Total
+                ticketPrinter.AddColumns(new[] { "Total", "", "", "$35.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddEmptyLine();
+
+                // Agregar texto multilínea
+                string longText = "Este es un texto muy largo que necesita dividirse en varias líneas para ajustarse al ancho del ticket.";
+                ticketPrinter.AddMultilineText(longText, new Font("Arial", 10));
+
+                // Mensaje de agradecimiento
+                ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
+
+                // Imprimir
+                //string printerName = "NombreDeLaImpresora"; // Cambia esto por el nombre de tu impresora
+                ticketPrinter.Print(printerName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al imprimir en {printerName}: {ex.Message}");
             }
         }
 
 
         private async Task StartService(CancellationToken stoppingToken)
         {
-            /*try
-            {
-                // Iniciar la conexión con el servidor TCP para recibir solicitudes de impresión en tiempo real
-                _client = new TcpClient(ServerIp, ServerPort);
-                _stream = _client.GetStream();
-
-                // Iniciar la escucha de nuevas solicitudes de impresión
-                await ListenForPrintRequests(stoppingToken);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error al conectar con Aurora POS: " + ex.Message);
-            }*/
-
             bool isBusy = false;
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -80,105 +198,19 @@ namespace Printer.Services
                     if (!isBusy)
                     {
                         isBusy = true;
-                        ConsultaImpresionEImprime();
+                        ConsultaImpresionEImprime(null);
                         isBusy = false;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.Write("Error: " + ex.Message);
+                    Console.WriteLine("Error: " + ex.Message); 
                 }
 
                 await Task.Delay(1500);
             }
         }
 
-        private void ConsultaImpresionEImprime()
-        {
-            // send POST request with RestSharp
-            var client = new RestClient("https://localhost:7205");
-            var request = new RestRequest("pendingimpressions");
-            /*request.AddBody(new
-            {
-                sucursal = "1"
-            });*/
-
-            var response = client.ExecutePost(request);
-
-            // deserialize json string response to Product object
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            var respuesta = JsonSerializer.Deserialize<ResponsePrintingsModel>(response.Content, options);
-
-            if (respuesta.Cantidad > 0)
-            {
-                foreach (var objImpresion in respuesta.Impresiones)
-                {
-                    Imprimir(objImpresion);
-                }
-            }
-        }
-
-        private void Imprimir(PrintModel objImpresion )
-        {
-            PrintToPrinter(objImpresion.Impresora, objImpresion.Html); // Imprimir trabajo pendiente
-        }
-
-        private async Task ListenForPrintRequests(CancellationToken stoppingToken)
-        {
-            byte[] buffer = new byte[1024];
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                try
-                {
-                    if (!_stream.CanRead)
-                    {
-                        Console.WriteLine("Conexión perdida, intentando reconectar...");
-                        await StartService(stoppingToken); // Intentar reconectar
-                    }
-
-                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, stoppingToken);
-                    if (bytesRead > 0)
-                    {
-                        string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                        Console.WriteLine("Solicitud de impresión recibida: " + request);
-
-                        // Verificar si el mensaje recibido es "PRINT"
-                        if (request.Equals("PRINT", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Obtener los trabajos pendientes de impresión
-                            var pendingJobs = await GetPendingPrintJobs();
-                            if (pendingJobs != null && pendingJobs.Any())
-                            {
-                                // Procesar cada trabajo pendiente de impresión
-                                foreach (var job in pendingJobs)
-                                {
-                                    Console.WriteLine("Procesando trabajo pendiente: " + job.JobId);
-
-                                    // Llamar a la función que imprime el contenido HTML en la impresora
-                                    await PrintToPrinter(job.PrinterName, job.HtmlContent); // Imprimir trabajo pendiente
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("No hay trabajos pendientes.");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Mensaje recibido desconocido: " + request);
-                        }
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error al leer datos del socket: " + ex.Message);
-                }
-            }
-        }
 
         private async Task<List<PrintJob>> GetPendingPrintJobs()
         {
@@ -197,6 +229,7 @@ namespace Printer.Services
                 return null;
             }
         }
+
 
         private string HtmlToPlainText(string html)
         {
@@ -220,68 +253,6 @@ namespace Printer.Services
             return text;
         }
 
-        private async Task PrintToPrinter(string printerName, string htmlContent)
-        {
-            try
-            {
-                // Generar el PDF a partir del contenido HTML utilizando QuestPDF o iText.
-                //var pdfBytes = GeneratePdf(htmlContent);
-                //string str = HtmlToPlainText(htmlContent);
-
-                // Crear un archivo temporal para guardar el PDF generado.
-                //string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-                //File.WriteAllBytes(tempFilePath, pdfBytes);
-
-                //HtmlConverter.ConvertToPdf(htmlContent, new FileStream(tempFilePath, FileMode.Create));
-
-
-                // Configurar el proceso de impresión.
-                
-
-
-                TicketPrinter ticketPrinter = new TicketPrinter();
-
-                // Agregar un logotipo
-                Image logo = Image.FromFile("logo.png"); // Asegúrate de que el archivo exista
-                ticketPrinter.AddImage(logo); // Tamaño: ancho = 100, alto = 50                
-
-                // Agregar líneas de texto con alineación
-                ticketPrinter.AddLine("TIENDA XYZ", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
-                ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString(), new Font("Arial", 8), TextAlign.Center);
-                ticketPrinter.AddEmptyLine();
-
-                // Agregar columnas con alineación
-                ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-                ticketPrinter.AddLine("--------------------------------------------------------");
-
-                // Agregar filas de tabla
-                ticketPrinter.AddColumns(new[] { "Artículo 1", "2", "$10.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-                ticketPrinter.AddColumns(new[] { "Artículo 2 Artículo 2 Artículo 2 Artículo 2", "1", "$15.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f },new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-                ticketPrinter.AddLine("--------------------------------------------------------");
-
-                // Total
-                ticketPrinter.AddColumns(new[] { "Total", "","", "$35.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-                ticketPrinter.AddEmptyLine();
-
-                // Agregar texto multilínea
-                string longText = "Este es un texto muy largo que necesita dividirse en varias líneas para ajustarse al ancho del ticket.";
-                ticketPrinter.AddMultilineText(longText, new Font("Arial", 10));
-
-                // Mensaje de agradecimiento
-                ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
-
-                // Imprimir
-                //string printerName = "NombreDeLaImpresora"; // Cambia esto por el nombre de tu impresora
-                ticketPrinter.Print(printerName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al imprimir en {printerName}: {ex.Message}");
-            }
-        }
-
-
-        
 
         // Detener el servicio y limpiar recursos
         public void StopService()

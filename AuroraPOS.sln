@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuroraPOS", "AuroraPOS\Auro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printer", "Printer\Printer.csproj", "{F9FBE18F-C56E-4936-A9C7-288C2FD0E4AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Icons", "Icons\Icons.csproj", "{95366B75-DB6F-404E-AEC3-BA58C307A9AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F9FBE18F-C56E-4936-A9C7-288C2FD0E4AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9FBE18F-C56E-4936-A9C7-288C2FD0E4AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9FBE18F-C56E-4936-A9C7-288C2FD0E4AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
