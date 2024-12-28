@@ -45,6 +45,7 @@ using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using Org.BouncyCastle.Asn1.X500;
 using Microsoft.CodeAnalysis;
 using AuroraPOS;
+using AuroraPOS.Core;
 using NPOI.HPSF;
 using NPOI.SS.Formula.PTG;
 
@@ -270,8 +271,13 @@ namespace AuroraPOS.Controllers
 
 		[HttpPost]
 		public JsonResult GetArea(long areaID)
-		{
-
+        {
+            var objPOSCore = new POSCore(_userService,_dbContext,_context);
+            var area = objPOSCore.GetArea(areaID,Request.Cookies["db"]);
+            return Json( new { area });
+            
+            /*  ------- Codigo Original --------
+            
 			var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s=>!s.IsDeleted)).FirstOrDefault(s => s.ID == areaID);
 
             //Obtenemos la URL de la imagen del archivo            
@@ -310,6 +316,7 @@ namespace AuroraPOS.Controllers
             }
 
             return Json( new { area });
+            */
 		}
 
 		[HttpPost]

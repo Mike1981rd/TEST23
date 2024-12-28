@@ -9,10 +9,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using System.Text;
+using AuroraPOS;
 using Edi.Captcha;
 using WebEssentials.AspNetCore.Pwa;
 using Microsoft.AspNetCore.SignalR;
 using AuroraPOS.Hubs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +36,31 @@ builder.Services.AddSession(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddDbContext<DbAlfaCentralContext>();
+
+//AUTH Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+
+//AUTH JSON WEB TOKEN
+string password = AppConfiguration.Get()["Token:Environment"] == "True" ? AppConfiguration.Get()["super_secret_key"] : AppConfiguration.Get()["Token:Password"];
+
+builder.Services.AddAuthentication(x => {
+	//x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	//x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+
+	options.RequireHttpsMetadata = false;
+	options.SaveToken = true;
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = false,
+		ValidateAudience = false,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(password))
+	};
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICentralService, CentralService>();

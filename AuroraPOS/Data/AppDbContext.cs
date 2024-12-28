@@ -68,7 +68,7 @@ namespace AuroraPOS.Data
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 		{
-            string strDatabase = "";
+            string strDatabase = "AlfaPrimera";
 
             if (!string.IsNullOrEmpty(DBForce))
 			{
@@ -85,7 +85,10 @@ namespace AuroraPOS.Data
                 }
                 else
                 {
-                    strDatabase = cookieRequest;
+	                if (cookieRequest != null)
+	                {
+		                strDatabase = cookieRequest;		                
+	                }
                 }
             }			
 
