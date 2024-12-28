@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Linq.Dynamic.Core;
 using System.Net;
 using System.Text;
-using FastReport.AdvMatrix;
+//using FastReport.AdvMatrix;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using AuroraPOS.Services;

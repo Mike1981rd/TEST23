@@ -8,7 +8,7 @@
     using AuroraPOS.ViewModels;
     using AuroraPOS.Hubs;
     using Microsoft.AspNetCore.SignalR;
-    using FastReport;
+    //using FastReport;
     using Microsoft.EntityFrameworkCore;
     using AuroraPOS.ModelsCentral;
 

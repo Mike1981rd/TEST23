@@ -1,4 +1,4 @@
-﻿extern alias SK;
+﻿//extern alias SK;
 using AuroraPOS.Data;
 using AuroraPOS.Models;
 using AuroraPOS.ViewModels;
@@ -143,6 +143,7 @@ namespace AuroraPOS.Services
 
                         #region imprimiendo Sumary
                         //-----------------imprimiento la comanda------------//
+                        /*
                         FastReport.Report Report1 = new FastReport.Report();
                         Report1.Load(GetReporte(6, 1)); //formato de recibo.
                         Report1.RegisterData(ds, "general");
@@ -221,6 +222,7 @@ namespace AuroraPOS.Services
                         Report1.SavePrepared(stream);
                         GuardaImpresion(nombre, ".fpx", stream.ToArray(), defaultPrinter.Printer.PhysicalName, stationId.ToString(), 1 + station.PrintCopy, 1, station.IDSucursal, reprint);
 
+                        */
                         #endregion
                         return true;
                     }
@@ -343,7 +345,7 @@ namespace AuroraPOS.Services
                 try
                 {
                     Console.WriteLine("Creadno documento");
-
+/*
                     FastReport.Report Report1 = new FastReport.Report();
                     Report1.Load(GetReporte(2, 1));
                     Report1.RegisterData(ds, "general");
@@ -389,6 +391,8 @@ namespace AuroraPOS.Services
                     //Report1.Save(stream);
 
                     GuardaImpresion(nombre, ".fpx", stream.ToArray(), realprinter.Printer.PhysicalName, stationId.ToString(), 1, 1, station.IDSucursal, false);
+                    
+                    */
                 }
                 catch (Exception c)
                 {
@@ -508,7 +512,7 @@ namespace AuroraPOS.Services
                 try
                 {
                     Console.WriteLine("Creando documento");
-
+/*
                     FastReport.Report Report1 = new FastReport.Report();
                     Report1.Load(GetReporte(2, 1));
                     Report1.RegisterData(ds, "general");
@@ -557,6 +561,8 @@ namespace AuroraPOS.Services
                     //Report1.Save(stream);
 
                     GuardaImpresion(nombre, ".fpx", stream.ToArray(), realprinter.PhysicalName, kitchenId.ToString(), 1, 1, 1, false);
+                    
+                    */
                 }
                 catch (Exception c)
                 {
@@ -938,7 +944,10 @@ namespace AuroraPOS.Services
                     {
 
                         #region imprimiendo Sumary
+                        
                         //-----------------imprimiento la comanda------------//
+                        
+                        /*
                         FastReport.Report Report1 = new FastReport.Report();
                         //string ruta = Path.Combine(Environment.CurrentDirectory, "temp1");
                         Report1.Load(GetReporte(4, 1));
@@ -1077,7 +1086,7 @@ namespace AuroraPOS.Services
 
                         GuardaImpresion(nombre, ".fpx", stream.ToArray(), defaultPrinter.Printer.PhysicalName, stationId.ToString(), 1 + station.PrintCopy, 1, station.IDSucursal, reprint);
 
-
+                        */
 
                         // pdocument.Print();
                         #endregion
@@ -1233,6 +1242,8 @@ namespace AuroraPOS.Services
 
 						#region imprimiendo Sumary
 						//-----------------imprimiento la comanda------------//
+                        
+                        /*
 						FastReport.Report Report1 = new FastReport.Report();
 						//string ruta = Path.Combine(Environment.CurrentDirectory, "temp1");
 						Report1.Load(GetReporte(4, 1));
@@ -1354,7 +1365,7 @@ namespace AuroraPOS.Services
 
 						GuardaImpresion(nombre, ".fpx", stream.ToArray(), defaultPrinter.Printer.PhysicalName, stationId.ToString(), 1 + station.PrintCopy, 1, station.IDSucursal, reprint);
 
-
+                        */
 
 						// pdocument.Print();
 						#endregion
@@ -1407,7 +1418,7 @@ namespace AuroraPOS.Services
                         }
 
                         //-----------generando el reporte de cuadre de caja-----------//
-
+                        /*
                         FastReport.Report Report1 = new FastReport.Report();
                         Report1.Load(GetReporte(5, 1));
                         Report1.RegisterData(ds, "general");
@@ -1455,7 +1466,7 @@ namespace AuroraPOS.Services
                         var stationID = stationId;
 
                         GuardaImpresion(nombre, ".fpx", stream.ToArray(), defaultPrinter.Printer.PhysicalName, stationID.ToString(), 1 + station.PrintCopy, 1, station.IDSucursal, false);
-
+                        */
                     }
                     catch { }
                 }

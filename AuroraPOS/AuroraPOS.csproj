@@ -43,13 +43,6 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.3" />
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.3" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-    <PackageReference Include="FastReport.Core.Skia" Version="2023.2.12">
-      <Aliases></Aliases>
-    </PackageReference>
-    <PackageReference Include="FastReport.SkiaDrawing" Version="2023.1.8">
-      <Aliases>SK</Aliases>
-    </PackageReference>
-    <PackageReference Include="FastReport.Compat.Skia" Version="2023.1.8" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.85" />
   </ItemGroup>
 
