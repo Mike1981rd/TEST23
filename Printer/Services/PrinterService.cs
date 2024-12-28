@@ -3,22 +3,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
-using System.Text;
 using System.Net.Http.Json;
 using Printer.Models;
 using System.IO;
 using System.Net.Http;
 using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using RestSharp;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Drawing;
-using System.Drawing.Printing;
-using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace Printer.Services
 {
@@ -31,11 +25,15 @@ namespace Printer.Services
         private const int ServerPort = 7205; // Cambia al puerto real
         private readonly ILogger<PrinterService> _logger; // Inyectar el logger
         private Timer _timer;
+        private readonly string _apiUrl;
+        private readonly string _getPendingPrintJobsEndpoint;
 
-        public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory)
+        public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _apiUrl = configuration["PrinterSettings:ApiUrl"];
+            _getPendingPrintJobsEndpoint = configuration["PrinterSettings:GetPendingPrintJobsEndpoint"];
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -73,13 +71,20 @@ namespace Printer.Services
         {
             try
             {
-                string projectDirectory = AppDomain.CurrentDomain.BaseDirectory; // Obtener el directorio donde está el ejecutable
+                string projectDirectory = AppDomain.CurrentDomain.BaseDirectory; // Directorio base del servicio
                 string iconsExePath = Path.Combine(projectDirectory, "Resources", "Icons.exe");
 
                 if (File.Exists(iconsExePath))
                 {
-                    Process.Start(iconsExePath); // Iniciar la aplicación de la bandeja
-                    _logger.LogInformation("Aplicación de bandeja del sistema iniciada.");
+                    bool success = UserSession.LaunchProcessInUserSession(iconsExePath);
+                    if (success)
+                    {
+                        _logger.LogInformation("Aplicación de bandeja del sistema iniciada correctamente.");
+                    }
+                    else
+                    {
+                        _logger.LogError("No se pudo iniciar la aplicación de bandeja en la sesión del usuario.");
+                    }
                 }
                 else
                 {
@@ -93,16 +98,17 @@ namespace Printer.Services
         }
 
 
-   private async Task ConsultaImpresionEImprime(object state)
+        private async Task ConsultaImpresionEImprime(object state)
 {
     try
     {
         // Solicitar trabajos pendientes desde el servidor.
         var client = _httpClientFactory.CreateClient();
-        var response = await client.GetAsync("https://localhost:7205/api/Printer/GetPendingPrintJobs");
+        var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
+        var response = await client.GetAsync(url);
 
-        // Asegúrate de que la respuesta fue exitosa.
-        if (response.IsSuccessStatusCode)
+                // Asegúrate de que la respuesta fue exitosa.
+                if (response.IsSuccessStatusCode)
         {
             var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
 
@@ -216,10 +222,10 @@ namespace Printer.Services
         {
             try
             {
-                string apiUrl = $"http://localhost:7205/api/Printer/GetPendingPrintJobs";
+                var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
                 using (var client = _httpClientFactory.CreateClient())
                 {
-                    var response = await client.GetFromJsonAsync<List<PrintJob>>(apiUrl);
+                    var response = await client.GetFromJsonAsync<List<PrintJob>>(url);
                     return response;
                 }
             }
