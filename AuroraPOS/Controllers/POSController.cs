@@ -273,7 +273,7 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult GetArea(long areaID)
         {
-            var objPOSCore = new POSCore(_userService,_dbContext,_context);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var area = objPOSCore.GetArea(areaID,Request.Cookies["db"]);
             return Json( new { area });
             
@@ -347,7 +347,7 @@ namespace AuroraPOS.Controllers
             //             }
             //         }
 
-            var objPOSCore = new POSCore(_userService, _dbContext, _context);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var areas = objPOSCore.GetAreasInStation(station, Request.Cookies["db"]);
 
             if (station == null)
@@ -361,137 +361,147 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult GetAreaObjectsInArea(long areaID)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             try
             {
 				var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-				var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
-				var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).AsNoTracking().FirstOrDefault(s => s.ID == areaID);
+                var db = Request.Cookies["db"];
 
-                //Obtenemos las urls de las imagenes
-                var request = _context.HttpContext.Request;
-                var _baseURL = $"https://{request.Host}";
-                if (area.AreaObjects != null && area.AreaObjects.Any())
-                {
-                    foreach (var item in area.AreaObjects)
-                    {
-                        //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png");
-                        string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png";
-                        if (System.IO.File.Exists(pathFile))
-                        {
-                            var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                            //item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                            item.BackImage = _baseURL + "/localfiles/"  + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
-                        }
-                        else
-                        {
-                            item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
-                        }
-                    }
-                }
+                AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(stationID, db, areaID);
 
-                var orders = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).ThenInclude(s => s.ServingSizes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).ThenInclude(s => s.Answer).Where(s => s.Area == area && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved).ToList();
-				var result = new List<StationOrderModel>();
-				var holditems = new List<OrderHoldModel>();
+                return Json(new { objects = resultado.objects, orders = resultado.orders, resultado.holditems });
 
 
-				foreach (var order in orders)
-				{
-					var kichenItems = new List<OrderItem>();
-					foreach (var item in order.Items)
-					{
-						if (item.Status == OrderItemStatus.HoldAutomatic)
-						{
-							var time = item.HoldTime;
-							if (DateTime.Now > time)
-							{
-								item.Status = OrderItemStatus.Kitchen;
-								SendKitchenItem(order.ID, item.ID);
-								kichenItems.Add(item);
-								if (item.Product.InventoryCountDownActive)
-								{
-									item.Product.InventoryCount -= item.Qty;
+                //            var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+                //            var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+                //            var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).AsNoTracking().FirstOrDefault(s => s.ID == areaID);
 
-								}
-								SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
-								foreach (var q in item.Questions)
-								{
-									if (!q.IsActive) continue;
-									var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-									SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
-								}
-							}
-							else
-							{
-								var diff = (time - DateTime.Now).TotalMinutes;
-								var val = Math.Ceiling(diff) + 1;
-								var exist = holditems.FirstOrDefault(s => s.AreaId == order.Table.ID);
-								if (exist != null)
-								{
-									if (exist.HoldMinutes < (int)val)
-									{
-										exist.HoldMinutes = (int)val;
-									}
-								}
-								else
-								{
-									exist = new OrderHoldModel()
-									{
-										OrderId = order.ID,
-										AreaId = order.Table.ID,
-										HoldMinutes = (int)val
-									};
-									holditems.Add(exist);
-								}
-							}
-						}
+                //            //Obtenemos las urls de las imagenes
+                //            var request = _context.HttpContext.Request;
+                //            var _baseURL = $"https://{request.Host}";
+                //            if (area.AreaObjects != null && area.AreaObjects.Any())
+                //            {
+                //                foreach (var item in area.AreaObjects)
+                //                {
+                //                    //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png");
+                //                    string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png";
+                //                    if (System.IO.File.Exists(pathFile))
+                //                    {
+                //                        var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+                //                        //item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                //                        item.BackImage = _baseURL + "/localfiles/"  + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+                //                    }
+                //                    else
+                //                    {
+                //                        item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
+                //                    }
+                //                }
+                //            }
 
-					}
-					var time1 = (int)(DateTime.Now - order.OrderTime).TotalMinutes;
-					if (kichenItems.Count > 0)
-					{
-						_printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
-					}
-					result.Add(new StationOrderModel()
-					{
-						ID = order.ID,
-						AreaId = order.Table.ID,
-						OrderTime = time1,
-						SubTotal = order.TotalPrice,
-						WaiterName = order.WaiterName,
-						IsDivide = order.OrderMode == OrderMode.Divide,
-						ItemCount = order.Items.Count
+                //            var orders = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).ThenInclude(s => s.ServingSizes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).ThenInclude(s => s.Answer).Where(s => s.Area == area && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved).ToList();
+                //var result = new List<StationOrderModel>();
+                //var holditems = new List<OrderHoldModel>();
 
-					}); ;
-					var hold = order.Items.FirstOrDefault(s => s.Status == OrderItemStatus.HoldManually || s.Status == OrderItemStatus.HoldAutomatic);
-					if (hold == null && order.Status == OrderStatus.Hold)
-					{
-						order.Status = OrderStatus.Pending;
-						_dbContext.SaveChanges();
-					}
-				}
 
-				//borramos la imagen de la area
-				foreach (var objAreaObject in area.AreaObjects)
-				{
-					objAreaObject.Area.BackImage = "";
+                //foreach (var order in orders)
+                //{
+                //	var kichenItems = new List<OrderItem>();
+                //	foreach (var item in order.Items)
+                //	{
+                //		if (item.Status == OrderItemStatus.HoldAutomatic)
+                //		{
+                //			var time = item.HoldTime;
+                //			if (DateTime.Now > time)
+                //			{
+                //				item.Status = OrderItemStatus.Kitchen;
+                //				SendKitchenItem(order.ID, item.ID);
+                //				kichenItems.Add(item);
+                //				if (item.Product.InventoryCountDownActive)
+                //				{
+                //					item.Product.InventoryCount -= item.Qty;
 
-					var reservation = _dbContext.Reservations.Where(s => s.TableID == objAreaObject.ID && s.Status == ReservationStatus.Open).ToList();
+                //				}
+                //				SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                //				foreach (var q in item.Questions)
+                //				{
+                //					if (!q.IsActive) continue;
+                //					var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
+                //					SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                //				}
+                //			}
+                //			else
+                //			{
+                //				var diff = (time - DateTime.Now).TotalMinutes;
+                //				var val = Math.Ceiling(diff) + 1;
+                //				var exist = holditems.FirstOrDefault(s => s.AreaId == order.Table.ID);
+                //				if (exist != null)
+                //				{
+                //					if (exist.HoldMinutes < (int)val)
+                //					{
+                //						exist.HoldMinutes = (int)val;
+                //					}
+                //				}
+                //				else
+                //				{
+                //					exist = new OrderHoldModel()
+                //					{
+                //						OrderId = order.ID,
+                //						AreaId = order.Table.ID,
+                //						HoldMinutes = (int)val
+                //					};
+                //					holditems.Add(exist);
+                //				}
+                //			}
+                //		}
 
-					foreach (var r in reservation)
-					{
-						var st = r.ReservationTime.AddMinutes(-30);
-						var en = r.ReservationTime.AddHours((double)r.Duration);
+                //	}
+                //	var time1 = (int)(DateTime.Now - order.OrderTime).TotalMinutes;
+                //	if (kichenItems.Count > 0)
+                //	{
+                //		_printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
+                //	}
+                //	result.Add(new StationOrderModel()
+                //	{
+                //		ID = order.ID,
+                //		AreaId = order.Table.ID,
+                //		OrderTime = time1,
+                //		SubTotal = order.TotalPrice,
+                //		WaiterName = order.WaiterName,
+                //		IsDivide = order.OrderMode == OrderMode.Divide,
+                //		ItemCount = order.Items.Count
 
-						if (DateTime.Now >= st && DateTime.Now <= en)
-						{
-							objAreaObject.BackColor = "#AF69EF";
-						}
-					}
-				}
+                //	}); ;
+                //	var hold = order.Items.FirstOrDefault(s => s.Status == OrderItemStatus.HoldManually || s.Status == OrderItemStatus.HoldAutomatic);
+                //	if (hold == null && order.Status == OrderStatus.Hold)
+                //	{
+                //		order.Status = OrderStatus.Pending;
+                //		_dbContext.SaveChanges();
+                //	}
+                //}
 
-				return Json(new { objects = area.AreaObjects, orders = result, holditems });
-			}
-            catch(Exception ex)
+                ////borramos la imagen de la area
+                //foreach (var objAreaObject in area.AreaObjects)
+                //{
+                //	objAreaObject.Area.BackImage = "";
+
+                //	var reservation = _dbContext.Reservations.Where(s => s.TableID == objAreaObject.ID && s.Status == ReservationStatus.Open).ToList();
+
+                //	foreach (var r in reservation)
+                //	{
+                //		var st = r.ReservationTime.AddMinutes(-30);
+                //		var en = r.ReservationTime.AddHours((double)r.Duration);
+
+                //		if (DateTime.Now >= st && DateTime.Now <= en)
+                //		{
+                //			objAreaObject.BackColor = "#AF69EF";
+                //		}
+                //	}
+                //}
+
+                //return Json(new { objects = area.AreaObjects, orders = result, holditems });
+            }
+            catch (Exception ex)
             {
 
             }
@@ -510,6 +520,8 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult UpdateHoldStatus(long orderId)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             var stationID = int.Parse(GetCookieValue("StationID"));
             var order = _dbContext.Orders.Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).FirstOrDefault(s => s.ID == orderId);
 
@@ -523,7 +535,7 @@ namespace AuroraPOS.Controllers
                     if (DateTime.Now > time)
                     {
                         item.Status = OrderItemStatus.Kitchen;
-                        SendKitchenItem(order.ID, item.ID);
+                        objPOSCore.SendKitchenItem(order.ID, item.ID);
 
                         kichenItems.Add(item);
                         if (item.Product.InventoryCountDownActive)
@@ -531,12 +543,12 @@ namespace AuroraPOS.Controllers
                             item.Product.InventoryCount -= item.Qty;
 
                         }
-                        SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                        objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                         foreach (var q in item.Questions)
                         {
                             if (!q.IsActive) continue;
                             var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                            SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                            objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                         }
                         updated = true;
                     }
@@ -911,8 +923,8 @@ namespace AuroraPOS.Controllers
             var response = new MenuGroupResponse();
             try
             {
-                var posCore = new POSCore(_userService, _dbContext, _context);
-                var menuGroupList = posCore.GetMenuGroupList(int.Parse(GetCookieValue("StationID")));
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var menuGroupList = objPOSCore.GetMenuGroupList(int.Parse(GetCookieValue("StationID")));
 
                 if (menuGroupList != null)
                 {
@@ -929,64 +941,12 @@ namespace AuroraPOS.Controllers
                 return Json(response);
             }
         }
-        
-        private void SubstractProduct(long itemId, long prodId, decimal qty, int servingSizeID, OrderType type)
-		{
-			var product = _dbContext.Products.Include(s => s.RecipeItems.Where(s => s.ServingSizeID == servingSizeID)).FirstOrDefault(s => s.ID == prodId);
-			if (product == null || qty == 0) return;
-
-			var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-            var station = _dbContext.Stations.FirstOrDefault(s => s.ID == stationID);
-            var groups = _dbContext.Groups.ToList();
-            var warehouses = _dbContext.Warehouses.ToList();
-            var stationWarehouse = _dbContext.StationWarehouses.Where(s => s.StationID == station.ID).ToList();
-          
-            try
-            {
-                foreach (var item in product.RecipeItems)
-                {
-                    if (item.Type == ItemType.Article)
-                    {
-                        var article = _dbContext.Articles.Include(s=>s.Category).ThenInclude(s=>s.Group).Include(s => s.Items).FirstOrDefault(s => s.ID == item.ItemID);
-                        if (article.DepleteCondition == DepleteCondition.Delivery && type != OrderType.Delivery)
-                        {
-                            continue;
-                        }
-                        var sw = stationWarehouse.FirstOrDefault(s => s.GroupID == article.Category.Group.ID);
-                        if (sw != null)
-                        {
-                            var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
-                            if (warehouse != null)
-                            {
-								UpdateStockOfArticle(article, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Kitchen, itemId);
-							}
-                        }
-                    }
-                    else if (item.Type == ItemType.Product)
-                    {
-                        SubstractProduct(itemId, item.ItemID, item.Qty, item.UnitNum, type);
-                    }
-                    else
-                    {
-                        var subrecipe = _dbContext.SubRecipes.Include(s=>s.Category).ThenInclude(s=>s.Group).Include(s => s.Items).Include(s => s.ItemUnits).FirstOrDefault(s => s.ID == item.ItemID);
-						var sw = stationWarehouse.FirstOrDefault(s => s.GroupID == subrecipe.Category.Group.ID);
-						if (sw != null)
-						{
-							var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
-							if (warehouse != null)
-							{
-								UpdateStockOfSubRecipe(subrecipe, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Kitchen, itemId);
-							}
-						}
-                    }
-                }
-            }
-            catch { }
-        }
 
 		private void VoidAddProduct(long itemId, long prodId, decimal qty, int servingSizeID)
 		{
-			var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+            var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
 			var station = _dbContext.Stations.FirstOrDefault(s => s.ID == stationID);
             var warehouses = _dbContext.Warehouses.ToList();
             var stationWarehouse = _dbContext.StationWarehouses.Where(s => s.StationID == station.ID).ToList();
@@ -1006,7 +966,7 @@ namespace AuroraPOS.Controllers
                             var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
                             if (warehouse != null)
                             {
-                                UpdateStockOfArticle(article, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId);
+                                objPOSCore.UpdateStockOfArticle(article, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId, stationID);
                             }
                         }
 					}
@@ -1023,7 +983,7 @@ namespace AuroraPOS.Controllers
                             var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
                             if (warehouse != null)
                             {
-                                UpdateStockOfSubRecipe(subrecipe, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId);
+                                objPOSCore.UpdateStockOfSubRecipe(subrecipe, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId, stationID);
                             }
                         }
                       
@@ -1033,38 +993,38 @@ namespace AuroraPOS.Controllers
 			catch { }
 		}
 
-		private decimal ConvertQtyToBase(decimal originQty, int UnitNum, List<ItemUnit> Units)
-        {
-            if (UnitNum <= 1) return originQty;
+		//private decimal ConvertQtyToBase(decimal originQty, int UnitNum, List<ItemUnit> Units)
+  //      {
+  //          if (UnitNum <= 1) return originQty;
 
-            try
-            {
-                var realrates = new List<decimal>();
-                var units = Units.OrderBy(s => s.Number).ToList();
-                int i = 0;
-                decimal rate = 0;
-                foreach (var unit in units)
-                {
-                    if (i == 0)
-                    {
-                        realrates.Add(unit.Rate);
-                        rate = unit.Rate;
-                    }
-                    else
-                    {
-                        var realrate = rate * unit.Rate;
-                        realrates.Add(realrate);
-                        rate = realrate;
-                    }
+  //          try
+  //          {
+  //              var realrates = new List<decimal>();
+  //              var units = Units.OrderBy(s => s.Number).ToList();
+  //              int i = 0;
+  //              decimal rate = 0;
+  //              foreach (var unit in units)
+  //              {
+  //                  if (i == 0)
+  //                  {
+  //                      realrates.Add(unit.Rate);
+  //                      rate = unit.Rate;
+  //                  }
+  //                  else
+  //                  {
+  //                      var realrate = rate * unit.Rate;
+  //                      realrates.Add(realrate);
+  //                      rate = realrate;
+  //                  }
 
-                    i++;
-                }
+  //                  i++;
+  //              }
 
-                return originQty / realrates[UnitNum - 1] * realrates[0];
-            }
-            catch { }
-            return originQty;
-        }
+  //              return originQty / realrates[UnitNum - 1] * realrates[0];
+  //          }
+  //          catch { }
+  //          return originQty;
+  //      }
 
         private decimal ConvertQtyFromBase(decimal originQty, int UnitNum, List<ItemUnit> Units)
         {
@@ -1099,77 +1059,77 @@ namespace AuroraPOS.Controllers
             return originQty;
         }
 
-        private void UpdateStockOfArticle(InventoryItem item, decimal qty, int unitNum, Warehouse warehouse, StockChangeReason reason, long reasonId)
-		{
-			decimal baseQty = ConvertQtyToBase(qty, unitNum, item.Items.ToList());
+  //      private void UpdateStockOfArticle(InventoryItem item, decimal qty, int unitNum, Warehouse warehouse, StockChangeReason reason, long reasonId)
+		//{
+		//	decimal baseQty = ConvertQtyToBase(qty, unitNum, item.Items.ToList());
 			       
-            var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.Article && s.ItemId == item.ID);
-            var warehouseHistoryItem = new WarehouseStockChangeHistory();
-            warehouseHistoryItem.ForceDate = getCurrentWorkDate();
-            warehouseHistoryItem.Warehouse = warehouse;
-            warehouseHistoryItem.Price = 0;
-            warehouseHistoryItem.ItemId = item.ID;
-            warehouseHistoryItem.ItemType = ItemType.Article;
-            warehouseHistoryItem.Qty = baseQty;
-            warehouseHistoryItem.BeforeBalance = existingWarehouseStock == null ? 0 : existingWarehouseStock.Qty;
-            warehouseHistoryItem.AfterBalance = existingWarehouseStock == null ? baseQty : existingWarehouseStock.Qty + baseQty;
-            warehouseHistoryItem.UnitNum = 1;
-            warehouseHistoryItem.ReasonType = reason;
-            warehouseHistoryItem.ReasonId = reasonId;
+  //          var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.Article && s.ItemId == item.ID);
+  //          var warehouseHistoryItem = new WarehouseStockChangeHistory();
+  //          warehouseHistoryItem.ForceDate = getCurrentWorkDate();
+  //          warehouseHistoryItem.Warehouse = warehouse;
+  //          warehouseHistoryItem.Price = 0;
+  //          warehouseHistoryItem.ItemId = item.ID;
+  //          warehouseHistoryItem.ItemType = ItemType.Article;
+  //          warehouseHistoryItem.Qty = baseQty;
+  //          warehouseHistoryItem.BeforeBalance = existingWarehouseStock == null ? 0 : existingWarehouseStock.Qty;
+  //          warehouseHistoryItem.AfterBalance = existingWarehouseStock == null ? baseQty : existingWarehouseStock.Qty + baseQty;
+  //          warehouseHistoryItem.UnitNum = 1;
+  //          warehouseHistoryItem.ReasonType = reason;
+  //          warehouseHistoryItem.ReasonId = reasonId;
 
-            _dbContext.WarehouseStockChangeHistory.Add(warehouseHistoryItem);
+  //          _dbContext.WarehouseStockChangeHistory.Add(warehouseHistoryItem);
 
-            if (existingWarehouseStock == null)
-            {
-                existingWarehouseStock = new WarehouseStock();
-                existingWarehouseStock.Warehouse = warehouse;
-                existingWarehouseStock.ItemId = item.ID;
-                existingWarehouseStock.ItemType = ItemType.Article;
-                existingWarehouseStock.Qty = baseQty;
+  //          if (existingWarehouseStock == null)
+  //          {
+  //              existingWarehouseStock = new WarehouseStock();
+  //              existingWarehouseStock.Warehouse = warehouse;
+  //              existingWarehouseStock.ItemId = item.ID;
+  //              existingWarehouseStock.ItemType = ItemType.Article;
+  //              existingWarehouseStock.Qty = baseQty;
 
-                _dbContext.WarehouseStocks.Add(existingWarehouseStock);
-            }
-            else
-            {
-                existingWarehouseStock.Qty += baseQty;
-            }
-        }
+  //              _dbContext.WarehouseStocks.Add(existingWarehouseStock);
+  //          }
+  //          else
+  //          {
+  //              existingWarehouseStock.Qty += baseQty;
+  //          }
+  //      }
 
-        private void UpdateStockOfSubRecipe(SubRecipe item, decimal qty, int unitNum, Warehouse warehouse, StockChangeReason reason, long reasonId)
-        {
-            decimal baseQty = ConvertQtyToBase(qty, unitNum, item.ItemUnits.ToList());
+        //private void UpdateStockOfSubRecipe(SubRecipe item, decimal qty, int unitNum, Warehouse warehouse, StockChangeReason reason, long reasonId)
+        //{
+        //    decimal baseQty = ConvertQtyToBase(qty, unitNum, item.ItemUnits.ToList());
            
-            var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.SubRecipe && s.ItemId == item.ID);
+        //    var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.SubRecipe && s.ItemId == item.ID);
 
-            var warehouseHistoryItem = new WarehouseStockChangeHistory();
-            warehouseHistoryItem.ForceDate = getCurrentWorkDate();
-            warehouseHistoryItem.Warehouse = warehouse;
-            warehouseHistoryItem.Price = 0;
-            warehouseHistoryItem.ItemId = item.ID;
-            warehouseHistoryItem.ItemType = ItemType.SubRecipe;
-            warehouseHistoryItem.Qty = baseQty;
-            warehouseHistoryItem.BeforeBalance = existingWarehouseStock == null ? 0 : existingWarehouseStock.Qty;
-            warehouseHistoryItem.AfterBalance = existingWarehouseStock == null ? baseQty : existingWarehouseStock.Qty + baseQty;
-            warehouseHistoryItem.UnitNum = 1;
-            warehouseHistoryItem.ReasonType = reason;
-            warehouseHistoryItem.ReasonId = reasonId;
+        //    var warehouseHistoryItem = new WarehouseStockChangeHistory();
+        //    warehouseHistoryItem.ForceDate = getCurrentWorkDate();
+        //    warehouseHistoryItem.Warehouse = warehouse;
+        //    warehouseHistoryItem.Price = 0;
+        //    warehouseHistoryItem.ItemId = item.ID;
+        //    warehouseHistoryItem.ItemType = ItemType.SubRecipe;
+        //    warehouseHistoryItem.Qty = baseQty;
+        //    warehouseHistoryItem.BeforeBalance = existingWarehouseStock == null ? 0 : existingWarehouseStock.Qty;
+        //    warehouseHistoryItem.AfterBalance = existingWarehouseStock == null ? baseQty : existingWarehouseStock.Qty + baseQty;
+        //    warehouseHistoryItem.UnitNum = 1;
+        //    warehouseHistoryItem.ReasonType = reason;
+        //    warehouseHistoryItem.ReasonId = reasonId;
 
-            _dbContext.WarehouseStockChangeHistory.Add(warehouseHistoryItem);
-            if (existingWarehouseStock == null)
-            {
-                existingWarehouseStock = new WarehouseStock();
-                existingWarehouseStock.Warehouse = warehouse;
-                existingWarehouseStock.ItemId = item.ID;
-                existingWarehouseStock.ItemType = ItemType.SubRecipe;
-                existingWarehouseStock.Qty = baseQty;
+        //    _dbContext.WarehouseStockChangeHistory.Add(warehouseHistoryItem);
+        //    if (existingWarehouseStock == null)
+        //    {
+        //        existingWarehouseStock = new WarehouseStock();
+        //        existingWarehouseStock.Warehouse = warehouse;
+        //        existingWarehouseStock.ItemId = item.ID;
+        //        existingWarehouseStock.ItemType = ItemType.SubRecipe;
+        //        existingWarehouseStock.Qty = baseQty;
 
-                _dbContext.WarehouseStocks.Add(existingWarehouseStock);
-            }
-            else
-            {
-                existingWarehouseStock.Qty += baseQty;
-            }
-        }
+        //        _dbContext.WarehouseStocks.Add(existingWarehouseStock);
+        //    }
+        //    else
+        //    {
+        //        existingWarehouseStock.Qty += baseQty;
+        //    }
+        //}
 
         [HttpPost]
         public JsonResult updatePerson(long orderId, int person)
@@ -2392,6 +2352,9 @@ namespace AuroraPOS.Controllers
         [HttpPost]
 		public JsonResult SendOrder(long orderId, DateTime? saveDate = null)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             try
             {
 				var order = GetOrder(orderId);
@@ -2432,7 +2395,7 @@ namespace AuroraPOS.Controllers
 						if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
 						{
 							item.Status = OrderItemStatus.Kitchen;
-							SendKitchenItem(order.ID, item.ID);
+                            objPOSCore.SendKitchenItem(order.ID, item.ID);
 							item.ForceDate = getCurrentWorkDate();
 
 							kichenItems.Add(item);
@@ -2441,12 +2404,12 @@ namespace AuroraPOS.Controllers
 								item.Product.InventoryCount -= item.Qty;
 
 							}
-							SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                            objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
 							foreach (var q in item.Questions)
 							{
 								if (!q.IsActive) continue;
 								var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-								SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                                objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
 							}
 						}
 
@@ -2455,7 +2418,7 @@ namespace AuroraPOS.Controllers
 							order.Status = OrderStatus.Hold;
 						}
 					}
-					var stationID = int.Parse(GetCookieValue("StationID"));
+					//var stationID = int.Parse(GetCookieValue("StationID"));
 					_printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
 				}
 
@@ -2463,7 +2426,7 @@ namespace AuroraPOS.Controllers
 
 				if (order.OrderType == OrderType.Delivery)
 				{
-					var stationID = int.Parse(GetCookieValue("StationID"));
+					//var stationID = int.Parse(GetCookieValue("StationID"));
 
 					if (stationID > 0)
 					{
@@ -2512,6 +2475,9 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult SaveBarcodeOrder(long orderId)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             Debug.WriteLine("save controller");
             var order = _dbContext.Orders.Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Questions).FirstOrDefault(s => s.ID == orderId);
             Debug.WriteLine(order);
@@ -2541,12 +2507,12 @@ namespace AuroraPOS.Controllers
                             item.Product.InventoryCount -= item.Qty;
 
                         }
-                        SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                        objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                         foreach (var q in item.Questions)
                         {
                             if (!q.IsActive) continue;
                             var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                            SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                            objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                         }
                     }                
                 }              
@@ -3652,14 +3618,17 @@ namespace AuroraPOS.Controllers
 			var orderItem = _dbContext.OrderItems.Include(s=>s.Product).Include(s=>s.Questions).Include(s => s.Order).ThenInclude(s=>s.Items).FirstOrDefault(o => o.ID == model.ItemId);
             orderItem.ForceDate = getCurrentWorkDate();
 
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             orderItem.Status = OrderItemStatus.Kitchen;
-            SendKitchenItem(orderItem.Order.ID, orderItem.ID);
-            SubstractProduct(orderItem.ID, orderItem.Product.ID, orderItem.Qty, orderItem.ServingSizeID, orderItem.Order.OrderType);
+            objPOSCore.SendKitchenItem(orderItem.Order.ID, orderItem.ID);
+            objPOSCore.SubstractProduct(orderItem.ID, orderItem.Product.ID, orderItem.Qty, orderItem.ServingSizeID, orderItem.Order.OrderType, stationID);
             foreach (var q in orderItem.Questions)
             {
                 if (!q.IsActive) continue;
                 var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                SubstractProduct(orderItem.ID, qitem.Answer.Product.ID, orderItem.Qty * qitem.Qty, qitem.ServingSizeID, orderItem.Order.OrderType);
+                objPOSCore.SubstractProduct(orderItem.ID, qitem.Answer.Product.ID, orderItem.Qty * qitem.Qty, qitem.ServingSizeID, orderItem.Order.OrderType, stationID);
             }
             var holdItem = orderItem.Order.Items.FirstOrDefault(s => s.Status == OrderItemStatus.HoldManually || s.Status == OrderItemStatus.HoldAutomatic);
 			if (holdItem == null)
@@ -3668,7 +3637,7 @@ namespace AuroraPOS.Controllers
 			}
 
 			_dbContext.SaveChanges();
-            var stationID = int.Parse(GetCookieValue("StationID"));
+            //var stationID = int.Parse(GetCookieValue("StationID"));
             _printService.PrintKitchenItems(stationID, orderItem.Order.ID, new List<OrderItem>() { orderItem}, Request.Cookies["db"]);
 
             return Json(new {status = 0});
@@ -3831,6 +3800,8 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult MoveItemToAnotherTable([FromBody] MoveToTableModel model)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             var orderItem = _dbContext.OrderItems.Include(s=>s.Product).Include(s=>s.Questions).ThenInclude(s=>s.Answer).Include(s=>s.Taxes).Include(s=>s.Propinas).Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.ItemId);
             orderItem.ForceDate = getCurrentWorkDate();
             if (orderItem != null)
@@ -3896,7 +3867,7 @@ namespace AuroraPOS.Controllers
                             _dbContext.KitchenOrderItem.Remove(item);
                         }
 
-                        SendKitchenItem(destOrder.ID, nItem.ID);
+                        objPOSCore.SendKitchenItem(destOrder.ID, nItem.ID);
                     }
                     
 
@@ -5693,7 +5664,9 @@ namespace AuroraPOS.Controllers
         
         public JsonResult Pay([FromBody] ApplyPayModel model)
         {
-            var order = GetOrder(model.OrderId); 
+            var order = GetOrder(model.OrderId);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
             if (model.Amount <= 0)
             {
@@ -5794,12 +5767,12 @@ namespace AuroraPOS.Controllers
                                     item.Product.InventoryCount -= item.Qty;
 
                                 }
-                                SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                                objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                                 foreach (var q in item.Questions)
                                 {
                                     if (!q.IsActive) continue;
                                     var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                                    SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                                    objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                                 }
                             }
                            
@@ -5815,7 +5788,7 @@ namespace AuroraPOS.Controllers
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Kitchen;
-                                SendKitchenItem(order.ID, item.ID);
+                                objPOSCore.SendKitchenItem(order.ID, item.ID);
                                 kichenItems.Add(item);
                             }
                             if (item.Product.InventoryCountDownActive)
@@ -5823,12 +5796,12 @@ namespace AuroraPOS.Controllers
                                 item.Product.InventoryCount -= item.Qty;
 
                             }
-                            SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                            objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                             foreach (var q in item.Questions)
                             {
                                 if (!q.IsActive) continue;
                                 var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                                SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                                objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                             }
                         }
                     }
@@ -5862,7 +5835,7 @@ namespace AuroraPOS.Controllers
 
                 //_dbContext.OrderTransactions.Add(transaction);
                 //_dbContext.SaveChanges();
-                var stationID = int.Parse(GetCookieValue("StationID"));
+                //var stationID = int.Parse(GetCookieValue("StationID"));
                 if (kichenItems.Count > 0)
                     _printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
 
@@ -6053,10 +6026,11 @@ namespace AuroraPOS.Controllers
             return Json(new {status = 0, difference = Difference, balance = order.Balance, parcial = (order.PaymentStatus == PaymentStatus.Partly ? true : false)});
         }
 
-
-
         public JsonResult Pay2([FromBody] ApplyPayModel2 model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var order = GetOrder(model.OrderId);
             if (model.Amount <= 0)
             {
@@ -6104,11 +6078,11 @@ namespace AuroraPOS.Controllers
                                     item.Product.InventoryCount -= item.Qty;
 
                                 }
-                                SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                                objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                                 foreach (var q in item.Questions)
                                 {
                                     var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                                    SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                                    objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                                 }
                             }
 
@@ -6124,7 +6098,7 @@ namespace AuroraPOS.Controllers
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Kitchen;
-                                SendKitchenItem(order.ID, item.ID);
+                                objPOSCore.SendKitchenItem(order.ID, item.ID);
                                 kichenItems.Add(item);
                             }
                             if (item.Product.InventoryCountDownActive)
@@ -6132,11 +6106,11 @@ namespace AuroraPOS.Controllers
                                 item.Product.InventoryCount -= item.Qty;
 
                             }
-                            SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType);
+                            objPOSCore.SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
                             foreach (var q in item.Questions)
                             {
                                 var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                                SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType);
+                                objPOSCore.SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
                             }
                         }
                     }
@@ -6144,7 +6118,7 @@ namespace AuroraPOS.Controllers
 
                 model.Amount = model.Amount * method.Tasa;
 
-                var stationID = int.Parse(GetCookieValue("StationID"));
+                //var stationID = int.Parse(GetCookieValue("StationID"));
                 if (kichenItems.Count > 0)
                     _printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
 
@@ -7972,49 +7946,6 @@ namespace AuroraPOS.Controllers
             }
 
             _dbContext.SaveChanges();
-        }
-	
-        private void SendKitchenItem(long orderID, long itemID)
-        {
-            var order = _dbContext.Orders.Include(s=>s.Station).FirstOrDefault(s => s.ID == orderID);
-            if (order != null)
-            {
-                var kitchens = _dbContext.Kitchen.Where(s => s.IsActive).ToList();
-                foreach(var kitchen in kitchens) 
-                {
-                    if (!kitchen.Stations.Contains(order.Station.ID)) continue;
-                    var existingKitchenOrder = _dbContext.KitchenOrder.FirstOrDefault(s => s.KitchenID == kitchen.ID && s.OrderID == order.ID);
-                    if (existingKitchenOrder == null)
-                    {
-                        existingKitchenOrder = new KitchenOrder()
-                        {
-                            OrderID = order.ID,
-                            KitchenID = kitchen.ID,
-                            StartTime = DateTime.Now,
-                            Status = KitchenOrderStatus.Open
-                        };
-                        _dbContext.KitchenOrder.Add(existingKitchenOrder);
-                        _dbContext.SaveChanges();
-                    }
-                    else
-                    {
-                        existingKitchenOrder.Status = KitchenOrderStatus.Open;
-                        existingKitchenOrder.StartTime = DateTime.Now;
-                        existingKitchenOrder.IsCompleted = false;
-                    }
-
-                    var kitchenItem = new KitchenOrderItem()
-                    {
-                        OrderItemID = itemID,
-                        KitchenOrderID = existingKitchenOrder.ID,
-                        Status = KitchOrderItemStatus.Open
-                    };
-                    var existitem = _dbContext.KitchenOrderItem.FirstOrDefault(s => s.KitchenOrderID == existingKitchenOrder.ID && s.OrderItemID == itemID);
-                    if (existitem == null)
-                        _dbContext.KitchenOrderItem.Add(kitchenItem);
-                    _dbContext.SaveChanges();
-                }
-            }        
         }
 
         private long GetTotalSecond(DateTime time)

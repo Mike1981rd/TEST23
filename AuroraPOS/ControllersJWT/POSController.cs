@@ -7,6 +7,10 @@ using AuroraPOS.Services;
 using AuroraPOS.Models;
 using AuroraPOS.ModelsJWT;
 using Microsoft.EntityFrameworkCore;
+using AuroraPOS.Controllers;
+using NPOI.SS.Formula.PTG;
+using static SkiaSharp.HarfBuzz.SKShaper;
+using AuroraPOS.ModelsJWT;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -18,10 +22,13 @@ public class POSController : Controller
     private readonly IUserService _userService;
     private readonly AppDbContext _dbContext;
     private readonly IHttpContextAccessor _context;
-    public POSController(IUserService userService, ExtendedAppDbContext dbContext, IHttpContextAccessor context)
+    private readonly IPrintService _printService;
+
+    public POSController(IUserService userService, ExtendedAppDbContext dbContext, IPrintService printService, IHttpContextAccessor context)
     {
         _userService = userService;
         _dbContext = dbContext._context;
+        _printService = printService;
         _context = context;
     }
     
@@ -29,7 +36,7 @@ public class POSController : Controller
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public JsonResult GetArea(long areaID)
     {
-        var objPOSCore = new POSCore(_userService, _dbContext,_context);
+        var objPOSCore = new POSCore(_userService, _dbContext,_printService, _context);
         var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
         return Json( new { area });
     }
@@ -41,8 +48,8 @@ public class POSController : Controller
         var response = new MenuGroupResponse();
         try
         {
-            var posCore = new POSCore(_userService, _dbContext, _context);
-            var menuGroupList = posCore.GetMenuGroupList(stationId);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuGroupList = objPOSCore.GetMenuGroupList(stationId);
 
             if (menuGroupList != null)
             {
@@ -67,8 +74,8 @@ public class POSController : Controller
         var response = new GetOrderItemResponse();
         try
         {
-            var posCore = new POSCore(_userService, _dbContext, _context);
-            var orderItems = posCore.GetOrderItems(orderId, dividerId);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var orderItems = objPOSCore.GetOrderItems(orderId, dividerId);
 
             if (orderItems != null)
             {
@@ -84,6 +91,7 @@ public class POSController : Controller
             response.Success = false;
             return Json(response);
         }
+    }
 
     [HttpPost("GetAreasInStation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -92,7 +100,7 @@ public class POSController : Controller
         var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
         //Obtenemos las urls de las imagenes
-        var objPOSCore = new POSCore(_userService, _dbContext, _context);
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
         var areas = objPOSCore.GetAreasInStation(station, db);
 
         if (station == null)
@@ -101,5 +109,35 @@ public class POSController : Controller
         }
 
         return Json(areas);
+    }
+
+    [HttpPost("GetAreaObjectsInArea")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetAreaObjectsInArea(int stationId, string db, long areaID)
+    {
+        var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
+        POSAreaObjectsInAreaResponse response = new POSAreaObjectsInAreaResponse();
+
+        try
+        {
+            AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(stationId, db, areaID);
+
+            response.result = resultado;
+
+            //response.result.objects = resultado.objects;
+            //response.result.orders = resultado.orders;
+            //response.result.holditems = resultado.holditems;
+
+            response.Success = true;
+
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            response.result = null;
+            response.Success = false;
+            response.Error = ex.Message;
+            return Json(response);
+        }
     }
 }
