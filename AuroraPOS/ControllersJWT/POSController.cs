@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using AuroraPOS.Data;
 using AuroraPOS.Services;
 using AuroraPOS.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuroraPOS.ControllersJWT;
 
@@ -29,5 +30,23 @@ public class POSController : Controller
         var objPOSCore = new POSCore(_userService, _dbContext,_context);
         var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
         return Json( new { area });
+    }
+
+    [HttpPost("GetAreasInStation")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetAreasInStation(int stationID, string db)
+    {
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+
+        //Obtenemos las urls de las imagenes
+        var objPOSCore = new POSCore(_userService, _dbContext, _context);
+        var areas = objPOSCore.GetAreasInStation(station, db);
+
+        if (station == null)
+        {
+            return Json("");
+        }
+
+        return Json(areas);
     }
 }

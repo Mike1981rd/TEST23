@@ -327,31 +327,34 @@ namespace AuroraPOS.Controllers
 			var station = _dbContext.Stations.Include(s=>s.Areas.Where(s=>!s.IsDeleted)).FirstOrDefault(s=>s.ID == stationID);
 
             //Obtenemos las urls de las imagenes
-            var request = _context.HttpContext.Request;
-            var _baseURL = $"https://{request.Host}";
-            if (station.Areas != null && station.Areas.Any())
-            {
-                foreach (var item in station.Areas)
-                {
-                    var pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png");
-                    if (System.IO.File.Exists(pathFile))
-                    {
-                        var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                        item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                    }
-                    else
-                    {
-                        item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
-                    }
-                }
-            }
+            //         var request = _context.HttpContext.Request;
+            //         var _baseURL = $"https://{request.Host}";
+            //         if (station.Areas != null && station.Areas.Any())
+            //         {
+            //             foreach (var item in station.Areas)
+            //             {
+            //                 var pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png");
+            //                 if (System.IO.File.Exists(pathFile))
+            //                 {
+            //                     var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+            //                     item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+            //                 }
+            //                 else
+            //                 {
+            //                     item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
+            //                 }
+            //             }
+            //         }
+
+            var objPOSCore = new POSCore(_userService, _dbContext, _context);
+            var areas = objPOSCore.GetAreasInStation(station, Request.Cookies["db"]);
 
             if (station == null)
 			{
 				return Json("");
 			}
 
-			return Json(station.Areas);
+			return Json(areas);
 		}
 				
 		[HttpPost]

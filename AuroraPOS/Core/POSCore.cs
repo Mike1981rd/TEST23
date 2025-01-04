@@ -5,6 +5,7 @@ using AuroraPOS.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NPOI.SS.Formula.Functions;
 
 namespace AuroraPOS.Core;
 
@@ -67,4 +68,28 @@ public class POSCore
             
             return area;
 		}
+
+    public List<Area> GetAreasInStation(Station station, string db)
+    {
+        var request = _context.HttpContext.Request;
+        var _baseURL = $"https://{request.Host}";
+        if (station.Areas != null && station.Areas.Any())
+        {
+            foreach (var item in station.Areas)
+            {
+                var pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "area", item.ID.ToString() + ".png");
+                if (System.IO.File.Exists(pathFile))
+                {
+                    var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+                    item.BackImage = Path.Combine(_baseURL, "localfiles", db, "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                }
+                else
+                {
+                    item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
+                }
+            }
+        }
+
+        return station.Areas;
+    }
 }
