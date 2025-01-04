@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using AuroraPOS.Models;
+using AuroraPOS.ViewModels;
 
 namespace AuroraPOS.ControllersJWT;
 
@@ -50,121 +51,121 @@ public class AccountController : Controller
     {
         return Ok("OK");
     }
-    
+
     // Crea un Bearer Token solo para pruebas
     /*[HttpGet("Login")]
     public IActionResult Login()
     {
         return Ok(BuildToken());
     }*/
-    
-    // Login con PIN
-    [AllowAnonymous]
-    [HttpPost("POSLogin")]
+
+    //Login con PIN
+   [AllowAnonymous]
+   [HttpPost("POSLogin")]
     public IActionResult POSLogin(POSLoginRequest request)
     {
         var objResponse = new POSLoginResponse();
         objResponse.status = 2;
-        
+
         try
+        {
+            ModelsCentral.User userCentral = null;
+            try
             {
-                ModelsCentral.User userCentral = null;
-                try
-                {
-                    userCentral = _centralService.GetAllowedUserByPin(request.pin);
-                }
-                catch (Exception ex)
-                {
-                    var m = ex;
-                }
-
-                if (userCentral == null)
-                {
-                    objResponse.status = 2;
-                    return Ok(objResponse);
-                }
-
-                var Central = new CentralService();
-                var lstCompanies = Central.GetAllowedCompanies(userCentral.Username);
-
-                if (!lstCompanies.Any())
-                {
-                    objResponse.status = 2;
-                    return Ok(objResponse);
-                }
-                
-                objResponse.db = lstCompanies.First().Database;
-
-                var station = _dbContext.Stations.FirstOrDefault(s => "" + s.ID == request.stationId);
-                if (station == null)
-                {
-                    objResponse.status = 2;
-                    return Ok(objResponse);
-                }
-
-
-                var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
-                if (user == null)
-                {
-                    objResponse.status = 1;
-                    return Ok(objResponse);
-                }
-
-                List<Claim> claims= new List<Claim>();
-                
-                claims.Add(new Claim(ClaimTypes.GivenName, user.FullName));
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Username));
-
-                var store = _dbContext.Preferences.FirstOrDefault();
-                if (store != null)
-                {
-                    AlfaHelper.Currency = "" + store.Currency ?? "$";
-                }
-                var isAccessable = false;
-                if (user.Roles.Any())
-                {
-                    foreach (var role in user.Roles)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
-                        if (role.Permissions != null)
-                        {
-                            foreach (var permission in role.Permissions)
-                            {
-                                claims.Add(new Claim("Permission", permission.Value));
-                                if (permission.Value == "Permission.POS")
-                                {
-                                    isAccessable = true;
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-                if (!isAccessable)
-                {
-                    objResponse.status = 2;
-                    return Ok(objResponse);
-                }
-
-                objResponse.token = BuildToken(user,claims);
-                objResponse.stationId = station.ID.ToString();
-                objResponse.stationName = station.Name;
-                
-                objResponse.status = 0;
-                return Ok(objResponse);
+                userCentral = _centralService.GetAllowedUserByPin(request.pin);
             }
             catch (Exception ex)
             {
+                var m = ex;
+            }
 
-                objResponse.status = 3;
+            if (userCentral == null)
+            {
+                objResponse.status = 2;
+                return StatusCode(200, objResponse);
+            }
+
+            var Central = new CentralService();
+            var lstCompanies = Central.GetAllowedCompanies(userCentral.Username);
+
+            if (!lstCompanies.Any())
+            {
+                objResponse.status = 2;
                 return Ok(objResponse);
             }
 
+            objResponse.db = lstCompanies.First().Database;
+
+            var station = _dbContext.Stations.FirstOrDefault(s => "" + s.ID == request.stationId);
+            if (station == null)
+            {
+                objResponse.status = 2;
+                return Ok(objResponse);
+            }
+
+
+            var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
+            if (user == null)
+            {
+                objResponse.status = 1;
+                return Ok(objResponse);
+            }
+
+            List<Claim> claims = new List<Claim>();
+
+            claims.Add(new Claim(ClaimTypes.GivenName, user.FullName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Username));
+
+            var store = _dbContext.Preferences.FirstOrDefault();
+            if (store != null)
+            {
+                AlfaHelper.Currency = "" + store.Currency ?? "$";
+            }
+            var isAccessable = false;
+            if (user.Roles.Any())
+            {
+                foreach (var role in user.Roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
+                    if (role.Permissions != null)
+                    {
+                        foreach (var permission in role.Permissions)
+                        {
+                            claims.Add(new Claim("Permission", permission.Value));
+                            if (permission.Value == "Permission.POS")
+                            {
+                                isAccessable = true;
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+            if (!isAccessable)
+            {
+                objResponse.status = 2;
+                return Ok(objResponse);
+            }
+
+            objResponse.token = BuildToken(user, claims);
+            objResponse.stationId = station.ID.ToString();
+            objResponse.stationName = station.Name;
+
+            objResponse.status = 0;
+            return Ok(objResponse);
+        }
+        catch (Exception ex)
+        {
+
+            objResponse.status = 3;
+            return Ok(objResponse);
+        }
+
         return Ok(objResponse);
     }
-    
+
     private string BuildToken(User user, List<Claim> claims, DateTime? SetExpiration = null, bool Vacio = false)
         {
             // Cuando tiempo durara nuestro Token

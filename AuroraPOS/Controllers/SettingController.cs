@@ -19,6 +19,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using AuroraPOS.Services;
+using AuroraPOS.Core;
 
 namespace AuroraPOS.Controllers
 {
@@ -29,15 +30,18 @@ namespace AuroraPOS.Controllers
         private AppDbContext _dbContext;
         private readonly IHttpContextAccessor _context;
         private readonly DbAlfaCentralContext _dbCentralContext;
-        public SettingController(ExtendedAppDbContext dbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor context)
-		{
-			_dbContext = dbContext._context;
+        private readonly IUserService _userService;
+
+        public SettingController(ExtendedAppDbContext dbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor context, IUserService userService)
+        {
+            _dbContext = dbContext._context;
             _context = context;
             _hostingEnvironment = hostingEnvironment;
             _dbCentralContext = new DbAlfaCentralContext();
+            _userService = userService;
         }
 
-		public IActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -2911,19 +2915,29 @@ namespace AuroraPOS.Controllers
 
         public JsonResult GetDiaTrabajo()
         {
-            var stationID = int.Parse(GetCookieValue("StationID"));
-            var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+            //var stationID = int.Parse(GetCookieValue("StationID"));
+            //var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
 
-            var objDay = _dbContext.WorkDay.Where(d=>d.IsActive==true && d.IDSucursal== objStation.IDSucursal).FirstOrDefault();
+            //var objDay = _dbContext.WorkDay.Where(d=>d.IsActive==true && d.IDSucursal== objStation.IDSucursal).FirstOrDefault();
 
-            if (objDay == null)
+            //if (objDay == null)
+            //{
+            //    return Json(null);
+            //}
+
+            //DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
+            //return Json(dtNow.ToString("dd-MM-yyyy"));
+
+
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            var dia = settingsCore.GetDia(int.Parse(GetCookieValue("StationID")));
+
+            if (dia != null)
             {
-                return Json(null);
+                return Json(dia.Value.ToString("dd-MM-yyyy"));
             }
-
-            DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-
-            return Json(dtNow.ToString("dd-MM-yyyy"));
+            return Json(null);
         }
 
         private void DeactivateWorkDay()
