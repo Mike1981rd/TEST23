@@ -26,7 +26,7 @@ namespace AuroraPOS.ControllersJWT
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetDiaDeTrabajo(int stationId)
         {
-            var response = new GetDiaDeTrabajoResponse();
+            var response = new SettingResponse();
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
@@ -41,6 +41,32 @@ namespace AuroraPOS.ControllersJWT
                 return Json(null);
             }
             catch (Exception ex) {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
+
+        [HttpPost("GetActiveVoucherList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveVoucherList()
+        {
+            var response = new SettingResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var voucher = settingsCore.GetActiveVoucherList();
+
+                if (voucher != null)
+                {
+                    response.Valor = voucher.ToString();
+                    response.Success = true;
+                    return Json(voucher);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
                 response.Error = ex.Message;
                 response.Success = false;
                 return Json(response);

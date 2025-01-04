@@ -1,4 +1,5 @@
 ﻿using AuroraPOS.Data;
+using AuroraPOS.Models;
 using AuroraPOS.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,11 @@ namespace AuroraPOS.Core
             DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
             return dtNow;
+        }
+
+        public List<Voucher>? GetActiveVoucherList() 
+        {
+            return _dbContext.Vouchers.Where(s => s.IsActive).ToList();
         }
     }
 }
