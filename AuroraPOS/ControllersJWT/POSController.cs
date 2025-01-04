@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using AuroraPOS.Data;
 using AuroraPOS.Services;
 using AuroraPOS.Models;
+using AuroraPOS.ModelsJWT;
 
 namespace AuroraPOS.ControllersJWT;
 
@@ -29,5 +30,57 @@ public class POSController : Controller
         var objPOSCore = new POSCore(_userService, _dbContext,_context);
         var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
         return Json( new { area });
+    }
+
+    [HttpGet("GetMenuGroupList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuGroupList(int stationId)
+    {
+        var response = new MenuGroupResponse();
+        try
+        {
+            var posCore = new POSCore(_userService, _dbContext, _context);
+            var menuGroupList = posCore.GetMenuGroupList(stationId);
+
+            if (menuGroupList != null)
+            {
+                response.Valor = menuGroupList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetOrderItems")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetOrderItems(long orderId, int dividerId = 0)
+    {
+        var response = new GetOrderItemResponse();
+        try
+        {
+            var posCore = new POSCore(_userService, _dbContext, _context);
+            var orderItems = posCore.GetOrderItems(orderId, dividerId);
+
+            if (orderItems != null)
+            {
+                response.Valor = orderItems;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
     }
 }

@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using AuroraPOS.Services;
 using AuroraPOS.Core;
+using AuroraPOS.ModelsJWT;
 
 namespace AuroraPOS.Controllers
 {
@@ -1669,9 +1670,27 @@ namespace AuroraPOS.Controllers
 
 		public JsonResult GetActiveVoucherList()
 		{
-			var vouchers = _dbContext.Vouchers.Where(s=>s.IsActive).ToList();
-			return Json(vouchers);
-		}
+            var response = new VoucherListResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var voucher = settingsCore.GetActiveVoucherList();
+
+                if (voucher != null)
+                {
+                    response.Valor = voucher;
+                    response.Success = true;
+                    return Json(voucher);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
 
 		[HttpPost]
 		public async Task<IActionResult> GetVouchers()
@@ -2804,8 +2823,26 @@ namespace AuroraPOS.Controllers
 
         public JsonResult GetActiveDeliveryZoneList()
         {
-            var vouchers = _dbContext.DeliveryZones.Where(s => s.IsActive && !s.IsDeleted).ToList();
-            return Json(vouchers);
+            var response = new DeliveryZoneResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var deliveryZoneList = settingsCore.GetActiveDeliveryZoneList();
+
+                if (deliveryZoneList != null)
+                {
+                    response.Valor = deliveryZoneList;
+                    response.Success = true;
+                    return Json(deliveryZoneList);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
         }
 
         [HttpPost]

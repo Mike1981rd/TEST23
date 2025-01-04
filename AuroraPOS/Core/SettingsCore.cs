@@ -37,5 +37,10 @@ namespace AuroraPOS.Core
         {
             return _dbContext.Vouchers.Where(s => s.IsActive).ToList();
         }
+
+        public List<DeliveryZone>? GetActiveDeliveryZoneList()
+        {
+            return _dbContext.DeliveryZones.Where(s => s.IsActive && !s.IsDeleted).ToList();
+        }
     }
 }

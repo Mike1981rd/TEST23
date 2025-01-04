@@ -1,6 +1,6 @@
 ﻿namespace AuroraPOS.ModelsJWT
 {
-    public class SettingResponse
+    public class DiaDeTrabajoResponse
     {
         public string? Valor { get; set; } 
         public string? Error { get; set; }

@@ -26,7 +26,7 @@ namespace AuroraPOS.ControllersJWT
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetDiaDeTrabajo(int stationId)
         {
-            var response = new SettingResponse();
+            var response = new DiaDeTrabajoResponse();
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
@@ -51,7 +51,7 @@ namespace AuroraPOS.ControllersJWT
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetActiveVoucherList()
         {
-            var response = new SettingResponse();
+            var response = new VoucherListResponse();
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
@@ -59,9 +59,35 @@ namespace AuroraPOS.ControllersJWT
 
                 if (voucher != null)
                 {
-                    response.Valor = voucher.ToString();
+                    response.Valor = voucher;
                     response.Success = true;
                     return Json(voucher);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
+
+        [HttpPost("GetActiveDeliveryZoneList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveDeliveryZoneList()
+        {
+            var response = new DeliveryZoneResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var deliveryZoneList = settingsCore.GetActiveDeliveryZoneList();
+
+                if (deliveryZoneList != null)
+                {
+                    response.Valor = deliveryZoneList;
+                    response.Success = true;
+                    return Json(deliveryZoneList);
                 }
                 return Json(null);
             }

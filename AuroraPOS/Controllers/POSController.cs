@@ -48,6 +48,7 @@ using AuroraPOS;
 using AuroraPOS.Core;
 using NPOI.HPSF;
 using NPOI.SS.Formula.PTG;
+using AuroraPOS.ModelsJWT;
 
 namespace AuroraPOS.Controllers
 {
@@ -904,14 +905,26 @@ namespace AuroraPOS.Controllers
 
         public JsonResult GetMenuGroupList()
         {
-            var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-            var station = _dbContext.Stations.Include(s => s.MenuSelect).ThenInclude(s=>s.Groups).FirstOrDefault(s => s.ID == stationID);
+            var response = new MenuGroupResponse();
+            try
+            {
+                var posCore = new POSCore(_userService, _dbContext, _context);
+                var menuGroupList = posCore.GetMenuGroupList(int.Parse(GetCookieValue("StationID")));
 
-            var menu = station.MenuSelect;
-
-            var groups = menu.Groups.OrderBy(s => s.Order).ToList();
-
-            return Json(groups);
+                if (menuGroupList != null)
+                {
+                    response.Valor = menuGroupList;
+                    response.Success = true;
+                    return Json(response);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
         }
         
         private void SubstractProduct(long itemId, long prodId, decimal qty, int servingSizeID, OrderType type)
