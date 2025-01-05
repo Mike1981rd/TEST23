@@ -531,7 +531,7 @@ public class POSController : Controller
         return Json(response);
     }
 
-    [HttpPost("GetMenuProductList")]
+    [HttpPost("Sales")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public JsonResult Sales(OrderType orderType, int stationId, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
     {
