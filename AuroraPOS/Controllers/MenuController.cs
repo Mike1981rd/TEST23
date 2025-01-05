@@ -14,6 +14,8 @@ using iText.Barcodes;
 using AuroraPOS.Services;
 using iText.Kernel.Colors;
 using iText.Layout.Borders;
+using AuroraPOS.Core;
+using AuroraPOS.ModelsJWT;
 
 namespace AuroraPOS.Controllers
 {
@@ -23,12 +25,14 @@ namespace AuroraPOS.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AppDbContext _dbContext;
         private readonly IHttpContextAccessor _context;
+        private readonly IUserService _userService;
 
-        public MenuController(ExtendedAppDbContext dbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor context)
+        public MenuController(ExtendedAppDbContext dbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor context, IUserService userService)
         {
             _dbContext = dbContext._context;
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -581,20 +585,21 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
         public JsonResult GetAllActiveCategoryList()
         {
-            return Json(_dbContext.Categories.Include(s=>s.Taxs).Include(s=>s.Propinas).Include(s=>s.PrinterChannels).Where(s=>s.IsActive).Select(s => new CategoryViewModel()
-            {
-                ID = s.ID,
-                Name = s.Name,
-                Plato = s.Plato,
-                IsActive = s.IsActive,
-                GroupID = s.Group.ID,
-                GroupName = s.Group.GroupName,
-                CourseID = s.CourseID,
-                Taxes = s.Taxs == null ? new List<long>() : s.Taxs.Select(x => x.ID).ToList(),
-                Propinas = s.Propinas == null ? new List<long>() : s.Propinas.Select(x => x.ID).ToList(),
-                PrinterChannels = s.PrinterChannels == null ? new List<long>() : s.PrinterChannels.Select(x => x.ID).ToList()
+            var response = new MenuResponse();
+            var menu = new MenuCore(_userService, _dbContext, _context);
 
-            }).ToList());
+            try
+            {
+                response.Valor = menu.GetAllActiveCategoryList();
+                response.Success = true;
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Error = ex.Message;
+                return Json(response);
+            }
         }
 
         [HttpPost]

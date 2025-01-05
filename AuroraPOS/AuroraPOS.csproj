@@ -31,6 +31,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
     <PackageReference Include="PdfiumViewer" Version="2.13.0" />
@@ -67,7 +68,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="D:\AuroraPOS\AuroraPOS\ModelsJWT\.editorconfig" />
     <None Include="Views\Report\PercentCostReport.cshtml" />
     <None Include="wwwroot\vendor\js\site.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\AuroraPOS\AuroraPOS\ModelsJWT\.editorconfig" />
   </ItemGroup>
 </Project>

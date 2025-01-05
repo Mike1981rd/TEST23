@@ -339,7 +339,7 @@ namespace AuroraPOS.Controllers
 
                 if (userCentral == null)
                 {
-                    return Json(new { status = 2 });
+                    return Ok(new { status = 2 });
                 }
 
                 var Central = new CentralService();
@@ -347,7 +347,7 @@ namespace AuroraPOS.Controllers
 
                 if (!lstCompanies.Any())
                 {
-                    return Json(new { status = 2 });
+                    return Ok(new { status = 2 });
                 }
 
                 CookieOptions option = new CookieOptions();
@@ -358,14 +358,14 @@ namespace AuroraPOS.Controllers
                 var station = _dbContext.Stations.FirstOrDefault(s => "" + s.ID == request.UserName);
                 if (station == null)
                 {
-                    return Json(new { status = 2 });
+                    return Ok(new { status = 2 });
                 }
 
 
                 var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
                 if (user == null)
                 {
-                    return Json(new { status = 1 });
+                    return Ok(new { status = 1 });
                 }
 
 
@@ -402,7 +402,7 @@ namespace AuroraPOS.Controllers
 
                 if (!isAccessable)
                 {
-                    return Json(new { status = 2 });
+                    return Ok(new { status = 2 });
                 }
 
                 var principal = new ClaimsPrincipal(identity);
@@ -416,11 +416,11 @@ namespace AuroraPOS.Controllers
                 Response.Cookies.Append("StationID", station.ID.ToString(), option);
                 Response.Cookies.Append("StationName", station.Name, option);
 
-                return Json(new { status = 0 });
+                return Ok(new { status = 0 });
             }
             catch (Exception ex){
 
-                return Json(new { status = 3 });
+                return Ok(new { status = 3 });
             }
            
         }
