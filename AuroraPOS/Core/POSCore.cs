@@ -11,6 +11,7 @@ using NPOI.SS.Formula.Functions;
 using AuroraPOS.Controllers;
 using NPOI.SS.Formula.PTG;
 using AuroraPOS.ModelsJWT;
+using Newtonsoft.Json;
 
 namespace AuroraPOS.Core;
 
@@ -30,52 +31,52 @@ public class POSCore
     }
 
     public Area? GetArea(long areaID, string db)
-		{
-            var request = _context.HttpContext.Request;
-            var _baseURL = $"https://{request.Host}";
-            
-			var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s=>!s.IsDeleted)).FirstOrDefault(s => s.ID == areaID);
+    {
+        var request = _context.HttpContext.Request;
+        var _baseURL = $"https://{request.Host}";
 
-            //Obtenemos la URL de la imagen del archivo            
-            string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png";
-            
-            if (System.IO.File.Exists(pathFile))
-            {
-                var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
-            }
-            else
-            {
-                area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + "empty.png";
-            }
+        var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaID);
 
-            //Obtenemos las urls de las imagenes            
-            if (area.AreaObjects != null && area.AreaObjects.Any())
+        //Obtenemos la URL de la imagen del archivo            
+        string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png";
+
+        if (System.IO.File.Exists(pathFile))
+        {
+            var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+            area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+        }
+        else
+        {
+            area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + "empty.png";
+        }
+
+        //Obtenemos las urls de las imagenes            
+        if (area.AreaObjects != null && area.AreaObjects.Any())
+        {
+            foreach (var item in area.AreaObjects)
             {
-                foreach (var item in area.AreaObjects)
+                pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "areaobject", item.ID.ToString() + ".png");
+                if (System.IO.File.Exists(pathFile))
                 {
-                    pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "areaobject", item.ID.ToString() + ".png");
-                    if (System.IO.File.Exists(pathFile))
-                    {
-                        var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                        item.BackImage = Path.Combine(_baseURL, "localfiles", db, "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                    }
-                    else
-                    {
-                        item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
-                    }
+                    var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+                    item.BackImage = Path.Combine(_baseURL, "localfiles", db, "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                }
+                else
+                {
+                    item.BackImage = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", "empty.png");
                 }
             }
+        }
 
-            /*var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                //MaxDepth = 10, // Fixed
-                ReferenceHandler = ReferenceHandler.Preserve
-            };*/
-            
-            return area;
-		}
+        /*var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            //MaxDepth = 10, // Fixed
+            ReferenceHandler = ReferenceHandler.Preserve
+        };*/
+
+        return area;
+    }
 
     public List<MenuGroup>? GetMenuGroupList(int stationId)
     {
@@ -85,7 +86,7 @@ public class POSCore
 
         var groups = menu.Groups.OrderBy(s => s.Order).ToList();
 
-        if(groups != null)
+        if (groups != null)
         {
             return groups;
         }
@@ -556,4 +557,228 @@ public class POSCore
         catch { }
         return originQty;
     }
+
+    public List<MenuCategory> GetMenuCategoryList(long groupId)
+    {
+        var group = _dbContext.MenuGroups.Include(s => s.Categories).FirstOrDefault(s => s.ID == groupId);
+        if (group != null)
+        {
+            var categories = group.Categories?.OrderBy(s => s.Order).ToList();
+
+            if (categories != null)
+            {
+                return categories;
+            }
+
+        }
+        return new List<MenuCategory>();
+    }
+
+    public List<MenuSubCategory> GetMenuSubCategoryList(long categoryId)
+    {
+        var group = _dbContext.MenuCategories.Include(s => s.SubCategories).FirstOrDefault(s => s.ID == categoryId);
+
+        var subcategories = group?.SubCategories?.OrderBy(s => s.Order).ToList();
+
+        if (subcategories != null)
+        {
+            return subcategories;
+        }
+        return new List<MenuSubCategory>();
+    }
+
+    public List<MenuProduct>? GetMenuProductList(long subCategoryId, string db)
+    {
+        var group = _dbContext.MenuSubCategoris?.Include(s => s.Products).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == subCategoryId);
+
+        if (group != null)
+        {
+            var products = group.Products?.OrderBy(s => s.Order).ToList();
+
+            //Obtenemos las urls de las imagenes
+            var request = _context.HttpContext?.Request;
+            if (request != null)
+            {
+                var _baseURL = $"https://{request.Host}";
+                if (products != null && products.Any())
+                {
+                    foreach (var objProduct in products)
+                    {
+
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "product", objProduct.Product.ID.ToString() + ".png");
+                        if (System.IO.File.Exists(pathFile))
+                        {
+                            var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+                            objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", db, "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                        }
+                        else
+                        {
+                            objProduct.Product.Photo = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", "empty.png");
+                        }
+
+                    }
+                }
+            }
+            return products;
+        }
+        return new List<MenuProduct>();
+    }
+
+    //public IActionResult Sales(OrderType orderType, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
+    //{
+    //    var order = new Order();
+    //    var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+    //    var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+    //    var products = _dbContext.Products.Where(s => s.IsActive).ToList();
+    //    ViewBag.Products = products;
+    //    // Obtener los IDs de los elementos seleccionados
+    //    var selectedIds = JsonConvert.DeserializeObject<List<long>>(selectedItems);
+
+    //    // Obtener las transacciones de la base de datos que coincidan con los IDs seleccionados
+    //    var selectedTransactions = _dbContext.OrderTransactions.Where(t => selectedIds.Contains(t.ID)).ToList();
+
+    //    ViewBag.SelectedItems = selectedTransactions;
+
+
+    //    if (station == null)
+    //        return RedirectToAction("Login");
+
+    //    if (station.SalesMode == SalesMode.Kiosk)
+    //    {
+    //        return Redirect("/POS/Kiosk?orderId=" + orderId);
+    //    }
+    //    ViewBag.AnotherTables = new List<AreaObject>();
+    //    ViewBag.AnotherAreas = new List<Area>();
+    //    ViewBag.DiscountType = "";
+    //    var current = GetOrder(orderId);
+    //    if (current != null)
+    //    {
+    //        order = current;
+    //        // checkout
+    //        if (order.PaymentStatus == PaymentStatus.Partly && order.OrderMode != OrderMode.Divide && order.OrderMode != OrderMode.Seat)
+    //        {
+    //            return Redirect("/POS/Checkout?orderId=" + orderId);
+    //        }
+    //        if (order.OrderMode == OrderMode.Conduce)
+    //        {
+    //            return RedirectToAction("Station");
+    //        }
+    //        var name = HttpContext.User.Identity.GetUserName();
+    //        if (order.WaiterName != name)
+    //        {
+    //            var claims = User.Claims.Where(x => x.Type == "Permission" && x.Value == "Permission.POS.OtherOrder" &&
+    //                                                    x.Issuer == "LOCAL AUTHORITY");
+    //            if (!claims.Any())
+    //            {
+    //                return RedirectToAction("Station", new { error = "Permission" });
+    //            }
+    //        }
+
+    //        if (orderType == OrderType.DiningRoom && areaObject > 0)
+    //        {
+    //            var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+    //            if (table != null)
+    //            {
+    //                ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+    //                ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+    //            }
+    //        }
+
+    //        if (order.Discounts != null && order.Discounts.Count > 0)
+    //        {
+    //            ViewBag.DiscountType = "order";
+    //        }
+    //        foreach (var item in order.Items)
+    //        {
+    //            if (item.Discounts != null && item.Discounts.Count > 0)
+    //            {
+    //                ViewBag.DiscountType = "item";
+    //            }
+    //        }
+
+    //    }
+    //    else
+    //    {
+    //        var user = HttpContext.User.Identity.GetUserName();
+    //        order.Station = station;
+    //        order.WaiterName = user;
+    //        order.OrderMode = OrderMode.Standard;
+    //        order.OrderType = orderType;
+    //        order.Status = OrderStatus.Temp;
+    //        var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+    //        order.ComprobantesID = voucher.ID;
+    //        if (orderType == OrderType.DiningRoom && areaObject > 0)
+    //        {
+    //            var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+    //            if (table != null)
+    //            {
+    //                order.Table = table;
+    //                order.Area = table.Area;
+
+    //                ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+    //                ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+    //            }
+
+    //            order.Person = person;
+    //        }
+
+
+    //        if (orderType == OrderType.Delivery || orderType == OrderType.FastExpress || orderType == OrderType.TakeAway)
+    //        {
+    //            order.Person = person;
+    //        }
+
+
+    //        if (orderType != OrderType.DiningRoom)
+    //        {
+    //            order.OrderMode = OrderMode.Standard;
+    //        }
+
+    //        _dbContext.Orders.Add(order);
+    //        _dbContext.SaveChanges();
+
+    //        order.ForceDate = getCurrentWorkDate();
+    //        _dbContext.SaveChanges();
+
+    //        HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+    //    }
+
+    //    if (orderType == OrderType.Delivery)
+    //    {
+    //        bool deliveryExists = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).Any();
+
+    //        if (!deliveryExists)
+    //        {
+    //            var delivery = new Delivery();
+    //            delivery.Order = order;
+    //            delivery.Status = StatusEnum.Nuevo;
+    //            delivery.StatusUpdated = DateTime.Now;
+    //            delivery.DeliveryTime = DateTime.Now;
+
+    //            _dbContext.Deliverys.Add(delivery);
+
+    //            if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+    //            {
+    //                order.PrepareTypeID = station.PrepareTypeDefault.Value; //Para llevar
+    //            }
+    //            else
+    //            {
+    //                order.PrepareTypeID = 2; //Para llevar
+    //            }
+
+
+    //            var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+    //            order.PrepareType = prepareType; //Para llevar
+
+    //            _dbContext.SaveChanges();
+    //        }
+    //    }
+
+    //    var reasons = _dbContext.CancelReasons.ToList();
+    //    ViewBag.CancelReasons = reasons;
+
+    //    ViewBag.Discounts = _dbContext.Discounts.Where(s => s.IsActive && !s.IsDeleted).ToList();
+
+    //    return View(order);
+    //}
 }

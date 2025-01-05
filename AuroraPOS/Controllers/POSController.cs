@@ -49,6 +49,7 @@ using AuroraPOS.Core;
 using NPOI.HPSF;
 using NPOI.SS.Formula.PTG;
 using AuroraPOS.ModelsJWT;
+using PuppeteerSharp;
 
 namespace AuroraPOS.Controllers
 {
@@ -920,7 +921,6 @@ namespace AuroraPOS.Controllers
 
         public JsonResult GetMenuGroupList()
         {
-            var response = new MenuGroupResponse();
             try
             {
                 var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
@@ -928,18 +928,22 @@ namespace AuroraPOS.Controllers
 
                 if (menuGroupList != null)
                 {
-                    response.Valor = menuGroupList;
-                    response.Success = true;
-                    return Json(response);
+                    return Json(menuGroupList);
                 }
                 return Json(null);
             }
             catch (Exception ex)
             {
-                response.Error = ex.Message;
-                response.Success = false;
-                return Json(response);
+                return Json(ex.Message);
             }
+            //var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+            //var station = _dbContext.Stations.Include(s => s.MenuSelect).ThenInclude(s => s.Groups).FirstOrDefault(s => s.ID == stationID);
+
+            //var menu = station.MenuSelect;
+
+            //var groups = menu.Groups.OrderBy(s => s.Order).ToList();
+
+            //return Json(groups);
         }
 
 		private void VoidAddProduct(long itemId, long prodId, decimal qty, int servingSizeID)
@@ -1149,53 +1153,99 @@ namespace AuroraPOS.Controllers
 
         public JsonResult GetMenuCategoryList(long groupId)
         {
-            var group = _dbContext.MenuGroups.Include(s => s.Categories).FirstOrDefault(s => s.ID == groupId);
-            if (group != null)
+            try
             {
-                var categories = group.Categories.OrderBy(s => s.Order).ToList();
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var menuCategoryList = objPOSCore.GetMenuCategoryList(groupId);
 
-                return Json(categories);
+                if (menuCategoryList != null)
+                {
+                    return Json(menuCategoryList);
+                }
+                return Json(null);
             }
-            return Json(new List<MenuCategory>());
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+            //var group = _dbContext.MenuGroups.Include(s => s.Categories).FirstOrDefault(s => s.ID == groupId);
+            //if (group != null)
+            //{
+            //    var categories = group.Categories.OrderBy(s => s.Order).ToList();
+
+            //    return Json(categories);
+            //}
+            //return Json(new List<MenuCategory>());
         }
 
         public JsonResult GetMenuSubCategoryList(long categoryId)
         {
-            var group = _dbContext.MenuCategories.Include(s => s.SubCategories).FirstOrDefault(s => s.ID == categoryId);
+            try
+            {
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var menuSubCategoryList = objPOSCore.GetMenuSubCategoryList(categoryId);
 
-            var subcategories = group.SubCategories.OrderBy(s => s.Order).ToList();
+                if (menuSubCategoryList != null)
+                {
+                    return Json(menuSubCategoryList);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+            //var group = _dbContext.MenuCategories.Include(s => s.SubCategories).FirstOrDefault(s => s.ID == categoryId);
 
-            return Json(subcategories);
+            //var subcategories = group.SubCategories.OrderBy(s => s.Order).ToList();
+
+            //return Json(subcategories);
         }
 
         public JsonResult GetMenuProductList(long subCategoryId)
         {
-            var group = _dbContext.MenuSubCategoris.Include(s => s.Products).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == subCategoryId);
-
-            var products = group.Products.OrderBy(s => s.Order).ToList();
-
-            //Obtenemos las urls de las imagenes
-            var request = _context.HttpContext.Request;
-            var _baseURL = $"https://{request.Host}";
-            if (products != null && products.Any())
+            try
             {
-                foreach (var objProduct in products) {               
-                    
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png");
-                        if (System.IO.File.Exists(pathFile))
-                        {
-                        var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                        objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                        }
-                        else
-                        {
-                        objProduct.Product.Photo = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", "empty.png");
-                        }
-                    
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, Request.Cookies["db"]);
+
+                if (menuProductList != null)
+                {
+                    return Json(menuProductList);
                 }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
             }
 
-            return Json(products);
+            //var group = _dbContext.MenuSubCategoris.Include(s => s.Products).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == subCategoryId);
+
+            //var products = group.Products.OrderBy(s => s.Order).ToList();
+
+            ////Obtenemos las urls de las imagenes
+            //var request = _context.HttpContext.Request;
+            //var _baseURL = $"https://{request.Host}";
+            //if (products != null && products.Any())
+            //{
+            //    foreach (var objProduct in products) {               
+
+            //            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png");
+            //            if (System.IO.File.Exists(pathFile))
+            //            {
+            //            var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+            //            objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+            //            }
+            //            else
+            //            {
+            //            objProduct.Product.Photo = null; // Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", "empty.png");
+            //            }
+
+            //    }
+            //}
+
+            //return Json(products);
         }
 
         public JsonResult GetMenuStaticProductList()
@@ -1276,90 +1326,112 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult GetOrderItems(long orderId, int dividerId = 0)
 		{
-			try
-			{
-                var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s => s.Divisor)).Include(s=>s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
-                var lstSmart = _dbContext.SmartButtons.Select(m=>m.Name).ToList().Distinct();
-                if (order.OrderMode == OrderMode.Seat)
+            var response = new GetOrderItemResponse();
+            try
+            {
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var orderItems = objPOSCore.GetOrderItems(orderId, dividerId);
+
+                if (orderItems != null)
                 {
-                    order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s=>!s.IsPaid)).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s=>s.Divisor)).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
-
-                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
-                    if (order.Items != null && order.Items.Any())
-                    {
-                        foreach (var objItem in order.Items)
-                        {
-                            objItem.Product.Photo = null;
-                            
-                            foreach (var objQuestion in objItem.Questions)
-                            {
-                                if (lstSmart.Any(objQuestion.Description.Contains))
-                                {
-                                    objQuestion.showDesc = true;
-                                }
-                            }
-                        }
-                    }
-
-                    return Json(new { status = 0, order.Seats, order } );
+                    response.Valor = orderItems;
+                    response.Success = true;
+                    return Json(response);
                 }
-                else if (order.OrderMode == OrderMode.Divide && dividerId > 0)
-                {
-                    order = _dbContext.Orders.Include(s=>s.Divides).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
-
-                    var items = order.Items.Where(s => s.DividerNum == dividerId).ToList();
-                    var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
-                    order.GetTotalPrice(voucher, dividerId);
-
-                    var clientName = "";
-                    try
-                    {
-                        var divide = order.Divides.FirstOrDefault(s => s.DividerNum == dividerId);
-                        if (divide != null)
-                        {
-                            clientName = divide.ClientName;
-                        }
-
-                        
-                    }
-                    catch { }
-
-                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
-                    if (order.Items != null && order.Items.Any())
-                    {
-                        foreach (var objItem in order.Items)
-                        {
-                            objItem.Product.Photo = null;
-                        }
-                    }
-
-                    return Json(new { status = 0, items, order, client = clientName });
-                }
-                else
-                {
-                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
-                    if(order.Items!= null && order.Items.Any()) {
-                        foreach (var objItem in order.Items)
-                        {
-                            objItem.Product.Photo = null;
-                            
-                            foreach (var objQuestion in objItem.Questions)
-                            {
-                                if (lstSmart.Any(objQuestion.Description.Contains))
-                                {
-                                    objQuestion.showDesc = true;
-                                }
-                            }
-                        }
-                    }
-                    
-
-                    return Json(new { status = 0, items = order.Items.OrderBy(s=>s.CourseID).ToList(), order });
-                }
+                return Json(null);
             }
-			catch { }
-			return Json(new { status = 1 });
-		}
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+
+
+            //try
+            //{
+            //             var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s => s.Divisor)).Include(s=>s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+            //             var lstSmart = _dbContext.SmartButtons.Select(m=>m.Name).ToList().Distinct();
+            //             if (order.OrderMode == OrderMode.Seat)
+            //             {
+            //                 order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s=>!s.IsPaid)).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s=>s.Divisor)).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
+
+            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
+            //                 if (order.Items != null && order.Items.Any())
+            //                 {
+            //                     foreach (var objItem in order.Items)
+            //                     {
+            //                         objItem.Product.Photo = null;
+
+            //                         foreach (var objQuestion in objItem.Questions)
+            //                         {
+            //                             if (lstSmart.Any(objQuestion.Description.Contains))
+            //                             {
+            //                                 objQuestion.showDesc = true;
+            //                             }
+            //                         }
+            //                     }
+            //                 }
+
+            //                 return Json(new { status = 0, order.Seats, order } );
+            //             }
+            //             else if (order.OrderMode == OrderMode.Divide && dividerId > 0)
+            //             {
+            //                 order = _dbContext.Orders.Include(s=>s.Divides).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+
+            //                 var items = order.Items.Where(s => s.DividerNum == dividerId).ToList();
+            //                 var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            //                 order.GetTotalPrice(voucher, dividerId);
+
+            //                 var clientName = "";
+            //                 try
+            //                 {
+            //                     var divide = order.Divides.FirstOrDefault(s => s.DividerNum == dividerId);
+            //                     if (divide != null)
+            //                     {
+            //                         clientName = divide.ClientName;
+            //                     }
+
+
+            //                 }
+            //                 catch { }
+
+            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
+            //                 if (order.Items != null && order.Items.Any())
+            //                 {
+            //                     foreach (var objItem in order.Items)
+            //                     {
+            //                         objItem.Product.Photo = null;
+            //                     }
+            //                 }
+
+            //                 return Json(new { status = 0, items, order, client = clientName });
+            //             }
+            //             else
+            //             {
+            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
+            //                 if(order.Items!= null && order.Items.Any()) {
+            //                     foreach (var objItem in order.Items)
+            //                     {
+            //                         objItem.Product.Photo = null;
+
+            //                         foreach (var objQuestion in objItem.Questions)
+            //                         {
+            //                             if (lstSmart.Any(objQuestion.Description.Contains))
+            //                             {
+            //                                 objQuestion.showDesc = true;
+            //                             }
+            //                         }
+            //                     }
+            //                 }
+
+
+            //                 return Json(new { status = 0, items = order.Items.OrderBy(s=>s.CourseID).ToList(), order });
+            //             }
+            //         }
+            //catch { }
+            //return Json(new { status = 1 });
+        }
 
         [HttpPost]
         public JsonResult GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)

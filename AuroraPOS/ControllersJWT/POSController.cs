@@ -171,7 +171,7 @@ public class POSController : Controller
         return Json( new { area });
     }
 
-    [HttpGet("GetMenuGroupList")]
+    [HttpPost("GetMenuGroupList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public JsonResult GetMenuGroupList(int stationId)
     {
@@ -267,6 +267,84 @@ public class POSController : Controller
             response.result = null;
             response.Success = false;
             response.Error = ex.Message;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetMenuCategoryList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuCategoryList(long groupId)
+    {
+        var response = new MenuCategoryListResponse();
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuCategoryList = objPOSCore.GetMenuCategoryList(groupId);
+
+            if (menuCategoryList != null)
+            {
+                response.Valor = menuCategoryList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetMenuSubCategoryList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuSubCategoryList(long categoryId)
+    {
+        var response = new MenuSubCategoryListResponse();
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuSubCategoryList = objPOSCore.GetMenuSubCategoryList(categoryId);
+
+            if (menuSubCategoryList != null)
+            {
+                response.Valor = menuSubCategoryList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetMenuProductList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuProductList(long subCategoryId, string db)
+    {
+        var response = new MenuProductListResponse();
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, db);
+
+            if (menuProductList != null)
+            {
+                response.Valor = menuProductList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
             return Json(response);
         }
     }
