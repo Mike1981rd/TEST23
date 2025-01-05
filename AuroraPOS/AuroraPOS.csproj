@@ -68,7 +68,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="D:\AuroraPOS\AuroraPOS\ModelsJWT\.editorconfig" />
     <None Include="Views\Report\PercentCostReport.cshtml" />
     <None Include="wwwroot\vendor\js\site.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\AuroraPOS\AuroraPOS\ModelsJWT\.editorconfig" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ using static SkiaSharp.HarfBuzz.SKShaper;
 using AuroraPOS.ModelsJWT;
 using System.Globalization;
 using PuppeteerSharp;
+using Newtonsoft.Json;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -527,6 +528,196 @@ public class POSController : Controller
         }
 
         response.status = 1;
+        return Json(response);
+    }
+
+    [HttpPost("GetMenuProductList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult Sales(OrderType orderType, int stationId, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
+    {
+        var response = new POSSalesResponse();
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        var objSettingCore = new SettingsCore(_userService,_dbContext,_context);
+        var order = new Order(); // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationId);
+        var products = _dbContext.Products.Where(s => s.IsActive).ToList();
+        ViewBag.Products = products;
+        // Obtener los IDs de los elementos seleccionados
+        var selectedIds = JsonConvert.DeserializeObject<List<long>>(selectedItems);
+
+        // Obtener las transacciones de la base de datos que coincidan con los IDs seleccionados
+        var selectedTransactions = _dbContext.OrderTransactions.Where(t => selectedIds.Contains(t.ID)).ToList();
+
+        ViewBag.SelectedItems = selectedTransactions;
+
+
+        if (station == null)
+        {
+            response.status = 2;
+            response.success = false;
+            response.redirectTo = "Login";
+
+            return Json(response);
+        }
+
+        if (station.SalesMode == SalesMode.Kiosk)
+        {
+            response.status = 1;
+            response.success = false;
+            response.redirectTo = "/POS/Kiosk?orderId=" + orderId;
+
+            return Json(response);
+        }
+
+        ViewBag.AnotherTables = new List<AreaObject>();
+        ViewBag.AnotherAreas = new List<Area>();
+        ViewBag.DiscountType = "";
+        var current = objPOSCore.GetOrder(orderId);
+        if (current != null)
+        {
+            order = current;
+            // checkout
+            if (order.PaymentStatus == PaymentStatus.Partly && order.OrderMode != OrderMode.Divide && order.OrderMode != OrderMode.Seat)
+            {
+                response.status = 3;
+                response.success = false;
+                response.redirectTo = "/POS/Checkout?orderId=" + orderId;
+
+                return Json(response);
+            }
+            if (order.OrderMode == OrderMode.Conduce)
+            {
+                response.status = 4;
+                response.success = false;
+                response.redirectTo = "Station";
+
+                return Json(response);
+            }
+            var name = HttpContext.User.Identity.GetUserName();
+            if (order.WaiterName != name)
+            {
+                var claims = User.Claims.Where(x => x.Type == "Permission" && x.Value == "Permission.POS.OtherOrder" &&
+                                                        x.Issuer == "LOCAL AUTHORITY");
+                if (!claims.Any())
+                {
+                    response.status = 5;
+                    response.success = false;
+                    response.redirectTo = "Station";
+                    response.error = "Permission";
+
+                    return Json(response);
+                }
+            }
+
+            if (orderType == OrderType.DiningRoom && areaObject > 0)
+            {
+                var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+                if (table != null)
+                {
+                    ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+                    ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+                }
+            }
+
+            if (order.Discounts != null && order.Discounts.Count > 0)
+            {
+                ViewBag.DiscountType = "order";
+            }
+            foreach (var item in order.Items)
+            {
+                if (item.Discounts != null && item.Discounts.Count > 0)
+                {
+                    ViewBag.DiscountType = "item";
+                }
+            }
+
+        }
+        else
+        {
+            var user = HttpContext.User.Identity.GetUserName();
+            order.Station = station;
+            order.WaiterName = user;
+            order.OrderMode = OrderMode.Standard;
+            order.OrderType = orderType;
+            order.Status = OrderStatus.Temp;
+            var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+            order.ComprobantesID = voucher.ID;
+            if (orderType == OrderType.DiningRoom && areaObject > 0)
+            {
+                var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+                if (table != null)
+                {
+                    order.Table = table;
+                    order.Area = table.Area;
+
+                    ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+                    ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+                }
+
+                order.Person = person;
+            }
+
+
+            if (orderType == OrderType.Delivery || orderType == OrderType.FastExpress || orderType == OrderType.TakeAway)
+            {
+                order.Person = person;
+            }
+
+
+            if (orderType != OrderType.DiningRoom)
+            {
+                order.OrderMode = OrderMode.Standard;
+            }
+
+            _dbContext.Orders.Add(order);
+            _dbContext.SaveChanges();
+
+            order.ForceDate = objSettingCore.GetDia(stationId);
+            _dbContext.SaveChanges();
+
+            HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+        }
+
+        if (orderType == OrderType.Delivery)
+        {
+            bool deliveryExists = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).Any();
+
+            if (!deliveryExists)
+            {
+                var delivery = new Delivery();
+                delivery.Order = order;
+                delivery.Status = StatusEnum.Nuevo;
+                delivery.StatusUpdated = DateTime.Now;
+                delivery.DeliveryTime = DateTime.Now;
+
+                _dbContext.Deliverys.Add(delivery);
+
+                if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+                {
+                    order.PrepareTypeID = station.PrepareTypeDefault.Value; //Para llevar
+                }
+                else
+                {
+                    order.PrepareTypeID = 2; //Para llevar
+                }
+
+
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType; //Para llevar
+
+                _dbContext.SaveChanges();
+            }
+        }
+
+        var reasons = _dbContext.CancelReasons.ToList();
+        ViewBag.CancelReasons = reasons;
+
+        ViewBag.Discounts = _dbContext.Discounts.Where(s => s.IsActive && !s.IsDeleted).ToList();
+
+        response.success = true;
+        response.status = 0;
+        response.order = order;
+
         return Json(response);
     }
 }
