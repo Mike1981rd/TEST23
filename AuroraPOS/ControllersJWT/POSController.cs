@@ -11,6 +11,8 @@ using AuroraPOS.Controllers;
 using NPOI.SS.Formula.PTG;
 using static SkiaSharp.HarfBuzz.SKShaper;
 using AuroraPOS.ModelsJWT;
+using System.Globalization;
+using PuppeteerSharp;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -271,23 +273,113 @@ public class POSController : Controller
         }
     }
 
-    [HttpPost("GetMenuCategoryList")]
+    //pendiente
+    [HttpPost("GetOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuCategoryList(long groupId)
+    public JsonResult GetOrderList(long areaId, string from, string to, int stationId, long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0)
     {
-        var response = new MenuCategoryListResponse();
+        GetOrderListResponse response = new GetOrderListResponse();
+
         try
         {
-            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var menuCategoryList = objPOSCore.GetMenuCategoryList(groupId);
+            var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+            var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
-            if (menuCategoryList != null)
+            var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+            // Skiping number of Rows count  
+            var start = Request.Form["start"].FirstOrDefault();
+            // Paging Length 10,20  
+            var length = Request.Form["length"].FirstOrDefault();
+            // Sort Column Name  
+            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            // Sort Column Direction ( asc ,desc)  
+            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            // Search Value from (Search box)  
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            //Paging Size (10,20,50,100)  
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+            int recordsTotal = 0;
+
+            var area = _dbContext.Areas.FirstOrDefault(s => s.ID == areaId);
+
+            // Getting all Customer data  
+            var customerData = _dbContext.Orders.Include(s => s.Station).Include(s => s.Area).Where(s =>/*s.Station == station && s.Area == area &&*/ s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void).OrderByDescending(s => s.OrderTime).Select(s => new
             {
-                response.Valor = menuCategoryList;
-                response.Success = true;
-                return Json(response);
+                s.ID,
+                OrderDate = s.OrderTime.ToString("dd/MM/yyyy"),
+                s.TotalPrice,
+                s.PayAmount,
+                s.Status,
+                s.OrderTime,
+                s.ClientName,
+                s.WaiterName,
+                s.OrderMode,
+                s.CustomerId,
+                Branch = s.Station.IDSucursal
+            });
+
+            if (cliente > 0)
+            {
+                customerData = (from s in customerData where s.CustomerId == cliente select s);
             }
-            return Json(null);
+
+            if (orden > 0)
+            {
+                customerData = (from s in customerData where s.ID == orden select s);
+            }
+
+            if (monto > 0)
+            {
+                customerData = (from s in customerData where s.TotalPrice.ToString().Contains(monto.ToString()) select s);
+            }
+
+            if (branch > 0)
+            {
+                customerData = (from s in customerData where s.Branch == branch select s);
+            }
+
+
+
+            var toDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(to))
+            {
+                try
+                {
+                    toDate = DateTime.ParseExact(to, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                }
+                catch { }
+            }
+            var fromDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(from))
+            {
+                try
+                {
+                    fromDate = DateTime.ParseExact(from, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                }
+                catch { }
+            }
+
+            customerData = customerData.Where(s => s.OrderTime.Date >= fromDate.Date && s.OrderTime.Date <= toDate.Date);
+
+            //total number of rows count   
+            recordsTotal = customerData.Count();
+            //Paging   
+            var data = customerData.Skip(skip).ToList();
+            if (pageSize != -1)
+            {
+                data = data.Take(pageSize).ToList();
+            }
+
+            //data = data.Where(s => s.OrderTime.Date >= fromDate.Date && s.OrderTime.Date <= toDate.Date).ToList();
+
+            //Returning Json Data 
+            response.Success = true;
+            response.result = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+
+            return Json(response);
+
         }
         catch (Exception ex)
         {
@@ -297,55 +389,144 @@ public class POSController : Controller
         }
     }
 
-    [HttpPost("GetMenuSubCategoryList")]
+    //pendiente
+    [HttpPost("GetPaidOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuSubCategoryList(long categoryId)
+    public IActionResult GetPaidOrderList(long areaId, string from, string to, int stationId, long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0, int factura = 0)
     {
-        var response = new MenuSubCategoryListResponse();
         try
         {
-            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var menuSubCategoryList = objPOSCore.GetMenuSubCategoryList(categoryId);
+            var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+            var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
-            if (menuSubCategoryList != null)
+            var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+            // Skiping number of Rows count  
+            var start = Request.Form["start"].FirstOrDefault();
+            // Paging Length 10,20  
+            var length = Request.Form["length"].FirstOrDefault();
+            // Sort Column Name  
+            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            // Sort Column Direction ( asc ,desc)  
+            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            // Search Value from (Search box)  
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            //Paging Size (10,20,50,100)  
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+            int recordsTotal = 0;
+            var area = _dbContext.Areas.FirstOrDefault(s => s.ID == areaId);
+            // Getting all Customer data
+
+            var customerData = _dbContext.Orders.Include(s => s.Station).Include(s => s.Area).Where(s =>/* s.Station == station && s.Area == area &&*/ s.Status == OrderStatus.Paid).OrderByDescending(s => s.OrderTime).Select(s => new
             {
-                response.Valor = menuSubCategoryList;
-                response.Success = true;
-                return Json(response);
+                s.ID,
+                s.Factura,
+                OrderDate = s.OrderTime.ToString("dd/MM/yyyy"),
+                s.TotalPrice,
+                s.PayAmount,
+                s.Status,
+                s.OrderTime,
+                s.UpdatedDate,
+                s.ClientName,
+                s.WaiterName,
+                s.OrderMode,
+                s.CustomerId,
+                Branch = s.Station.IDSucursal
+            });
+
+            if (cliente > 0)
+            {
+                customerData = (from s in customerData where s.CustomerId == cliente select s);
             }
-            return Json(null);
+
+            if (orden > 0)
+            {
+                customerData = (from s in customerData where s.ID == orden select s);
+            }
+
+            if (factura > 0)
+            {
+                customerData = (from s in customerData where s.Factura == factura select s);
+            }
+
+            if (monto > 0)
+            {
+                customerData = (from s in customerData where s.TotalPrice == monto select s);
+            }
+
+            if (branch > 0)
+            {
+                customerData = (from s in customerData where s.Branch == branch select s);
+            }
+
+            var toDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(to))
+            {
+                try
+                {
+                    toDate = DateTime.ParseExact(to, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                }
+                catch { }
+            }
+            var fromDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(from))
+            {
+                try
+                {
+                    fromDate = DateTime.ParseExact(from, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                }
+                catch { }
+            }
+
+            customerData = customerData.Where(s => s.OrderTime.Date >= fromDate.Date && s.OrderTime.Date <= toDate.Date);
+
+            //total number of rows count   
+            recordsTotal = customerData.Count();
+            //Paging   
+            var data = customerData.Skip(skip).ToList();
+            if (pageSize != -1)
+            {
+                data = data.Take(pageSize).ToList();
+            }
+
+
+
+
+            //Returning Json Data  
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+
         }
         catch (Exception ex)
         {
-            response.Error = ex.Message;
-            response.Success = false;
-            return Json(response);
+            throw;
         }
     }
 
-    [HttpPost("GetMenuProductList")]
+    [HttpPost("CheckReservation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuProductList(long subCategoryId, string db)
+    public JsonResult CheckReservation(int tableID)
     {
-        var response = new MenuProductListResponse();
-        try
-        {
-            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, db);
+        var reservation = _dbContext.Reservations.Where(s => s.TableID == tableID && s.Status == ReservationStatus.Open).ToList();
 
-            if (menuProductList != null)
+        var response = new POSReservationResponse();
+
+        foreach (var r in reservation)
+        {
+            var st = r.ReservationTime.AddMinutes(-30);
+            var en = r.ReservationTime.AddHours((double)r.Duration);
+
+            if (DateTime.Now >= st && DateTime.Now <= en)
             {
-                response.Valor = menuProductList;
-                response.Success = true;
+                response.status = 0;
+                response.reservation = r;
+                response.time = r.ReservationTime.ToString("HH:mm");
+
                 return Json(response);
             }
-            return Json(null);
         }
-        catch (Exception ex)
-        {
-            response.Error = ex.Message;
-            response.Success = false;
-            return Json(response);
-        }
+
+        response.status = 1;
+        return Json(response);
     }
 }

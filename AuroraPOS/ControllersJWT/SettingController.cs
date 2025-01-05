@@ -98,5 +98,14 @@ namespace AuroraPOS.ControllersJWT
                 return Json(response);
             }
         }
+
+        [HttpGet("GetStations")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetStations()
+        {
+            var stations = _dbContext.Stations.Select(s => new { s.ID, s.Name }).ToList();
+
+            return Json(stations);
+        }
     }
 }
