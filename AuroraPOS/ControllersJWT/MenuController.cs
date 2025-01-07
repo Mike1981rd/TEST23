@@ -42,5 +42,28 @@ namespace AuroraPOS.ControllersJWT
                 return Json(response);
             }
         }
+
+        [HttpPost("GetProductList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetProductList(string draw, int start, int length,
+                string sortColumn, string sortColumnDirection, string searchValue,
+                string all, string category, string barcode, string status, string db)
+        {
+            var response = new MenuProductListResponse();
+            var menu = new MenuCore(_userService, _dbContext, _context);
+
+            try
+            {
+                response.Valor = menu.GetProductList(draw,start,length,sortColumn,sortColumnDirection,searchValue,all,category,barcode,status,db);
+                response.Success = true;
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Error = ex.Message;
+                return Json(response);
+            }
+        }
     }
 }

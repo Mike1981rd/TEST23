@@ -13,12 +13,8 @@ using static SkiaSharp.HarfBuzz.SKShaper;
 using AuroraPOS.ModelsJWT;
 using System.Globalization;
 using PuppeteerSharp;
-<<<<<<< Updated upstream
 using Newtonsoft.Json;
-=======
 using System.Security.Claims;
-
->>>>>>> Stashed changes
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -579,7 +575,7 @@ public class POSController : Controller
 
     [HttpPost("Sales")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Sales(OrderType orderType, int stationId, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
+    public JsonResult Sales(OrderType orderType, int stationId,string userName,OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
     {
         var response = new POSSalesResponse();
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
@@ -639,8 +635,8 @@ public class POSController : Controller
 
                 return Json(response);
             }
-            var name = HttpContext.User.Identity.GetUserName();
-            if (order.WaiterName != name)
+            //var name = HttpContext.User.Identity.GetUserName();
+            if (order.WaiterName != userName)
             {
                 var claims = User.Claims.Where(x => x.Type == "Permission" && x.Value == "Permission.POS.OtherOrder" &&
                                                         x.Issuer == "LOCAL AUTHORITY");
@@ -680,9 +676,9 @@ public class POSController : Controller
         }
         else
         {
-            var user = HttpContext.User.Identity.GetUserName();
+            //var user = HttpContext.User.Identity.GetUserName();
             order.Station = station;
-            order.WaiterName = user;
+            order.WaiterName = userName;
             order.OrderMode = OrderMode.Standard;
             order.OrderType = orderType;
             order.Status = OrderStatus.Temp;

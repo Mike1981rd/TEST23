@@ -636,8 +636,6 @@ public class POSCore
         return null;
     }
 
-<<<<<<< Updated upstream
-=======
 
     //    if (station == null)
     //        return RedirectToAction("Login");
@@ -782,5 +780,4 @@ public class POSCore
     //}
 
 
->>>>>>> Stashed changes
 }

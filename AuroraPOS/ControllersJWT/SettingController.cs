@@ -128,5 +128,59 @@ namespace AuroraPOS.ControllersJWT
 
             return Json(result);
         }
+
+        [HttpPost("GetActiveCustomerList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveCustomerList(string draw, int start, int length,
+            string sortColumn, string sortColumnDirection, string searchValue, long clienteid = 0)
+        {
+            var response = new ActiveCustomerListResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var activeCustomerList = settingsCore.GetActiveCustomerList(draw,start,length,sortColumn,sortColumnDirection,searchValue,clienteid);
+
+                if (activeCustomerList != null)
+                {
+                    response.Valor = activeCustomerList;
+                    response.Success = true;
+                    return Json(response);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
+
+        [HttpPost("GetPrepareTypes")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetPrepareTypes(string draw, int start, int length,
+            string sortColumn, string sortColumnDirection, string searchValue, bool justData = false)
+        {
+            var response = new PrepareTypesResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var prepareTypesList = settingsCore.GetPrepareTypes(draw, start, length, sortColumn, sortColumnDirection, searchValue, justData);
+
+                if (prepareTypesList != null)
+                {
+                    response.Valor = prepareTypesList;
+                    response.Success = true;
+                    return Json(response);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
     }
 }
