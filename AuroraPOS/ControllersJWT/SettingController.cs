@@ -103,9 +103,30 @@ namespace AuroraPOS.ControllersJWT
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetStations()
         {
-            var stations = _dbContext.Stations.Select(s => new { s.ID, s.Name }).ToList();
+            GetStationsResponse result = new GetStationsResponse();
 
-            return Json(stations);
+            try
+            {
+                var stations = _dbContext.Stations
+                    .Select(s => new Station { ID = s.ID, Name = s.Name })
+                    .ToList();
+
+                if(stations.Any())
+                {
+                    result.result = stations;
+                    result.Success = true;
+                } else
+                {
+                    result.Error = "No hay elementos en la peticion";
+                    result.Success = true;
+                }
+            } catch(Exception e)
+            {
+                result.Error = e.Message;
+                result.Success = false;
+            }
+
+            return Json(result);
         }
     }
 }

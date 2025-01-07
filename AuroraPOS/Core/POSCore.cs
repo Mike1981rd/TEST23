@@ -636,4 +636,151 @@ public class POSCore
         return null;
     }
 
+<<<<<<< Updated upstream
+=======
+
+    //    if (station == null)
+    //        return RedirectToAction("Login");
+
+    //    if (station.SalesMode == SalesMode.Kiosk)
+    //    {
+    //        return Redirect("/POS/Kiosk?orderId=" + orderId);
+    //    }
+    //    ViewBag.AnotherTables = new List<AreaObject>();
+    //    ViewBag.AnotherAreas = new List<Area>();
+    //    ViewBag.DiscountType = "";
+    //    var current = GetOrder(orderId);
+    //    if (current != null)
+    //    {
+    //        order = current;
+    //        // checkout
+    //        if (order.PaymentStatus == PaymentStatus.Partly && order.OrderMode != OrderMode.Divide && order.OrderMode != OrderMode.Seat)
+    //        {
+    //            return Redirect("/POS/Checkout?orderId=" + orderId);
+    //        }
+    //        if (order.OrderMode == OrderMode.Conduce)
+    //        {
+    //            return RedirectToAction("Station");
+    //        }
+    //        var name = HttpContext.User.Identity.GetUserName();
+    //        if (order.WaiterName != name)
+    //        {
+    //            var claims = User.Claims.Where(x => x.Type == "Permission" && x.Value == "Permission.POS.OtherOrder" &&
+    //                                                    x.Issuer == "LOCAL AUTHORITY");
+    //            if (!claims.Any())
+    //            {
+    //                return RedirectToAction("Station", new { error = "Permission" });
+    //            }
+    //        }
+
+    //        if (orderType == OrderType.DiningRoom && areaObject > 0)
+    //        {
+    //            var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+    //            if (table != null)
+    //            {
+    //                ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+    //                ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+    //            }
+    //        }
+
+    //        if (order.Discounts != null && order.Discounts.Count > 0)
+    //        {
+    //            ViewBag.DiscountType = "order";
+    //        }
+    //        foreach (var item in order.Items)
+    //        {
+    //            if (item.Discounts != null && item.Discounts.Count > 0)
+    //            {
+    //                ViewBag.DiscountType = "item";
+    //            }
+    //        }
+
+    //    }
+    //    else
+    //    {
+    //        var user = HttpContext.User.Identity.GetUserName();
+    //        order.Station = station;
+    //        order.WaiterName = user;
+    //        order.OrderMode = OrderMode.Standard;
+    //        order.OrderType = orderType;
+    //        order.Status = OrderStatus.Temp;
+    //        var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+    //        order.ComprobantesID = voucher.ID;
+    //        if (orderType == OrderType.DiningRoom && areaObject > 0)
+    //        {
+    //            var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+    //            if (table != null)
+    //            {
+    //                order.Table = table;
+    //                order.Area = table.Area;
+
+    //                ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+    //                ViewBag.AnotherAreas = station.Areas.Where(s => s.IsActive && s.ID != table.Area.ID).ToList();
+    //            }
+
+    //            order.Person = person;
+    //        }
+
+
+    //        if (orderType == OrderType.Delivery || orderType == OrderType.FastExpress || orderType == OrderType.TakeAway)
+    //        {
+    //            order.Person = person;
+    //        }
+
+
+    //        if (orderType != OrderType.DiningRoom)
+    //        {
+    //            order.OrderMode = OrderMode.Standard;
+    //        }
+
+    //        _dbContext.Orders.Add(order);
+    //        _dbContext.SaveChanges();
+
+    //        order.ForceDate = getCurrentWorkDate();
+    //        _dbContext.SaveChanges();
+
+    //        HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+    //    }
+
+    //    if (orderType == OrderType.Delivery)
+    //    {
+    //        bool deliveryExists = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).Any();
+
+    //        if (!deliveryExists)
+    //        {
+    //            var delivery = new Delivery();
+    //            delivery.Order = order;
+    //            delivery.Status = StatusEnum.Nuevo;
+    //            delivery.StatusUpdated = DateTime.Now;
+    //            delivery.DeliveryTime = DateTime.Now;
+
+    //            _dbContext.Deliverys.Add(delivery);
+
+    //            if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+    //            {
+    //                order.PrepareTypeID = station.PrepareTypeDefault.Value; //Para llevar
+    //            }
+    //            else
+    //            {
+    //                order.PrepareTypeID = 2; //Para llevar
+    //            }
+
+
+    //            var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+    //            order.PrepareType = prepareType; //Para llevar
+
+    //            _dbContext.SaveChanges();
+    //        }
+    //    }
+
+    //    var reasons = _dbContext.CancelReasons.ToList();
+    //    ViewBag.CancelReasons = reasons;
+
+    //    ViewBag.Discounts = _dbContext.Discounts.Where(s => s.IsActive && !s.IsDeleted).ToList();
+
+    //    return View(order);
+    //}
+
+
+>>>>>>> Stashed changes
 }
