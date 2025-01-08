@@ -15,6 +15,7 @@ using System.Globalization;
 using PuppeteerSharp;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using AuroraPOS.ViewModels;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -781,6 +782,214 @@ public class POSController : Controller
                 return Json(response);
             }
             return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("Checkout")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult Checkout(long OrderId, int stationId, string db, int Seat = 0, int DividerId = 0, string selectedItems = "", bool refund = false)
+    {
+        var checkoutResponse = new CheckoutResponse();
+        var LogError = new System.Text.StringBuilder();
+
+        LogError.Append("OrderId: ").Append(OrderId).Append(" Seat: ").Append(Seat).Append(" DividerId: ").Append(DividerId);
+
+        ViewBag.Refund = refund;
+
+        try
+        {
+            LogError.AppendLine().Append("--------").AppendLine().Append("L1 ");
+
+            var model = new CheckOutViewModel();
+            var order = _dbContext.Orders.Include(s => s.Divides).Include(s => s.Table).FirstOrDefault(s => s.ID == OrderId);
+
+            LogError.AppendLine().Append("--------").AppendLine().Append("L2 ");
+
+            Console.WriteLine("Station ID: " + stationId);
+
+            if (order == null)
+            {
+                checkoutResponse.Success = false;
+                checkoutResponse.redirectTo = "jwt/POS/Station";
+
+                return Json(checkoutResponse);
+            }
+
+            model.OrderId = OrderId;
+            model.SeatNum = Seat;
+            model.DividerId = DividerId;
+            model.Order = order;
+            model.ClientName = order.ClientName;
+            model.ComprebanteName = order.ComprobanteName;
+
+            LogError.AppendLine().Append("--------").AppendLine().Append("L3 ");
+
+            if (Seat > 0)
+            {
+                model.PaymentType = 1;
+            }
+            else if (DividerId > 0)
+            {
+                try
+                {
+                    var divide = order.Divides.FirstOrDefault(s => s.DividerNum == DividerId);
+                    if (divide != null)
+                    {
+                        var comprebante = _dbContext.Vouchers.FirstOrDefault(s => s.ID == divide.ComprebanteId);
+                        model.ClientName = divide.ClientName;
+                        if (comprebante != null)
+                        {
+                            model.ComprebanteName = comprebante.Name;
+                        }
+                    }
+                }
+                catch { }
+
+                model.PaymentType = 2;
+            }
+
+            LogError.AppendLine().Append("--------").AppendLine().Append("L4 ");
+
+            var denominations = _dbContext.Denominations.OrderBy(s => s.DisplayOrder).ToList();
+            ViewBag.Denominations = denominations;
+
+            var paymentMethods = _dbContext.PaymentMethods.Where(s => s.IsActive).OrderBy(s => s.DisplayOrder).ToList();
+            if (Seat > 0 || DividerId > 0)
+            {
+                var removes = paymentMethods.Where(s => s.PaymentType == "Conduce").ToList();
+                foreach (var r in removes)
+                    paymentMethods.Remove(r);
+            }
+            //Obtenemos las urls de las imagenes
+            var request = _context.HttpContext.Request;
+            var _baseURL = $"https://{request.Host}";
+            if (paymentMethods != null && paymentMethods.Any())
+            {
+                foreach (var item in paymentMethods)
+                {
+                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "paymentmethod", item.ID.ToString() + ".png");
+                    if (System.IO.File.Exists(pathFile))
+                    {
+                        var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
+                        item.Image = Path.Combine(_baseURL, "localfiles", db, "paymentmethod", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                    }
+                    else
+                    {
+                        item.Image = Path.Combine(_baseURL, "localfiles", db, "paymentmethod", "empty.png");
+                    }
+                }
+            }
+
+            ViewBag.PaymentMethods = paymentMethods;
+
+            LogError.AppendLine().Append("--------").AppendLine().Append("L5 ");
+
+            ViewData["StationID"] = stationId;
+
+            LogError.AppendLine().Append("--------").AppendLine().Append("L6 ");
+            // Obtener los IDs de los elementos seleccionados
+            var selectedIds = JsonConvert.DeserializeObject<List<long>>(selectedItems);
+
+            // Obtener las transacciones de la base de datos que coincidan con los IDs seleccionados
+            var selectedTransactions = _dbContext.OrderTransactions.Where(t => selectedIds.Contains(t.ID)).ToList();
+
+            ViewBag.SelectedItems = selectedTransactions;
+
+            var store = _dbContext.Preferences.FirstOrDefault();
+
+            ViewBag.HasSecondCurrency = false;
+            if (!string.IsNullOrEmpty(store.SecondCurrency))
+            {
+                ViewBag.HasSecondCurrency = true;
+            }
+
+            checkoutResponse.Success = true;
+            checkoutResponse.Valor = model;
+
+            return Json(checkoutResponse);
+        }
+        catch (Exception ex)
+        {
+            var objLog = new logs();
+
+            LogError.AppendLine().Append("--------").AppendLine().Append(ex.ToString());
+
+            objLog.ubicacion = "Checkout";
+            objLog.descripcion = LogError.ToString();
+            objLog.fecha = DateTime.Now;
+
+
+            _dbContext.logs.Add(objLog);
+            _dbContext.SaveChanges();
+
+            checkoutResponse.Success = false;
+            checkoutResponse.Error = ex.Message;
+
+            return Json(checkoutResponse);
+        }
+    }
+
+    [HttpPost("Pay")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult Pay(int amount, int dividerId, int method, int orderId, int seatNum, int stationId, string db)
+    {
+        var response = new POSPayResponse();
+        var model = new ApplyPayModel();
+
+        model.Amount = amount;
+        model.DividerId = dividerId;
+        model.Method = method;
+        model.OrderId = orderId;
+        model.SeatNum = seatNum;
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var payModel = objPOSCore.Pay(model,stationId,db);
+
+            if (payModel != null)
+            {
+                response.Valor = payModel;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("PayDone")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult PayDone(int amount, int dividerId, int method, int orderId, int seatNum, int stationId, string db)
+    {
+        var response = new POSPayDoneResponse();
+        var model = new ApplyPayModel();
+
+        model.Amount = amount;
+        model.DividerId = dividerId;
+        model.Method = method;
+        model.OrderId = orderId;
+        model.SeatNum = seatNum;
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var payDoneModel = objPOSCore.PayDone(model, stationId, db);
+
+            response.Valor = payDoneModel;
+            response.Success = true;
+            return Json(response);
         }
         catch (Exception ex)
         {

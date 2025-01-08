@@ -12,6 +12,7 @@ using AuroraPOS.Controllers;
 using NPOI.SS.Formula.PTG;
 using AuroraPOS.ModelsJWT;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace AuroraPOS.Core;
 
@@ -841,6 +842,686 @@ public class POSCore
             orderItemsInCheckout.store = store;
         }
         return orderItemsInCheckout;
+    }
+
+    public POSCorePayModel Pay(ApplyPayModel model, int stationId, string db)
+    {
+        var paymodel = new POSCorePayModel();
+        var order = GetOrder(model.OrderId);
+        var objSettingCore = new SettingsCore(_userService, _dbContext, _context);
+
+        if (model.Amount <= 0)
+        {
+            paymodel.Status = 3;
+            return paymodel;
+        }
+
+        if (model.DividerId == 0)
+        {
+            if ((Math.Round(order.TotalPrice, 2, MidpointRounding.AwayFromZero) - Math.Round(order.PayAmount, 2, MidpointRounding.AwayFromZero) == 0))
+            {
+                paymodel.Status = 4;
+                return paymodel;
+            }
+        }
+        else
+        {
+            var transactionsTemp = _dbContext.OrderTransactions.Where(s => s.Order == order);
+            var voucher1Temp = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            order.GetTotalPrice(voucher1Temp, model.DividerId, 0);
+            var dividerTransactions = transactionsTemp.Where(s => s.DividerNum == model.DividerId).ToList();
+            var balance = Math.Round(order.Balance, 2, MidpointRounding.AwayFromZero) - Math.Round(dividerTransactions.Sum(s => s.Amount), 2, MidpointRounding.AwayFromZero);
+
+            if (balance == 0)
+            {
+                paymodel.Status = 4;
+                return paymodel;
+            }
+        }
+
+
+        var method = _dbContext.PaymentMethods.FirstOrDefault(s => s.ID == model.Method);
+        if (method == null)
+        {
+            paymodel.Status = 1;
+            return paymodel;
+        }
+        if (method.PaymentType == "C X C" || method.PaymentType == "Cuenta de la Casa" || method.PaymentType == "Conduce")
+        {
+            if (order.OrderMode == OrderMode.Divide && model.DividerId > 0)
+            {
+                var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DividerId);
+                if (divide == null || string.IsNullOrEmpty(divide.ClientName))
+                {
+                    paymodel.Status = 2;
+                    return paymodel;
+                }
+            }
+            else if (string.IsNullOrEmpty(order.ClientName))
+            {
+                paymodel.Status = 2;
+                return paymodel;
+            }
+        }
+
+        if (order.ComprobantesID != null && order.ComprobantesID > 0)
+        {
+            var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == order.ComprobantesID);
+
+            if (voucher.IsRequireRNC)
+            {
+
+                if (order.CustomerId == null || order.CustomerId <= 0)
+                {
+                    paymodel.Status = 3;
+                    return paymodel;
+                }
+
+                var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+
+                if (string.IsNullOrEmpty(customer.RNC))
+                {
+                    paymodel.Status = 3;
+                    return paymodel;
+                }
+
+            }
+        }
+
+        if (method.PaymentType == "C X C")
+        {
+            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+            if (customer.CreditLimit > 0)
+            {
+                var consume = customer.CreditLimit - customer.Balance;
+                if (model.Amount > consume)
+                {
+                    paymodel.Status = 10;
+                    return paymodel;
+                }
+            }
+        }
+
+        var kichenItems = new List<OrderItem>();
+        decimal Difference = 0;
+        if (order != null && model.Amount > 0)
+        {
+            if (order.Status == OrderStatus.Temp)
+            {
+                if (order.OrderType == OrderType.Barcode)
+                {
+                    order.Status = OrderStatus.Pending;
+                    order.OrderTime = DateTime.Now;
+                    foreach (var item in order.Items)
+                    {
+                        item.ForceDate = objSettingCore.GetDia(stationId);
+                        if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
+                        {
+                            item.Status = OrderItemStatus.Saved;
+                            if (item.Product.InventoryCountDownActive)
+                            {
+                                item.Product.InventoryCount -= item.Qty;
+
+                            }
+                            SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationId);
+                            foreach (var q in item.Questions)
+                            {
+                                if (!q.IsActive) continue;
+                                var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
+                                SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationId);
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    order.Status = OrderStatus.Pending;
+                    order.OrderTime = DateTime.Now;
+                    foreach (var item in order.Items)
+                    {
+                        item.ForceDate = objSettingCore.GetDia(stationId);
+                        if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
+                        {
+                            item.Status = OrderItemStatus.Kitchen;
+                            SendKitchenItem(order.ID, item.ID);
+                            kichenItems.Add(item);
+                        }
+                        if (item.Product.InventoryCountDownActive)
+                        {
+                            item.Product.InventoryCount -= item.Qty;
+
+                        }
+                        SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationId);
+                        foreach (var q in item.Questions)
+                        {
+                            if (!q.IsActive) continue;
+                            var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
+                            SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationId);
+                        }
+                    }
+                }
+            }
+
+            model.Amount = model.Amount * method.Tasa;
+
+            if (kichenItems.Count > 0)
+                _printService.PrintKitchenItems(stationId, order.ID, kichenItems, db);
+
+
+            var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
+            var voucher1 = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+
+            if (method.PaymentType == "Conduce")
+            {
+                order.IsConduce = true;
+                order.Status = OrderStatus.Paid;
+
+                _dbContext.SaveChanges();
+                _printService.PrintPaymentSummary(stationId, order.ID, db, 0, 0, false);
+                paymodel.Status = 5;
+
+                return paymodel;
+            }
+            else
+            {
+                if (model.SeatNum > 0)
+                {
+                    order.GetTotalPrice(voucher1, 0, model.SeatNum);
+                    var seatTransactions = transactions.Where(s => s.SeatNum == model.SeatNum).ToList();
+                    var seatBalance = order.Balance - seatTransactions.Sum(s => s.Amount);
+                    if (seatBalance < model.Amount)
+                    {
+                        Difference = model.Amount - seatBalance;
+                        model.Amount = seatBalance;
+                    }
+
+                    var transaction = new OrderTransaction();
+                    transaction.ForceDate = objSettingCore.GetDia(stationId);
+                    transaction.PaymentDate = (DateTime)objSettingCore.GetDia(stationId);
+                    transaction.Amount = model.Amount;
+                    transaction.BeforeBalance = order.Balance;
+                    transaction.Difference = Difference;
+                    transaction.AfterBalance = Math.Round(order.Balance - model.Amount, 2);
+                    transaction.Order = order;
+                    transaction.Method = method.Name;
+                    transaction.PaymentType = method.PaymentType;
+
+                    transaction.SeatNum = model.SeatNum;
+                    transaction.DividerNum = model.DividerId;
+                    transaction.Note = "";
+                    transaction.Status = TransactionStatus.Open;
+                    transaction.Type = TransactionType.Payment;
+
+                    _dbContext.OrderTransactions.Add(transaction);
+                    _dbContext.SaveChanges();
+
+                    seatBalance = Math.Round(seatBalance - model.Amount, 2);
+
+                    if (seatBalance <= 0)
+                    {
+                        var seat = order.Seats.FirstOrDefault(s => s.SeatNum == model.SeatNum);
+                        seat.IsPaid = true;
+                        order.PaymentStatus = PaymentStatus.SeatPaid;
+                        order.PayAmount += model.Amount;
+                        order.Balance = 0;
+                        foreach (var item in seat.Items)
+                        {
+                            item.Status = OrderItemStatus.Paid;
+                        }
+                    }
+                    else
+                    {
+                        order.PaymentStatus = PaymentStatus.Partly;
+                        order.PayAmount += model.Amount;
+                        order.Balance = order.Balance - model.Amount;
+                    }
+
+                    // seat payment
+                }
+                else if (model.DividerId > 0)
+                {
+                    order.GetTotalPrice(voucher1, model.DividerId, 0);
+                    var dividerTransactions = transactions.Where(s => s.DividerNum == model.DividerId).ToList();
+                    var balance = order.Balance - dividerTransactions.Sum(s => s.Amount);
+                    if (balance < model.Amount)
+                    {
+                        Difference = model.Amount - balance;
+                        model.Amount = balance;
+                    }
+                    var transaction = new OrderTransaction();
+                    transaction.ForceDate = objSettingCore.GetDia(stationId);
+                    transaction.PaymentDate = (DateTime)objSettingCore.GetDia(stationId);
+                    transaction.Amount = model.Amount;
+                    transaction.BeforeBalance = order.Balance;
+                    transaction.Difference = Difference;
+                    transaction.AfterBalance = Math.Round(order.Balance - model.Amount, 2);
+                    transaction.Order = order;
+                    transaction.Method = method.Name;
+                    transaction.PaymentType = method.PaymentType;
+                    transaction.SeatNum = model.SeatNum;
+                    transaction.DividerNum = model.DividerId;
+                    transaction.Note = "";
+                    transaction.Status = TransactionStatus.Open;
+                    transaction.Type = TransactionType.Payment;
+
+                    _dbContext.OrderTransactions.Add(transaction);
+                    _dbContext.SaveChanges();
+
+                    balance = Math.Round(balance - model.Amount, 2);
+
+                    if (balance <= 0)
+                    {
+                        var items = order.Items.Where(s => !s.IsDeleted && s.DividerNum == model.DividerId && s.Status != OrderItemStatus.Paid).ToList();
+                        order.PaymentStatus = PaymentStatus.DividerPaid;
+                        order.PayAmount += model.Amount;
+                        order.Balance = 0;
+                        foreach (var item in items)
+                        {
+                            item.ForceDate = objSettingCore.GetDia(stationId);
+                            item.Status = OrderItemStatus.Paid;
+                        }
+                    }
+                    else
+                    {
+                        order.PaymentStatus = PaymentStatus.Partly;
+                        order.PayAmount += model.Amount;
+                        order.Balance = order.Balance - model.Amount;
+                    }
+                    // divider payment
+                }
+                else
+                {
+                    if (order.Balance < model.Amount)
+                    {
+                        Difference = model.Amount - order.Balance;
+                        model.Amount = order.Balance;
+                    }
+                    order.TotalPrice = model.Amount;
+                    var transaction = new OrderTransaction();
+                    transaction.ForceDate = objSettingCore.GetDia(stationId);
+                    transaction.PaymentDate = (DateTime)objSettingCore.GetDia(stationId);
+                    transaction.Amount = model.Amount;
+                    transaction.Difference = Difference;
+                    transaction.BeforeBalance = order.Balance;
+                    transaction.AfterBalance = Math.Round(order.Balance - model.Amount, 2);
+                    transaction.Order = order;
+                    transaction.Method = method.Name;
+                    transaction.PaymentType = method.PaymentType;
+                    transaction.SeatNum = model.SeatNum;
+                    transaction.DividerNum = model.DividerId;
+                    transaction.Note = "";
+                    transaction.Status = TransactionStatus.Open;
+                    transaction.Type = TransactionType.Payment;
+
+                    _dbContext.OrderTransactions.Add(transaction);
+                    _dbContext.SaveChanges();
+
+                    order.PayAmount = order.PayAmount + model.Amount;
+                    order.Balance = Math.Round(order.Balance - model.Amount, 2);
+
+                    if (order.Balance <= 0)
+                    {
+                        order.PaymentStatus = PaymentStatus.Paid;
+                        order.Status = OrderStatus.Paid;
+
+                        foreach (var item in order.Items)
+                        {
+                            item.ForceDate = objSettingCore.GetDia(stationId);
+                            item.Status = OrderItemStatus.Paid;
+                        }
+                    }
+                    else
+                    {
+                        order.PaymentStatus = PaymentStatus.Partly;
+                    }
+
+                    if (order.OrderMode == OrderMode.Conduce)
+                    {
+                        var selectedConduceOrders = _dbContext.Orders.Where(s => s.IsConduce && s.ConduceOrderId == order.ID && s.CustomerId == order.CustomerId).ToList();
+                        foreach (var o in selectedConduceOrders)
+                        {
+                            o.IsConduce = false;
+                        }
+                    }
+                }
+            }
+            _dbContext.SaveChanges();
+            var order1 = GetOrder(model.OrderId);
+            order1.GetTotalPrice(voucher1);
+
+            _dbContext.SaveChanges();
+
+        }
+
+        paymodel.Status = 0;
+        paymodel.Difference = Difference;
+        paymodel.Balance = order.Balance;
+        paymodel.Parcial = (order.PaymentStatus == PaymentStatus.Partly ? true : false);
+        return paymodel;
+    }
+
+    public bool PayDone(ApplyPayModel model, int stationId, string db)
+    {
+        var objSettingCore = new SettingsCore(_userService, _dbContext, _context);
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationId);
+
+        var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.PrepareType).Include(s => s.Divides).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).FirstOrDefault(o => o.ID == model.OrderId);
+
+        var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == order.ComprobantesID);
+        var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
+
+        if (order != null)
+        {
+            if (model.SeatNum > 0 && (order.PaymentStatus == PaymentStatus.SeatPaid || order.Status == OrderStatus.Paid))
+            {
+                // Debug.WriteLine("caso1");
+                var seatTransactions = transactions.Include(s => s.Order).Where(s => s.SeatNum == model.SeatNum).ToList();
+                var seatPayAmount = seatTransactions.Sum(s => s.Amount);
+                var nOrder = new Order();
+                nOrder.Station = station;
+                nOrder.OrderMode = OrderMode.Seat;
+                nOrder.OrderTime = DateTime.Now;
+                nOrder.OrderType = OrderType.DiningRoom;
+                nOrder.Status = OrderStatus.Paid;
+                nOrder.PaymentStatus = PaymentStatus.Paid;
+                nOrder.PayAmount = seatPayAmount;
+                order.PayAmount -= seatPayAmount;
+                var nvoucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.IsPrimary);
+
+                nOrder.ComprobantesID = nvoucher.ID;
+
+                var seat = order.Seats.FirstOrDefault(s => s.SeatNum == model.SeatNum);
+                if (seat.ComprebanteId > 0)
+                {
+                    nvoucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == seat.ComprebanteId);
+                    nOrder.ComprobantesID = nvoucher.ID;
+                }
+                nOrder.ClientName = seat.ClientName;
+                nOrder.CustomerId = seat.ClientId;
+                nOrder.Table = order.Table;
+                nOrder.Area = order.Area;
+                nOrder.Items = new List<OrderItem>();
+
+                var items = order.Items.Where(s => s.SeatNum == model.SeatNum && !s.IsDeleted);
+                foreach (var item in items)
+                {
+                    item.ForceDate = objSettingCore.GetDia(stationId);
+                    nOrder.Items.Add(item);
+                    Debug.WriteLine(item);
+                }
+                var length = 11 - nvoucher.Class.Length;
+
+                var voucherNumber = nvoucher.Class + (nvoucher.Secuencia + 1).ToString().PadLeft(length, '0');
+                nvoucher.Secuencia = nvoucher.Secuencia + 1;
+
+                nOrder.ComprobanteNumber = voucherNumber;
+                nOrder.ComprobanteName = nvoucher.Name;
+
+                long? iFactura = _dbContext.Orders.Max(s => s.Factura);
+                try
+                {
+                    if (iFactura == null || iFactura == 0)
+                    {
+                        string iFacturaInicial = AppConfiguration.GetLLaveConfig("FacturaInicial");
+                        iFactura = long.Parse(iFacturaInicial);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    iFactura = 0;
+                }
+                iFactura++;
+                nOrder.Factura = iFactura.Value;
+
+                _dbContext.Orders.Add(nOrder);
+
+                _dbContext.SaveChanges();
+
+                var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == nOrder.ID);
+                foreach (var c in comprobantes)
+                {
+                    c.IsActive = false;
+                }
+
+                _dbContext.OrderComprobantes.Add(new OrderComprobante()
+                {
+                    OrderId = nOrder.ID,
+                    VoucherId = nvoucher.ID,
+                    ComprobanteName = nvoucher.Name,
+                    ComprobanteNumber = voucherNumber
+                });
+                _dbContext.SaveChanges();
+                foreach (var s in seatTransactions)
+                {
+                    s.Order = nOrder;
+                }
+                nOrder.GetTotalPrice(nvoucher);
+                order.GetTotalPrice(voucher);
+
+                var xorder = _dbContext.Orders.Include(s => s.Items).FirstOrDefault(s => s.ID == model.OrderId);
+                if (xorder.Items.Count == 0)
+                {
+                    xorder.Status = OrderStatus.Void;
+                }
+                _dbContext.SaveChanges();
+
+                _printService.PrintPaymentSummary(stationId, nOrder.ID, db, model.SeatNum, 0, false);
+                return false;
+            }
+            else if (model.DividerId > 0 && (order.PaymentStatus == PaymentStatus.DividerPaid || order.Status == OrderStatus.Paid))
+            {
+                //  Debug.WriteLine("caso2");
+                var divideTransactions = transactions.Include(s => s.Order).Where(s => s.DividerNum == model.DividerId).ToList();
+                var dividePaidAmount = divideTransactions.Sum(s => s.Amount);
+                var nOrder = new Order();
+                nOrder.Station = station;
+                nOrder.OrderMode = OrderMode.Divide;
+                nOrder.OrderTime = DateTime.Now;
+                nOrder.OrderType = OrderType.DiningRoom;
+                nOrder.Status = OrderStatus.Paid;
+                nOrder.PaymentStatus = PaymentStatus.Paid;
+                nOrder.PayAmount = dividePaidAmount;
+                var nvoucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.IsPrimary);
+
+                nOrder.ComprobantesID = nvoucher.ID;
+
+                var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DividerId);
+                if (divide != null && divide.ComprebanteId > 0)
+                {
+                    if (divide.ComprebanteId > 0)
+                    {
+                        nvoucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == divide.ComprebanteId);
+                        nOrder.ComprobantesID = nvoucher.ID;
+                    }
+
+                    nOrder.ClientName = divide.ClientName;
+                    nOrder.CustomerId = divide.ClientId;
+                    order.Divides.Remove(divide);
+                }
+
+
+
+                nOrder.Table = order.Table;
+                nOrder.Area = order.Area;
+                nOrder.Items = new List<OrderItem>();
+
+                var items = order.Items.Where(s => s.DividerNum == model.DividerId);
+
+                foreach (var item in items)
+                {
+                    item.ForceDate = objSettingCore.GetDia(stationId);
+                    nOrder.Items.Add(item);
+                    Debug.WriteLine(item);
+
+                }
+
+                var discounts = order.Discounts.Where(s => s.DividerId == model.DividerId);
+                if (discounts.Count() > 0)
+                {
+                    nOrder.Discounts = new List<DiscountItem>();
+                    foreach (var discount in discounts)
+                    {
+                        nOrder.Discounts.Add(discount);
+                    }
+                }
+
+                var length = 11 - nvoucher.Class.Length;
+
+                var voucherNumber = nvoucher.Class + (nvoucher.Secuencia + 1).ToString().PadLeft(length, '0');
+                nvoucher.Secuencia = nvoucher.Secuencia + 1;
+
+                nOrder.ComprobanteNumber = voucherNumber;
+                nOrder.ComprobanteName = nvoucher.Name;
+
+                long? iFactura = _dbContext.Orders.Max(s => s.Factura);
+                try
+                {
+                    if (iFactura == null || iFactura == 0)
+                    {
+                        string iFacturaInicial = AppConfiguration.GetLLaveConfig("FacturaInicial");
+                        iFactura = long.Parse(iFacturaInicial);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    iFactura = 0;
+                }
+                iFactura++;
+                nOrder.Factura = iFactura.Value;
+
+                nOrder.GetTotalPrice(nvoucher);
+
+                if (Math.Round(nOrder.TotalPrice, 2, MidpointRounding.AwayFromZero) ==
+                    Math.Round(dividePaidAmount, 2, MidpointRounding.AwayFromZero))
+                {
+                    _dbContext.Orders.Add(nOrder);
+
+                    _dbContext.SaveChanges();
+                    var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == nOrder.ID);
+                    foreach (var c in comprobantes)
+                    {
+                        c.IsActive = false;
+                    }
+
+                    _dbContext.OrderComprobantes.Add(new OrderComprobante()
+                    {
+                        OrderId = nOrder.ID,
+                        VoucherId = nvoucher.ID,
+                        ComprobanteName = nvoucher.Name,
+                        ComprobanteNumber = voucherNumber
+                    });
+                    _dbContext.SaveChanges();
+
+
+                    foreach (var d in divideTransactions)
+                    {
+                        d.Order = nOrder;
+                    }
+                    var xorder = _dbContext.Orders.Include(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Divides).FirstOrDefault(s => s.ID == model.OrderId);
+                    if (xorder.Items.Count == 0)
+                    {
+                        xorder.Status = OrderStatus.Void;
+                    }
+                    else
+                    {
+                        var index = 1;
+                        foreach (var d in xorder.Divides)
+                        {
+                            var xitems = xorder.Items.Where(s => s.DividerNum == d.DividerNum).ToList();
+                            foreach (var ii in xitems)
+                            {
+                                ii.DividerNum = index;
+                            }
+                            d.DividerNum = index;
+                            index++;
+                        }
+                    }
+                    _dbContext.SaveChanges();
+
+                    _printService.PrintPaymentSummary(stationId, nOrder.ID, db, 0, model.DividerId, false);
+                    return false;
+                }
+
+
+            }
+
+            else if (order.Status == OrderStatus.Paid)
+            {
+                //    Debug.WriteLine("caso3");
+                var length = 11 - voucher.Class.Length;
+                if (string.IsNullOrEmpty(order.ComprobanteNumber))
+                {
+                    var voucherNumber = voucher.Class + (voucher.Secuencia + 1).ToString().PadLeft(length, '0');
+                    voucher.Secuencia = voucher.Secuencia + 1;
+
+                    order.ComprobanteName = voucher.Name;
+                    order.ComprobanteNumber = voucherNumber;
+                    var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == order.ID);
+                    foreach (var c in comprobantes)
+                    {
+                        c.IsActive = false;
+                    }
+
+                    long? iFactura = _dbContext.Orders.Max(s => s.Factura);
+                    try
+                    {
+                        if (iFactura == null || iFactura == 0)
+                        {
+                            string iFacturaInicial = AppConfiguration.GetLLaveConfig("FacturaInicial");
+                            iFactura = long.Parse(iFacturaInicial);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        iFactura = 0;
+                    }
+                    iFactura++;
+                    order.Factura = iFactura.Value;
+
+                    _dbContext.OrderComprobantes.Add(new OrderComprobante()
+                    {
+                        OrderId = order.ID,
+                        VoucherId = voucher.ID,
+                        ComprobanteName = voucher.Name,
+                        ComprobanteNumber = voucherNumber
+                    });
+                }
+
+                if (order.OrderType == OrderType.Delivery && order.OrderMode != OrderMode.Conduce)
+                {
+
+
+                    var objDelivery = _dbContext.Deliverys.Include(s => s.Order).ThenInclude(s => s.PrepareType).Where(s => s.OrderID == order.ID).First();
+
+                    if (objDelivery.Order.PrepareType != null && objDelivery.Order.PrepareType.SinChofer)
+                    {
+                        if (objDelivery.Order.Balance < 1)
+                        {
+                            objDelivery.Status = StatusEnum.Cerrado;
+                            objDelivery.UpdatedDate = DateTime.Now;
+                        }
+                    }
+                }
+
+                _dbContext.SaveChanges();
+
+                _printService.PrintPaymentSummary(stationId, model.OrderId, db, 0, 0, false);
+
+                return false;    
+            }
+            else if (order.Status == OrderStatus.Pending && order.PaymentStatus == PaymentStatus.Paid && order.Balance == 0)
+            {
+                order.Status = OrderStatus.Paid;
+                _dbContext.SaveChanges();
+                return false;
+
+            }
+
+
+        }
+
+        return true;
     }
 
 }
