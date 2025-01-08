@@ -100,7 +100,7 @@ namespace AuroraPOS.ControllersJWT
         }
 
         [HttpGet("GetStations")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         public JsonResult GetStations()
         {
             GetStationsResponse result = new GetStationsResponse();
