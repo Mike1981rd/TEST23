@@ -2,9 +2,9 @@
 
 namespace AuroraPOS.ModelsJWT
 {
-    public class MenuProductListResponse
+    public class GetOrderItemsInCheckoutResponse
     {
-        public MenuProductList? Valor { get; set; }
+        public OrderItemsInCheckout? Valor { get; set; }
         public string? Error { get; set; }
         public bool Success { get; set; }
     }

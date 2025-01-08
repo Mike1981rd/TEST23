@@ -14,6 +14,7 @@ using AuroraPOS.ModelsJWT;
 using System.Globalization;
 using PuppeteerSharp;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -153,6 +154,23 @@ public class POSController : Controller
         return Json(response);
     }
 
+    //Checar por que da diferente respuesta
+    [HttpPost("CheckPermission")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult CheckPermission(string permission)
+    {
+        var valid = PermissionChecker(permission);
+
+        if (valid)
+        {
+            return Json(new { status = 0 });
+        }
+        return Json(new { status = 1 });
+    }
+
+    //preg por qué User.Claims no funciona en POSCore
+    //Y verificar que la ruta Station si da el valor correcto nuevamente, si es que se cambia el uso
+    //de User.Claims
     public bool PermissionChecker(string permission)
     {
 
@@ -277,7 +295,15 @@ public class POSController : Controller
     //pendiente
     [HttpPost("GetOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderList(long areaId, string from, string to, int stationId, long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0)
+    public JsonResult GetOrderList(long areaId, string from, string to, 
+        int stationId, 
+        string drawF,
+        string startF,
+        string lengthF,
+        string sortColumnF,
+        string sortColumnDirectionF,
+        string searchValueF,
+        long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0)
     {
         GetOrderListResponse response = new GetOrderListResponse();
 
@@ -286,17 +312,29 @@ public class POSController : Controller
             var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
-            var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+            //var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+            //// Skiping number of Rows count  
+            //var start = Request.Form["start"].FirstOrDefault();
+            //// Paging Length 10,20  
+            //var length = Request.Form["length"].FirstOrDefault();
+            //// Sort Column Name  
+            //var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            //// Sort Column Direction ( asc ,desc)  
+            //var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            //// Search Value from (Search box)  
+            //var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            var draw = drawF;
             // Skiping number of Rows count  
-            var start = Request.Form["start"].FirstOrDefault();
+            var start = startF;
             // Paging Length 10,20  
-            var length = Request.Form["length"].FirstOrDefault();
+            var length = lengthF;
             // Sort Column Name  
-            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            var sortColumn = sortColumnF;
             // Sort Column Direction ( asc ,desc)  
-            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            var sortColumnDirection = sortColumnDirectionF;
             // Search Value from (Search box)  
-            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+            var searchValue = searchValueF;
 
             //Paging Size (10,20,50,100)  
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
@@ -393,24 +431,31 @@ public class POSController : Controller
     //pendiente
     [HttpPost("GetPaidOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public IActionResult GetPaidOrderList(long areaId, string from, string to, int stationId, long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0, int factura = 0)
+    public IActionResult GetPaidOrderList(long areaId, string from, string to, int stationId,
+        string drawF,
+        string startF,
+        string lengthF,
+        string sortColumnF,
+        string sortColumnDirectionF,
+        string searchValueF,
+        long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0, int factura = 0)
     {
         try
         {
             var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
-            var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+            var draw = drawF;
             // Skiping number of Rows count  
-            var start = Request.Form["start"].FirstOrDefault();
+            var start = startF;
             // Paging Length 10,20  
-            var length = Request.Form["length"].FirstOrDefault();
+            var length = lengthF;
             // Sort Column Name  
-            var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            var sortColumn = sortColumnF;
             // Sort Column Direction ( asc ,desc)  
-            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            var sortColumnDirection = sortColumnDirectionF;
             // Search Value from (Search box)  
-            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+            var searchValue = searchValueF;
 
             //Paging Size (10,20,50,100)  
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
@@ -491,9 +536,6 @@ public class POSController : Controller
                 data = data.Take(pageSize).ToList();
             }
 
-
-
-
             //Returning Json Data  
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
 
@@ -533,7 +575,7 @@ public class POSController : Controller
 
     [HttpPost("Sales")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Sales(OrderType orderType, int stationId, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
+    public JsonResult Sales(OrderType orderType, int stationId,string userName,OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
     {
         var response = new POSSalesResponse();
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
@@ -593,8 +635,8 @@ public class POSController : Controller
 
                 return Json(response);
             }
-            var name = HttpContext.User.Identity.GetUserName();
-            if (order.WaiterName != name)
+            //var name = HttpContext.User.Identity.GetUserName();
+            if (order.WaiterName != userName)
             {
                 var claims = User.Claims.Where(x => x.Type == "Permission" && x.Value == "Permission.POS.OtherOrder" &&
                                                         x.Issuer == "LOCAL AUTHORITY");
@@ -634,9 +676,9 @@ public class POSController : Controller
         }
         else
         {
-            var user = HttpContext.User.Identity.GetUserName();
+            //var user = HttpContext.User.Identity.GetUserName();
             order.Station = station;
-            order.WaiterName = user;
+            order.WaiterName = userName;
             order.OrderMode = OrderMode.Standard;
             order.OrderType = orderType;
             order.Status = OrderStatus.Temp;
@@ -719,5 +761,32 @@ public class POSController : Controller
         response.order = order;
 
         return Json(response);
+    }
+
+    [HttpPost("GetOrderItemsInCheckout")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)
+    {
+        var response = new GetOrderItemsInCheckoutResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var orderItemsInCheckout = objPOSCore.GetOrderItemsInCheckout(orderId, SeatNum, DividerId);
+
+            if (orderItemsInCheckout != null)
+            {
+                response.Valor = orderItemsInCheckout;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
     }
 }

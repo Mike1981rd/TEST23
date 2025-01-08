@@ -103,9 +103,84 @@ namespace AuroraPOS.ControllersJWT
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetStations()
         {
-            var stations = _dbContext.Stations.Select(s => new { s.ID, s.Name }).ToList();
+            GetStationsResponse result = new GetStationsResponse();
 
-            return Json(stations);
+            try
+            {
+                var stations = _dbContext.Stations
+                    .Select(s => new Station { ID = s.ID, Name = s.Name })
+                    .ToList();
+
+                if(stations.Any())
+                {
+                    result.result = stations;
+                    result.Success = true;
+                } else
+                {
+                    result.Error = "No hay elementos en la peticion";
+                    result.Success = true;
+                }
+            } catch(Exception e)
+            {
+                result.Error = e.Message;
+                result.Success = false;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost("GetActiveCustomerList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveCustomerList(string draw, int start, int length,
+            string sortColumn, string sortColumnDirection, string searchValue, long clienteid = 0)
+        {
+            var response = new ActiveCustomerListResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var activeCustomerList = settingsCore.GetActiveCustomerList(draw,start,length,sortColumn,sortColumnDirection,searchValue,clienteid);
+
+                if (activeCustomerList != null)
+                {
+                    response.Valor = activeCustomerList;
+                    response.Success = true;
+                    return Json(response);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
+        }
+
+        [HttpPost("GetPrepareTypes")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetPrepareTypes(string draw, int start, int length,
+            string sortColumn, string sortColumnDirection, string searchValue, bool justData = false)
+        {
+            var response = new PrepareTypesResponse();
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var prepareTypesList = settingsCore.GetPrepareTypes(draw, start, length, sortColumn, sortColumnDirection, searchValue, justData);
+
+                if (prepareTypesList != null)
+                {
+                    response.Valor = prepareTypesList;
+                    response.Success = true;
+                    return Json(response);
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                response.Error = ex.Message;
+                response.Success = false;
+                return Json(response);
+            }
         }
     }
 }
