@@ -4,158 +4,166 @@
 @{
     var productionStatus = (ProductionStatus)ViewBag.Status;
 }
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Create Production"]</h4>
-		<h6>@ViewLocalizer["Add/Update Production"]</h6>
-	</div>
-     
-     <div class="page-btn">
-        <h5 id="production-id" data-id="@ViewBag.ProductionID"></h5>
-        
-        @if (productionStatus == ProductionStatus.Pending)
-        {
-            <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
-        }
-        else if (productionStatus == ProductionStatus.Cancelled)
-        {
-            <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
-        }
-        else if (productionStatus == ProductionStatus.Completed)
-        {
-            <span class='badges bg-lightgreen'>@ViewLocalizer["Completed"]</span>
-        }
-        </div>
-</div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="row" data-articleid="0">
-		    <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Warehouse"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="production-warehouse" class="select">
-                            </select>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="card-body">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Create Production"]</h4>
+                    <h6>@ViewLocalizer["Add/Update Production"]</h6>
+                </div>
+
+                <div class="page-btn">
+                    <h5 id="production-id" data-id="@ViewBag.ProductionID"></h5>
+
+                    @if (productionStatus == ProductionStatus.Pending)
+                    {
+                        <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
+                    }
+                    else if (productionStatus == ProductionStatus.Cancelled)
+                    {
+                        <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
+                    }
+                    else if (productionStatus == ProductionStatus.Completed)
+                    {
+                        <span class='badges bg-lightgreen'>@ViewLocalizer["Completed"]</span>
+                    }
+                </div>
+            </div>
+            <div class="row" data-articleid="0">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Warehouse"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="production-warehouse" class="select">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Date"] </label>
+                        <div class="input-groupicon">
+                            <input id="production-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.ProductionDate" class="datetimepicker form-control">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-			<div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date"] </label>
-                    <div class="input-groupicon">
-                        <input id="production-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.ProductionDate" class="datetimepicker">
-                        <div class="addonset">
-                            <img src="/vendor/img/icons/calendars.svg" alt="img">
-                        </div>
-                    </div>
-                </div>
-            </div>
-		</div>
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Sub Recipe"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="production-subrecipe" class="select">
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-subrecipe-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Sub Recipe"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="production-subrecipe" class="select">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-subrecipe-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-             <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Qty"]</label>
-                    <input id="production-qty" onkeypress="return onlyDecimalKey(event)" value="1" type="text">
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Qty"]</label>
+                        <input id="production-qty" onkeypress="return onlyDecimalKey(event)" value="1" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Unit"]</label>
+                        <select id="production-unit" class="select ">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["End Result"]</label>
+                        <input id="production-endqty" onkeypress="return onlyDecimalKey(event)" value="1" type="text" class="form-control">
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Unit"]</label>
-                    <select id="production-unit" class="select ">
-                    </select>
+            <br/>
+            <div class="row pt-2">
+                <div class="card-datatable table-responsive" style="height: 300px; overflow: auto">
+                    <table id="purchase-item" class="table">
+                        <thead class="border-top">
+                            <tr>
+                                <th>@ViewLocalizer["Name"]</th>
+                                <th>@ViewLocalizer["Type"]</th>
+                                <th>@ViewLocalizer["Brand"]</th>
+                                <th>@ViewLocalizer["Performance"] (%)</th>
+                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
+                                <th>@ViewLocalizer["Unit"]	</th>
+                                <th>@ViewLocalizer["Price"] ($)	</th>
+                                <th>@ViewLocalizer["Sub Total"] ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="item-list">
+                        </tbody>
+                    </table>
+                </div>
+                <br/>
+                <div class="col-lg-12 float-md-right">
+                    <div class="total-order">
+                        <ul>
+                            <li class="total">
+                                <h4>@ViewLocalizer["Total"]</h4>
+                                <h5 id="po-total">$ 0.00</h5>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["End Result"]</label>
-                    <input id="production-endqty" onkeypress="return onlyDecimalKey(event)" value="1" type="text">
-                </div>
-            </div>
-        </div>
-          <div class="row pt-2">
-            <div class="table-responsive" style="height: 300px; overflow: auto">
-                <table id="purchase-item" class="table">
-                    <thead style="">
-                        <tr>
-                            <th>@ViewLocalizer["Name"]</th>
-                            <th>@ViewLocalizer["Type"]</th>
-                            <th>@ViewLocalizer["Brand"]</th>
-                            <th>@ViewLocalizer["Performance"] (%)</th>
-                            <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
-                            <th>@ViewLocalizer["Unit"]	</th>
-                            <th>@ViewLocalizer["Price"] ($)	</th>
-                            <th>@ViewLocalizer["Sub Total"] ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="item-list">
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-12 float-md-right">
-                <div class="total-order">
-                    <ul>
-                        <li class="total">
-                            <h4>@ViewLocalizer["Total"]</h4>
-                            <h5 id="po-total">$ 0.00</h5>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-		<div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Description"]</label>
-                    <textarea id="production-description" class="form-control"></textarea>
-                </div>
-            </div>
-			<div class="col-lg-12">
-                @if (productionStatus == ProductionStatus.Pending)
-                {
-                    <a id="production-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
-                    <a id="production-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
-                    <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
-                    <a id="production-download" href="javascript:void(0);" class="btn btn-default btn-success">@ViewLocalizer["Download"]</a>
-                }
-                else if (productionStatus == ProductionStatus.Cancelled)
-                {
-                    <a id="production-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                }
-                else if (productionStatus == ProductionStatus.None)
-                {
-                    <a id="production-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                     <a id="production-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
-                    <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
-                }
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Description"]</label>
+                        <textarea id="production-description" class="form-control"></textarea>
+                    </div>
+                    <br />
 
-                <a id="production-return" href="/Inventory/ProductionList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
-			</div>
-		</div>
-	</div>
+                </div>
+                <br />
+                <div class="col-lg-12">
+                    @if (productionStatus == ProductionStatus.Pending)
+                    {
+                        <a id="production-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                        <a id="production-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
+                        <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
+                        <a id="production-download" href="javascript:void(0);" class="btn btn-default btn-success">@ViewLocalizer["Download"]</a>
+                    }
+                    else if (productionStatus == ProductionStatus.Cancelled)
+                    {
+                        <a id="production-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                    }
+                    else if (productionStatus == ProductionStatus.None)
+                    {
+                        <a id="production-submit" href="javascript:void(0);" class="bbtn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                        <a id="production-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
+                        <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
+                    }
+
+                    <a id="production-return" href="/Inventory/ProductionList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- Warehouse Modal -->

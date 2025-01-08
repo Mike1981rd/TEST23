@@ -36,167 +36,166 @@
     }
 }
 
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Create Promotion"]</h4>
-        <h6>@ViewLocalizer["Add/Update Promotion"]</h6>
-    </div>
-</div>
-
-
-<div class="card">
-    <div class="card-body">
-        <div id="product-id" class="row" data-productid="0">
-            <div class="col-lg-4 col-sm-3 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                    <input id="promotion-name" value="@Model.Name" type="text">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="card-body">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Create Promotion"]</h4>
+                    <h6>@ViewLocalizer["Add/Update Promotion"]</h6>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-3 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
-                    <input id="promotion-amount" value="@Model.Amount" onkeypress="return onlyDecimalKey(event)" type="text">
-                </div>
-            </div>
-            <div class="col-lg-2 col-sm-3 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Amount Type"]<span class="manitory">*</span></label>
-                    <select id="promotion-amounttype" class="select form-control" asp-for="AmountType">
-                        <option value="0">@ViewLocalizer["Percent"] (%)</option>
-                        <option value="1">@ViewLocalizer["Amount"] ($)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-lg-2 col-sm-3 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Status"]</label>
-                    <select id="promotion-status" class="select form-control" asp-for="IsActive">
-                        <option value="1">@ViewLocalizer["Active"]</option>
-                        <option value="0">@ViewLocalizer["Inactive"]</option>
-                    </select>
-                </div>
-            </div>
-          
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-12">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left">@ViewLocalizer["Schedule"]</h6>
+            <div id="product-id" class="row" data-productid="0">
+                <div class="col-lg-4 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                        <input id="promotion-name" value="@Model.Name" type="text" class="form-control">
                     </div>
                 </div>
-                <div class="col-lg-2 col-sm-2 col-2">
+                <div class="col-lg-4 col-sm-3 col-12">
                     <div class="form-group">
-                        <label>@ViewLocalizer["All Day"]</label>
-                        <select id="schedule-allday" class="select form-control">
-                            @if(Model.IsAllDay)
-                            {
-                                <option value="1" selected>@ViewLocalizer["Yes"]</option>
-                                <option value="0">@ViewLocalizer["No"]</option>
-                            }
-                            else
-                            {
-                                  <option value="1">@ViewLocalizer["Yes"]</option>
-                            <option value="0" selected>@ViewLocalizer["No"]</option>
-                            }
-                          
+                        <label class="form-label">@ViewLocalizer["Amount"]<span class="manitory">*</span></label>
+                        <input id="promotion-amount" value="@Model.Amount" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-3 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Amount Type"]<span class="manitory">*</span></label>
+                        <select id="promotion-amounttype" class="select form-control" asp-for="AmountType">
+                            <option value="0">@ViewLocalizer["Percent"] (%)</option>
+                            <option value="1">@ViewLocalizer["Amount"] ($)</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-3 col-3">
+
+                <div class="col-lg-2 col-sm-3 col-12">
                     <div class="form-group">
-                        <label>@ViewLocalizer["Start Date"]</label>
-                        <div class="input-groupicon">
-                            <input id="schedule-startdate" type="text" placeholder="DD-MM-YYYY" value="@startdt" class="datetimepicker">
-                            <div class="addonset">
-                                <img src="/vendor/img/icons/calendars.svg" alt="img">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-2 col-sm-2 col-2 hour-select">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Start Time"]</label>
-                        <div class="input-groupicon">
-                            <input id="schedule-starttime" type="text" placeholder="HH:mm" value="@starttime" class="datetimepicker1">
-                            <div class="addonset">
-                                <img src="/vendor/img/icons/time.svg" alt="img">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                
-                <div class="col-lg-3 col-sm-3 col-3">
-                   <div class="form-group">
-                        <label>@ViewLocalizer["End Date"]</label>
-                        <div class="input-groupicon">
-                            <input id="schedule-enddate" type="text" placeholder="DD-MM-YYYY" value="@enddt" class="datetimepicker">
-                            <div class="addonset">
-                                <img src="/vendor/img/icons/calendars.svg" alt="img">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-2 col-2  hour-select">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["End Time"]</label>
-                        <div class="input-groupicon">
-                            <input id="schedule-endtime" type="text" placeholder="HH:mm" value="@endtime" class="datetimepicker1">
-                            <div class="addonset">
-                                <img src="/vendor/img/icons/time.svg" alt="img">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-12">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left">@ViewLocalizer["Apply Type"]</h6>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-sm-6 col-6">
-                    <div class="form-group">
-                        <select id="promotion-applytype" class="select form-control" asp-for="ApplyType">
-                            <option value="0">@ViewLocalizer["Trigger on all items after first"]</option>
-                            <option value="1">@ViewLocalizer["Trigger on every"]</option>
+                        <label class="form-label">@ViewLocalizer["Status"]</label>
+                        <select id="promotion-status" class="select form-control" asp-for="IsActive">
+                            <option value="1">@ViewLocalizer["Active"]</option>
+                            <option value="0">@ViewLocalizer["Inactive"]</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-2 col-sm-6 col-6">
-                    <div class="form-group input-group">
-                        <input class="" id="promotion-applyitem" onkeypress="return onlyDecimalKey(event)" value="@Model.FirstCount" type="text"> <span class="input-group-text ">item(s)</span>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left">@ViewLocalizer["Schedule"]</h6>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-12">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left">@ViewLocalizer["Recurring"]</h6>  
-                        <div class="w-25">
-                            <select id="recurring-enable" class="select form-control w-25 " >
-                                @if(Model.IsRecurring)
+                    <div class="col-lg-2 col-sm-2 col-2">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["All Day"]</label>
+                            <select id="schedule-allday" class="select form-control">
+                                @if (Model.IsAllDay)
                                 {
-                                    <option value="0">@ViewLocalizer["No"]</option>
                                     <option value="1" selected>@ViewLocalizer["Yes"]</option>
+                                    <option value="0">@ViewLocalizer["No"]</option>
                                 }
                                 else
                                 {
-                                    <option value="0" selected>@ViewLocalizer["No"]</option>
                                     <option value="1">@ViewLocalizer["Yes"]</option>
+                                    <option value="0" selected>@ViewLocalizer["No"]</option>
                                 }
-                               
-                                
+
                             </select>
                         </div>
-                       
+                    </div>
+                    <div class="col-lg-3 col-sm-3 col-3">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Start Date"]</label>
+                            <div class="input-groupicon">
+                                <input id="schedule-startdate" type="text" placeholder="DD-MM-YYYY" value="@startdt" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-sm-2 col-2 hour-select">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Start Time"]</label>
+                            <div class="input-groupicon">
+                                <input id="schedule-starttime" type="text" placeholder="HH:mm" value="@starttime" class="datetimepicker1 form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/time.svg" alt="img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-sm-3 col-3">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["End Date"]</label>
+                            <div class="input-groupicon">
+                                <input id="schedule-enddate" type="text" placeholder="DD-MM-YYYY" value="@enddt" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-2  hour-select">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["End Time"]</label>
+                            <div class="input-groupicon">
+                                <input id="schedule-endtime" type="text" placeholder="HH:mm" value="@endtime" class="datetimepicker1 form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/time.svg" alt="img">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row recurring-setting" @isrecur>
-                @* <div class="col-lg-3 col-sm-3 col-3">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left">@ViewLocalizer["Apply Type"]</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-6">
+                        <div class="form-group">
+                            <select id="promotion-applytype" class="select form-control" asp-for="ApplyType">
+                                <option value="0">@ViewLocalizer["Trigger on all items after first"]</option>
+                                <option value="1">@ViewLocalizer["Trigger on every"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-6">
+                        <div class="form-group input-group">
+                            <input class="form-control" id="promotion-applyitem" onkeypress="return onlyDecimalKey(event)" value="@Model.FirstCount" type="text"> <span class="input-group-text">item(s)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left">@ViewLocalizer["Recurring"]</h6>
+                            <div class="w-25">
+                                <select id="recurring-enable" class="select form-control w-25 ">
+                                    @if (Model.IsRecurring)
+                                    {
+                                        <option value="0">@ViewLocalizer["No"]</option>
+                                        <option value="1" selected>@ViewLocalizer["Yes"]</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="0" selected>@ViewLocalizer["No"]</option>
+                                        <option value="1">@ViewLocalizer["Yes"]</option>
+                                    }
+
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row recurring-setting" @isrecur>
+                    @* <div class="col-lg-3 col-sm-3 col-3">
                    <div class="form-group">
                         <label>@ViewLocalizer["Start Date"]</label>
                         <div class="input-groupicon">
@@ -223,24 +222,24 @@
                         </div>
                     </div>
                 </div> *@
-                <div class="col-lg-6 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label>@ViewLocalizer["Week Days"]</label>
-                        <select id="recurring-weekdays" class="form-control tagging select" value="[1, 3]" multiple tabindex="-1" aria-hidden="true">
-                            
-                            <option value="1">@ViewLocalizer["Sunday"]</option>
-                            <option value="2">@ViewLocalizer["Monday"]</option>
-                            <option value="3">@ViewLocalizer["Tuesday"]</option>
-                            <option value="4">@ViewLocalizer["Wednesday"]</option>
-                            <option value="5">@ViewLocalizer["Thursday"]</option>
-                            <option value="6">@ViewLocalizer["Friday"]</option>
-                            <option value="7">@ViewLocalizer["Saturday"]</option>
-                           
-                        </select>
-                       
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Week Days"]</label>
+                            <select id="recurring-weekdays" class="form-control tagging select" value="[1, 3]" multiple tabindex="-1" aria-hidden="true">
+
+                                <option value="1">@ViewLocalizer["Sunday"]</option>
+                                <option value="2">@ViewLocalizer["Monday"]</option>
+                                <option value="3">@ViewLocalizer["Tuesday"]</option>
+                                <option value="4">@ViewLocalizer["Wednesday"]</option>
+                                <option value="5">@ViewLocalizer["Thursday"]</option>
+                                <option value="6">@ViewLocalizer["Friday"]</option>
+                                <option value="7">@ViewLocalizer["Saturday"]</option>
+
+                            </select>
+
+                        </div>
                     </div>
-                </div>
-                @* <div class="col-lg-3 col-sm-3 col-12">
+                    @* <div class="col-lg-3 col-sm-3 col-12">
                     <div class="form-group">
                         <label>@ViewLocalizer["No end"]</label>
                         <div class="form-group input-group">
@@ -255,12 +254,12 @@
                                     <option value="0" selected>@ViewLocalizer["No"]</option>
                                     <option value="1">@ViewLocalizer["Yes"]</option>
                                 }
-                               
+
                             </select>
                         </div>
                     </div>
                 </div> *@
-                @* <div class="col-lg-3 col-sm-3 col-12">
+                    @* <div class="col-lg-3 col-sm-3 col-12">
                     <div class="form-group">
                         <label>@ViewLocalizer["End After"]</label>
                         <div class="form-group input-group">
@@ -268,59 +267,64 @@
                         </div>
                     </div>
                 </div> *@
-            </div>
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-12">
-                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                        <h6 class="text-left"> @ViewLocalizer["Promotion Targets"]</h6>
-                        <div  class="add-unit">
-                            <a  class="add-new-target"  href="javascript:void(0);" >
-                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                            </a>
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                            <h6 class="text-left"> @ViewLocalizer["Promotion Targets"]</h6>
+                            <div class="add-unit">
+                                <a class="add-new-target" href="javascript:void(0);">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-datatable table-responsive">
+                            <table class="table">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>
+                                            @ViewLocalizer["Menu"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Type"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Name"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Action"]
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promotion-targets">
+                                    @if (Model.Targets != null)
+                                    {
+                                        @foreach (var t in Model.Targets)
+                                        {
+                                            var range = (int)t.ProductRange;
+                                            <tr class="target-item" data-type="@range" data-id="@t.TargetId" data-name="@t.Description" data-menuid="@t.Menu" data-menuname="@t.MenuName" data-servingsize="@t.ServingSizeID"><td><div class="target-item-name">@t.MenuName</div></td><td>@typestr[(int)t.ProductRange - 1]</td><td>@t.Description</td><td><div class="remove-btn"><a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a></div></td></tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @ViewLocalizer["Menu"]
-                                </th>
-                                <th>
-                                    @ViewLocalizer["Type"]
-                                </th>
-                                <th>
-                                    @ViewLocalizer["Name"]
-                                </th>
-                                <th>
-                                    @ViewLocalizer["Action"]
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="promotion-targets">
-                            @if (Model.Targets != null)
-                            {
-                                @foreach (var t in Model.Targets)
-                                {
-                                    var range = (int)t.ProductRange;
-                                    <tr class="target-item" data-type="@range" data-id="@t.TargetId" data-name="@t.Description" data-menuid="@t.Menu" data-menuname="@t.MenuName" data-servingsize="@t.ServingSizeID"><td><div class="target-item-name">@t.MenuName</div></td><td>@typestr[(int)t.ProductRange - 1]</td><td>@t.Description</td><td><div class="remove-btn"><a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a></div></td></tr>
-                                }
-                            }
-                            
-                        </tbody>
-                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="row pt-3">
+                <div class="col-lg-12">
+                    <a id="submit-promotion" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+                    <a id="cancel" href="/Menu/PromotionList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Cancel"]</a>
                 </div>
             </div>
         </div>
-
-
-
-        <div class="row pt-3">
-            <div class="col-lg-12">
-                <a id="submit-promotion" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-                <a id="cancel" href="/Menu/PromotionList" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
-            </div>
-        </div>
     </div>
+
 </div>
 
 <!-- Target Modal-->

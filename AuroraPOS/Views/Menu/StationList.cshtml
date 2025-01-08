@@ -7,37 +7,40 @@
 	var groups = (List<Group>)ViewBag.Groups;
 	var canadd = (bool)ViewBag.CanAdd;
 }
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Station List"]</h4>
-		<h6>@ViewLocalizer["Manage your Stations"]</h6>
-	</div>
-	@if (canadd)
-	{
-		<div class="page-btn">
-			<a id="add-station-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Station"]</a>
-		</div>
-	}
 
-</div>
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="card">
+		<div class="card-body">
+			<div class="page-header">
+				<div class="page-title">
+					<h4>@ViewLocalizer["Station List"]</h4>
+					<h6>@ViewLocalizer["Manage your Stations"]</h6>
+				</div>
+				@if (canadd)
+				{
+					<div class="page-btn">
+						<a id="add-station-modal" href="javascript:void(0);" class="btn btn-added"><img src="~/vendor/img/icons/plus.svg" alt="img" class="me-2">@ViewLocalizer["Add Station"]</a>
+					</div>
+				}
 
-<div class="card">
-	<div class="card-body">
-		<div class="table-responsive">
-			<table id="station-list" class="table">
-				<thead>
-					<tr>
-						<th>@ViewLocalizer["Action"]</th>
-						<th>@ViewLocalizer["ID"] </th>
-						<th>@ViewLocalizer["Name"] </th>
-						<th>@ViewLocalizer["Menu"] </th>
-						<th>@ViewLocalizer["Status"]</th>
-						
-					</tr>
-				</thead>
-			</table>
+			</div>
+			<div class="card-datatable table-responsive">
+				<table id="station-list" class="table">
+					<thead class="border-top">
+						<tr>
+							<th>@ViewLocalizer["Action"]</th>
+							<th>@ViewLocalizer["ID"] </th>
+							<th>@ViewLocalizer["Name"] </th>
+							<th>@ViewLocalizer["Menu"] </th>
+							<th>@ViewLocalizer["Status"]</th>
+
+						</tr>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
+
 </div>
 
 
