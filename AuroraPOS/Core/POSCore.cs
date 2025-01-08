@@ -779,5 +779,68 @@ public class POSCore
     //    return View(order);
     //}
 
+    public OrderItemsInCheckout GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)
+    {
+        var orderItemsInCheckout = new OrderItemsInCheckout();
+        orderItemsInCheckout.status = 1;
+
+        var store = _dbContext.Preferences.FirstOrDefault();
+
+        var order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+        var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order).ToList();
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+
+        if (order.OrderMode == OrderMode.Seat)
+        {
+            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
+
+            var seats = order.Seats.ToList();
+            if (SeatNum > 0)
+                seats = order.Seats.Where(s => s.SeatNum == SeatNum).ToList();
+            order.GetTotalPrice(voucher, 0, SeatNum);
+
+            transactions = transactions.Where(s => s.SeatNum == SeatNum).ToList();
+            if (SeatNum > 0 && transactions.Count() > 0)
+            {
+                var paid = transactions.Sum(s => s.Amount);
+                order.Balance = order.Balance - paid;
+            }
+
+            orderItemsInCheckout.status = 0;
+            orderItemsInCheckout.seats = seats;
+            orderItemsInCheckout.order = order;
+            orderItemsInCheckout.transactions = transactions;
+            orderItemsInCheckout.store = store;
+        }
+        else if (order.OrderMode == OrderMode.Divide && DividerId > 0)
+        {
+            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+
+            var items = order.Items.Where(s => !s.IsDeleted && s.DividerNum == DividerId).ToList();
+            order.GetTotalPrice(voucher, DividerId);
+
+            transactions = transactions.Where(s => s.DividerNum == DividerId).ToList();
+            if (transactions.Count() > 0)
+            {
+                var paid = transactions.Sum(s => s.Amount);
+                order.Balance = order.Balance - paid;
+            }
+
+            orderItemsInCheckout.status = 0;
+            orderItemsInCheckout.orderItems = items;
+            orderItemsInCheckout.order = order;
+            orderItemsInCheckout.transactions = transactions;
+            orderItemsInCheckout.store = store;
+        }
+        else
+        {
+            orderItemsInCheckout.status = 0;
+            orderItemsInCheckout.orderItems = order.Items;
+            orderItemsInCheckout.order = order;
+            orderItemsInCheckout.transactions = transactions;
+            orderItemsInCheckout.store = store;
+        }
+        return orderItemsInCheckout;
+    }
 
 }

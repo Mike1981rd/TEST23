@@ -762,4 +762,31 @@ public class POSController : Controller
 
         return Json(response);
     }
+
+    [HttpPost("GetOrderItemsInCheckout")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)
+    {
+        var response = new GetOrderItemsInCheckoutResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var orderItemsInCheckout = objPOSCore.GetOrderItemsInCheckout(orderId, SeatNum, DividerId);
+
+            if (orderItemsInCheckout != null)
+            {
+                response.Valor = orderItemsInCheckout;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
 }
