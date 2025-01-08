@@ -199,7 +199,7 @@
 			{
 				'data': 'action', 'name': 'action',
 				render: function (data, type, row) {
-					return "<a class='me-3' href='javascript:void(0);' onclick='EditGroup(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					return "<a class='me-3' href='javascript:void(0);' onclick='EditGroup(" + JSON.stringify(row) + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteGroup('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
 				},
 			},
 			{ "data": "groupName", "name": "groupName", "autoWidth": true },
@@ -420,42 +420,42 @@
 		});
 	});
 
-	// function DeleteGroup(id) {
+	function DeleteGroup(id) {
 
-	//     Swal.fire({
-	//         title: "@ViewLocalizer["Are you sure to delete the group?"]",
-	//         text: "",
-	//         type: "warning",
-	//         showCancelButton: !0,
-	//         confirmButtonColor: "#3085d6",
-	//         cancelButtonColor: "#d33",
-	//         confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
-	//         cancelButtonText: "@ViewLocalizer["Cancel"]",
-	//         confirmButtonClass: "btn btn-primary",
-	//         cancelButtonClass: "btn btn-danger ml-1",
-	//         buttonsStyling: !1,
-	//     }).then(function (t) {
-	//         if (t.value) {
-	//             $.ajax({
-	//                 url: "/Menu/DeleteGroup?groupId=" + id,
-	//                 type: "POST",
-	//                 success: function (data, textStatus, jqXHR) {
-	//                     if (data.status == 0) {
-	//                         grouptable.draw();
-	//                     }
-	//                     else {
-	//                         toastr.error("@ViewLocalizer["Failed to delete the group."]", {})
-	//                     }
-	//                 },
-	//                 error: function (jqXHR, textStatus, errorThrown) {
-	//                     toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-	//                 }
-	//             });
-	//         }
+	    Swal.fire({
+	        title: "@ViewLocalizer["Are you sure to delete the group?"]",
+	        text: "",
+	        type: "warning",
+	        showCancelButton: !0,
+	        confirmButtonColor: "#3085d6",
+	        cancelButtonColor: "#d33",
+	        confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+	        cancelButtonText: "@ViewLocalizer["Cancel"]",
+	        confirmButtonClass: "btn btn-primary",
+	        cancelButtonClass: "btn btn-danger ml-1",
+	        buttonsStyling: !1,
+	    }).then(function (t) {
+	        if (t.value) {
+	            $.ajax({
+	                url: "/Menu/DeleteGroup?groupId=" + id,
+	                type: "POST",
+	                success: function (data, textStatus, jqXHR) {
+	                    if (data.status == 0) {
+	                        grouptable.draw();
+	                    }
+	                    else {
+	                        toastr.error("@ViewLocalizer["Failed to delete the group."]", {})
+	                    }
+	                },
+	                error: function (jqXHR, textStatus, errorThrown) {
+	                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+	                }
+	            });
+	        }
 
-	//     });
+	    });
 
-	// }
+	}
 
 	function FilterGroup() {
 		var searchText = $("#filter-searchtext").val();

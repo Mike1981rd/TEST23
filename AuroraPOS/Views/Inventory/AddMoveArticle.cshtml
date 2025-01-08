@@ -2,124 +2,131 @@
 @{
     var moveArticleStatus = (MoveArticleStatus)ViewBag.Status;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Create Transfer"]</h4>
-        <h6>@ViewLocalizer["Add/Update Transfer"]</h6>
-    </div>
 
-     <div class="page-btn">
-        <h5 id="production-id" ></h5>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+            <div class="card-body">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h4>@ViewLocalizer["Create Transfer"]</h4>
+                        <h6>@ViewLocalizer["Add/Update Transfer"]</h6>
+                    </div>
 
-        @if (moveArticleStatus == MoveArticleStatus.Pending)
-        {
-                <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
-        }
-        else if (moveArticleStatus == MoveArticleStatus.Moved)
-        {
-                <span class='badges bg-lightgreen'>@ViewLocalizer["Moved"]</span>
-        }
-        </div>
-</div>
+                    <div class="page-btn">
+                        <h5 id="production-id"></h5>
 
-<div class="card">
-    <div class="card-body">
-        <div class="row" data-articleid="0">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["From Warehouse"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="move-fromwarehouse" class="select">
-                            </select>
+                        @if (moveArticleStatus == MoveArticleStatus.Pending)
+                        {
+                            <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
+                        }
+                        else if (moveArticleStatus == MoveArticleStatus.Moved)
+                        {
+                            <span class='badges bg-lightgreen'>@ViewLocalizer["Moved"]</span>
+                        }
+                    </div>
+                </div>
+                <div class="row" data-articleid="0">
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["From Warehouse"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="move-fromwarehouse" class="select">
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                    <div class="add-icon">
+                                        <a id="add-fromwarehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-fromwarehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                    </div>
+                       <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["To Warehouse"]</label>
+                            <div class="row">
+                                <div class="col-lg-10 col-sm-10 col-10">
+                                    <select id="move-towarehouse" class="select">
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                    <div class="add-icon">
+                                        <a id="add-towarehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-12">
+                        <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Date"] </label>
+                            <div class="col input-groupicon">
+                                <input id="move-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.MoveDate" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-               <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["To Warehouse"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="move-towarehouse" class="select">
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-towarehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                            </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="">
+                            <a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">@ViewLocalizer["Add Article or Sub Recipe"] </a>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date"] </label>
-                    <div class="input-groupicon">
-                        <input id="move-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.MoveDate" class="datetimepicker">
-                        <div class="addonset">
-                            <img src="/vendor/img/icons/calendars.svg" alt="img">
+                    <div class="col-lg-3 col-sm-6 col-12 search-set">
+                        <div class="col search-input" style="">
+                            <a class="btn btn-searchset"><img src="/vendor/img/icons/scanners.svg" alt="img"></a>
+                            <div class="dataTables_filter"><label> <input id="filter-barcode" type="search" class="barcode-scanner form-control form-control-sm" placeholder="@ViewLocalizer["Scanning"]..." ></label></div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="">
-                    <a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">@ViewLocalizer["Add Article or Sub Recipe"] </a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 search-set">
-                <div class="search-input" style="">
-                    <a class="btn btn-searchset"><img src="/vendor/img/icons/scanners.svg" alt="img"></a>
-                    <div class="dataTables_filter"><label> <input id="filter-barcode" type="search" class="barcode-scanner form-control form-control-sm" placeholder="@ViewLocalizer["Scanning"]..." ></label></div>
-                </div>
-            </div>
             
-        </div>
-        <div class="row pt-2">
-            <div class="table-responsive" style=" overflow: auto">
-                <table id="purchase-item" class="table">
-                    <thead style=" ">
-                        <tr>
-                            <th>@ViewLocalizer["ID"]</th>
-                            <th>@ViewLocalizer["Name"]</th>
-                            <th>@ViewLocalizer["Type"]</th>
-                            <th>@ViewLocalizer["Brand"]</th>
-                            <th>@ViewLocalizer["Unit"]	</th>
-                            <th>@ViewLocalizer["Stock Qty"]</th>                            
-                            <th>@ViewLocalizer["Move Qty"]</th>
-                            <th>@ViewLocalizer["Action"]</th>
-                        </tr>
-                    </thead>
-                    <tbody id="item-list">
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Description"]</label>
-                    <textarea id="move-description" class="form-control"></textarea>
                 </div>
-            </div>
-            <div class="col-lg-12">
+                <br />
+                <div class="row pt-2">
+                <div class="card-datatable table-responsive" style=" overflow: auto">
+                        <table id="purchase-item" class="table">
+                        <thead class="border-top">
+                                <tr>
+                                    <th>@ViewLocalizer["ID"]</th>
+                                    <th>@ViewLocalizer["Name"]</th>
+                                    <th>@ViewLocalizer["Type"]</th>
+                                    <th>@ViewLocalizer["Brand"]</th>
+                                    <th>@ViewLocalizer["Unit"]	</th>
+                                    <th>@ViewLocalizer["Stock Qty"]</th>                            
+                                    <th>@ViewLocalizer["Move Qty"]</th>
+                                    <th>@ViewLocalizer["Action"]</th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-list">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Description"]</label>
+                            <textarea id="move-description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <br />
+
+                </div>
+            <br />
+
+            <div class="col-lg-12" style="display: flex; flex-direction: row; align-content: end;">
                 @if (moveArticleStatus == MoveArticleStatus.Pending)
                 {
-                    <a id="move-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
+                    <a id="move-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
                     <a id="move-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Move"]</a>
                 }
                 else if (moveArticleStatus == MoveArticleStatus.None)
                 {
-                    <a id="move-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                    <a id="move-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
                     <a id="move-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Move"]</a>
                 }
                 else if (moveArticleStatus == MoveArticleStatus.Moved)
@@ -128,8 +135,9 @@
                 }
                 <a id="move-return" href="/Inventory/MoveArticleList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
             </div>
-        </div>
+            </div>
     </div>
+
 </div>
 
 

@@ -1,22 +1,28 @@
 ﻿<!-- Question Modal-->
 <div class="modal fade" id="listqestions" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Question List"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Question List"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <a id="add-question" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add New Question</a>
                     </div>
                     <div class="col-12">
-                        <div class="table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="question-list" class="table" style="position:relative;">
-                                <thead style="position: sticky; top: 0; z-index:2;">
+                                <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
                                     <tr>
                                         <th>@ViewLocalizer["Action"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -32,7 +38,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -40,19 +46,25 @@
 
 
 <div class="modal fade" id="editquestion" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" data-editar-agregado="0">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%" role="document">
+    <div class="modal-dialog modal-lg modal-simple" style="max-width: 90%" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="question-modal-title">@ViewLocalizer["Edit Question"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Edit Question"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1">ID  </span>
                                 <input id="question-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
@@ -61,7 +73,7 @@
                     </div>
                     <div class="col-lg-6 col-sm-6 col-12 pb-3">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Type"]</label>
+                            <label class="form-label">@ViewLocalizer["Type"]</label>
                             <select id="question-type" class="select">
                                 <option value="1"> @ViewLocalizer["Forced Question"]</option>
                                 <option value="2"> @ViewLocalizer["Optional Modifier"]</option>
@@ -70,26 +82,26 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Maximun Answers"]</label>
+                            <label class="form-label">@ViewLocalizer["Maximun Answers"]</label>
                             <input id="question-maxanswer" type="text" class="form-control" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Minimum Answers"]</label>
+                            <label class="form-label">@ViewLocalizer["Minimum Answers"]</label>
                             <input id="question-minanswer" type="text" class="form-control" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Free Choice"]</label>
+                            <label class="form-label">@ViewLocalizer["Free Choice"]</label>
                             <input id="question-freechoice" type="text" class="form-control" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
 
                     <div class="col-lg-3 col-sm-6 col-12 pb-3">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
+                            <label class="form-label">@ViewLocalizer["Status"]</label>
                             <select id="question-status" class="select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
@@ -98,7 +110,7 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12 pb-3">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Automatic"]</label>
+                            <label class="form-label">@ViewLocalizer["Automatic"]</label>
                             <select id="question-automatic" class="select">
                                 <option value="1"> @ViewLocalizer["Yes"]</option>
                                 <option value="0"> @ViewLocalizer["No"]</option>
@@ -114,47 +126,50 @@
                                 </a>
                             </div>
                         </div>
-                        <table id="table-answers" class="reordertable  table  mb-3" data-reorderable-rows="true">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        @ViewLocalizer["Name"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["PreSelected"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Has Qty"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Has Divisor"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Match Size"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Comentario"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Price Type"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Fixed Price"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Roll Price"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Post Question"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Action"]
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="question-answers">
-                            </tbody>
-                        </table>
+                        <div class="card-datatable table-responsive">
+                            <table id="table-answers" class="reordertable  table  mb-3" data-reorderable-rows="true">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>
+                                            @ViewLocalizer["Name"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["PreSelected"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Has Qty"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Has Divisor"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Match Size"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Comentario"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Price Type"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Fixed Price"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Roll Price"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Post Question"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Action"]
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="question-answers">
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
                     <div class="col-lg-12 col-sm-12 col-12" style="height: 300px; overflow: auto">
                         <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
@@ -165,33 +180,35 @@
                                 </a>
                             </div>
                         </div>
-                        <table class="reordertable table mb-3" style="max-height:150px; overflow:auto;" data-reorderable-rows="true">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        @ViewLocalizer["Name"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Before or After"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Apply Price"]
-                                    </th>
-                                    <th>
-                                        @ViewLocalizer["Action"]
-                                    </th>
-                            </thead>
-                            <tbody id="question-smartbuttons">
-                            </tbody>
-                        </table>
+                        <div class="card-datatable table-responsive">
+                            <table class="reordertable table mb-3" style="max-height:150px; overflow:auto;" data-reorderable-rows="true">
+                                <thead class="border-top">
+                                    <tr>
+                                        <th>
+                                            @ViewLocalizer["Name"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Before or After"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Apply Price"]
+                                        </th>
+                                        <th>
+                                            @ViewLocalizer["Action"]
+                                        </th>
+                                </thead>
+                                <tbody id="question-smartbuttons">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-question" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="edit-question" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -199,23 +216,29 @@
 
 <!-- Smart Button Modal-->
 <div class="modal fade" id="listsmartbuttons" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="smartbutton-modal-title">@ViewLocalizer["Smart Button List"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Smart Button List"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <a id="add-smartbutton" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add New Smart Button</a>
                     </div>
                     <div class="col-12">
-                        <div class="table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="smartbutton-list" class="table" style="position:relative;">
-                                <thead style="position: sticky; top: 0; z-index:2;">
+                                <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
                                     <tr>
                                         <th>@ViewLocalizer["Action"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -231,26 +254,32 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="editsmartbutton" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="smartbuton-modal-title">@ViewLocalizer["Edit SmartButton"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Edit SmartButton"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="smartbutton-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
                             </div>
@@ -258,7 +287,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12 pb-3">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["After/Before Text"]</label>
+                            <label class="form-label">@ViewLocalizer["After/Before Text"]</label>
                             <select id="smartbutton-afterbefore" class="select">
                                 <option value="1"> @ViewLocalizer["Before Text"]</option>
                                 <option value="2"> @ViewLocalizer["After Text"]</option>
@@ -267,16 +296,16 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12 pt-3">
                         <div class="form-group row">
-                            <input id="smartbutton-applyprice" type="checkbox" class="col-sm-4 col-4">
-                            <label class="col-sm-8 col-8">@ViewLocalizer["Apply Price"]  </label>
+                            <input id="smartbutton-applyprice" type="checkbox" class="form-control col-sm-4 col-4">
+                            <label class="form-label col-sm-8 col-8">@ViewLocalizer["Apply Price"]  </label>
                         </div>
                     </div>
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-smartbutton" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="edit-smartbutton" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

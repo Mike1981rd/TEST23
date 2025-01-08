@@ -29,69 +29,73 @@
     margin: 0;
 }
 </style>
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Add/Update Table Map"]</h4>
-    </div>
-</div>
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-lg-4 col-sm-12 col-12">
-                <div class="form-group">
-                    <div class="row mb-3">
-                        <div class="col-lg-9 col-sm-6 col-6">
-                            <select id="editor-area" class="select ">
-                                <option value="">@ViewLocalizer["Choose area"]</option>
 
-                            </select>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="card-body">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Add/Update Table Map"]</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-sm-12 col-12">
+                    <div class="form-group">
+                        <div class="row mb-3">
+                            <div class="col-lg-9 col-sm-6 col-6">
+                                <select id="editor-area" class="select ">
+                                    <option value="">@ViewLocalizer["Choose area"]</option>
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-sm-2 col-2 ps-0">
+                                <div class="d-flex">
+                                    <div class="add-icon px-1">
+                                        <a id="add-area-modal" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </a>
+                                    </div>
+                                    <div class="edit-icon  px-1">
+                                        <a id="edit-area-modal" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/edit.svg" alt="img">
+                                        </a>
+                                    </div>
+                                    <div class="del-icon  px-1">
+                                        <a id="del-area-modal" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/minus.svg" alt="img">
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
-                        <div class="col-lg-3 col-sm-2 col-2 ps-0">
-                            <div class="d-flex">
-                                <div class="add-icon px-1">
-                                    <a id="add-area-modal" href="javascript:void(0);">
-                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                    </a>
-                                </div>
-                                <div class="edit-icon  px-1">
-                                    <a id="edit-area-modal" href="javascript:void(0);">
-                                        <img src="/vendor/img/icons/edit.svg" alt="img">
-                                    </a>
-                                </div>
-                                <div class="del-icon  px-1">
-                                    <a id="del-area-modal" href="javascript:void(0);">
-                                        <img src="/vendor/img/icons/minus.svg" alt="img">
-                                    </a>
+                        <div class="d-flex">
+                            <button id="add-object-modal" class="btn btn-sm btn-success mx-3">@ViewLocalizer["Add New Object"]</button>
+                            <button id="edit-object-modal" class="btn  btn-sm btn-secondary mx-3">@ViewLocalizer["Edit Selected Object"]</button>
+                            <button id="clone-object-modal" class="btn  btn-sm btn-success mx-3">@ViewLocalizer["Clone Selected Object"]</button>
+                            <button id="del-object-modal" class="btn  btn-sm btn-danger mx-3">@ViewLocalizer["Delete Object"]</button>
+                        </div>
+                        <div id="main" class="p-2">
+                            <div class="d-flex justify-content-between">
+                                <div class="area-info" style="display:none;">@ViewLocalizer["WIDTH"]: <span class="area-width-info text-info">1000</span>, @ViewLocalizer["HEIGHT"]: <span class="area-height-info text-info">700</span></div>
+                                <div class="selected-info" style="display:none;">SELECTED:  <span class="selected-name">@ViewLocalizer["NAME"]</span>, W x H: <span class="selected-wh text-info"></span>, @ViewLocalizer["POS"]: <span class="selected-pos text-info"></span></div>
+
+                            </div>
+                            <div id="area-panel" class="" style="position:relative;">
+                                <div class="areaobject-item">
+                                    <div class="obj-content" style="width: 100%; height:100%; background-color: green;"></div>
                                 </div>
                             </div>
 
                         </div>
 
                     </div>
-                    <div class="d-flex">
-                        <button id="add-object-modal" class="btn btn-sm btn-success mx-3">@ViewLocalizer["Add New Object"]</button>
-                        <button id="edit-object-modal" class="btn  btn-sm btn-secondary mx-3">@ViewLocalizer["Edit Selected Object"]</button>
-                        <button id="clone-object-modal" class="btn  btn-sm btn-success mx-3">@ViewLocalizer["Clone Selected Object"]</button>
-                        <button id="del-object-modal" class="btn  btn-sm btn-danger mx-3">@ViewLocalizer["Delete Object"]</button>
-                    </div>
-                    <div id="main" class="p-2">
-                        <div class="d-flex justify-content-between">
-                            <div class="area-info"  style="display:none;">@ViewLocalizer["WIDTH"]: <span class="area-width-info text-info">1000</span>, @ViewLocalizer["HEIGHT"]: <span  class="area-height-info text-info">700</span></div> 
-                            <div class="selected-info" style="display:none;">SELECTED:  <span class="selected-name">@ViewLocalizer["NAME"]</span>, W x H: <span class="selected-wh text-info"></span>, @ViewLocalizer["POS"]: <span class="selected-pos text-info"></span></div>
-
-                        </div>
-                        <div id="area-panel" class="" style="position:relative;">
-                            <div class="areaobject-item">
-                                <div class="obj-content" style="width: 100%; height:100%; background-color: green;"></div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>

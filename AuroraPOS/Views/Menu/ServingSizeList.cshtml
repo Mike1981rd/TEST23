@@ -188,7 +188,7 @@
 				{
 					'data': 'action', 'name': 'action',
 					render: function (data, type, row) {
-						return "<a class='me-3' href='javascript:void(0);'  onclick='EditServingSize(" + JSON.stringify(row) + ")'; ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+						return "<a class='me-3' href='javascript:void(0);'  onclick='EditServingSize(" + JSON.stringify(row) + ")'; ><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3' href='javascript:void(0);'  onclick=DeleteServingSize('" + row.id + "'); ><img src='/vendor/img/icons/delete.svg' alt='img'></a>";
 					},
 				},
 				{ "data": "id", "name": "id", "autoWidth": true },
@@ -337,6 +337,40 @@
 	$('.dataTables_length').addClass('mx-n2');
 	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
 
+	function DeleteServingSize(id) {
+
+		Swal.fire({
+			title: "@ViewLocalizer["Are you sure to delete the serving size?"]",
+			text: "",
+			type: "warning",
+			showCancelButton: !0,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "@ViewLocalizer["Yes, delete it!"]",
+			confirmButtonClass: "btn btn-primary",
+			cancelButtonText: "@ViewLocalizer["Close"]",
+			cancelButtonClass: "btn btn-danger ml-1",
+			buttonsStyling: !1,
+		}).then(function (t) {
+			if (t.value) {
+				$.ajax({
+					url: "/Menu/DeleteServingSize?categoryId=" + id,
+					type: "POST",
+					success: function (data, textStatus, jqXHR) {
+						if (data.status == 0) {
+							categorytable.draw();
+						}
+						else {
+							toastr.error("@ViewLocalizer["Failed to delete the category."]", {})
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						toastr.error("@ViewLocalizer["There was an error to process the request."]", {})
+					}
+				});
+			}
+		});
+	}
 
 
 		function EditServingSize(model) {

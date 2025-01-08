@@ -4,23 +4,29 @@
 @{
 }
 <div class="modal fade" id="listwarehouse" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Warehosue List"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Warehosue List"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <a id="add-warehouse" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Warehosue</a>
                     </div>
                     <div class="col-12">
-                        <div class="table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="warehouse-list" class="table">
-                                <thead>
+                                <thead class="border-top">
                                     <tr>
                                         <th>@ViewLocalizer["Action"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -36,45 +42,54 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="cancel-warehouse" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="cancel-warehouse" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="editwarehouse" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="warehouse-modal-title">@ViewLocalizer["Edit Warehouse"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Edit Warehouse"]
+                    </h4>
+                </div>
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
-                            <input id="ew-name" type="text">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0">
+                                <label class="form-label">@ViewLocalizer["Warehouse name"]<span class="manitory">*</span></label>
+                                <input type="text" id="ew-name" class="form-control" plaria-describedby="basic-addon1">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-md-6 fv-plugins-icon-container">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-                            <input id="ew-email" type="text">
+                            <label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+                            <input type="text" id="ew-email" class="form-control" plaria-describedby="basic-addon1">
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-md-6 fv-plugins-icon-container">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-                            <input id="ew-phone" type="text">
+                            <label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+                            <input type="text" id="ew-phone" class="form-control" plaria-describedby="basic-addon1">
                         </div>
                     </div>
+
                     <div class="col-12">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
-                            <select id="ew-status" class="select">
+                            <label class="form-label">@ViewLocalizer["Status"]</label>
+                            <select id="ew-status" class="select form-select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
                             </select>
@@ -85,8 +100,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-warehouse" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="edit-warehouse" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

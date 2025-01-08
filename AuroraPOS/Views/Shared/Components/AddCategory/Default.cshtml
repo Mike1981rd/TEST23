@@ -2,24 +2,30 @@
 @model AuroraPOS.ViewComponents.AddCategoryViewModel
 
 <div class="modal fade" id="listcategory" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Category List"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Category List"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<a id="add-category" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Category</a>
 					</div>
 					<div class="col-12">
 
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="category-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
+								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Name"] </th>
 										<th>@ViewLocalizer["Group"] </th>
@@ -35,26 +41,32 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="cancel-category" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="cancel-category" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 <div class="modal fade" id="editcategory" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="category-modal-title">@ViewLocalizer["Edit Category"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Edit Category"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
 							<div class="input-group">
 								<span class="input-group-text" id="basic-addon1">ID  </span>
 								<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
@@ -63,7 +75,7 @@
 					</div>					
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Group"]</label>
+							<label class="form-label">@ViewLocalizer["Group"]</label>
 							<select id="category-group" class="select">
 								<option value="">@ViewLocalizer["Choose Group"]</option>
 								@foreach (var g in Model.groups)
@@ -75,7 +87,7 @@
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12 pb-3">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Status"]</label>
+							<label class="form-label">@ViewLocalizer["Status"]</label>
 							<select id="category-status" class="select">
 								<option value="1"> @ViewLocalizer["Active"]</option>
 								<option value="0"> @ViewLocalizer["InActive"]</option>
@@ -84,7 +96,7 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Taxes"]</label>
+							<label class="form-label">@ViewLocalizer["Taxes"]</label>
 							<select id="category-tax" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var t in Model.taxes)
 								{
@@ -95,7 +107,7 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Propina"]</label>
+							<label class="form-label">@ViewLocalizer["Propina"]</label>
 							<select id="category-propina" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var t in Model.propinas)
 								{
@@ -106,7 +118,7 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Course"]</label>
+							<label class="form-label">@ViewLocalizer["Course"]</label>
 							<select id="category-course" class="form-control select" tabindex="-1" aria-hidden="true">
 								<option value="">Choose course</option>
 								@foreach (var t in Model.courses)
@@ -118,7 +130,7 @@
 					</div>
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Printer Channels"]</label>
+							<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
 							<select id="category-pchannel" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var p in Model.printerChannels)
 								{
@@ -139,31 +151,33 @@
 								</a>
 							</div>
 						</div>
-						<table class="table reordertable">
-							<thead>
-								<tr>
-									<td>
-										@ViewLocalizer["Name"]
-									</td>
-									<td>
-										@ViewLocalizer["Type"]
-									</td>
-									<td>
-										@ViewLocalizer["Number"]
-									</td>
-									<td>
-										@ViewLocalizer["Action"]
-									</td>
-							</thead>
-							<tbody id="accounting-list1">
-							</tbody>
-						</table>
+						<div class="card-datatable table-responsive">
+							<table class="table reordertable">
+								<thead class="border-top">
+									<tr>
+										<td>
+											@ViewLocalizer["Name"]
+										</td>
+										<td>
+											@ViewLocalizer["Type"]
+										</td>
+										<td>
+											@ViewLocalizer["Number"]
+										</td>
+										<td>
+											@ViewLocalizer["Action"]
+										</td>
+								</thead>
+								<tbody id="accounting-list1">
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="edit-category" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="edit-category" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

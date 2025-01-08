@@ -117,9 +117,9 @@
                                     <a id="add-article-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Add Item"] </a>
                                 </div>
                                 <div class="row pt-2">
-                                    <div class="table-responsive" style="overflow-x: auto;">
+                                    <div class="card-datatable table-responsive">
                                         <table id="purchase-item" class="table">
-                                            <thead style=" ">
+                                            <thead class="border-top">
                                                 <tr>
                                                     <th>@ViewLocalizer["Article"]</th>
                                                     <th>@ViewLocalizer["Brand"]</th>
@@ -149,7 +149,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+@*                             <div class="row">
                                 <div class="col-lg-12 float-md-right">
                                     <div class="total-order">
                                         <ul>
@@ -184,7 +184,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
                         <!-- /Product Information -->
                         <!-- Variants -->
@@ -301,6 +301,46 @@
                     </div>
                     <!-- /Pricing Card -->
 
+                    <div class="card mb-6">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 float-md-right">
+                                    <div class="total-order">
+                                        <ul>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Base Taxable"]</label>
+                                                <p id="po-basetaxable">$ 0.00</p>
+                                            </li>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Extra Amount"]</label>
+                                                <p id="po-extent">$ 0.00</p>
+                                            </li>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Shipping"]</label>
+                                                <p id="po-shipping">$ 0.00</p>
+                                            </li>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Discount"]</label>
+                                                <p id="po-discount">$ 0.00</p>
+                                            </li>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Sub Total"]</label>
+                                                <p id="po-subtotal">$ 0.00</p>
+                                            </li>
+                                            <li>
+                                                <label class="form-label">@ViewLocalizer["Tax"]</label>
+                                                <p id="po-tax">$ 0.00</p>
+                                            </li>
+                                            <li class="total">
+                                                <label class="form-label">@ViewLocalizer["Net Total"]</label>
+                                                <p id="po-total">$ 0.00</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 </div>
                 <!-- /Inventory -->

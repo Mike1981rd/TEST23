@@ -5,186 +5,193 @@
     
     var damageStatus = (DamageArticleStatus)ViewBag.Status;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h4>@ViewLocalizer["Create damage"]</h4>
-        <h6>@ViewLocalizer["Add/Update damage"]</h6>
-    </div>
 
-    <div class="page-btn">
-        <h5 id="production-id" data-id="@ViewBag.DamageArticleID"></h5>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="card-body">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>@ViewLocalizer["Create damage"]</h4>
+                    <h6>@ViewLocalizer["Add/Update damage"]</h6>
+                </div>
 
-        @if (damageStatus == DamageArticleStatus.Pending)
-        {
-            <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
-        }
-        else if (damageStatus == DamageArticleStatus.Cancelled)
-        {
-            <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
-        }
-        else if (damageStatus == DamageArticleStatus.Confirmed)
-        {
-            <span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>
-        }
-    </div>
-</div>
+                <div class="page-btn">
+                    <h5 id="production-id" data-id="@ViewBag.DamageArticleID"></h5>
 
-<div class="card">
-    <div class="card-body">
-        <div class="row" data-articleid="0">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Warehouse"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <select id="damage-warehouse" class="select">
-                            </select>
+                    @if (damageStatus == DamageArticleStatus.Pending)
+                    {
+                        <span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>
+                    }
+                    else if (damageStatus == DamageArticleStatus.Cancelled)
+                    {
+                        <span class='badges bg-lightred'>@ViewLocalizer["Cancelled"]</span>
+                    }
+                    else if (damageStatus == DamageArticleStatus.Confirmed)
+                    {
+                        <span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>
+                    }
+                </div>
+            </div>
+            <div class="row" data-articleid="0">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Warehouse"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <select id="damage-warehouse" class="select">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Date"] </label>
+                        <div class="input-groupicon">
+                            <input id="damage-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.DamageDate" class="datetimepicker form-control">
+                            <div class="addonset">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date"] </label>
-                    <div class="input-groupicon">
-                        <input id="damage-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.DamageDate" class="datetimepicker">
-                        <div class="addonset">
-                            <img src="/vendor/img/icons/calendars.svg" alt="img">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Article or Sub Recipe"]</label>
-                    <div class="row">
-                        <div class="col-lg-10 col-sm-10 col-10">
-                            <input id="damage-article" disabled value="" type="text">
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                            <div class="add-icon">
-                                <a id="add-article-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Article or Sub Recipe"]</label>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                                <input id="damage-article" disabled value="" type="text" class="form-control">
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                <div class="add-icon">
+                                    <a id="add-article-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
                             </div>
                         </div>
+
                     </div>
-                   
                 </div>
-            </div>
-             <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Type"]</label>
-                    <h6 id="damage-type" disabled="" class="text-info pt-2"></h6>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Type"]</label>
+                        <h6 id="damage-type" disabled="" class="text-info pt-2"></h6>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Unit"]</label>
-                    <select id="damage-unit" class="select ">
-                    </select>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Unit"]</label>
+                        <select id="damage-unit" class="select ">
+                        </select>
+                    </div>
                 </div>
-            </div>
-           @*  <div class="col-lg-2 col-sm-6 col-12">
+                @*  <div class="col-lg-2 col-sm-6 col-12">
                 <div class="form-group">
                     <label>@ViewLocalizer["Stock Qty"]</label>
                     <input id="damage-stockqty" onkeypress="return onlyDecimalKey(event)" disabled value="" type="text">
                 </div>
             </div>*@
-           <div class="col-lg-2 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Qty"]</label>
-                    <input id="damage-qty" onkeypress="return onlyDecimalKey(event)" value="" type="text">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Description"]</label>
-                    <textarea id="damage-description" class="form-control"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-				<div class="form-group px-3">
-					<label>	@ViewLocalizer["Photos"]</label>
-					<div class="row">
-						<div id="damage-photos" class="col-sm-12 col-12 d-flex">
-                           
-						</div>
-						<div class="col-sm-12 col-12 image-upload" style="height: 100%">
-							<input id="imgInpDamage" type="file" name="Files" accept="image/*">
-							<div class="image-uploads">
-								<img src="~/vendor/img/icons/upload.svg" alt="img">
-									<h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-        </div>
-        <div class="row py-3">
-            <div class="col-lg-12 col-sm-12 col-12">
-                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                    <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-                    <div class="add-unit">
-                        <a class="add-accounting-item" href="javascript:void(0);">
-                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                        </a>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Qty"]</label>
+                        <input id="damage-qty" onkeypress="return onlyDecimalKey(event)" value="" type="text" class="form-control">
                     </div>
                 </div>
-                <table class="table reordertable">
-                    <thead>
-                        <tr>
-                            <td>
-                                @ViewLocalizer["Name"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Type"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Number"]
-                            </td>
-                            <td>
-                                @ViewLocalizer["Action"]
-                            </td>
-                    </thead>
-                    <tbody id="accounting-list">
-                    </tbody>
-                </table>
             </div>
-        </div>
-        <div class="row pt-2">
-            <div class="col-lg-12">
+            <br />
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Description"]</label>
+                        <textarea id="damage-description" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="form-group px-3">
+                    <label class="form-label">	@ViewLocalizer["Photos"]</label>
+                    <div class="row">
+                        <div id="damage-photos" class="col-sm-12 col-12 d-flex">
+                        </div>
+                        <div class="col-sm-12 col-12 image-upload" style="height: 100%">
+                            <input class="form-control" id="imgInpDamage" type="file" name="Files" accept="image/*">
+                            <div class="image-uploads" style="display:flex; flex-direction: column; align-items:center; justify-content: center;">
+                                <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                            </div>
+                        </div>
+                    </div>
 
-                @if (damageStatus == DamageArticleStatus.Pending)
-                {
-                    <a id="damage-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
-                    <a id="damage-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
-                    <a id="damage-confirm" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Confirm"]</a>
-                }
-                else if (damageStatus == DamageArticleStatus.Cancelled)
-                {
-                    <a id="damage-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
-                }
-                else if (damageStatus == DamageArticleStatus.None)
-                {   <a id="damage-submit" href="javascript:void(0);" class="btn btn-default me-2 btn-submit">@ViewLocalizer["Save"]</a>
-                    <a id="damage-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
-                    <a id="damage-confirm" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Confirm"]</a>
-                }
-               
-                <a id="damage-return" href="/Inventory/DamageArticleList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
+                </div>
+            </div>
+            <div class="row py-3">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                        <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+                        <div class="add-unit">
+                            <a class="add-accounting-item" href="javascript:void(0);">
+                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-datatable table-responsive">
+                        <table class="table reordertable">
+                            <thead class="border-top">
+                                <tr>
+                                    <td>
+                                        @ViewLocalizer["Name"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Type"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Number"]
+                                    </td>
+                                    <td>
+                                        @ViewLocalizer["Action"]
+                                    </td>
+                            </thead>
+                            <tbody id="accounting-list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+            </div>
+            <div class="row pt-2">
+                <div class="col-lg-12">
+
+                    @if (damageStatus == DamageArticleStatus.Pending)
+                    {
+                        <a id="damage-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                        <a id="damage-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
+                        <a id="damage-confirm" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Confirm"]</a>
+                    }
+                    else if (damageStatus == DamageArticleStatus.Cancelled)
+                    {
+                        <a id="damage-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                    }
+                    else if (damageStatus == DamageArticleStatus.None)
+                    {
+                        <a id="damage-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                        <a id="damage-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
+                        <a id="damage-confirm" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Confirm"]</a>
+                    }
+
+                    <a id="damage-return" href="/Inventory/DamageArticleList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+</div>
 
 <!-- Warehouse Modal -->
 @{

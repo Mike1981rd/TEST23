@@ -10,199 +10,208 @@
 }
 @model CategoryViewModel
 
-<div class="page-header">
-	<div class="page-title">
-		<h4>@ViewLocalizer["Category Management"]</h4>
-		<h6>@ViewLocalizer["Add/Update Category"]</h6>
-	</div>
-</div>
-<!-- /add -->
-<div class="card">
-	<div class="card-body">
-		<form method="post" asp-controller="Menu" asp-action="AddCategory" enctype="multipart/form-data">
-			@Html.AntiForgeryToken()
-			<div class="row">
-				<div class="col-lg-4 col-sm-6 col-12">
-					<input type="hidden" id="category-id" asp-for="ID" />
-					<input type="hidden" asp-for="GroupName" />
-					<div class="form-group">
-						<label>@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
-						<div class="input-group">
-							<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
-							<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required><br />
-							
-						</div>
-						<span asp-validation-for="Name" class="text-danger"></span>
-					</div>
-				</div>			
-				<div class="col-lg-4 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Group"]</label>
-						<select id="category-group" asp-for="GroupID" class="select">
-							<option value="">@ViewLocalizer["Choose Group"]</option>
-							@foreach(var g in groups)
-							{
-								<option value="@g.ID">@g.GroupName</option>
-							}
-						</select>
-					</div>
+<div class="container-xxl flex-grow-1 container-p-y">
+	<!-- /add -->
+	<div class="card">
+		<div class="card-body">
+			<div class="page-header">
+				<div class="page-title">
+					<h4>@ViewLocalizer["Category Management"]</h4>
+					<h6>@ViewLocalizer["Add/Update Category"]</h6>
 				</div>
-				<div class="col-lg-6 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Taxes"]</label>
-						<select id="category-tax" class="form-control tagging select" asp-for="Taxes" multiple tabindex="-1" aria-hidden="true">
-							@foreach (var t in taxs)
-							{
-								<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
-							}
-						</select>
-					</div>
-				</div>
-				<div class="col-lg-6 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Propina"]</label>
-						<select id="category-propina" class="form-control tagging select" asp-for="Propinas" multiple tabindex="-1" aria-hidden="true">
-							@foreach (var t in propinas)
-							{
-								<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
-							}
-						</select>
-					</div>
-				</div>
-				<div class="col-lg-6 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Printer Channels"]</label>
-						<select id="category-pchannel" class="form-control tagging select" asp-for="PrinterChannels" multiple tabindex="-1" aria-hidden="true">
-							@foreach (var p in printerChannels)
-							{
-								<option value="@p.ID">@p.Name </option>
-							}
-						</select>
-						<span asp-validation-for="PrinterChannels" class="text-danger"></span>
-					</div>
-				</div>
-				<div class="col-lg-3 col-sm-6 col-12 pb-3">
-					<div class="form-group mb-0">
-						<label>@ViewLocalizer["Status"]</label>
-						<select id="category-status" class="select" asp-for="IsActive">
-							<option value="1"> @ViewLocalizer["Active"]</option>
-							<option value="0"> @ViewLocalizer["InActive"]</option>
-						</select>
-					</div>
-				</div>
-				<div class="col-lg-3 col-sm-6 col-12">
-					<div class="form-group">
-						<label>@ViewLocalizer["Course"]</label>
-						<div class="row">
-							<div class="col-lg-10 col-sm-10 col-10">
-								<select id="category-course" class="select " asp-for="CourseID">
-									<option value="0">@ViewLocalizer["Choose course"]</option>
-									@foreach (var t in courses)
-									{
-										<option value="@t.ID">@t.Name</option>
-									}
+			</div>
+			<form method="post" asp-controller="Menu" asp-action="AddCategory" enctype="multipart/form-data">
+				@Html.AntiForgeryToken()
+				<div class="row">
+					<div class="col-lg-4 col-sm-6 col-12">
+						<input type="hidden" id="category-id" asp-for="ID" />
+						<input type="hidden" asp-for="GroupName" />
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
+								<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required><br />
 
-								</select>
 							</div>
-							<div class="col-lg-2 col-sm-2 col-2 ps-0">
-								<div class="add-icon">
-									<a id="add-course-modal" href="javascript:void(0);">
-										<img src="/vendor/img/icons/plus1.svg" alt="img">
-									</a>
+							<span asp-validation-for="Name" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Group"]</label>
+							<select id="category-group" asp-for="GroupID" class="select">
+								<option value="">@ViewLocalizer["Choose Group"]</option>
+								@foreach (var g in groups)
+								{
+									<option value="@g.ID">@g.GroupName</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Taxes"]</label>
+							<select id="category-tax" class="form-control tagging select" asp-for="Taxes" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in taxs)
+								{
+									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Propina"]</label>
+							<select id="category-propina" class="form-control tagging select" asp-for="Propinas" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var t in propinas)
+								{
+									<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
+							<select id="category-pchannel" class="form-control tagging select" asp-for="PrinterChannels" multiple tabindex="-1" aria-hidden="true">
+								@foreach (var p in printerChannels)
+								{
+									<option value="@p.ID">@p.Name </option>
+								}
+							</select>
+							<span asp-validation-for="PrinterChannels" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 pb-3">
+						<div class="form-group mb-0">
+							<label class="form-label">@ViewLocalizer["Status"]</label>
+							<select id="category-status" class="select" asp-for="IsActive">
+								<option value="1"> @ViewLocalizer["Active"]</option>
+								<option value="0"> @ViewLocalizer["InActive"]</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Course"]</label>
+							<div class="row">
+								<div class="col-lg-10 col-sm-10 col-10">
+									<select id="category-course" class="select " asp-for="CourseID">
+										<option value="0">@ViewLocalizer["Choose course"]</option>
+										@foreach (var t in courses)
+										{
+											<option value="@t.ID">@t.Name</option>
+										}
+
+									</select>
+								</div>
+								<div class="col-lg-2 col-sm-2 col-2 ps-0">
+									<div class="add-icon">
+										<a id="add-course-modal" href="javascript:void(0);">
+											<img src="/vendor/img/icons/plus1.svg" alt="img">
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
 				</div>
-			
-			</div>
-			<div class="row pt-5">
-				<div class="col-lg-12 col-sm-12 col-12">
-					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-						<h6 class="text-left"> @ViewLocalizer["Questions and Modifiers"]</h6>
-						<div class="add-unit">
-							<a class="add-new-question" href="javascript:void(0);">
-								<img src="/vendor/img/icons/plus1.svg" alt="img">
-							</a>
+				<div class="row pt-5">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Questions and Modifiers"]</h6>
+							<div class="add-unit">
+								<a class="add-new-question" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<div class="card-datatable table-responsive">
+							<table class="table reordertable">
+								<thead class="border-top">
+									<tr>
+										<td>
+											@ViewLocalizer["Name"]
+										</td>
+										<td>
+											@ViewLocalizer["Type"]
+										</td>
+										<td>
+											@ViewLocalizer["Action"]
+										</td>
+								</thead>
+								<tbody id="product-questions">
+									@foreach (var q in Model.Questions)
+									{
+										<tr data-id="@q.ID">
+											<td>@q.Name</td>
+											<td>@q.Type</td>
+											<td>
+												<div class="">
+													<a href="javascript:void(0);" class="edit-item"><img src="/vendor/img/icons/edit.svg" onclick="EditQuestion1(@q.ID)" alt="svg"></a>
+												</div>
+											</td>
+											<td>
+												<div class="delete-btn">
+													<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+												</div>
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+
 						</div>
 					</div>
-					<table class="table reordertable">
-						<thead>
-							<tr>
-								<td>
-									@ViewLocalizer["Name"]
-								</td>
-								<td>
-									@ViewLocalizer["Type"]
-								</td>
-								<td>
-									@ViewLocalizer["Action"]
-								</td>
-						</thead>
-						<tbody id="product-questions">
-							@foreach(var q in Model.Questions)
-							{
-								<tr data-id="@q.ID">
-									<td>@q.Name</td>
-									<td>@q.Type</td>
-									<td>
-										<div class="">
-											<a href="javascript:void(0);" class="edit-item"><img src="/vendor/img/icons/edit.svg" onclick="EditQuestion1(@q.ID)" alt="svg"></a>
-										</div>
-									</td>
-									<td>
-										<div class="delete-btn">
-											<a href="javascript:void(0);" class="delete-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
-										</div>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
 
-			</div>
-			<div class="row pt-5">
-				<div class="col-lg-12 col-sm-12 col-12">
-					<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-						<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
-						<div class="add-unit">
-							<a class="add-accounting-item" href="javascript:void(0);">
-								<img src="/vendor/img/icons/plus1.svg" alt="img">
-							</a>
+				</div>
+				<div class="row pt-5">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+							<div class="add-unit">
+								<a class="add-accounting-item" href="javascript:void(0);">
+									<img src="/vendor/img/icons/plus1.svg" alt="img">
+								</a>
+							</div>
+						</div>
+						<div class="card-datatable table-responsive">
+							<table class="table reordertable">
+								<thead class="border-top">
+									<tr>
+										<td>
+											@ViewLocalizer["Name"]
+										</td>
+										<td>
+											@ViewLocalizer["Type"]
+										</td>
+										<td>
+											@ViewLocalizer["Number"]
+										</td>
+										<td>
+											@ViewLocalizer["Action"]
+										</td>
+								</thead>
+								<tbody id="accounting-list">
+								</tbody>
+							</table>
+
 						</div>
 					</div>
-					<table class="table reordertable">
-						<thead>
-							<tr>
-								<td>
-									@ViewLocalizer["Name"]
-								</td>
-								<td>
-									@ViewLocalizer["Type"]
-								</td>
-								<td>
-									@ViewLocalizer["Number"]
-								</td>
-								<td>
-									@ViewLocalizer["Action"]
-								</td>
-						</thead>
-						<tbody id="accounting-list">
-						</tbody>
-					</table>
 				</div>
-			</div>
-			<div class="row pt-3">
-				<div class="col-lg-12">
-					<a id="submit" href="javascript:void(0);" class="btn btn-submit me-2">@ViewLocalizer["Submit"]</a>
-					<a id="cancel" href="javascript:void(0);" class="btn btn-cancel">@ViewLocalizer["Cancel"]</a>
+				<div class="row pt-3">
+					<div class="col-lg-12">
+						<a id="submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+						<a id="cancel" href="javascript:void(0);" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Cancel"]</a>
+					</div>
 				</div>
-			</div>
-		</form>
+			</form>
 
+		</div>
 	</div>
 </div>
+
 @{
 	@await Component.InvokeAsync("AddCourse", new { })
 }
