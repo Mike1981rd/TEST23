@@ -62,7 +62,7 @@ public class AccountController : Controller
     //Login con PIN
    [AllowAnonymous]
    [HttpPost("POSLogin")]
-    public IActionResult POSLogin(POSLoginRequest request)
+    public IActionResult POSLogin([FromBody]POSLoginRequest request)
     {
         var objResponse = new POSLoginResponse();
         objResponse.status = 2;
