@@ -16,6 +16,8 @@ using PuppeteerSharp;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using AuroraPOS.ViewModels;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -39,7 +41,7 @@ public class POSController : Controller
 
     [HttpGet("Station")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Station(OrderType orderType, int stationId, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0)
+    public JsonResult Station([FromBody] OrderType orderType, [FromBody] int stationId, [FromBody] OrderMode mode = OrderMode.Standard, [FromBody] long orderId = 0, [FromBody] long areaObject = 0, [FromBody] int person = 0)
     {
         var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
         var station = _dbContext.Stations.Include(s => s.Areas.Where(t => !t.IsDeleted)).ThenInclude(s => s.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
@@ -158,7 +160,7 @@ public class POSController : Controller
     //Checar por que da diferente respuesta
     [HttpPost("CheckPermission")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult CheckPermission(string permission)
+    public JsonResult CheckPermission([FromBody] string permission)
     {
         var valid = PermissionChecker(permission);
 
@@ -172,7 +174,7 @@ public class POSController : Controller
     //preg por qué User.Claims no funciona en POSCore
     //Y verificar que la ruta Station si da el valor correcto nuevamente, si es que se cambia el uso
     //de User.Claims
-    public bool PermissionChecker(string permission)
+    public bool PermissionChecker([FromBody] string permission)
     {
 
         var claims = User.Claims;
@@ -186,7 +188,7 @@ public class POSController : Controller
 
     [HttpPost("GetArea")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetArea(long areaID)
+    public JsonResult GetArea([FromBody] long areaID)
     {
         var objPOSCore = new POSCore(_userService, _dbContext,_printService, _context);
         var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
@@ -195,7 +197,7 @@ public class POSController : Controller
 
     [HttpPost("GetMenuGroupList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuGroupList(int stationId)
+    public JsonResult GetMenuGroupList([FromBody] int stationId)
     {
         var response = new MenuGroupResponse();
         try
@@ -221,7 +223,7 @@ public class POSController : Controller
 
     [HttpPost("GetOrderItems")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderItems(long orderId, int dividerId = 0)
+    public JsonResult GetOrderItems([FromBody] long orderId, [FromBody] int dividerId = 0)
     {
         var response = new GetOrderItemResponse();
         try
@@ -247,7 +249,7 @@ public class POSController : Controller
 
     [HttpPost("GetAreasInStation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreasInStation(int stationID, string db)
+    public JsonResult GetAreasInStation([FromBody] int stationID, [FromBody] string db)
     {
         var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
@@ -265,7 +267,7 @@ public class POSController : Controller
 
     [HttpPost("GetAreaObjectsInArea")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreaObjectsInArea(int stationId, string db, long areaID)
+    public JsonResult GetAreaObjectsInArea([FromBody] int stationId, [FromBody] string db, [FromBody] long areaID)
     {
         var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
         POSAreaObjectsInAreaResponse response = new POSAreaObjectsInAreaResponse();
@@ -296,7 +298,7 @@ public class POSController : Controller
     //pendiente
     [HttpPost("GetOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderList(long areaId, string from, string to, 
+    public JsonResult GetOrderList([FromBody] long areaId, [FromBody] string from, [FromBody] string to, 
         int stationId, 
         string drawF,
         string startF,
@@ -432,14 +434,18 @@ public class POSController : Controller
     //pendiente
     [HttpPost("GetPaidOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public IActionResult GetPaidOrderList(long areaId, string from, string to, int stationId,
-        string drawF,
-        string startF,
-        string lengthF,
-        string sortColumnF,
-        string sortColumnDirectionF,
-        string searchValueF,
-        long cliente = 0, long orden = 0, decimal monto = 0, int branch = 0, int factura = 0)
+    public IActionResult GetPaidOrderList([FromBody] long areaId, [FromBody] string from, [FromBody] string to, [FromBody] int stationId,
+        [FromBody] string drawF,
+        [FromBody] string startF,
+        [FromBody] string lengthF,
+        [FromBody] string sortColumnF,
+        [FromBody] string sortColumnDirectionF,
+        [FromBody] string searchValueF,
+        [FromBody] long cliente = 0,
+        [FromBody] long orden = 0,
+        [FromBody] decimal monto = 0,
+        [FromBody] int branch = 0,
+        [FromBody] int factura = 0)
     {
         try
         {
@@ -549,7 +555,7 @@ public class POSController : Controller
 
     [HttpPost("CheckReservation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult CheckReservation(int tableID)
+    public JsonResult CheckReservation([FromBody] int tableID)
     {
         var reservation = _dbContext.Reservations.Where(s => s.TableID == tableID && s.Status == ReservationStatus.Open).ToList();
 
@@ -576,7 +582,9 @@ public class POSController : Controller
 
     [HttpPost("Sales")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Sales(OrderType orderType, int stationId,string userName,OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
+    public JsonResult Sales([FromBody] OrderType orderType, [FromBody] int stationId, [FromBody] string userName, 
+        [FromBody] OrderMode mode = OrderMode.Standard, [FromBody] long orderId = 0, [FromBody] long areaObject = 0,
+        [FromBody] int person = 0, [FromBody] string selectedItems = "")
     {
         var response = new POSSalesResponse();
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
@@ -766,7 +774,7 @@ public class POSController : Controller
 
     [HttpPost("GetOrderItemsInCheckout")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)
+    public JsonResult GetOrderItemsInCheckout([FromBody] long orderId, [FromBody] int SeatNum, [FromBody] int DividerId)
     {
         var response = new GetOrderItemsInCheckoutResponse();
 
@@ -793,7 +801,9 @@ public class POSController : Controller
 
     [HttpPost("Checkout")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Checkout(long OrderId, int stationId, string db, int Seat = 0, int DividerId = 0, string selectedItems = "", bool refund = false)
+    public JsonResult Checkout([FromBody] long OrderId, [FromBody] int stationId, [FromBody] string db,
+        [FromBody] int Seat = 0, [FromBody] int DividerId = 0, [FromBody] string selectedItems = "",
+        [FromBody] bool refund = false)
     {
         var checkoutResponse = new CheckoutResponse();
         var LogError = new System.Text.StringBuilder();
@@ -937,16 +947,19 @@ public class POSController : Controller
 
     [HttpPost("Pay")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Pay(int amount, int dividerId, int method, int orderId, int seatNum, int stationId, string db)
+    public JsonResult Pay([FromBody] int amount, [FromBody] int dividerId,
+        [FromBody] int method, [FromBody] int orderId, [FromBody] int seatNum,
+        [FromBody] int stationId, [FromBody] string db)
     {
         var response = new POSPayResponse();
-        var model = new ApplyPayModel();
-
-        model.Amount = amount;
-        model.DividerId = dividerId;
-        model.Method = method;
-        model.OrderId = orderId;
-        model.SeatNum = seatNum;
+        var model = new ApplyPayModel
+        {
+            Amount = amount,
+            DividerId = dividerId,
+            Method = method,
+            OrderId = orderId,
+            SeatNum = seatNum
+        };
 
         try
         {
@@ -971,16 +984,18 @@ public class POSController : Controller
 
     [HttpPost("PayDone")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult PayDone(int amount, int dividerId, int method, int orderId, int seatNum, int stationId, string db)
+    public JsonResult PayDone([FromBody] int amount, [FromBody] int dividerId, [FromBody] int method,
+        [FromBody] int orderId, [FromBody] int seatNum, [FromBody] int stationId, [FromBody] string db)
     {
         var response = new POSPayDoneResponse();
-        var model = new ApplyPayModel();
-
-        model.Amount = amount;
-        model.DividerId = dividerId;
-        model.Method = method;
-        model.OrderId = orderId;
-        model.SeatNum = seatNum;
+        var model = new ApplyPayModel
+        {
+            Amount = amount,
+            DividerId = dividerId,
+            Method = method,
+            OrderId = orderId,
+            SeatNum = seatNum
+        };
 
         try
         {
@@ -998,4 +1013,120 @@ public class POSController : Controller
             return Json(response);
         }
     }
+
+    [HttpPost("AddProductToOrderItem")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult AddProductToOrderItem([FromBody] long orderId, [FromBody] long productId, [FromBody] long menuProductId,
+        [FromBody] decimal qty, [FromBody] int seatNum, [FromBody] int dividerNum, [FromBody] int stationId, [FromBody] string db)
+    {
+        var response = new ProductToOrderItemResponse();
+        var model = new AddItemModel
+        {
+            OrderId = orderId,
+            ProductId = productId,
+            MenuProductId = menuProductId,
+            Qty = qty,
+            SeatNum = seatNum,
+            DividerNum = dividerNum
+        };
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var productToOrderItem = objPOSCore.AddProductToOrderItem(model, stationId, db);
+
+            if (productToOrderItem != null)
+            {
+                response.Valor = productToOrderItem;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetAnswerDetail")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetAnswerDetail([FromBody] int answerId, [FromBody] int servingSizeId)
+    {
+        var response = new AnswerDetailResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var answerDetail = objPOSCore.GetAnswerDetail(answerId, servingSizeId);
+
+            if (answerDetail != null)
+            {
+                response.Valor = answerDetail;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("AddQuestionToItem")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult AddQuestionToItem([FromBody] long itemId, [FromBody] long servingSizeId, [FromBody] List<AddQuestionModel> questions, [FromBody] int stationId)
+    {
+        var response = new AddQuestionToItemResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var answerDetail = objPOSCore.AddQuestionToItem(itemId, servingSizeId, questions, stationId);
+
+            response.Valor = answerDetail;
+            response.Success = true;
+            return Json(response);
+
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("SendOrder")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult SendOrder([FromBody] long orderId, [FromBody] int stationId, [FromBody] string db, [FromBody] DateTime? saveDate = null)
+    {
+        var response = new SendOrderResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var sendOrder = objPOSCore.SendOrder(orderId,stationId,db);
+
+            response.Valor = sendOrder;
+            response.Success = true;
+            return Json(response);
+
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+
+
 }
