@@ -2758,4 +2758,19 @@ public class POSCore
         _dbContext.SaveChanges();
     }
 
+    public bool PrintOrder(long OrderId, int stationId , string db, int DivideNum = 0)
+    {
+        try
+        {
+            PrintOrderFunc(OrderId, stationId ,db, DivideNum);
+
+        }
+        catch
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 }

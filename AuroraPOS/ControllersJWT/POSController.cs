@@ -1128,5 +1128,25 @@ public class POSController : Controller
         }
     }
 
+    [HttpPost("PrintOrder")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult PrintOrder([FromBody] long orderId, [FromBody] int stationId, 
+        [FromBody] string db, [FromBody] int divideNum = 0)
+    {
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var wasPrinted = objPOSCore.PrintOrder(orderId, stationId, db);
+
+            return Json(new { Status = true, Valor = wasPrinted, Error = "" });
+
+        }
+        catch (Exception ex)
+        {
+            return Json(new { Status = false, Valor = false, Error = ex.Message });
+        }
+    }
+
 
 }
