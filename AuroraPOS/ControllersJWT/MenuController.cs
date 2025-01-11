@@ -45,16 +45,16 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpPost("GetProductList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetProductList(string draw, int start, int length,
-                string sortColumn, string sortColumnDirection, string searchValue,
-                string all, string category, string barcode, string status, string db)
+        public JsonResult GetProductList([FromBody]GetProductListRequest rq)
         {
             var response = new MenuProductListResponse();
             var menu = new MenuCore(_userService, _dbContext, _context);
 
+            rq.length = -1;
+
             try
             {
-                response.Valor = menu.GetProductList(draw,start,length,sortColumn,sortColumnDirection,searchValue,all,category,barcode,status,db);
+                response.Valor = menu.GetProductList(rq.draw,rq.start,rq.length,rq.sortColumn,rq.sortColumnDirection,rq.searchValue,rq.all,rq.category,rq.barcode,rq.status,rq.db);
                 response.Success = true;
                 return Json(response);
             }
