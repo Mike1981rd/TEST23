@@ -175,15 +175,21 @@
 
         <!-- Tools -->
         <div class="modal fade" id="kitchenitemmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-simple" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+@*                     <div class="modal-header">
                         <h5 class="smartbuton-modal-title">@ViewLocalizer["ACTION"]</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                    </div>
+                    </div> *@
                     <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-6">
+                            <h4 class="smartbuton-modal-title mb-2">
+                                @ViewLocalizer["ACTION"]
+                            </h4>
+                        </div>
                         <div class="row">
                             <div class="col-6 p-2"><button id="btn-itemdone" class="btn-menu btn btn-primary">@ViewLocalizer["DONE"]</button></div>
                             <div class="col-6 p-2"><button id="btn-itemrush" class="btn-menu btn btn-danger">@ViewLocalizer["RUSH"]</button></div>
@@ -193,15 +199,21 @@
             </div>
         </div>
         <div class="modal fade" id="cancelreasonmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-simple" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+@*                     <div class="modal-header">
                         <h5 class="smartbuton-modal-title">@ViewLocalizer["Canceled"]</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                    </div>
+                    </div> *@
                     <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-6">
+                            <h4 class="smartbuton-modal-title mb-2">
+                                @ViewLocalizer["Canceled"]
+                            </h4>
+                        </div>
                         <div class="row">
                             <label></label>
                         </div>
@@ -211,17 +223,23 @@
         </div>
 
         <div class="modal fade" id="kitchensettingmodal" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+@*                     <div class="modal-header">
                         <h5 class="smartbuton-modal-title">@ViewLocalizer["Settings"]</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                    </div>
+                    </div> *@
                     <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-6">
+                            <h4 class="smartbuton-modal-title mb-2">
+                                @ViewLocalizer["Settings"]
+                            </h4>
+                        </div>
                         <div class="row">
-                            <label class="col-6">@ViewLocalizer["Order notification sound"]</label>
+                            <label class="col-6 form-label">@ViewLocalizer["Order notification sound"]</label>
                             <div class="col-6 form-group">
                                 <select id="setting-sound" class="select form-control">
                                     <option value="">Default(Silent)</option>
@@ -235,34 +253,34 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-6">@ViewLocalizer["Ticket timer displays in orange after(minutes)"]<span class="manitory">*</span></label>
+                            <label class="col-6 form-label">@ViewLocalizer["Ticket timer displays in orange after(minutes)"]<span class="manitory">*</span></label>
                             <div class="form-group col-6">
-                                <input id="setting-orange" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                                <input id="setting-orange" class="form-control" value="" onkeypress="return onlyDecimalKey(event)" type="text">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-6">@ViewLocalizer["Ticket timer displays in red after(minutes)"]<span class="manitory">*</span></label>
+                            <label class="col-6 form-label">@ViewLocalizer["Ticket timer displays in red after(minutes)"]<span class="manitory">*</span></label>
                             <div class="form-group col-6">
-                                <input id="setting-red" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                                <input id="setting-red" class="form-control" value="" onkeypress="return onlyDecimalKey(event)" type="text">
                             </div>
                         </div>
                     
                         <div class="row">
-                            <label class="col-6">@ViewLocalizer["Ticket Width"]<span class="manitory">*</span></label>
+                            <label class="col-6 form-label">@ViewLocalizer["Ticket Width"]<span class="manitory">*</span></label>
                             <div class="form-group col-6">
-                                <input id="setting-width" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                                <input id="setting-width" class="form-control" value="" onkeypress="return onlyDecimalKey(event)" type="text">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-6">@ViewLocalizer["Ticket Font Size(px)"]<span class="manitory">*</span></label>
+                            <label class="col-6 form-label">@ViewLocalizer["Ticket Font Size(px)"]<span class="manitory">*</span></label>
                             <div class="form-group col-6">
-                                <input id="setting-font" value="" onkeypress="return onlyDecimalKey(event)" type="text">
+                                <input id="setting-font" class="form-control" value="" onkeypress="return onlyDecimalKey(event)" type="text">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer justify-content-center">
-                        <button id="btn-settingsave" type="button" class="btn btn-primary">@ViewLocalizer["Save"]</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                        <button id="btn-settingsave" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</button>
+                        <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
                     </div>
                 </div>
 

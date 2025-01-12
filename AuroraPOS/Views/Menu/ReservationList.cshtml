@@ -35,24 +35,26 @@
 				</div>
 			</div>
 		</div>
-		<div class="card-datatable table-responsive">
-			<table id="reservation-list" class="table">
-				<thead class="border-top">
-					<tr>
-						<th>@ViewLocalizer["Status"]</th>
-						<th>@ViewLocalizer["Station"]</th>
-						<th>@ViewLocalizer["Area"]</th>
-						<th>@ViewLocalizer["Table"]</th>
-						<th>@ViewLocalizer["Date"] </th>
-						<th>@ViewLocalizer["Time"]</th>
-						<th>@ViewLocalizer["Range(H)"]</th>
-						<th>@ViewLocalizer["Name"]</th>
-						<th>@ViewLocalizer["Phone"]</th>
-						<th>@ViewLocalizer["Count"]</th>
-						<th>@ViewLocalizer["Comment"]</th>
-					</tr>
-				</thead>
-			</table>
+		<div class="card-body">
+			<div class="card-datatable table-responsive">
+				<table id="reservation-list" class="table">
+					<thead class="border-top">
+						<tr>
+							<th>@ViewLocalizer["Status"]</th>
+							<th>@ViewLocalizer["Station"]</th>
+							<th>@ViewLocalizer["Area"]</th>
+							<th>@ViewLocalizer["Table"]</th>
+							<th>@ViewLocalizer["Date"] </th>
+							<th>@ViewLocalizer["Time"]</th>
+							<th>@ViewLocalizer["Range(H)"]</th>
+							<th>@ViewLocalizer["Name"]</th>
+							<th>@ViewLocalizer["Phone"]</th>
+							<th>@ViewLocalizer["Count"]</th>
+							<th>@ViewLocalizer["Comment"]</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
@@ -149,16 +151,16 @@
 				'data': 'status', 'name': 'status',
 				render: function (data, type, row) {
 					if (row.status == 0) {
-						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Open"]</span>";
+						return "<span class='badge bg-label-success'>@ViewLocalizer["Open"]</span>";
 					}
 					else if (row.status == 1) {
-						return "<span class='badges bg-grey'>@ViewLocalizer["Done"]</span>";
+						return "<span class='badge bg-label-secondary'>@ViewLocalizer["Done"]</span>";
 					}
 					else if (row.status == 2) {
-						return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+						return "<span class='badge bg-label-danger'>@ViewLocalizer["Canceled"]</span>";
 					}
 					else if (row.status == 3) {
-						return "<span class='badges bg-lightgreen'>@ViewLocalizer["Arrived"]</span>";
+						return "<span class='badge bg-label-success'>@ViewLocalizer["Arrived"]</span>";
 					}
 					else {
 						return "";
@@ -291,13 +293,13 @@
 					},
 				]
 			},
-			{
-				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Reservation"]</span>',
-				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
-				action: function () {
-
-				}
-			}
+			// {
+			// 	text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Reservation"]</span>',
+			// 	className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+			// 	action: function () {
+					
+			// 	}
+			// }
 		]
 	});
 	$('.dataTables_length').addClass('mx-n2');
