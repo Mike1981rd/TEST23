@@ -182,5 +182,26 @@ namespace AuroraPOS.ControllersJWT
                 return Json(response);
             }
         }
+
+        [HttpGet("GetActiveDeliveryCarrierList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveDeliveryCarrierList()
+        {
+            try
+            {
+                var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                var deliveryCarriers = settingsCore.GetActiveDeliveryCarrierList();
+
+                if (deliveryCarriers != null)
+                {
+                    return Json(new { Valor = deliveryCarriers, Success = true, Error = "" });
+                }
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Valor = "", Success = false, Error = ex.Message });
+            }
+        }
     }
 }

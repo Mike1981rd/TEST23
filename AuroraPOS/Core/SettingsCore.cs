@@ -157,5 +157,10 @@ namespace AuroraPOS.Core
             }
             return prepareTypes;
         }
+
+        public List<DeliveryCarrier>? GetActiveDeliveryCarrierList()
+        {
+            return _dbContext.DeliveryCarriers.Where(s => s.IsActive && !s.IsDeleted).ToList();
+        }
     }
 }
