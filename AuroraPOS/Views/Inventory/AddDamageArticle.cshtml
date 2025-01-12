@@ -201,24 +201,23 @@
 
 <!-- Article Modal -->
 <div class="modal fade" id="listarticle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="group-modal-title">@ViewLocalizer["Warehouse Stock List"]</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Warehouse Stock List"]
+                    </h4>
+                </div>
                 <div class="row">
                     <h4>Warehouse : <span id="selected-warehouse"></span></h4>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="article-list" class="table">
-                                <thead>
+                                <thead class="border-top">
                                     <tr>
                                         <th>@ViewLocalizer["Select"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -237,7 +236,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="cancel-article" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="cancel-article" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

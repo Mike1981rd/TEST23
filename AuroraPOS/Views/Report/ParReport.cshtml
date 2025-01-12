@@ -47,19 +47,25 @@
 </div>
 
 <div class="modal fade" id="editpurchaseorder" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Create Purchase Order"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="group-modal-title mb-2">
+						@ViewLocalizer["Create Purchase Order"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Warehouse"]</label>
+							<label class="form-label">@ViewLocalizer["Warehouse"]</label>
 							<div class="row">
 								<div class="col-lg-10 col-sm-10 col-10">
 									<select id="purchase-warehouse" class="select">
@@ -73,8 +79,8 @@
 			
 			</div>
 			<div class="modal-footer">
-				<button id="submit-purchaseorder" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="submit-purchaseorder" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

@@ -329,25 +329,31 @@
 
 <!-- Target Modal-->
 <div class="modal fade" id="listtargets" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Promotion Targets"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Promotion Targets"]
+                    </h4>
+                </div>
 				<div class="row">
 					<div class="col-6 pb-3">
-                        <label>@ViewLocalizer["Menu"]</label>
-                        <select id="target-menu" class="select">
+                        <label class="form-label">@ViewLocalizer["Menu"]</label>
+                        <select id="target-menu" class="select form-select">
                             
                         </select>
 					</div>
                     <div class="col-6 pb-3">
-                        <label>@ViewLocalizer["Type"]</label>
-                        <select id="target-type" class="select">
+                        <label class="form-label">@ViewLocalizer["Type"]</label>
+                        <select id="target-type" class="select form-select">
                             <option value="1"> @ViewLocalizer["Group"]</option>
                             <option value="2"> @ViewLocalizer["Category"]</option>
                             <option value="3"> @ViewLocalizer["Sub Category"]</option>
@@ -355,27 +361,27 @@
                         </select>
                     </div>
                     <div class="col-4 pb-3 div-target-group" style="display:none">
-                        <label>@ViewLocalizer["Group"]</label>
-                        <select id="target-group" class="select">
+                        <label class="form-label">@ViewLocalizer["Group"]</label>
+                        <select id="target-group" class="select form-select">
                             
                         </select>
                     </div>
                     <div class="col-4 pb-3 div-target-category" style="display:none">
-                        <label>@ViewLocalizer["Category"]</label>
-                        <select id="target-category" class="select">
+                        <label class="form-label">@ViewLocalizer["Category"]</label>
+                        <select id="target-category" class="select form-select">
                            
                         </select>
                     </div>
                     <div class="col-4 pb-3 div-target-subcategory" style="display:none">
-                        <label>@ViewLocalizer["Sub Category"]</label>
-                        <select id="target-subcategory" class="select">
+                        <label class="form-label">@ViewLocalizer["Sub Category"]</label>
+                        <select id="target-subcategory" class="select form-select">
                            
                         </select>
                     </div>
 					<div class="col-12">
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="question-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
+                                <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
                                         <th>@ViewLocalizer["Action"]</th>
 										<th>@ViewLocalizer["Type"] </th>
@@ -392,29 +398,35 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
 </div>
 <!-- Order info modal -->
 <div class="modal fade" id="servingsizemodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Select Serving Size"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Select Serving Size"]
+                    </h4>
+                </div>
                 <div id="product-servingsize" class="d-flex">
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button id="servingsize-submit" type="button" class="btn btn-primary" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="servingsize-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

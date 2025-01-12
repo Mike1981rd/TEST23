@@ -334,19 +334,25 @@
 
 <!-- Unit Modal -->
 <div class="modal fade" id="editunit" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Add/Edit Unit"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Add/Edit Unit"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
                             <div class="d-flex justify-content-between search-id-group" style="gap: 10px">
                                 <div class="input-group">
                                     <span class="input-group-text" id="unit-id" data-id="">ID</span>
@@ -360,9 +366,9 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="unit-list" class="table" style="position:relative;">
-                                <thead style="position: sticky; top: 0; z-index:2;">
+                                <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
                                     <tr>
                                         <th>@ViewLocalizer["Unit Name"]</th>
                                         <th>@ViewLocalizer["Action"]</th>
@@ -375,7 +381,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="cancel-unit" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="cancel-unit" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -441,20 +447,26 @@
 
 <!-- Sub Stock Modal -->
 <div class="modal fade" id="liststock" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Stock"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Stock"]
+                    </h4>
+                </div>
                 <div class="row">                
                     <div class="col-12">
-                       	<div class="table-responsive">
+                       	<div class="card-datatable table-responsive">
 					        <table class="table">
-						        <thead>
+                                <thead class="border-top">
 							        <tr>
 								        <th>Almacen </th>
 								        <th>Unidad	</th>
@@ -481,7 +493,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="cancel-subcategory" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="cancel-subcategory" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -492,15 +504,21 @@
 }
 
 <div class="modal fade" id="printlabelmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="servingsize-modal-title">@ViewLocalizer["Print Label Options"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Print Label Options"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-12">
                         <div class="form-group">
@@ -536,8 +554,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="print-label-submit" type="button" class="btn btn-submit">@ViewLocalizer["Print"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="print-label-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Print"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>

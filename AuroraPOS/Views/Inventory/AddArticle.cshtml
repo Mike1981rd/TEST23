@@ -568,32 +568,38 @@
         <!-- /Second column -->
 <!-- Add Product Modal -->
 <div class="modal fade" id="addproductmodal" tabindex="-1" role="dialog" aria-hidden="true" data-articleid="@ViewBag.ArticleID">
-	<div class="modal-dialog modal-lg modal-dialog-centered" style="max-width:1000px" role="document">
+	<div class="modal-dialog modal-lg modal-simple" style="max-width:1000px" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Add Product"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add Product"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-							<input id="product-name" type="text">
+							<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<input id="product-name" type="text" class="form-control">
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Printer Name"]</label>
-							<input id="product-printername" type="text">
+							<label class="form-label">@ViewLocalizer["Printer Name"]</label>
+							<input id="product-printername" type="text" class="form-control">
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Category"]</label>
-							<select id="product-category" class="select ">
+							<label class="form-label">@ViewLocalizer["Category"]</label>
+							<select id="product-category" class="select form-select">
 								<option value="">Choose category</option>
 								@foreach (var t in categories)
 								{
@@ -604,19 +610,19 @@
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Barcode"]</label>
+							<label class="form-label">@ViewLocalizer["Barcode"]</label>
 							<input id="product-barcode" type="text">
 						</div>
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Price"]</label>
+							<label class="form-label">@ViewLocalizer["Price"]</label>
 							<input id="product-price" type="text">
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Printer Channels"]</label>
+							<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
 							<select id="product-printerChannels" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var p in printerChannels)
 								{
@@ -627,7 +633,7 @@
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Taxes"]</label>
+							<label class="form-label">@ViewLocalizer["Taxes"]</label>
 							<select id="product-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
 								@foreach (var t in taxs)
 								{
@@ -641,19 +647,19 @@
 					<div class="row">
 						<div class="col-lg-3 col-sm-4 col-4 p-3">
 							<div class="">
-								<a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">Add Article</a>
+								<a id="add-article-modal" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">Add Article</a>
 							</div>
 						</div>
 						<div class="col-lg-3 col-sm-4 col-4 p-3">
 							<div class="">
-								<a id="add-subrecipe-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">Add Sub Recipe</a>
+								<a id="add-subrecipe-modal" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">Add Sub Recipe</a>
 							</div>
 						</div>
 					</div>
 					<div class="row pt-2">
-						<div class="table-responsive" style="height: 200px; overflow: auto">
+						<div class="card-datatable table-responsive" style="height: 200px; overflow: auto">
 							<table id="purchase-item" class="table">
-								<thead style=" ">
+								<thead class="border-top" style=" ">
 									<tr>
 										<th>Name</th>
 										<th>Type</th>
@@ -685,8 +691,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="submit-product" type="button" class="btn btn-submit" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="submit-product" type="button" class="btn btn-primary me-3 waves-effect waves-light" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
@@ -698,21 +704,26 @@
 
 <!-- Sub Recipe Modal -->
 <div class="modal fade" id="listsubrecipe" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Sub Recipe List"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
-
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Sub Recipe List"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="subrecipe-list" class="table">
-								<thead>
+								<thead class="border-top">
 									<tr>
 										<th>@ViewLocalizer["Select"]</th>
 										<th>@ViewLocalizer["Name"] </th>
@@ -728,7 +739,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="cancel-article" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="cancel-article" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
@@ -737,19 +748,25 @@
 
 <!-- Brand Modal -->
 <div class="modal fade" id="editbrand" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Brand"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Brand"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Brand name"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Brand name"]<span class="manitory">*</span></label>
 							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 								<div class="input-group">
 									<span class="input-group-text" id="brand-id" data-id="">ID</span>
@@ -760,9 +777,9 @@
 						</div>
 					</div>
 					<div class="col-12">
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="brand-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
+								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Brand name"]</th>
 										<th>@ViewLocalizer["Action"]</th>
@@ -775,7 +792,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="cancel-brand" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="cancel-brand" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
@@ -783,20 +800,22 @@
 
 <!-- Product Confirm Modal-->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
 			<div class="modal-body">
-				¿Deseas crear el producto?
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						Confirmación
+					</h4>
+				</div>
+				<div class="row">
+					¿Deseas crear el producto?
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="arti-sub" class="btn btn-secondary" data-dismiss="modal">No</button>
-				<button type="button" id="prod-si" class="btn btn-primary">Sí</button>
+				<button type="button" id="arti-sub" class="btn btn-label-secondary waves-effect" data-dismiss="modal">No</button>
+				<button type="button" id="prod-si" class="btn btn-primary me-3 waves-effect waves-light">Sí</button>
 			</div>
 		</div>
 	</div>
@@ -823,7 +842,7 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
 							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 								<div class="input-group">
 									<span class="input-group-text" id="unit-id" data-id="">ID</span>
@@ -837,9 +856,9 @@
 						</div>
 					</div>
 					<div class="col-12">
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="unit-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
+								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Unit Name"]</th>
 										<th>@ViewLocalizer["Action"]</th>
@@ -860,37 +879,43 @@
 
 
 <div class="modal fade" id="printlabelmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="servingsize-modal-title">@ViewLocalizer["Print Label Options"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Print Label Options"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Packing Date"]</label>
+							<label class="form-label">@ViewLocalizer["Packing Date"]</label>
 							<input id="label-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd/MM/yyyy")">
 						</div>
 					</div>
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Expire Date"]</label>
+							<label class="form-label">@ViewLocalizer["Expire Date"]</label>
 							<input id="label-expire-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(10).ToString("dd/MM/yyyy")">
 						</div>
 					</div>
 					<div class="col-lg-12 col-sm-12 col-12">
 						<div class="form-group">
-							<label>@ViewLocalizer["Copies"]</label>
+							<label class="form-label">@ViewLocalizer["Copies"]</label>
 							<input id="label-copies" type="number" class="form-control" value="1" aria-describedby="basic-addon1" required>
 						</div>
 					</div>
 					<div class="col-lg-6 col-sm-6 col-12 pb-3">
 						<div class="form-group mb-0">
-							<label>@ViewLocalizer["Dimension"]</label>
+							<label class="form-label">@ViewLocalizer["Dimension"]</label>
 							<select id="label-dimension" class="select">
 								<option value="2x3"> 2x3</option>
 								<option value="3x3"> 3x3</option>
@@ -904,8 +929,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="print-label-submit" type="button" class="btn btn-submit">@ViewLocalizer["Print"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="print-label-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Print"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

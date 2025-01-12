@@ -1,22 +1,28 @@
 ﻿
 
 <div class="modal fade" id="listaccount" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Accounting List"]</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
+			</div> *@
 			<div class="modal-body m-1">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Accounting List"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<a id="add-account" href="javascript:void(0);" class="btn btn-adds"><i class="fa fa-plus me-2"></i>Add Account</a>
 					</div>
 					<div class="col-12">
 
-						<div class="table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="account-list" class="table" style="position:relative;">
-								<thead style="position: sticky; top: 0; z-index:2;">
+								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Action"]</th>
 										<th>@ViewLocalizer["Description"] </th>
@@ -34,7 +40,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="cancel-account" type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="cancel-account" type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>

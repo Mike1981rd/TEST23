@@ -102,19 +102,25 @@
 
 <!--  Add/Edit Area -->
 <div class="modal fade" id="editarea" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="area-modal-title">@ViewLocalizer["Add/Edit Area"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="area-modal-title mb-2">
+                        @ViewLocalizer["Add/Edit Area"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="area-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
                             </div>
@@ -124,7 +130,7 @@
                     
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Width"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Width"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="area-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
                             </div>
@@ -132,7 +138,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Height"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Height"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="area-height" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
                             </div>
@@ -140,7 +146,7 @@
                     </div>
                     <div class="col-lg-4  col-sm-6 col-12">
                         <div class="form-group px-3">
-                            <label>	@ViewLocalizer["Background Color"]</label>
+                            <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="area-bcolor" class="backcolor">
                                     <input id="area-backcolor" type="text" class="form-control">
@@ -182,8 +188,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-area" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="edit-area" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -192,19 +198,25 @@
 
 <!--  Add/Edit Area object -->
 <div class="modal fade" id="editareaobject" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="area-modal-title">@ViewLocalizer["Add/Edit Area Object"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="area-modal-title mb-2">
+                        @ViewLocalizer["Add/Edit Area Object"]
+                    </h4>
+                </div>
                 <div class="row">
                     <div class="col-lg-8 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
                             </div>
@@ -212,7 +224,7 @@
                     </div>
                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Seat Count"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Seat Count"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-seat" onkeypress="return onlyDecimalKey(event)" placeholder="0" type="text" class="form-control" aria-describedby="basic-addon1" required>
                             </div>
@@ -220,7 +232,7 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Width"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Width"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)"  placeholder="0"  aria-describedby="basic-addon1" required>
                             </div>
@@ -228,7 +240,7 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Height"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Height"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-height" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1"  placeholder="0"  required>
                             </div>
@@ -237,7 +249,7 @@
 
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Position X"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Position X"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-posx" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0" required>
                             </div>
@@ -245,7 +257,7 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Position Y"]<span class="manitory">*</span></label>
+                            <label class="form-label">@ViewLocalizer["Position Y"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <input id="obj-posy" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0"  required>
                             </div>
@@ -253,7 +265,7 @@
                     </div>
                    
                     <div class="col-lg-4  col-sm-6 col-12">
-                       <label>@ViewLocalizer["Shape"]</label>
+                        <label class="form-label">@ViewLocalizer["Shape"]</label>
                         <div class="input-group">
                             <select id="obj-shape" class="select">
                                 <option value="0">@ViewLocalizer["Rectangle"]</option>
@@ -264,14 +276,14 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Corner Radius"]</label>
+                            <label class="form-label">@ViewLocalizer["Corner Radius"]</label>
                             <div class="input-group">
                                 <input id="obj-radius" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" placeholder="0" required>
                             </div>
                         </div>
                     </div>
                      <div class="col-lg-4  col-sm-6 col-12">
-                         <label>@ViewLocalizer["Type"]</label>
+                        <label class="form-label">@ViewLocalizer["Type"]</label>
                         <div class="input-group">
                             <select id="obj-type" class="select">
                                 <option value="0">@ViewLocalizer["Static"]</option>
@@ -282,7 +294,7 @@
                     </div>
                     <div class="col-lg-3  col-sm-6 col-12">
                         <div class="form-group px-3">
-                            <label>	@ViewLocalizer["Background Color"]<input class="m-2" type="checkbox" checked id="has-bg" /></label>
+                            <label class="form-label">	@ViewLocalizer["Background Color"]<input class="m-2" type="checkbox" checked id="has-bg" /></label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="object-bcolor" class="backcolor">
                                     <input id="object-backcolor" type="text" class="form-control">
@@ -292,7 +304,7 @@
                     </div>
                     <div class="col-lg-3  col-sm-6 col-12">
                         <div class="form-group px-3">
-                            <label>	@ViewLocalizer["Text Color"]</label>
+                            <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="object-tcolor" class="backcolor ">
                                     <input id="object-textcolor" type="text" class="form-control">
@@ -334,8 +346,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-areaobject" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="edit-areaobject" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -344,15 +356,21 @@
 
 <!-- Background Gallery -->
 <div class="modal fade" id="selectback" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="smartbuton-modal-title">@ViewLocalizer["Select Background Image"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="smartbuton-modal-title mb-2">
+                        @ViewLocalizer["Select Background Image"]
+                    </h4>
+                </div>
                 <div class="row d-flex">
                     @foreach(var b in backgrounds)
                     {
@@ -363,7 +381,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -371,15 +389,21 @@
 
 <!-- Background Gallery -->
 <div class="modal fade" id="selectobjectimg" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="smartbuton-modal-title">@ViewLocalizer["Select Object Image"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="smartbuton-modal-title mb-2">
+                        @ViewLocalizer["Select Object Image"]
+                    </h4>
+                </div>
                 <div class="row d-flex">
                     @foreach(var b in objectimgs)
                     {
@@ -390,22 +414,28 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="clonecountmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="smartbuton-modal-title">@ViewLocalizer["How many objects do you want to copy?"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="smartbuton-modal-title mb-2">
+                        @ViewLocalizer["How many objects do you want to copy?"]
+                    </h4>
+                </div>
                 <div class="p-3">
                     <select id="clone-count" class="select">
                         <option value="1">1</option>
@@ -422,8 +452,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="clone-submit" type="button" class="btn btn-submit" data-bs-dismiss="modal">@ViewLocalizer["Clone"]</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                <button id="clone-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light" data-bs-dismiss="modal">@ViewLocalizer["Clone"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
