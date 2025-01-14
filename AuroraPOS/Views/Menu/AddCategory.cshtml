@@ -23,93 +23,99 @@
 			<form method="post" asp-controller="Menu" asp-action="AddCategory" enctype="multipart/form-data">
 				@Html.AntiForgeryToken()
 				<div class="row">
-					<div class="col-lg-4 col-sm-6 col-12">
-						<input type="hidden" id="category-id" asp-for="ID" />
-						<input type="hidden" asp-for="GroupName" />
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
-							<div class="input-group">
-								<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
-								<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required><br />
+					<div class="row mb-6">
+						<div class="col-lg-4 col-sm-6 col-12">
+							<input type="hidden" id="category-id" asp-for="ID" />
+							<input type="hidden" asp-for="GroupName" />
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Category Name"]<span class="manitory">*</span></label>
+								<div class="input-group">
+									<span class="input-group-text" id="basic-addon1">ID  @Model.ID</span>
+									<input id="category-name" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required><br />
 
-							</div>
-							<span asp-validation-for="Name" class="text-danger"></span>
-						</div>
-					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Group"]</label>
-							<select id="category-group" asp-for="GroupID" class="select">
-								<option value="">@ViewLocalizer["Choose Group"]</option>
-								@foreach (var g in groups)
-								{
-									<option value="@g.ID">@g.GroupName</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Taxes"]</label>
-							<select id="category-tax" class="form-control tagging select" asp-for="Taxes" multiple tabindex="-1" aria-hidden="true">
-								@foreach (var t in taxs)
-								{
-									<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Propina"]</label>
-							<select id="category-propina" class="form-control tagging select" asp-for="Propinas" multiple tabindex="-1" aria-hidden="true">
-								@foreach (var t in propinas)
-								{
-									<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
-							<select id="category-pchannel" class="form-control tagging select" asp-for="PrinterChannels" multiple tabindex="-1" aria-hidden="true">
-								@foreach (var p in printerChannels)
-								{
-									<option value="@p.ID">@p.Name </option>
-								}
-							</select>
-							<span asp-validation-for="PrinterChannels" class="text-danger"></span>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-6 col-12 pb-3">
-						<div class="form-group mb-0">
-							<label class="form-label">@ViewLocalizer["Status"]</label>
-							<select id="category-status" class="select" asp-for="IsActive">
-								<option value="1"> @ViewLocalizer["Active"]</option>
-								<option value="0"> @ViewLocalizer["InActive"]</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Course"]</label>
-							<div class="row">
-								<div class="col-lg-10 col-sm-10 col-10">
-									<select id="category-course" class="select " asp-for="CourseID">
-										<option value="0">@ViewLocalizer["Choose course"]</option>
-										@foreach (var t in courses)
-										{
-											<option value="@t.ID">@t.Name</option>
-										}
-
-									</select>
 								</div>
-								<div class="col-lg-2 col-sm-2 col-2 ps-0">
-									<div class="add-icon">
-										<a id="add-course-modal" href="javascript:void(0);">
-											<img src="/vendor/img/icons/plus1.svg" alt="img">
-										</a>
+								<span asp-validation-for="Name" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-4 col-sm-6 col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Group"]</label>
+								<select id="category-group" asp-for="GroupID" class="select">
+									<option value="">@ViewLocalizer["Choose Group"]</option>
+									@foreach (var g in groups)
+									{
+										<option value="@g.ID">@g.GroupName</option>
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb-6">
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Taxes"]</label>
+								<select id="category-tax" class="form-control tagging select" asp-for="Taxes" multiple tabindex="-1" aria-hidden="true">
+									@foreach (var t in taxs)
+									{
+										<option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Propina"]</label>
+								<select id="category-propina" class="form-control tagging select" asp-for="Propinas" multiple tabindex="-1" aria-hidden="true">
+									@foreach (var t in propinas)
+									{
+										<option value="@t.ID">@t.PropinaName - @t.PropinaValue %</option>
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb-6">
+						<div class="col-lg-6 col-sm-6 col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
+								<select id="category-pchannel" class="form-control tagging select" asp-for="PrinterChannels" multiple tabindex="-1" aria-hidden="true">
+									@foreach (var p in printerChannels)
+									{
+										<option value="@p.ID">@p.Name </option>
+									}
+								</select>
+								<span asp-validation-for="PrinterChannels" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6 col-12 pb-3">
+							<div class="form-group mb-0">
+								<label class="form-label">@ViewLocalizer["Status"]</label>
+								<select id="category-status" class="select" asp-for="IsActive">
+									<option value="1"> @ViewLocalizer["Active"]</option>
+									<option value="0"> @ViewLocalizer["InActive"]</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6 col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Course"]</label>
+								<div class="row">
+									<div class="col-lg-10 col-sm-10 col-10">
+										<select id="category-course" class="select " asp-for="CourseID">
+											<option value="0">@ViewLocalizer["Choose course"]</option>
+											@foreach (var t in courses)
+											{
+												<option value="@t.ID">@t.Name</option>
+											}
+
+										</select>
+									</div>
+									<div class="col-lg-2 col-sm-2 col-2 ps-0">
+										<div class="add-icon">
+											<a id="add-course-modal" href="javascript:void(0);">
+												<img src="/vendor/img/icons/plus1.svg" alt="img">
+											</a>
+										</div>
 									</div>
 								</div>
 							</div>

@@ -48,7 +48,7 @@
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
                                     <div class="d-flex">
-                                        <select id="product-category" class="select form-control ">
+                                        <select id="product-category" class="select form-select ">
                                             <option value="">@ViewLocalizer["Choose category"]</option>
                                             @foreach (var t in categories)
                                             {
@@ -56,7 +56,7 @@
                                             }
 
                                         </select>
-                                        <div class="add-icon">
+                                        <div class="add-icon" style="margin-left: 15px;">
                                             <a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
                                                 <img src="/vendor/img/icons/plus1.svg" alt="img">
                                             </a>
@@ -69,13 +69,11 @@
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
                                     <div class="d-flex">
-                                        <select id="product-subcategory" class="select form-control">
+                                        <select id="product-subcategory" class="select form-select" >
                                         </select>
-                                        <div class="add-icon">
-                                            <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
+                                        <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="margin-left: 10px;">
                                                 <img src="/vendor/img/icons/plus1.svg" alt="img">
                                             </a>
-                                        </div>
                                     </div>
 
                                 </div>
@@ -1192,13 +1190,13 @@
                                     <div class="serving-size-item1">
                                         <div class="accordion-header" id="flush-headingOne-${id}">
                                         <div class="d-flex">
-                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${id}" type="text" style="font-size:25px; margin-right:40px;">${size.servingSizeName}</h1>
+                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${id}" type="text" style="font-size:25px; margin: 0px;">${size.servingSizeName}</h1>
 
                                             <div class="px-2 pl-5 form-group d-flex">
                                                     ${def}
                                             </div>
                                             <div class="px-2 d-flex form-group">
-                                                <label class="mx-2 pt-2">@ViewLocalizer["Order"]</label>
+                                                <label class="mx-2 pt-2 form-label">@ViewLocalizer["Order"]</label>
                                                 <input class="servingsize-order form-control" type="number" value="${size.order}">
                                             </div>
                                             <div class="px-2 form-group">
@@ -2373,67 +2371,68 @@
                         <div class="accordion accordion-flush p-2 product-item-container"   data-id="${size.id}" id="accordionFlushExample-${size.id}">
                                     <div class="serving-size-item1">
                                         <div class="accordion-header" id="flush-headingOne-${size.id}">
-                                        <div class="d-flex">
-                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${size.id}" type="text" style="font-size:25px; margin-right:40px;">${size.name}</h1>
+                                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
+                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${size.id}" type="text" style="font-size:25px; margin:0px; margin-right: 40px">${size.name}</h1>
 
-                                            <div class="px-2 pl-5 form-group d-flex">
+                                            <div class="px-2 pl-5 form-group">
                                                 <button class="btn btn-secondary btn-servingsize-default" data-default="" >Default</button>
 
                                             </div>
-                                            <div class="px-2 d-flex form-group">
-                                                <label class="mx-2 pt-2">@ViewLocalizer["Order"]</label>
+                                            <div class="px-2 form-group" style="display: flex; flex-direction: row;">
+                                                <label class="mx-2 pt-2 form-label">@ViewLocalizer["Order"]</label>
                                                 <input class="servingsize-order form-control" type="number" value="${servingsizecount}">
                                             </div>
                                             <div class="px-2 form-group">
                                                         <a href="javascript:void(0);" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-${size.id}" aria-expanded="false" aria-controls="flush-collapseOne-${size.id}">Recipe</a>
                                             </div>
-                                                <div class="px-2 form-group">
+                                            <div class="form-group">
                                                 <a href="javascript:void(0);" class="btn-remove-servingsize btn btn-danger" data-bs-toggle="collapse" >Remove</a>
-                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 1</label>
-                                                    <input class="product-price1 form-control" type="text">
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 1</label>
+                                                <input class="product-price1 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 2</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 2</label>
                                                     <input class="product-price2 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 3</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 3</label>
                                                 <input class="product-price3 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 4</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 4</label>
                                                     <input class="product-price4 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 5</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 5</label>
                                                     <input class="product-price5 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 6</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 6</label>
                                                     <input class="product-price6 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 7</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 7</label>
                                                     <input class="product-price7 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 8</label>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 8</label>
                                                     <input class="product-price8 form-control" type="text">
                                             </div>
-                                            <div class="col-lg-2 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
                                                 <input class="product-cost form-control" readonly type="text">
                                             </div>
-                                            <div class="col-lg-2 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Prod. Cost Barcode"]</label>
-                                                    <input class="product-cost-barcode form-control" readonly type="text">
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Prod. Cost Barcode"]</label>
+                                                <input class="product-cost-barcode form-control" readonly type="text">
                                             </div>
                                         </div>
-
 
 
                                     </div>
