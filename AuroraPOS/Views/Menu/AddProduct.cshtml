@@ -2090,20 +2090,20 @@
             url: "/Menu/GetAllActiveCategoryList",
             type: "POST",
             success: function (data, textStatus, jqXHR) {
-                $("#product-category").empty();
-                $("#product-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+                //$("#product-category").empty();
+                //$("#product-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
                 for (var i = 0; i < data.length; i++) {
                     var d = data[i];
 
                     $("#product-category").append("<option value='" + d.id + "' data-course='" + d.courseID + "' data-taxes='" + JSON.stringify(d.taxes) + "' data-propinas='" + JSON.stringify(d.propinas) + "' data-pchannels='" + JSON.stringify(d.printerChannels) + "'>" + d.name + "</option>")
                 }
-                $("#product-category").select2();
-                if (category) {
-                    $("#product-category").val(category.id).change();
-                }
-                else {
-                    $("#product-category").val('').change();
-                }
+                // $("#product-category").select2();
+                // if (category) {
+                //     $("#product-category").val(category.id).change();
+                // }
+                //else {
+                //    $("#product-category").val('').change();
+                //}
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
