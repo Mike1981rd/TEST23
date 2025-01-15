@@ -180,11 +180,12 @@ public class AccountController : Controller
             }
             
             // Creamos Claim (Conjunto de informacion en la cual podemos confiar)
-            List<Claim> claim= new List<Claim>();
+            List<Claim> claim= new ();
 
             foreach (var objClaim in claims)
             {
-                claim.Append(objClaim);    
+                //claim.Add(objClaim);
+                claim.Append (objClaim);
             }
 
             if (Vacio)

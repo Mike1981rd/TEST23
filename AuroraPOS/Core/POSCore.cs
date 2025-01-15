@@ -214,11 +214,10 @@ public class POSCore
         return station.Areas;
     }
 
-    public AreaObjects GetAreaObjectsInArea(int stationId, string db, long areaID)
+    public AreaObjects GetAreaObjectsInArea(AreaObjectsInAreaRequest Arearequest)
     {
-        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
-        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
-        var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).AsNoTracking().FirstOrDefault(s => s.ID == areaID);
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == Arearequest.StationId);
+        var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).AsNoTracking().FirstOrDefault(s => s.ID == Arearequest.AreaId);
 
         //Obtenemos las urls de las imagenes
         var request = _context.HttpContext.Request;
@@ -228,12 +227,12 @@ public class POSCore
             foreach (var item in area.AreaObjects)
             {
                 //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png");
-                string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + db + "/areaobject/" + item.ID.ToString() + ".png";
+                string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Arearequest.Db + "/areaobject/" + item.ID.ToString() + ".png";
                 if (System.IO.File.Exists(pathFile))
                 {
                     var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
                     //item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                    item.BackImage = _baseURL + "/localfiles/" + db + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+                    item.BackImage = _baseURL + "/localfiles/" + Arearequest.Db + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
                 }
                 else
                 {
@@ -265,12 +264,12 @@ public class POSCore
                             item.Product.InventoryCount -= item.Qty;
 
                         }
-                        SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, stationID);
+                        SubstractProduct(item.ID, item.Product.ID, item.Qty, item.ServingSizeID, order.OrderType, Arearequest.StationId);
                         foreach (var q in item.Questions)
                         {
                             if (!q.IsActive) continue;
                             var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
-                            SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, stationID);
+                            SubstractProduct(item.ID, qitem.Answer.Product.ID, item.Qty * qitem.Qty, qitem.ServingSizeID, order.OrderType, Arearequest.StationId);
                         }
                     }
                     else
@@ -302,7 +301,7 @@ public class POSCore
             var time1 = (int)(DateTime.Now - order.OrderTime).TotalMinutes;
             if (kichenItems.Count > 0)
             {
-                _printService.PrintKitchenItems(stationID, order.ID, kichenItems, db);
+                _printService.PrintKitchenItems(Arearequest.StationId, order.ID, kichenItems, Arearequest.Db);
             }
             result.Add(new StationOrderModel()
             {
@@ -781,28 +780,28 @@ public class POSCore
     //    return View(order);
     //}
 
-    public OrderItemsInCheckout GetOrderItemsInCheckout(long orderId, int SeatNum, int DividerId)
+    public OrderItemsInCheckout GetOrderItemsInCheckout(OrderItemsInCheckoutRequest request)
     {
         var orderItemsInCheckout = new OrderItemsInCheckout();
         orderItemsInCheckout.status = 1;
 
         var store = _dbContext.Preferences.FirstOrDefault();
 
-        var order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+        var order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == request.OrderId);
         var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order).ToList();
         var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
 
         if (order.OrderMode == OrderMode.Seat)
         {
-            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
+            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == request.OrderId);
 
             var seats = order.Seats.ToList();
-            if (SeatNum > 0)
-                seats = order.Seats.Where(s => s.SeatNum == SeatNum).ToList();
-            order.GetTotalPrice(voucher, 0, SeatNum);
+            if (request.SeatNum > 0)
+                seats = order.Seats.Where(s => s.SeatNum == request.SeatNum).ToList();
+            order.GetTotalPrice(voucher, 0, request.SeatNum);
 
-            transactions = transactions.Where(s => s.SeatNum == SeatNum).ToList();
-            if (SeatNum > 0 && transactions.Count() > 0)
+            transactions = transactions.Where(s => s.SeatNum == request.SeatNum).ToList();
+            if (request.SeatNum > 0 && transactions.Count() > 0)
             {
                 var paid = transactions.Sum(s => s.Amount);
                 order.Balance = order.Balance - paid;
@@ -814,14 +813,14 @@ public class POSCore
             orderItemsInCheckout.transactions = transactions;
             orderItemsInCheckout.store = store;
         }
-        else if (order.OrderMode == OrderMode.Divide && DividerId > 0)
+        else if (order.OrderMode == OrderMode.Divide && request.DividerId > 0)
         {
-            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+            order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == request.OrderId);
 
-            var items = order.Items.Where(s => !s.IsDeleted && s.DividerNum == DividerId).ToList();
-            order.GetTotalPrice(voucher, DividerId);
+            var items = order.Items.Where(s => !s.IsDeleted && s.DividerNum == request.DividerId).ToList();
+            order.GetTotalPrice(voucher, request.DividerId);
 
-            transactions = transactions.Where(s => s.DividerNum == DividerId).ToList();
+            transactions = transactions.Where(s => s.DividerNum == request.DividerId).ToList();
             if (transactions.Count() > 0)
             {
                 var paid = transactions.Sum(s => s.Amount);

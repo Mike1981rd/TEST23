@@ -23,7 +23,7 @@ namespace AuroraPOS.ControllersJWT
             _dbContext = dbContext._context;
         }
 
-        [HttpPost("GetAllActiveCategoryList")]
+        [HttpGet("GetAllActiveCategoryList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetAllActiveCategoryList()
         {
@@ -43,7 +43,7 @@ namespace AuroraPOS.ControllersJWT
             }
         }
 
-        [HttpPost("GetProductList")]
+        [HttpGet("GetProductList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetProductList([FromBody]GetProductListRequest rq)
         {

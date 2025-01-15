@@ -22,9 +22,9 @@ namespace AuroraPOS.ControllersJWT
             _context = context;
         }
 
-        [HttpPost("GetDiaDeTrabajo")]
+        [HttpGet("GetDiaDeTrabajo")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetDiaDeTrabajo(int stationId)
+        public JsonResult GetDiaDeTrabajo([FromBody] int stationId)
         {
             var response = new DiaDeTrabajoResponse();
             try
@@ -47,7 +47,7 @@ namespace AuroraPOS.ControllersJWT
             }
         }
 
-        [HttpPost("GetActiveVoucherList")]
+        [HttpGet("GetActiveVoucherList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetActiveVoucherList()
         {
@@ -73,7 +73,7 @@ namespace AuroraPOS.ControllersJWT
             }
         }
 
-        [HttpPost("GetActiveDeliveryZoneList")]
+        [HttpGet("GetActiveDeliveryZoneList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetActiveDeliveryZoneList()
         {
@@ -129,16 +129,15 @@ namespace AuroraPOS.ControllersJWT
             return Json(result);
         }
 
-        [HttpPost("GetActiveCustomerList")]
+        [HttpGet("GetActiveCustomerList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetActiveCustomerList(string draw, int start, int length,
-            string sortColumn, string sortColumnDirection, string searchValue, long clienteid = 0)
+        public JsonResult GetActiveCustomerList([FromBody] ActiveCustomerListRequest request)
         {
             var response = new ActiveCustomerListResponse();
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
-                var activeCustomerList = settingsCore.GetActiveCustomerList(draw,start,length,sortColumn,sortColumnDirection,searchValue,clienteid);
+                var activeCustomerList = settingsCore.GetActiveCustomerList(request);
 
                 if (activeCustomerList != null)
                 {
@@ -156,16 +155,15 @@ namespace AuroraPOS.ControllersJWT
             }
         }
 
-        [HttpPost("GetPrepareTypes")]
+        [HttpGet("GetPrepareTypes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetPrepareTypes(string draw, int start, int length,
-            string sortColumn, string sortColumnDirection, string searchValue, bool justData = false)
+        public JsonResult GetPrepareTypes([FromBody] PrepareTypesRequest request)
         {
             var response = new PrepareTypesResponse();
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
-                var prepareTypesList = settingsCore.GetPrepareTypes(draw, start, length, sortColumn, sortColumnDirection, searchValue, justData);
+                var prepareTypesList = settingsCore.GetPrepareTypes(request);
 
                 if (prepareTypesList != null)
                 {

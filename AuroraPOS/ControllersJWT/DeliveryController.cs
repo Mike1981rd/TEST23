@@ -24,14 +24,14 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetDeliveryList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetDeliveryList(string fecha, int? status, int branch = 0)
+        public JsonResult GetDeliveryList([FromBody] GetDeliveryRequest request)
         {
             var response = new DeliveryListResponse();
             var delivery = new DeliveryCore(_userService, _dbContext, _context);
 
             try
             {
-                var deliveryList = delivery.GetDeliveryList(fecha, status, branch);
+                var deliveryList = delivery.GetDeliveryList(request.Fecha, request.Status, request.Branch);
 
                 if (deliveryList != null)
                 {
