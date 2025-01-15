@@ -46,14 +46,13 @@ namespace AuroraPOS.Core
             return _dbContext.DeliveryZones.Where(s => s.IsActive && !s.IsDeleted).ToList();
         }
 
-        public ActiveCustomerList GetActiveCustomerList(string draw, int start, int length,
-            string sortColumn, string sortColumnDirection, string searchValue, long clienteid = 0)
+        public ActiveCustomerList GetActiveCustomerList(ActiveCustomerListRequest request)
         {
             var activeCustomerList = new ActiveCustomerList();
 
             //Paging Size (10,20,50,100)  
-            int pageSize = length != null ? Convert.ToInt32(length) : 0;
-            int skip = start != null ? Convert.ToInt32(start) : 0;
+            int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
+            int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
             int recordsTotal = 0;
 
             // Getting all Customer data  
@@ -61,28 +60,28 @@ namespace AuroraPOS.Core
                                 where s.IsActive
                                 select s);
 
-            if (clienteid > 0)
+            if (request.ClienteId > 0)
             {
                 customerData = (from s in _dbContext.Customers
-                                where s.IsActive && s.ID == clienteid
+                                where s.IsActive && s.ID == request.ClienteId
                                 select s);
 
 
             }
 
             //Sorting
-            if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDirection))
+            if (!string.IsNullOrEmpty(request.SortColumn) && !string.IsNullOrEmpty(request.SortColumnDirection))
             {
                 try
                 {
-                    customerData = customerData.OrderBy(sortColumn + " " + sortColumnDirection);
+                    customerData = customerData.OrderBy(request.SortColumn + " " + request.SortColumnDirection);
                 }
                 catch { }
             }
             ////Search  
-            if (!string.IsNullOrEmpty(searchValue))
+            if (!string.IsNullOrEmpty(request.SearchValue))
             {
-                customerData = customerData.Where(m => m.Name.ToLower().Contains(searchValue.ToLower()) || m.Phone.ToLower().Contains(searchValue.ToLower()) || m.Address1.ToLower().Contains(searchValue.ToLower()));
+                customerData = customerData.Where(m => m.Name.ToLower().Contains(request.SearchValue.ToLower()) || m.Phone.ToLower().Contains(request.SearchValue.ToLower()) || m.Address1.ToLower().Contains(request.SearchValue.ToLower()));
             }
 
             //total number of rows count   
@@ -94,7 +93,6 @@ namespace AuroraPOS.Core
                 data = data.Take(pageSize).ToList();
             }
             //Returning Json Data
-            activeCustomerList.draw = draw;
             activeCustomerList.recordsFiltered = recordsTotal;
             activeCustomerList.recordsTotal = recordsTotal;
             activeCustomerList.activeCustomers = data;
@@ -102,16 +100,15 @@ namespace AuroraPOS.Core
             return activeCustomerList;
         }
 
-        public PrepareTypesList GetPrepareTypes(string draw, int start, int length, string sortColumn, 
-            string sortColumnDirection, string searchValue,bool justData = false)
+        public PrepareTypesList GetPrepareTypes(PrepareTypesRequest request)
         {
             var prepareTypes = new PrepareTypesList();
 
-            if (!justData)
+            if (!request.JustData)
             {
                 //Paging Size (10,20,50,100)  
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
+                int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
                 int recordsTotal = 0;
 
                 // Getting all Customer data  
@@ -120,18 +117,18 @@ namespace AuroraPOS.Core
                                        select s);
 
                 //Sorting
-                if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDirection))
+                if (!string.IsNullOrEmpty(request.SortColumn) && !string.IsNullOrEmpty(request.SortColumnDirection))
                 {
                     try
                     {
-                        pepareTypesData = pepareTypesData.OrderBy(sortColumn + " " + sortColumnDirection);
+                        pepareTypesData = pepareTypesData.OrderBy(request.SortColumn + " " + request.SortColumnDirection);
                     }
                     catch { }
                 }
                 ////Search  
-                if (!string.IsNullOrEmpty(searchValue))
+                if (!string.IsNullOrEmpty(request.SearchValue))
                 {
-                    pepareTypesData = pepareTypesData.Where(m => m.Name.Contains(searchValue));
+                    pepareTypesData = pepareTypesData.Where(m => m.Name.Contains(request.SearchValue));
                 }
 
                 //total number of rows count   
@@ -143,7 +140,6 @@ namespace AuroraPOS.Core
                     data = data.Take(pageSize).ToList();
                 }
                 //Returning Json Data  
-                prepareTypes.draw = draw;
                 prepareTypes.recordsFiltered = recordsTotal;
                 prepareTypes.recordsTotal = recordsTotal;
                 prepareTypes.prepareTypes = data;

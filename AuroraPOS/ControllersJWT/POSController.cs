@@ -41,10 +41,9 @@ public class POSController : Controller
 
     [HttpGet("Station")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Station([FromBody] OrderType orderType, [FromBody] int stationId, [FromBody] OrderMode mode = OrderMode.Standard, [FromBody] long orderId = 0, [FromBody] long areaObject = 0, [FromBody] int person = 0)
+    public JsonResult Station([FromBody] StationRequest request)
     {
-        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
-        var station = _dbContext.Stations.Include(s => s.Areas.Where(t => !t.IsDeleted)).ThenInclude(s => s.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(t => !t.IsDeleted)).ThenInclude(s => s.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && !s.IsDeleted)).FirstOrDefault(s => s.ID == request.StationId);
         ViewBag.Sucursal = station.IDSucursal;
         var order = new Order();
 
@@ -90,7 +89,7 @@ public class POSController : Controller
         ViewBag.ShowExpectedPayment = PermissionChecker("Permission.POS.ShowExpectedPayment");
         ViewBag.Branchs = _dbContext.t_sucursal.ToList();
 
-        var current = _dbContext.Orders.Include(s => s.Table).FirstOrDefault(s => s.ID == orderId);
+        var current = _dbContext.Orders.Include(s => s.Table).FirstOrDefault(s => s.ID == request.OrderId);
         if (current != null)
         {
             order = current;
@@ -119,28 +118,28 @@ public class POSController : Controller
             order.Status = OrderStatus.Temp;
             var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
             order.ComprobantesID = voucher.ID;
-            if (orderType == OrderType.DiningRoom && areaObject > 0)
+            if (request.OrderType == OrderType.DiningRoom && request.AreaObject > 0)
             {
-                var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaObject);
+                var table = _dbContext.AreaObjects.Include(s => s.Area).ThenInclude(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == request.AreaObject);
                 if (table != null)
                 {
                     order.Table = table;
                     order.Area = table.Area;
 
-                    ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != areaObject).ToList();
+                    ViewBag.AnotherTables = table.Area.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && s.IsActive && s.ID != request.AreaObject).ToList();
                 }
 
-                order.Person = person;
+                order.Person = request.Person;
             }
 
 
-            if (orderType == OrderType.Delivery || orderType == OrderType.FastExpress || orderType == OrderType.TakeAway)
+            if (request.OrderType == OrderType.Delivery || request.OrderType == OrderType.FastExpress || request.OrderType == OrderType.TakeAway)
             {
-                order.Person = person;
+                order.Person = request.Person;
             }
 
 
-            if (orderType != OrderType.DiningRoom)
+            if (request.OrderType != OrderType.DiningRoom)
             {
                 order.OrderMode = OrderMode.Standard;
             }
@@ -158,9 +157,9 @@ public class POSController : Controller
     }
 
     //Checar por que da diferente respuesta
-    [HttpPost("CheckPermission")]
+    [HttpGet("CheckPermission")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult CheckPermission([FromBody] string permission)
+    public JsonResult CheckPermission(string permission)
     {
         var valid = PermissionChecker(permission);
 
@@ -174,16 +173,20 @@ public class POSController : Controller
     //preg por qué User.Claims no funciona en POSCore
     //Y verificar que la ruta Station si da el valor correcto nuevamente, si es que se cambia el uso
     //de User.Claims
-    public bool PermissionChecker([FromBody] string permission)
+    public bool PermissionChecker(string permission)
     {
 
-        var claims = User.Claims;
-        var permissionss = claims.Where(x => x.Type == "Permission" && x.Value == permission &&
-                                                        x.Issuer == "LOCAL AUTHORITY");
+        //var claims = User.Claims;
+        //var permissionss = claims.Where(x => x.Type == "Permission" && x.Value == permission &&
+        //                                                x.Issuer == "LOCAL AUTHORITY");
 
-        var valid = permissionss.Any();
+        //var valid = permissionss.Any();
 
-        return valid;
+        //return valid;
+
+        var tienePermiso = User.Claims.Any(claim => claim.Value == permission); // Ajusta el Issuer si es necesario
+
+        return tienePermiso;
     }
 
     [HttpGet("GetArea")]
@@ -267,14 +270,14 @@ public class POSController : Controller
 
     [HttpGet("GetAreaObjectsInArea")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreaObjectsInArea([FromBody] int stationId, [FromBody] string db, [FromBody] long areaID)
+    public JsonResult GetAreaObjectsInArea([FromBody] AreaObjectsInAreaRequest request)
     {
         var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
         POSAreaObjectsInAreaResponse response = new POSAreaObjectsInAreaResponse();
 
         try
         {
-            AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(stationId, db, areaID);
+            AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(request);
 
             response.result = resultado;
 
@@ -714,14 +717,14 @@ public class POSController : Controller
 
     [HttpGet("GetOrderItemsInCheckout")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderItemsInCheckout([FromBody] long orderId, [FromBody] int SeatNum, [FromBody] int DividerId)
+    public JsonResult GetOrderItemsInCheckout([FromBody] OrderItemsInCheckoutRequest request)
     {
         var response = new GetOrderItemsInCheckoutResponse();
 
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var orderItemsInCheckout = objPOSCore.GetOrderItemsInCheckout(orderId, SeatNum, DividerId);
+            var orderItemsInCheckout = objPOSCore.GetOrderItemsInCheckout(request);
 
             if (orderItemsInCheckout != null)
             {
