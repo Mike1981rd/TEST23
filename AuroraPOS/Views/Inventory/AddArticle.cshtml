@@ -82,7 +82,7 @@
 									</form>
 									<div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
 										<table class="table" style="position:relative;">
-											<thead class="" style="position: sticky; top: 0; z-index:2;">
+											<thead class="border-header" style="position: sticky; top: 0; z-index:2;">
 												<tr>
 													<th>No </th>
 													<th style="width:150px;">@ViewLocalizer["Name"] </th>
@@ -208,206 +208,6 @@
 						<!-- /Media -->
 						<!-- Variants -->
 
-						<div class="mb-6 ">
-							<div class="card-header">
-								<h5 class="card-title mb-0">Características</h5>
-							</div>
-							<div class="card-body">
-
-								<form class="form-repeater">
-									<div data-repeater-list="group-a">
-										<div data-repeater-item="">
-											<div class="row mb-6">
-												<div class="col">
-													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Suppliers"] </label>
-													<div class="add-icon mx-1">
-														<a id="add-supplier-modal" href="javascript:void(0);">
-															<img src="/vendor/img/icons/plus1.svg" alt="img">
-														</a>
-													</div>
-
-
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div>
-									</div>
-								</form>
-								<div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
-									<table class="table" style="position:relative;">
-										<thead class="" style="position: sticky; top: 0; z-index:2;">
-											<tr>
-												<th>ID </th>
-												<th>@ViewLocalizer["Supplier"] </th>
-												<th>@ViewLocalizer["Vendor"]	</th>
-												<th>@ViewLocalizer["Primary"]</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody class="article-supplier">
-										</tbody>
-									</table>
-								</div>
-
-								<form class="form-repeater">
-									<div data-repeater-list="group-a">
-										<div data-repeater-item="">
-											<div class="row mb-6">
-												<div class="col">
-													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Stocks"]  </label>
-
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div>
-									</div>
-								</form>
-								<div class="table-responsive">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Almacen </th>
-												<th>Unidad	</th>
-												<th>Disponible</th>
-											</tr>
-										</thead>
-										<tbody id="warehouse-stock">
-											@foreach (var s in stocks)
-											{
-												<tr data-qty="@s.Qty.ToString("0.0000")">
-													<td>@s.Warehouse.WarehouseName</td>
-													<td>
-														<select class="warehouse-stock-unit select">
-														</select>
-													<td class="stock-qty">@s.Qty.ToString("0.0000")</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div>
- 								<form class="form-repeater">
-									<div data-repeater-list="group-a">
-										<div data-repeater-item="">
-											<div class="row mb-6">
-												<div class="col">
-													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Products"]</label>
-
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div>
-									</div>
-								</form>
-								<div class="table-responsive" style="max-height: 300px; overflow:auto;">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>ID </th>
-												<th>@ViewLocalizer["Name"]	</th>
-												<th>@ViewLocalizer["Category"]</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach (var s in products)
-											{
-												<tr>
-													<td>@s.ID</td>
-													<td>@s.Name</td>
-													<td>@s.Category.Name</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div>
-@*								<form class="form-repeater">
-									<div data-repeater-list="group-a">
-										<div data-repeater-item="">
-											<div class="row mb-6">
-												<div class="col">
-													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Purchase Order History"]</label>
-
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div>
-									</div>
-								</form>
-								<div class="table-responsive" style="max-height: 500px; overflow:auto;">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>@ViewLocalizer["Date"] </th>
-												<th>@ViewLocalizer["Supplier"]</th>
-												<th>@ViewLocalizer["Qty"]</th>
-												<th>@ViewLocalizer["Unit"]</th>
-												<th>@ViewLocalizer["Unit Cost"]</th>
-												<th>@ViewLocalizer["Total"]</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach (var s in phistory)
-											{
-												<tr>
-													<td>@s.PurchaseDate.ToString("dd-MM-yyyy")</td>
-													<td>@s.Supplier</td>
-													<td>@s.Qty.ToString("N2")</td>
-													<td>@s.Unit</td>
-													<td>@s.Cost.ToString("N2")</td>
-													<td>@s.Total.ToString("N2")</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div> *@
-								<form class="form-repeater">
-									<div data-repeater-list="group-a">
-										<div data-repeater-item="">
-											<div class="row mb-6">
-												<div class="col">
-													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Units"]</label>
-
-												</div>
-											</div>
-
-										</div>
-									</div>
-									<div>
-									</div>
-								</form>
-								<div class="table-responsive">
-									<table class="table">
-										<thead>
-											<tr>
-												<th> </th>
-												<th>Unidad	</th>
-											</tr>
-										</thead>
-										<tbody>
-
-											<tr>
-												<td>Balanza</td>
-												<td></td>
-											</tr>
-											<tr>
-												<td>Scanner</td>
-												<td>
-													<select id="scanner-unit" class="select ">
-													</select>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
 
 						<!-- /Navigation -->
 						<!-- /Options-->
@@ -420,10 +220,21 @@
 							<h5 class="card-title mb-0">Descripción</h5>
 						</div>
 						<div class="card-body">
+@* 							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
+								<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+									<div class="input-group">
+										<span class="input-group-text" id="unit-id" data-id="">ID</span>
+										<input id="unit-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+									</div>
+									<button id="edit-unit" type="button" class="btn btn-submit btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+								</div>
+
+							</div> *@
 							<div class="row mb-6">
 								<div class="col">
 									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
-									<div class="d-flex">
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 										<select id="article-category" class="select form-control ">
 											<option value="">@ViewLocalizer["Choose category"]</option>
 											@foreach (var c in categories)
@@ -435,13 +246,12 @@
 											<a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
 										</div>
 									</div>
-
 								</div>
 							</div>
 							<div class="row mb-6">
 								<div class="col">
 									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
-									<div class="d-flex">
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 										<select id="article-subcategory" class="select form-control">
 										</select>
 										<div class="add-icon">
@@ -458,7 +268,7 @@
 								<div class="col">
 									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Brand"]</label>
 
-									<div class="d-flex">
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
 										<select id="article-brand" class="select form-control ">
 											<option>Choose Brand</option>
 											@foreach (var b in brands)
@@ -552,6 +362,208 @@
 							</div>
 						</div>
 					</div>
+
+						<div class="card mb-6 ">
+							<div class="card-header">
+								<h5 class="card-title mb-0">Características</h5>
+							</div>
+							<div class="card-body">
+
+								<form class="form-repeater">
+									<div data-repeater-list="group-a">
+										<div data-repeater-item="">
+											<div class="row mb-6">
+												<div class="col">
+													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Suppliers"] </label>
+													<div class="add-icon mx-1">
+														<a id="add-supplier-modal" href="javascript:void(0);">
+															<img src="/vendor/img/icons/plus1.svg" alt="img">
+														</a>
+													</div>
+
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div>
+									</div>
+								</form>
+							<div class="table-responsive w-100 mb-6" style="max-height: 300px; overflow:auto;">
+									<table class="table" style="position:relative;">
+										<thead class="" style="position: sticky; top: 0; z-index:2;">
+											<tr>
+												<th>ID </th>
+												<th>@ViewLocalizer["Supplier"] </th>
+												<th>@ViewLocalizer["Vendor"]	</th>
+												<th>@ViewLocalizer["Primary"]</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody class="article-supplier">
+										</tbody>
+									</table>
+								</div>
+
+								<form class="form-repeater">
+									<div data-repeater-list="group-a">
+										<div data-repeater-item="">
+											<div class="row mb-6">
+												<div class="col">
+													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Stocks"]  </label>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div>
+									</div>
+								</form>
+							<div class="table-responsive mb-6">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>Almacen </th>
+												<th>Unidad	</th>
+												<th>Disponible</th>
+											</tr>
+										</thead>
+										<tbody id="warehouse-stock">
+											@foreach (var s in stocks)
+											{
+												<tr data-qty="@s.Qty.ToString("0.0000")">
+													<td>@s.Warehouse.WarehouseName</td>
+													<td>
+														<select class="warehouse-stock-unit select">
+														</select>
+													<td class="stock-qty">@s.Qty.ToString("0.0000")</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+ 								<form class="form-repeater">
+									<div data-repeater-list="group-a">
+										<div data-repeater-item="">
+											<div class="row mb-6">
+												<div class="col">
+													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Products"]</label>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div>
+									</div>
+								</form>
+							<div class="table-responsive mb-6" style="max-height: 300px; overflow:auto;">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>ID </th>
+												<th>@ViewLocalizer["Name"]	</th>
+												<th>@ViewLocalizer["Category"]</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var s in products)
+											{
+												<tr>
+													<td>@s.ID</td>
+													<td>@s.Name</td>
+													<td>@s.Category.Name</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+@*								<form class="form-repeater">
+									<div data-repeater-list="group-a">
+										<div data-repeater-item="">
+											<div class="row mb-6">
+												<div class="col">
+													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Purchase Order History"]</label>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div>
+									</div>
+								</form>
+								<div class="table-responsive" style="max-height: 500px; overflow:auto;">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>@ViewLocalizer["Date"] </th>
+												<th>@ViewLocalizer["Supplier"]</th>
+												<th>@ViewLocalizer["Qty"]</th>
+												<th>@ViewLocalizer["Unit"]</th>
+												<th>@ViewLocalizer["Unit Cost"]</th>
+												<th>@ViewLocalizer["Total"]</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var s in phistory)
+											{
+												<tr>
+													<td>@s.PurchaseDate.ToString("dd-MM-yyyy")</td>
+													<td>@s.Supplier</td>
+													<td>@s.Qty.ToString("N2")</td>
+													<td>@s.Unit</td>
+													<td>@s.Cost.ToString("N2")</td>
+													<td>@s.Total.ToString("N2")</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div> *@
+								<form class="form-repeater">
+									<div data-repeater-list="group-a">
+										<div data-repeater-item="">
+											<div class="row mb-6">
+												<div class="col">
+													<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Units"]</label>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div>
+									</div>
+								</form>
+							<div class="table-responsive mb-6">
+									<table class="table">
+										<thead>
+											<tr>
+												<th> </th>
+												<th>Unidad	</th>
+											</tr>
+										</thead>
+										<tbody>
+
+											<tr>
+												<td>Balanza</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>Scanner</td>
+												<td>
+													<select id="scanner-unit" class="select ">
+													</select>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
 			</div>
                 <!-- /Inventory -->
                 <!-- /Second column -->
@@ -824,7 +836,7 @@
 
 <!-- Unit Modal -->
 <div class="modal fade" id="editunit" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-simple modal-edit-user" role="document">
+	<div class="modal-dialog modal-simple" role="document">
 		<div class="modal-content">
 @* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Unit"]</h5>
@@ -840,23 +852,25 @@
 					</h4>
 				</div>
 				<div class="row">
-					<div class="col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
-							<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-								<div class="input-group">
-									<span class="input-group-text" id="unit-id" data-id="">ID</span>
-									<input id="unit-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+					<div class="row mb-6">
+						<div class="col-12">
+							<div class="form-group">
+								<label class="form-label">@ViewLocalizer["Unit Name"]<span class="manitory">*</span></label>
+								<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+									<div class="input-group">
+										<span class="input-group-text" id="unit-id" data-id="">ID</span>
+										<input id="unit-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+									</div>
+									<button id="edit-unit" type="button" class="btn btn-submit btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
 								</div>
-								<button id="edit-unit" type="button" class="btn btn-submit btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
-							</div>
 
-						</div>
-						<div class="page-btn">
+							</div>
+							<div class="page-btn">
+							</div>
 						</div>
 					</div>
 					<div class="col-12">
-						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive" style="max-height:400px;">
 							<table id="unit-list" class="table" style="position:relative;">
 								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
 									<tr>
@@ -1986,7 +2000,7 @@
 						<td>
 							<div class="d-flex justify-content-between align-items-center" style="gap: 5px;">
 								<div class="select-container">
-									<select class="unit-name form-control form-control-sm" data-num="${item.number}">
+									<select class="unit-name form-control form-control-sm" data-num="${item.number}" style="width: 75px;">
 										<option>Choose Name</option>
 									</select>
 								</div>
@@ -2005,7 +2019,7 @@
 							<input class="unit-rate  form-control form-control-sm" ${readonlystock}  value="${item.rate}" onkeypress="return onlyDecimalKey(event)" type="text"/>
 						</td>
 						<td>
-							<input class="unit-cost   form-control form-control-sm" value="${item.cost}" onkeypress="return onlyDecimalKey(event)" ${readonlystock} ${readonly} type="text" />
+							<input class="unit-cost   form-control form-control-sm" value="${item.cost}" onkeypress="return onlyDecimalKey(event)" ${readonlystock} ${readonly} type="text" style="width: 100px;"/>
 						</td>
 						<td>
 							<input class="unit-pay   form-control form-control-sm" value="${item.payItem}"  onkeypress="return onlyDecimalKey(event)" type="text" />

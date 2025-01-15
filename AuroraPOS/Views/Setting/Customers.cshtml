@@ -67,99 +67,111 @@
 						<h4 class="mb-2">@ViewLocalizer["Add/Edit Customer"]</h4>
 					</div>
 					<div class="row">
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-								<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+									<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+									<input id="customer-rnc" type="text" class="form-control" required>
+								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
-								<input id="customer-rnc" type="text" class="form-control" required>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+									<input id="customer-phone" type="text" class="form-control phone_format" required>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+									<input id="customer-email" type="text" class="form-control" required>
+								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-								<input id="customer-phone" type="text" class="form-control phone_format" required>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Address"]</label>
+									<input id="customer-address1" type="text" class="form-control" required>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["City"]</label>
+									<input id="customer-city" type="text" class="form-control" required>
+								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-								<input id="customer-email" type="text" class="form-control" required>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Limit of Credit"]</label>
+									<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Credit Days"]</label>
+									<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Address"]</label>
-								<input id="customer-address1" type="text" class="form-control" required>
-							</div>
-						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["City"]</label>
-								<input id="customer-city" type="text" class="form-control" required>
-							</div>
-						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Limit of Credit"]</label>
-								<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-							</div>
-						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Credit Days"]</label>
-								<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-							</div>
-						</div>
-						<div class="col-lg-3 col-sm-3 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Balance"]</label>
-								<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-3 col-sm-3 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Balance"]</label>
+									<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
 
+								</div>
+							</div>
+
+							<div class="col-lg-2 col-sm-2 col-12">
+								<div class="form-group">
+									<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
+								</div>
+							</div>
+							<div class="col-lg-2 col-sm-2 col-12">
+								<div class="form-group">
+									<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
+								</div>
 							</div>
 						</div>
-
-						<div class="col-lg-2 col-sm-2 col-12">
-							<div class="form-group">
-								<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
-							</div>
-						</div>
-						<div class="col-lg-2 col-sm-2 col-12">
-							<div class="form-group">
-								<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
-							</div>
-						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Comprobantes"]</label>
-								<div class="row">
-									<div class="col-lg-10 col-sm-10 col-10">
-										<select id="customer-voucher" class="select ">
-											<option value="">Choose comprobantes</option>
+						<div class="d-flex mb-6" style="gap: 10px">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Comprobantes"]</label>
+									<div class="row">
+										<div class="col-lg-10 col-sm-10 col-10">
+											<select id="customer-voucher" class="select ">
+												<option value="">Choose comprobantes</option>
 
 
-										</select>
-									</div>
-									<div class="col-lg-2 col-sm-2 col-2 ps-0">
-										<div class="add-icon">
-											<a id="add-voucher-modal" href="javascript:void(0);">
-												<img src="/vendor/img/icons/plus1.svg" alt="img">
-											</a>
+											</select>
+										</div>
+										<div class="col-lg-2 col-sm-2 col-2 ps-0">
+											<div class="add-icon">
+												<a id="add-voucher-modal" href="javascript:void(0);">
+													<img src="/vendor/img/icons/plus1.svg" alt="img">
+												</a>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group">
-								<label class="form-label">@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
-								<select id="customer-zone" class="select ">
-									<option value="">Zonas</option>
-								</select>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group">
+									<label class="form-label">@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
+									<select id="customer-zone" class="select ">
+										<option value="">Zonas</option>
+									</select>
+								</div>
 							</div>
 						</div>
 						<div class="col-lg-6 col-sm-6 col-12">

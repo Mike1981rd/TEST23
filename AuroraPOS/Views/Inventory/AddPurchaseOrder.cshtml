@@ -46,7 +46,7 @@
 
             <div class="row">
                 <!-- First column-->
-                <div class="col-12 col-lg-8">
+                <div class="col">
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -55,7 +55,7 @@
                         <div class="card-body">
                             <div class="mb-6">
                                 <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Supplier"]</label>
-                                <div class="d-flex">
+                                <div class="d-flex justify-content-between" style="gap: 10px">
                                     
                                     <select id="purchase-supplier" class="select form-control">
                                     </select>
@@ -67,7 +67,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Warehouse"]</label>
-                                    <div class="d-flex">
+                                    <div class="d-flex justify-content-between" style="gap: 10px">
                                         <select id="purchase-warehouse" class="select form-control">
                                         </select>
                                         <div class="add-icon">
@@ -249,98 +249,100 @@
                             </div>
                         </div>
                             <!-- /Options-->
-                        </div>
-                    </div>
-                <div class="col-12 col-lg-4">
-                    <!-- Pricing Card -->
-                    <div class="card mb-6">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Información</h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Base Price -->
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
-                                <textarea id="purchase-description" class="form-control"></textarea>
-                            </div>
-                            <!-- Discounted Price -->
-                            <div class="mb-6">
-                                @if (orderStatus == PurchaseOrderStatus.Pending)
-                                {
-                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" >@ViewLocalizer["Save"]</a>
-                                    <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
-                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
-                                    <button id="purchase-cancel2" class="btn btn-default btn-danger">Cancel</button>
-                                }
-                                else if (orderStatus == PurchaseOrderStatus.Ordered)
-                                {
-                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
-                                    <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
-                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
-                                }
-                                else if (orderStatus == PurchaseOrderStatus.Cancelled)
-                                {
-                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
-                                }
-                                else if (orderStatus == PurchaseOrderStatus.None)
-                                {
-                                    <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
-                                    <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
-                                    <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
 
-                                }
-                                else if (orderStatus == PurchaseOrderStatus.Received)
-                                {
-                                    <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
-                                }
-                                <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Pricing Card -->
 
-                    <div class="card mb-6">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12 float-md-right">
-                                    <div class="total-order">
-                                        <ul>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Base Taxable"]</label>
-                                                <p id="po-basetaxable">$ 0.00</p>
-                                            </li>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Extra Amount"]</label>
-                                                <p id="po-extent">$ 0.00</p>
-                                            </li>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Shipping"]</label>
-                                                <p id="po-shipping">$ 0.00</p>
-                                            </li>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Discount"]</label>
-                                                <p id="po-discount">$ 0.00</p>
-                                            </li>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Sub Total"]</label>
-                                                <p id="po-subtotal">$ 0.00</p>
-                                            </li>
-                                            <li>
-                                                <label class="form-label">@ViewLocalizer["Tax"]</label>
-                                                <p id="po-tax">$ 0.00</p>
-                                            </li>
-                                            <li class="total">
-                                                <label class="form-label">@ViewLocalizer["Net Total"]</label>
-                                                <p id="po-total">$ 0.00</p>
-                                            </li>
-                                        </ul>
+                        <div class="">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 float-md-right">
+                                        <div class="total-order">
+                                            <ul>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Base Taxable"]</label>
+                                                    <p id="po-basetaxable">$ 0.00</p>
+                                                </li>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Extra Amount"]</label>
+                                                    <p id="po-extent">$ 0.00</p>
+                                                </li>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Shipping"]</label>
+                                                    <p id="po-shipping">$ 0.00</p>
+                                                </li>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Discount"]</label>
+                                                    <p id="po-discount">$ 0.00</p>
+                                                </li>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Sub Total"]</label>
+                                                    <p id="po-subtotal">$ 0.00</p>
+                                                </li>
+                                                <li>
+                                                    <label class="form-label">@ViewLocalizer["Tax"]</label>
+                                                    <p id="po-tax">$ 0.00</p>
+                                                </li>
+                                                <li class="total">
+                                                    <label class="form-label">@ViewLocalizer["Net Total"]</label>
+                                                    <p id="po-total">$ 0.00</p>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Pricing Card -->
+                        <div class="">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Información</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Base Price -->
+                                <div class="mb-6">
+                                    <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
+                                    <textarea id="purchase-description" class="form-control"></textarea>
+                                </div>
+                                <!-- Discounted Price -->
+                                <div class="mb-6">
+                                    @if (orderStatus == PurchaseOrderStatus.Pending)
+                                    {
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                        <button id="purchase-cancel2" class="btn btn-default btn-danger">Cancel</button>
+                                    }
+                                    else if (orderStatus == PurchaseOrderStatus.Ordered)
+                                    {
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                        <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
+                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                    }
+                                    else if (orderStatus == PurchaseOrderStatus.Cancelled)
+                                    {
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-default btn-submit me-2 bg-lightyellow">@ViewLocalizer["Save"]</a>
+                                    }
+                                    else if (orderStatus == PurchaseOrderStatus.None)
+                                    {
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                        <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
+                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+
+                                    }
+                                    else if (orderStatus == PurchaseOrderStatus.Received)
+                                    {
+                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                    }
+                                    <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Pricing Card -->
+                        </div>
                     </div>
+                <div class="col-12 col-lg-4">
+
                 </div>
                 </div>
                 <!-- /Inventory -->
