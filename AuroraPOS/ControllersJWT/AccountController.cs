@@ -180,23 +180,23 @@ public class AccountController : Controller
             }
             
             // Creamos Claim (Conjunto de informacion en la cual podemos confiar)
-            List<Claim> claim= new ();
+            //List<Claim> claim= new ();
 
-            foreach (var objClaim in claims)
-            {
-                //claim.Add(objClaim);
-                claim.Append (objClaim);
-            }
+            //foreach (var objClaim in claims)
+            //{
+            //    //claim.Add(objClaim);
+            //    claim.Append (objClaim);
+            //}
 
             if (Vacio)
             {
-                claim.Append(new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()));
+                claims.Add(new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()));
             }
             else
             {
                 
-                claim.Append(new Claim(ClaimTypes.Expired, expiration.ToString()));
-                claim.Append(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                claims.Add(new Claim(ClaimTypes.Expired, expiration.ToString()));
+                claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
                 
                 /*claim = new[]
             {
@@ -223,7 +223,7 @@ public class AccountController : Controller
             JwtSecurityToken token = new JwtSecurityToken(
                 issuer: "aurorapos.com",
                 audience: "aurorapos.com",
-                claims: claim,
+                claims: claims,
                 expires: expiration,
                 signingCredentials: creds);
 

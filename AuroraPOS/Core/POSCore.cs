@@ -14,6 +14,7 @@ using AuroraPOS.ModelsJWT;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using AuroraPOS.ViewModels;
+using AuroraPOS.ModelsCentral;
 
 namespace AuroraPOS.Core;
 
@@ -2770,6 +2771,192 @@ public class POSCore
         }
 
         return false;
+    }
+
+    public List<Order> GetMyOpenOrders(int stationID, string user)
+    {
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+        List<Order> orders = _dbContext.Orders.Include(s => s.Area).Include(s => s.Table).Where(s => /* s.Station == station  &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user && !s.IsDeleted).ToList();
+
+        return orders;
+    }
+
+    public DateTime getCurrentWorkDate(int stationId)
+    {
+        var stationID = stationId;
+        var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+
+        var objDay = _dbContext.WorkDay.Where(d => d.IsActive == true && d.IDSucursal == objStation.IDSucursal).FirstOrDefault();
+
+        DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
+        return dtNow;
+    }
+
+    public int MoveTable(MoveTableModel model)
+    {
+        int status = 0;
+
+        if (model.FromTableId == model.ToTableId)
+        {
+            status = 1;
+            return status;
+        }
+
+        var srcTable = _dbContext.AreaObjects.Include(s => s.Area).FirstOrDefault(s => s.ID == model.FromTableId);
+        var targetTable = _dbContext.AreaObjects.Include(s => s.Area).FirstOrDefault(s => s.ID == model.ToTableId);
+
+        var order = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s => s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.Table == srcTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
+        var targetOrder = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s => s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.Table == targetTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
+
+        if (targetOrder == null)
+        {
+            order.Table = targetTable;
+            order.Area = targetTable.Area;
+            _dbContext.SaveChanges();
+        }
+        else
+        {
+            if (targetOrder.OrderMode == OrderMode.Seat)
+            {
+                if (order.OrderMode == OrderMode.Seat)
+                {
+                    var emptySeat = 0;
+                    var seatNums = new List<int>();
+                    foreach (var item in targetOrder.Seats)
+                    {
+                        if (!seatNums.Contains(item.SeatNum))
+                            seatNums.Add(item.SeatNum);
+                    }
+                    for (int i = 1; i < seatNums.Max(); i++)
+                    {
+                        if (!seatNums.Contains(i))
+                        {
+                            emptySeat = i;
+                            break;
+                        }
+                    }
+                    if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
+
+                    foreach (var seat in order.Seats)
+                    {
+                        if (seat.Items == null || seat.Items.Count == 0) continue;
+                        foreach (var item in seat.Items)
+                        {
+                            item.SeatNum = emptySeat;
+                        }
+                        seat.SeatNum = emptySeat;
+
+                        targetOrder.Seats.Add(seat);
+                        emptySeat++;
+                    }
+                    var index = 1;
+                    foreach (var seat in targetOrder.Seats)
+                    {
+                        seat.SeatNum = index;
+                        foreach (var item in seat.Items)
+                        {
+                            item.SeatNum = index;
+                        }
+
+                        index++;
+                    }
+
+                    foreach (var item in order.Items)
+                    {
+                        targetOrder.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    var emptySeat = 0;
+                    var seatNums = new List<int>();
+                    foreach (var item in targetOrder.Items)
+                    {
+                        seatNums.Add(item.SeatNum);
+                    }
+                    for (int i = 1; i < seatNums.Max(); i++)
+                    {
+                        if (!seatNums.Contains(i))
+                        {
+                            emptySeat = i;
+                            break;
+                        }
+                    }
+                    if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
+                    var nseat = new SeatItem() { SeatNum = emptySeat, Items = new List<OrderItem>() };
+                    foreach (var item in order.Items)
+                    {
+                        item.SeatNum = emptySeat;
+                        targetOrder.Items.Add(item);
+                        nseat.Items.Add(item);
+                    }
+
+                    targetOrder.Seats.Add(nseat);
+                }
+            }
+            else if (targetOrder.OrderMode == OrderMode.Divide)
+            {
+                foreach (var item in order.Items)
+                {
+                    if (item.Status == OrderItemStatus.Paid) continue;
+                    item.DividerNum = 1;
+                    targetOrder.Items.Add(item.CopyThis());
+                }
+            }
+            else
+            {
+                foreach (var item in order.Items)
+                {
+                    if (item.Status == OrderItemStatus.Paid) continue;
+                    targetOrder.Items.Add(item.CopyThis());
+                }
+            }
+
+            order.Status = OrderStatus.Moved;
+
+            _dbContext.SaveChanges();
+            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == targetOrder.ComprobantesID);
+            targetOrder.GetTotalPrice(voucher);
+
+            _dbContext.SaveChanges();
+        }
+
+        return status;
+    }
+
+    public int GiveOrder(long orderId, long userId, int stationId, string userN)
+    {
+        int status = 0;
+        var user = userN;
+        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+
+        var otherUser = _dbContext.User.FirstOrDefault(s => s.ID == userId);
+        if (orderId == 0)
+        {
+            var orders = _dbContext.Orders.Include(s => s.Area).Include(s => s.Table).Where(s => /*s.Station == station &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user).ToList();
+            foreach (var o in orders)
+            {
+                o.WaiterName = otherUser.Username;
+            }
+        }
+        else
+        {
+            var order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+            if (order != null)
+                order.WaiterName = otherUser.Username;
+        }
+        _dbContext.SaveChanges();
+
+        return status;
+    }
+
+    public int ReprintOrder(long orderID, int stationID, string db)
+    {
+        _printService.PrintPaymentSummary(stationID, orderID, db, 0, 0, true);
+
+        return 0;
     }
 
 }

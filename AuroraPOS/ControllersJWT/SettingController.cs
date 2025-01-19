@@ -6,6 +6,8 @@ using AuroraPOS.Data;
 using AuroraPOS.Services;
 using AuroraPOS.Models;
 using AuroraPOS.ModelsJWT;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace AuroraPOS.ControllersJWT
 {
@@ -201,5 +203,83 @@ namespace AuroraPOS.ControllersJWT
                 return Json(new { Valor = "", Success = false, Error = ex.Message });
             }
         }
+
+        [HttpPost("GetActiveCustomers")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetActiveCustomers()
+        {
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            var response = new GetActiveCustomersResponse();
+
+            try
+            {
+                var customers = settingsCore.GetActiveCustomers();
+
+                response.result = customers;
+                response.Success = true;
+
+                if(!customers.Any())
+                    response.message = "No existe ningún cliente activo";
+
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Error = e.Message;
+            }
+
+            return Json(response);
+        }
+
+        [HttpPost("GetCxCList")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetCxCList([FromBody] GetCxCListRequest request)
+        {
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            var response = new GetCxCListResponse();
+
+            try
+            {
+                List<OrderTransaction> cxc = settingsCore.GetCxCList(request.customerName, request.customerId);
+
+                response.Success = true;
+                response.result = cxc;
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Error = "Ocurrió un error al obtener los datos: " + ex.Message;
+
+                return Json(response);
+            }
+        }
+
+        [HttpPost("GetCxCList2")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult GetCxCList2(GetCxCList2Request request)
+        {
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            var response = new GetCxCListResponse();
+
+            try
+            {
+                List<OrderTransaction> cxc = settingsCore.GetCxCList2(request.from, request.to, request.cliente, request.orden, request.monto);
+
+                response.Success = true;
+                response.result = cxc;
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Error = "Ocurrió un error al obtener los datos: " + ex.Message;
+
+                return Json(response);
+            }
+        }
+
     }
 }

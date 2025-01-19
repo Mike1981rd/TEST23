@@ -5,6 +5,7 @@ using AuroraPOS.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace AuroraPOS.Core
 {
@@ -157,6 +158,112 @@ namespace AuroraPOS.Core
         public List<DeliveryCarrier>? GetActiveDeliveryCarrierList()
         {
             return _dbContext.DeliveryCarriers.Where(s => s.IsActive && !s.IsDeleted).ToList();
+        }
+
+        public List<Customer>? GetActiveCustomers()
+        {
+            var customers = _dbContext.Customers.Where(s => s.IsActive).ToList();
+            return customers;
+        }
+
+        public List<OrderTransaction> GetCxCList(string customerName, long customerId = 0)
+        {
+            List<OrderTransaction> cxc = null;
+            if (customerId == 0)
+            {
+                string customerNameLower = customerName?.ToLower();
+
+                cxc = _dbContext.OrderTransactions
+                    .Include(ot => ot.Order)
+                    .Where(ot => ot.Order != null &&
+                                 ot.Order.ClientName != null &&
+                                 ot.Order.ClientName.ToLower() == customerNameLower &&
+                                 ot.Method != null &&
+                                 ot.PaymentType != null &&
+                                 ot.PaymentType.ToUpper() == "C X C")
+                    .Select(ot => new OrderTransaction
+                    {
+                        ID = ot.ID,
+                        Amount = ot.Amount,
+                        Method = ot.Method,
+                        PaymentDate = ot.PaymentDate,
+                        PaymentType = ot.PaymentType,
+                    })
+                    .ToList();
+            }
+            else
+            {
+                string customerNameLower = customerName?.ToLower();
+
+                cxc = _dbContext.OrderTransactions
+                    .Include(ot => ot.Order)
+                    .Where(ot => ot.Order != null &&
+                                 ot.Order.CustomerId == customerId &&
+                                 ot.Method != null &&
+                                 ot.PaymentType != null &&
+                                 ot.PaymentType.ToUpper() == "C X C")
+                    .Select(ot => new OrderTransaction
+                    {
+                        ID = ot.ID,
+                        Amount = ot.Amount,
+                        Method = ot.Method,
+                        PaymentDate = ot.PaymentDate,
+                        PaymentType = ot.PaymentType,
+                    })
+                    .ToList();
+            }
+
+
+            foreach (var order in cxc)
+            {
+                // Obtener órdenes asociadas al ReferenceId
+                var associatedOrders = _dbContext.OrderTransactions
+                    .Where(ot => ot.ReferenceId == order.ID)
+                    .ToList();
+
+                // Calcular la diferencia y almacenarla en la propiedad Difference
+                order.TemporaryDifference = order.Amount - associatedOrders.Sum(ao => ao.Amount);
+            }
+
+            return cxc.Where(s => s.TemporaryDifference > 0).ToList();
+        }
+
+        public List<OrderTransaction> GetCxCList2(string from, string to, long cliente, long orden, decimal monto)
+        {
+            // Verificar si los parámetros recibidos están vacíos o nulos
+            DateTime fromDate = DateTime.MinValue;
+            DateTime toDate = DateTime.MaxValue;
+
+            if (!string.IsNullOrEmpty(from))
+            {
+                fromDate = DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            }
+
+            if (!string.IsNullOrEmpty(to))
+            {
+                toDate = DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                toDate = toDate.AddDays(1).AddMinutes(-1);
+            }
+
+            // Filtrar la lista basada en los parámetros recibidos
+            var cxcList = _dbContext.OrderTransactions
+                .Include(ot => ot.Order)
+                .Where(ot => (orden == 0 || ot.ReferenceId == orden) &&
+                             (cliente == 0 || ot.Order.CustomerId == cliente) &&
+                             (fromDate == DateTime.MinValue || ot.Order.OrderTime >= fromDate) &&
+                             (toDate == DateTime.MaxValue || ot.Order.OrderTime <= toDate) &&
+                             (monto == 0 || ot.Amount >= monto))
+                .ToList();
+
+            if (cxcList != null && cxcList.Any())
+            {
+                foreach (var objCxc in cxcList)
+                {
+                    objCxc.Amount = Math.Round(objCxc.Amount, 2, MidpointRounding.AwayFromZero);
+                }
+            }
+
+            return cxcList;
         }
     }
 }
