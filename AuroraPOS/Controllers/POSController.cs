@@ -369,7 +369,12 @@ namespace AuroraPOS.Controllers
 				var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
                 var db = Request.Cookies["db"];
 
-                AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(stationID, db, areaID);
+                var req = new AreaObjectsInAreaRequest();
+                req.StationId = stationID;
+                req.AreaId = areaID;
+                req.Db = db;
+
+                AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(req);
 
                 return Json(new { objects = resultado.objects, orders = resultado.orders, resultado.holditems });
 
@@ -625,7 +630,10 @@ namespace AuroraPOS.Controllers
 
 		public IActionResult Sales(OrderType orderType, OrderMode mode = OrderMode.Standard, long orderId = 0, long areaObject = 0, int person = 0, string selectedItems = "")
 		{
-			var order = new Order();
+
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+            var order = new Order();
             var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID); 
             var products = _dbContext.Products.Where(s => s.IsActive).ToList();
@@ -736,7 +744,7 @@ namespace AuroraPOS.Controllers
 				_dbContext.Orders.Add(order);
 				_dbContext.SaveChanges();
 
-                order.ForceDate = getCurrentWorkDate();
+                order.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                 _dbContext.SaveChanges();
 
                 HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
@@ -1289,41 +1297,52 @@ namespace AuroraPOS.Controllers
         {
             var user = User.Identity.GetUserName();
 			var stationID = int.Parse(GetCookieValue("StationID"));  //HttpContext.Session.GetInt32("StationID");
-			var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
-			var orders = _dbContext.Orders.Include(s=>s.Area).Include(s => s.Table).Where(s => /* s.Station == station  &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user && !s.IsDeleted).ToList();
+			//var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+			//var orders = _dbContext.Orders.Include(s=>s.Area).Include(s => s.Table).Where(s => /* s.Station == station  &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user && !s.IsDeleted).ToList();
 
-			return Json(orders);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            List<Order> orders = objPOSCore.GetMyOpenOrders(stationID, user);
+
+            return Json(orders);
         }
 
         [HttpPost]
         public JsonResult GiveOrder(long orderId, long userId)
         {
-			var user = User.Identity.GetUserName();
-			var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-			var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var user = User.Identity.GetUserName();
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
-			var otherUser = _dbContext.User.FirstOrDefault(s => s.ID == userId);
-            if (orderId == 0)
-            {
-				var orders = _dbContext.Orders.Include(s => s.Area).Include(s => s.Table).Where(s => /*s.Station == station &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user).ToList();
-                foreach(var o in orders)
-                {
-                    o.WaiterName = otherUser.Username;
-                }
-			}
-            else
-            {
-                var order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
-                if (order != null)
-                    order.WaiterName = otherUser.Username;
-            }
-            _dbContext.SaveChanges();
+            int status = objPOSCore.GiveOrder(orderId, userId, stationID, user);
+           
+            return Json(new { status = status });
 
-            return Json(new { status = 0 });
+            //var user = User.Identity.GetUserName();
+            //var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+            //var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
+
+            //var otherUser = _dbContext.User.FirstOrDefault(s => s.ID == userId);
+            //         if (orderId == 0)
+            //         {
+            //	var orders = _dbContext.Orders.Include(s => s.Area).Include(s => s.Table).Where(s => /*s.Station == station &&*/ (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == user).ToList();
+            //             foreach(var o in orders)
+            //             {
+            //                 o.WaiterName = otherUser.Username;
+            //             }
+            //}
+            //         else
+            //         {
+            //             var order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+            //             if (order != null)
+            //                 order.WaiterName = otherUser.Username;
+            //         }
+            //         _dbContext.SaveChanges();
+
+            //         return Json(new { status = 0 });
         }
 
-		[HttpPost]
+        [HttpPost]
 		public JsonResult GetOrderItems(long orderId, int dividerId = 0)
 		{
             var response = new GetOrderItemResponse();
@@ -1604,8 +1623,11 @@ namespace AuroraPOS.Controllers
         }
 
         [HttpPost]
-		public JsonResult AddProductToOrderItem(AddItemModel model)
-		{
+        public JsonResult AddProductToOrderItem(AddItemModel model)
+        {
+
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.MenuSelect).ThenInclude(s => s.Groups).FirstOrDefault(s => s.ID == stationID);
 			
@@ -1696,7 +1718,7 @@ namespace AuroraPOS.Controllers
             else
 			{
                 var nItem = new OrderItem();
-                nItem.ForceDate = getCurrentWorkDate();                
+                nItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                 nItem.Order = order;
                 nItem.MenuProductID = model.MenuProductId;
                 nItem.Price = product.Price[priceSelect - 1];
@@ -2309,12 +2331,16 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult ChangePaymentType(long transaction, string paymenttype)
         {
+
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+            var stationID = int.Parse(GetCookieValue("StationID"));
             var objTransaction = _dbContext.OrderTransactions.FirstOrDefault(s => s.ID == transaction);
             var method = _dbContext.PaymentMethods.FirstOrDefault(s => s.Name == paymenttype);
 
             objTransaction.Method = method.Name;
             objTransaction.PaymentType = method.PaymentType;
-            objTransaction.ForceDate = getCurrentWorkDate();
+            objTransaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             objTransaction.ForceUpdatedBy = objTransaction.CreatedBy;
 
             _dbContext.SaveChanges();
@@ -2468,7 +2494,7 @@ namespace AuroraPOS.Controllers
 						{
 							item.Status = OrderItemStatus.Kitchen;
                             objPOSCore.SendKitchenItem(order.ID, item.ID);
-							item.ForceDate = getCurrentWorkDate();
+							item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
 							kichenItems.Add(item);
 							if (item.Product.InventoryCountDownActive)
@@ -2645,6 +2671,7 @@ namespace AuroraPOS.Controllers
         [HttpPost]
 		public JsonResult AddQuestionToItem([FromQuery]long ItemId, [FromQuery] long servingSizeID, [FromBody]List<AddQuestionModel> questions)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.MenuSelect).ThenInclude(s => s.Groups).FirstOrDefault(s => s.ID == stationID);
 
@@ -2996,9 +3023,9 @@ namespace AuroraPOS.Controllers
 
                             }
 
-                            orderItem.ForceDate = getCurrentWorkDate();
+                            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
-                            _dbContext.SaveChanges();
+                        _dbContext.SaveChanges();
                         }
                     }
             
@@ -3305,8 +3332,11 @@ namespace AuroraPOS.Controllers
         [HttpPost]
 		public JsonResult HoldOrderItem([FromBody]HoldItemModel model)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var orderItem = _dbContext.OrderItems.Include(s => s.Product).FirstOrDefault(o => o.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             if (model.Type == 1)
 			{
 				orderItem.Status = OrderItemStatus.HoldManually;
@@ -3328,10 +3358,12 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult ReorderItem([FromBody] ReorderModel model)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
             var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s => s.Order).Include(s => s.Product).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Questions).ThenInclude(s=>s.Answer).Include(s=>s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
 
             var nItem = new OrderItem();
-            nItem.ForceDate = getCurrentWorkDate();
+            nItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             nItem.Order = orderItem.Order;
             nItem.Price = orderItem.Price;
             nItem.OriginalPrice = orderItem.OriginalPrice;
@@ -3481,15 +3513,18 @@ namespace AuroraPOS.Controllers
 
         private void VoidItem(CancelItemModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
             if (orderItem.Status == OrderItemStatus.Kitchen || orderItem.Status == OrderItemStatus.Printed)
             {
                 var cancelReason = _dbContext.CancelReasons.FirstOrDefault(s => s.ID == model.ReasonId);
                 var cancelItem = new CanceledOrderItem()
                 {
-                    ForceDate = getCurrentWorkDate(),
+                    ForceDate = objPOSCore.getCurrentWorkDate(stationID),
                     Item = orderItem,
                     Reason = cancelReason,
                     Product = orderItem.Product
@@ -3537,8 +3572,11 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult VoidOrderItem([FromBody] CancelItemModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
             if (orderItem == null)
                 return Json(new { status = 1 });
@@ -3646,9 +3684,12 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult ChangeQtyItem([FromBody] QtyChangeModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var orderItem = _dbContext.OrderItems.Include(s => s.Questions).Include(s=>s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s=>s.Order).ThenInclude(s=>s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
             var orderId = orderItem.Order.ID;
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             if (orderItem.Status == OrderItemStatus.Pending || orderItem.Status == OrderItemStatus.Printed)
             {
 				orderItem.Qty = model.Qty;
@@ -3687,11 +3728,14 @@ namespace AuroraPOS.Controllers
         [HttpPost]
 		public JsonResult FireOrderItem([FromBody] FireItemModel model)
 		{
-			var orderItem = _dbContext.OrderItems.Include(s=>s.Product).Include(s=>s.Questions).Include(s => s.Order).ThenInclude(s=>s.Items).FirstOrDefault(o => o.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
-
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var stationID = int.Parse(GetCookieValue("StationID"));
+
+            var orderItem = _dbContext.OrderItems.Include(s=>s.Product).Include(s=>s.Questions).Include(s => s.Order).ThenInclude(s=>s.Items).FirstOrDefault(o => o.ID == model.ItemId);
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+
+            //var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            //var stationID = int.Parse(GetCookieValue("StationID"));
 
             orderItem.Status = OrderItemStatus.Kitchen;
             objPOSCore.SendKitchenItem(orderItem.Order.ID, orderItem.ID);
@@ -3873,9 +3917,10 @@ namespace AuroraPOS.Controllers
 		public JsonResult MoveItemToAnotherTable([FromBody] MoveToTableModel model)
 		{
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
             var orderItem = _dbContext.OrderItems.Include(s=>s.Product).Include(s=>s.Questions).ThenInclude(s=>s.Answer).Include(s=>s.Taxes).Include(s=>s.Propinas).Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             if (orderItem != null)
             {
                 var nItem = orderItem.CopyThis();
@@ -3964,7 +4009,7 @@ namespace AuroraPOS.Controllers
 						}
 					}
 
-					var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+					//var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
                     var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
                     var nOrder = new Order();
@@ -4133,8 +4178,11 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult MoveSeatItem([FromBody] MoveToSeatModel model)
 		{
-			var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s=>s.Order).ThenInclude(s=>s.Seats).ThenInclude(s=>s.Items).FirstOrDefault(s => s.ID == model.ItemId);
-            orderItem.ForceDate = getCurrentWorkDate();
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
+            var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s=>s.Order).ThenInclude(s=>s.Seats).ThenInclude(s=>s.Items).FirstOrDefault(s => s.ID == model.ItemId);
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
             var currentSeat = orderItem.Order.Seats.FirstOrDefault(s => s.SeatNum == orderItem.SeatNum);
 			var moveSeat = orderItem.Order.Seats.FirstOrDefault(s => s.SeatNum == model.SeatNum);
@@ -4154,13 +4202,16 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult SeperateItem(long itemId)
 		{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var orderItem = _dbContext.OrderItems.Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Order).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Seats).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s => s.Product).Include(s => s.Questions).ThenInclude(s=>s.Answer).Include(s=>s.Discounts).FirstOrDefault(o => o.ID == itemId);
             SeatItem seat = null;
 			var qty = orderItem.Qty;
             if (qty <= 1) return Json(new { status = 0 });
             orderItem.Qty = 1;
             orderItem.SubTotal = orderItem.Price;
-            orderItem.ForceDate = getCurrentWorkDate();
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
 
             qty -= 1;
             while (qty > 0)
@@ -4652,8 +4703,11 @@ namespace AuroraPOS.Controllers
             }
 			else if (model.Type == "OrderItem")
 			{
-				var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.TargetId);
-                orderItem.ForceDate = getCurrentWorkDate();
+                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+                var stationID = int.Parse(GetCookieValue("StationID"));
+
+                var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.TargetId);
+                orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                 var isPromotion = orderItem.Order.CheckPromotion();
                 var isOrderDiscount = orderItem.Order.Discounts != null && orderItem.Order.Discounts.Count > 0;
                 var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
@@ -4995,6 +5049,9 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult SaveDivideResult([FromQuery] long orderId, [FromQuery] int divideId, [FromBody]List<DivideResultItemModel> items)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Product).Include(s=>s.Items).ThenInclude(s=>s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s=>s.Seats).ThenInclude(s=>s.Items).FirstOrDefault(s=>s.ID == orderId);
             var newItems = new List<OrderItem>();
 
@@ -5009,7 +5066,7 @@ namespace AuroraPOS.Controllers
                 var orderItem = _dbContext.OrderItems.Include(s=>s.Order).Include(s=>s.Product).Include(s=>s.Questions).ThenInclude(s=>s.Answer).Include(s=>s.Discounts).FirstOrDefault(s => s.ID == item.ItemId);
                 
                 var newItem = orderItem.CopyThis();
-                newItem.ForceDate = getCurrentWorkDate();
+                newItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                 newItem.Qty = item.Qty;
                 newItem.DividerNum = item.DivideId;
                 newItem.SeatNum = item.SeatNum;
@@ -5076,7 +5133,8 @@ namespace AuroraPOS.Controllers
 
         public JsonResult PayDone([FromBody] ApplyPayModel model)
         {
-            
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
@@ -5120,7 +5178,7 @@ namespace AuroraPOS.Controllers
                     var items = order.Items.Where(s=>s.SeatNum == model.SeatNum && !s.IsDeleted);
                     foreach(var item in items)
                     {
-                        item.ForceDate = getCurrentWorkDate();
+                        item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                         nOrder.Items.Add(item);
                         Debug.WriteLine(item);
                     }
@@ -5224,7 +5282,7 @@ namespace AuroraPOS.Controllers
                     
                     foreach (var item in items)
                     {
-                        item.ForceDate = getCurrentWorkDate();
+                        item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                         nOrder.Items.Add(item);
                         Debug.WriteLine(item);
                         
@@ -5830,7 +5888,7 @@ namespace AuroraPOS.Controllers
                         order.OrderTime = DateTime.Now;
                         foreach (var item in order.Items)
                         {
-                            item.ForceDate = getCurrentWorkDate();
+                            item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Saved;
@@ -5856,7 +5914,7 @@ namespace AuroraPOS.Controllers
                         order.OrderTime = DateTime.Now;
                         foreach (var item in order.Items)
                         {
-                            item.ForceDate = getCurrentWorkDate();
+                            item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Kitchen;
@@ -5938,8 +5996,8 @@ namespace AuroraPOS.Controllers
                         }
 
                         var transaction = new OrderTransaction();
-                        transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();                        
+                        transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
                         transaction.BeforeBalance = order.Balance;
                         transaction.Difference = Difference;
@@ -5991,8 +6049,8 @@ namespace AuroraPOS.Controllers
                             model.Amount = balance;
                         }
                         var transaction = new OrderTransaction();
-						transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();
+						transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
 						transaction.BeforeBalance = order.Balance;
                         transaction.Difference = Difference;
@@ -6019,7 +6077,7 @@ namespace AuroraPOS.Controllers
                             order.Balance = 0;
                             foreach (var item in items)
                             {
-                                item.ForceDate = getCurrentWorkDate();
+                                item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                                 item.Status = OrderItemStatus.Paid;
                             }
                         }
@@ -6040,8 +6098,8 @@ namespace AuroraPOS.Controllers
                         }
                         order.TotalPrice = model.Amount;
                         var transaction = new OrderTransaction();
-						transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();
+						transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
                         transaction.Difference = Difference;
                         transaction.BeforeBalance = order.Balance;
@@ -6068,7 +6126,7 @@ namespace AuroraPOS.Controllers
 
                             foreach (var item in order.Items)
                             {
-                                item.ForceDate = getCurrentWorkDate();
+                                item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                                 item.Status = OrderItemStatus.Paid;
                             }
                         }
@@ -6141,7 +6199,7 @@ namespace AuroraPOS.Controllers
                         order.OrderTime = DateTime.Now;
                         foreach (var item in order.Items)
                         {
-                            item.ForceDate = getCurrentWorkDate();
+                            item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Saved;
@@ -6166,7 +6224,7 @@ namespace AuroraPOS.Controllers
                         order.OrderTime = DateTime.Now;
                         foreach (var item in order.Items)
                         {
-                            item.ForceDate = getCurrentWorkDate();
+                            item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                             if (item.Status == OrderItemStatus.Pending || item.Status == OrderItemStatus.Printed)
                             {
                                 item.Status = OrderItemStatus.Kitchen;
@@ -6212,8 +6270,8 @@ namespace AuroraPOS.Controllers
                         }
 
                         var transaction = new OrderTransaction();
-                        transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();
+                        transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
                         transaction.BeforeBalance = order.Balance;
                         transaction.Difference = Difference;
@@ -6266,8 +6324,8 @@ namespace AuroraPOS.Controllers
                             model.Amount = balance;
                         }
                         var transaction = new OrderTransaction();
-                        transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();
+                        transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
                         transaction.BeforeBalance = order.Balance;
                         transaction.Difference = Difference;
@@ -6295,7 +6353,7 @@ namespace AuroraPOS.Controllers
                             order.Balance = 0;
                             foreach (var item in items)
                             {
-                                item.ForceDate = getCurrentWorkDate();
+                                item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                                 item.Status = OrderItemStatus.Paid;
                             }
                         }
@@ -6315,8 +6373,8 @@ namespace AuroraPOS.Controllers
                             model.Amount = model.Amount;
                         }
                         var transaction = new OrderTransaction();
-                        transaction.ForceDate = getCurrentWorkDate();
-                        transaction.PaymentDate = getCurrentWorkDate();
+                        transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                        transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                         transaction.Amount = model.Amount;
                         transaction.Difference = Difference;
                         transaction.BeforeBalance = order.Balance;
@@ -6344,7 +6402,7 @@ namespace AuroraPOS.Controllers
 
                             foreach (var item in order.Items)
                             {
-                                item.ForceDate = getCurrentWorkDate();
+                                item.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
                                 item.Status = OrderItemStatus.Paid;
                             }
                         }
@@ -6366,6 +6424,9 @@ namespace AuroraPOS.Controllers
         }
         public JsonResult PayTip([FromBody] ApplyTipModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.ID == model.OrderId);
             if (model.Amount <= 0 || order.OrderMode == OrderMode.Conduce)
             {
@@ -6389,8 +6450,8 @@ namespace AuroraPOS.Controllers
                 model.Amount = model.Amount * method.Tasa;
 
                 var transaction = new OrderTransaction();
-                transaction.ForceDate = getCurrentWorkDate();
-                transaction.PaymentDate = getCurrentWorkDate();
+                transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = model.Amount;
                 transaction.BeforeBalance = order.Balance;
                 transaction.AfterBalance = order.Balance;
@@ -6415,6 +6476,9 @@ namespace AuroraPOS.Controllers
 
         public JsonResult PayRefund([FromBody] ApplyTipModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
             var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.ID == model.OrderId);
 
             if (model.Amount <= 0)
@@ -6445,8 +6509,8 @@ namespace AuroraPOS.Controllers
                 model.Amount = model.Amount * method.Tasa;
 
                 var transaction = new OrderTransaction();
-                transaction.ForceDate = getCurrentWorkDate();
-                transaction.PaymentDate = getCurrentWorkDate();
+                transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = -model.Amount;
                 transaction.BeforeBalance = order.Balance;
                 transaction.AfterBalance = order.Balance + model.Amount;
@@ -6616,7 +6680,8 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult SubmitCloseDrawer([FromBody] CloseDrawerModel model)
         {
-			var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
 			var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
 			var user = User.Identity.GetName();
@@ -6679,19 +6744,19 @@ namespace AuroraPOS.Controllers
 			foreach (var t in transactions)
             {
                 t.Status = TransactionStatus.Closed;
-                t.ForceDate = getCurrentWorkDate();
+                t.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             }
             foreach(var t in tipTransactions)
             {
                 t.Status = TransactionStatus.Closed;
-                t.ForceDate = getCurrentWorkDate();
+                t.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
             }
 
             if (model.Difference > 0)
             {
 				var transaction = new OrderTransaction();
-				transaction.ForceDate = getCurrentWorkDate();
-                transaction.PaymentDate = getCurrentWorkDate();
+				transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = model.Difference;
 				transaction.BeforeBalance = 0;
 				transaction.AfterBalance = 0;
@@ -6710,8 +6775,8 @@ namespace AuroraPOS.Controllers
             {
 				var transaction = new OrderTransaction();
                 //transaction.PaymentDate = DateTime.Now;
-                transaction.ForceDate = getCurrentWorkDate();
-                transaction.PaymentDate = getCurrentWorkDate();
+                transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = model.TipDifference;
 				transaction.BeforeBalance = 0;
 				transaction.AfterBalance = 0;
@@ -6728,7 +6793,7 @@ namespace AuroraPOS.Controllers
             {
                 var closeDrawer = new CloseDrawer()
                 {
-                    ForceDate = getCurrentWorkDate(),
+                    ForceDate = objPOSCore.getCurrentWorkDate(stationID),
                     Username = printModel.UserName,
                     GrandTotal = printModel.GrandTotal,
                     TransDifference = printModel.TransDifference,
@@ -6751,6 +6816,7 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult SubmitCloseDrawerBarcode([FromBody] CloseDrawerModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
@@ -6824,8 +6890,8 @@ namespace AuroraPOS.Controllers
             {
                 var transaction = new OrderTransaction();
                 //transaction.PaymentDate = DateTime.Now;
-                transaction.ForceDate = getCurrentWorkDate();
-                transaction.PaymentDate = getCurrentWorkDate();
+                transaction.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = model.Difference;
                 transaction.BeforeBalance = 0;
                 transaction.AfterBalance = 0;
@@ -6844,7 +6910,7 @@ namespace AuroraPOS.Controllers
             {
                 var transaction = new OrderTransaction();
                 //transaction.PaymentDate = DateTime.Now;
-                transaction.PaymentDate = getCurrentWorkDate();
+                transaction.PaymentDate = objPOSCore.getCurrentWorkDate(stationID);
                 transaction.Amount = model.TipDifference;
                 transaction.BeforeBalance = 0;
                 transaction.AfterBalance = 0;
@@ -6861,7 +6927,7 @@ namespace AuroraPOS.Controllers
             {
                 var closeDrawer = new CloseDrawer()
                 {
-                    ForceDate = getCurrentWorkDate(),
+                    ForceDate = objPOSCore.getCurrentWorkDate(stationID),
                     Username = printModel.UserName,
                     GrandTotal = printModel.GrandTotal,
                     TransDifference = printModel.TransDifference,
@@ -6885,134 +6951,138 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult MoveTable([FromBody] MoveTableModel model)
         {
-            if (model.FromTableId == model.ToTableId)
-            {
-                return Json(new { status = 1 });
-            }
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            int status = objPOSCore.MoveTable(model);
 
-            var srcTable = _dbContext.AreaObjects.Include(s=>s.Area).FirstOrDefault(s => s.ID == model.FromTableId);
-            var targetTable = _dbContext.AreaObjects.Include(s=>s.Area).FirstOrDefault(s => s.ID == model.ToTableId);
+            return Json(new { status });
+            //         if (model.FromTableId == model.ToTableId)
+            //         {
+            //             return Json(new { status = 1 });
+            //         }
 
-            var order = _dbContext.Orders.Include(s=>s.Table).Include(s => s.Items).ThenInclude(s=>s.Product).Include(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s=>s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s=>s.Discounts).Include(s=>s.Seats).ThenInclude(s=>s.Items).FirstOrDefault(s => s.Table == srcTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
-            var targetOrder = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s=>s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.Table == targetTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
+            //         var srcTable = _dbContext.AreaObjects.Include(s=>s.Area).FirstOrDefault(s => s.ID == model.FromTableId);
+            //         var targetTable = _dbContext.AreaObjects.Include(s=>s.Area).FirstOrDefault(s => s.ID == model.ToTableId);
 
-			if (targetOrder == null)
-            {
-                order.Table = targetTable;
-                order.Area = targetTable.Area;
-                _dbContext.SaveChanges();
-            }
-            else
-            {
-                if (targetOrder.OrderMode == OrderMode.Seat)
-                {
-                    if (order.OrderMode == OrderMode.Seat)
-                    {
-                        var emptySeat = 0;
-                        var seatNums = new List<int>();
-                        foreach (var item in targetOrder.Seats)
-                        {
-                            if (!seatNums.Contains(item.SeatNum))
-                                seatNums.Add(item.SeatNum);
-                        }
-                        for (int i = 1; i < seatNums.Max(); i++)
-                        {
-                            if (!seatNums.Contains(i))
-                            {
-                                emptySeat = i;
-                                break;
-                            }
-                        }
-                        if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
+            //         var order = _dbContext.Orders.Include(s=>s.Table).Include(s => s.Items).ThenInclude(s=>s.Product).Include(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s=>s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s=>s.Discounts).Include(s=>s.Seats).ThenInclude(s=>s.Items).FirstOrDefault(s => s.Table == srcTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
+            //         var targetOrder = _dbContext.Orders.Include(s => s.Table).Include(s => s.Items).ThenInclude(s => s.Product).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).ThenInclude(s=>s.Answer).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats).ThenInclude(s => s.Items).FirstOrDefault(s => s.Table == targetTable && s.OrderType == OrderType.DiningRoom && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved);
 
-                        foreach (var seat in order.Seats)
-						{
-                            if (seat.Items == null || seat.Items.Count == 0) continue;
-							foreach (var item in seat.Items)
-							{
-								item.SeatNum = emptySeat;
-							}
-							seat.SeatNum = emptySeat;
+            //if (targetOrder == null)
+            //         {
+            //             order.Table = targetTable;
+            //             order.Area = targetTable.Area;
+            //             _dbContext.SaveChanges();
+            //         }
+            //         else
+            //         {
+            //             if (targetOrder.OrderMode == OrderMode.Seat)
+            //             {
+            //                 if (order.OrderMode == OrderMode.Seat)
+            //                 {
+            //                     var emptySeat = 0;
+            //                     var seatNums = new List<int>();
+            //                     foreach (var item in targetOrder.Seats)
+            //                     {
+            //                         if (!seatNums.Contains(item.SeatNum))
+            //                             seatNums.Add(item.SeatNum);
+            //                     }
+            //                     for (int i = 1; i < seatNums.Max(); i++)
+            //                     {
+            //                         if (!seatNums.Contains(i))
+            //                         {
+            //                             emptySeat = i;
+            //                             break;
+            //                         }
+            //                     }
+            //                     if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
 
-							targetOrder.Seats.Add(seat);
-                            emptySeat++;
-						}
-                        var index = 1;
-                        foreach(var seat in targetOrder.Seats)
-                        {
-                            seat.SeatNum = index;
-                            foreach(var item in seat.Items)
-                            {
-                                item.SeatNum = index;
-                            }
+            //                     foreach (var seat in order.Seats)
+            //			{
+            //                         if (seat.Items == null || seat.Items.Count == 0) continue;
+            //				foreach (var item in seat.Items)
+            //				{
+            //					item.SeatNum = emptySeat;
+            //				}
+            //				seat.SeatNum = emptySeat;
 
-                            index++;
-                        }
+            //				targetOrder.Seats.Add(seat);
+            //                         emptySeat++;
+            //			}
+            //                     var index = 1;
+            //                     foreach(var seat in targetOrder.Seats)
+            //                     {
+            //                         seat.SeatNum = index;
+            //                         foreach(var item in seat.Items)
+            //                         {
+            //                             item.SeatNum = index;
+            //                         }
 
-						foreach (var item in order.Items)
-						{
-							targetOrder.Items.Add(item);
-						}
-					}
-                    else
-                    {
-						var emptySeat = 0;
-						var seatNums = new List<int>();
-						foreach (var item in targetOrder.Items)
-						{
-							seatNums.Add(item.SeatNum);
-						}
-						for (int i = 1; i < seatNums.Max(); i++)
-						{
-							if (!seatNums.Contains(i))
-							{
-								emptySeat = i;
-								break;
-							}
-						}
-						if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
-						var nseat = new SeatItem() { SeatNum = emptySeat, Items = new List<OrderItem>() };
-						foreach (var item in order.Items)
-						{
-                            item.SeatNum = emptySeat;
-							targetOrder.Items.Add(item);
-                            nseat.Items.Add(item);
-						}
-						
-                        targetOrder.Seats.Add(nseat);
-					}                    			
-				}
-                else if (targetOrder.OrderMode == OrderMode.Divide)
-                {
-                    foreach(var item in order.Items)
-                    {
-                        if (item.Status == OrderItemStatus.Paid) continue;
-                        item.DividerNum = 1;
-                        targetOrder.Items.Add(item.CopyThis());
-                    }
-                }
-                else
-                {
-                    foreach (var item in order.Items)
-                    {
-						if (item.Status == OrderItemStatus.Paid) continue;
-						targetOrder.Items.Add(item.CopyThis());
-                    }
-				}
+            //                         index++;
+            //                     }
 
-                order.Status = OrderStatus.Moved;
+            //			foreach (var item in order.Items)
+            //			{
+            //				targetOrder.Items.Add(item);
+            //			}
+            //		}
+            //                 else
+            //                 {
+            //			var emptySeat = 0;
+            //			var seatNums = new List<int>();
+            //			foreach (var item in targetOrder.Items)
+            //			{
+            //				seatNums.Add(item.SeatNum);
+            //			}
+            //			for (int i = 1; i < seatNums.Max(); i++)
+            //			{
+            //				if (!seatNums.Contains(i))
+            //				{
+            //					emptySeat = i;
+            //					break;
+            //				}
+            //			}
+            //			if (emptySeat == 0) emptySeat = seatNums.Max() + 1;
+            //			var nseat = new SeatItem() { SeatNum = emptySeat, Items = new List<OrderItem>() };
+            //			foreach (var item in order.Items)
+            //			{
+            //                         item.SeatNum = emptySeat;
+            //				targetOrder.Items.Add(item);
+            //                         nseat.Items.Add(item);
+            //			}
 
-                _dbContext.SaveChanges();
-                var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == targetOrder.ComprobantesID);
-                targetOrder.GetTotalPrice(voucher);
+            //                     targetOrder.Seats.Add(nseat);
+            //		}                    			
+            //	}
+            //             else if (targetOrder.OrderMode == OrderMode.Divide)
+            //             {
+            //                 foreach(var item in order.Items)
+            //                 {
+            //                     if (item.Status == OrderItemStatus.Paid) continue;
+            //                     item.DividerNum = 1;
+            //                     targetOrder.Items.Add(item.CopyThis());
+            //                 }
+            //             }
+            //             else
+            //             {
+            //                 foreach (var item in order.Items)
+            //                 {
+            //			if (item.Status == OrderItemStatus.Paid) continue;
+            //			targetOrder.Items.Add(item.CopyThis());
+            //                 }
+            //	}
 
-                _dbContext.SaveChanges();
-            }
+            //             order.Status = OrderStatus.Moved;
 
-			return Json(new { status = 0 });
+            //             _dbContext.SaveChanges();
+            //             var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == targetOrder.ComprobantesID);
+            //             targetOrder.GetTotalPrice(voucher);
+
+            //             _dbContext.SaveChanges();
+            //         }
+
+            //return Json(new { status = 0 });
         }
 
-		[HttpPost]
+        [HttpPost]
 		public IActionResult GetOrderList(long areaId, string from, string to, long cliente=0, long orden=0, decimal monto=0, int branch = 0)
 		{
 			try
@@ -7624,21 +7694,37 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult RePrintOrder(long OrderID)
 		{
-			try
-			{
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+            try
+            {
                 var stationID = int.Parse(GetCookieValue("StationID"));
-                _printService.PrintPaymentSummary(stationID, OrderID, Request.Cookies["db"], 0, 0, true);
-			}
-			catch
-			{
-				return Json(new { status = 1 });
-			}
+                var db = Request.Cookies["db"];
 
-			return Json(new { status = 0 });
-		}
+                int status = objPOSCore.ReprintOrder(OrderID, stationID, db);
+
+            }
+            catch
+            {
+                return Json(new { status = 1 });
+            }
+
+            return Json(new { status = 0 });
+            //try
+            //{
+            //             var stationID = int.Parse(GetCookieValue("StationID"));
+            //             _printService.PrintPaymentSummary(stationID, OrderID, Request.Cookies["db"], 0, 0, true);
+            //}
+            //catch
+            //{
+            //	return Json(new { status = 1 });
+            //}
+
+            //return Json(new { status = 0 });
+        }
 
 
-		[HttpPost]
+        [HttpPost]
 		public JsonResult RePrintCxC(long cxcID)
 		{
 			try
@@ -7685,10 +7771,12 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult GetUserWithoutCloseStation()
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             var stationID = int.Parse(GetCookieValue("StationID"));
             var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
 
-            DateTime dtFechaAux = getCurrentWorkDate();
+            DateTime dtFechaAux = objPOSCore.getCurrentWorkDate(stationID);
             DateTime dtFechaInicio = new DateTime(dtFechaAux.Year, dtFechaAux.Month, dtFechaAux.Day, 0, 0, 0);
             DateTime dtFechaFin = dtFechaInicio.AddDays(1).AddSeconds(-1);
 
@@ -7748,17 +7836,17 @@ namespace AuroraPOS.Controllers
             return Json(new {status=1, todos = todosCerrados, usuarios = strUsuarios });
         }
 
-        private DateTime getCurrentWorkDate()
-        {
-            var stationID = int.Parse(GetCookieValue("StationID"));
-            var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+        //private DateTime getCurrentWorkDate()
+        //{
+        //    var stationID = int.Parse(GetCookieValue("StationID"));
+        //    var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
 
-            var objDay = _dbContext.WorkDay.Where(d => d.IsActive == true && d.IDSucursal==objStation.IDSucursal).FirstOrDefault();
+        //    var objDay = _dbContext.WorkDay.Where(d => d.IsActive == true && d.IDSucursal==objStation.IDSucursal).FirstOrDefault();
             
-            DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+        //    DateTime dtNow = new DateTime(objDay.Day.Year, objDay.Day.Month, objDay.Day.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
                         
-            return dtNow;
-        }
+        //    return dtNow;
+        //}
 
         public string GetCookieValue(string key)
         {

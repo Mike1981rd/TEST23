@@ -18,6 +18,7 @@ using System.Security.Claims;
 using AuroraPOS.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
+using iText.Layout.Borders;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -170,9 +171,6 @@ public class POSController : Controller
         return Json(new { status = 1 });
     }
 
-    //preg por qué User.Claims no funciona en POSCore
-    //Y verificar que la ruta Station si da el valor correcto nuevamente, si es que se cambia el uso
-    //de User.Claims
     public bool PermissionChecker(string permission)
     {
 
@@ -1084,5 +1082,380 @@ public class POSController : Controller
         }
     }
 
+    [HttpPost("GetMyOpenOrders")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMyOpenOrders([FromBody] int stationId)
+    {
+        var user = User.Identity.GetUserName();
+        var stationID = stationId;  //HttpContext.Session.GetInt32("StationID");
 
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        GetMyOpenOrdersResponse response = new GetMyOpenOrdersResponse();
+
+        try
+        {
+            List<Order> orders = objPOSCore.GetMyOpenOrders(stationID, user);
+
+            response.Success = true;
+            response.result = orders;
+
+            if(!orders.Any())
+            {
+                response.message = "En este momento no hay ordenes que dar";
+            }
+        }
+        catch(Exception e)
+        {
+            response.Error = e.Message;
+            response.Success = false;
+        }
+
+        return Json(response);
+    }
+
+    [HttpPost("GetPrepareCloseDrawer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetPrepareCloseDrawer(int stationId)
+    {
+        var stationID = stationId;  // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+
+        var user = User.Identity.GetName();
+        var username = User.Identity.GetUserName();
+        var transactions = _dbContext.OrderTransactions.Include(s => s.Order).Where(s => s.UpdatedBy == user && (s.Type == TransactionType.Payment || s.Type == TransactionType.Refund) && /*s.Order.Station == station &&*/ s.Status == TransactionStatus.Open).ToList();
+
+        var tipTransactions = _dbContext.OrderTransactions.Include(s => s.Order).Where(s => s.UpdatedBy == user && s.Type == TransactionType.Tip && /*s.Order.Station == station &&*/ s.Status == TransactionStatus.Open).ToList();
+        var orders = _dbContext.Orders.Include(s => s.Area).Include(s => s.Table).Where(s => s.Station == station && (s.OrderType == OrderType.DiningRoom || s.OrderType == OrderType.Delivery) && s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.WaiterName == username && s.TotalPrice > 0).ToList();
+
+        GetPrepareCloseDrawerResponse response = new GetPrepareCloseDrawerResponse();
+
+        if (orders.Count > 0)
+        {
+            response.status = 2;
+            response.resultOrders = orders;
+            response.message = "Existen ordenes";
+
+            return Json(response);
+        }
+        decimal total = 0;
+        var lstEsperadoTipoPago = new List<PaymentMethodSummary>();
+        if (transactions.Count > 0)
+        {
+            total = transactions.Sum(s => s.Amount);
+
+            var paymentMethods = _dbContext.PaymentMethods.Where(s => s.IsActive).ToList();
+
+            foreach (var objPaymentMethod in paymentMethods)
+            {
+                decimal totData = 0;
+
+                totData = transactions.Where(s => s.Method == objPaymentMethod.Name).Sum(s => s.Amount);
+                int qty = transactions.Where(s => s.Method == objPaymentMethod.Name).Count();
+                var objData = new KeyValuePair<long, decimal>(objPaymentMethod.ID, totData);
+                bool isMain = false;
+                if (objPaymentMethod.PaymentType == "Effectivo") isMain = true;
+                lstEsperadoTipoPago.Add(new PaymentMethodSummary()
+                {
+                    ID = objPaymentMethod.ID,
+                    Qty = qty,
+                    Total = totData
+                });
+            }
+
+
+        }
+        decimal tiptotal = 0;
+        if (tipTransactions.Count > 0)
+        {
+            tiptotal = tipTransactions.Sum(s => s.Amount);
+        }
+
+        long id = 0;
+        var latest = _dbContext.CloseDrawers.OrderByDescending(s => s.ID).FirstOrDefault();
+        if (latest != null)
+        {
+            id = latest.ID + 1;
+        }
+
+        response.status = 0;
+        response.name = user;
+        response.expected = total;
+        response.sequance = id;
+        response.expectedtip = tiptotal;
+        response.resultExpectedPayments = lstEsperadoTipoPago;
+       
+        return Json(response);
+    }
+
+    //
+    [HttpPost("GetReservationList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public IActionResult GetReservationList([FromBody] GetReservationListRequest request)
+    {
+        GetReservationListResponse response = new GetReservationListResponse();
+
+        try
+        {
+            var stationID = request.stationId; // HttpContext.Session.GetInt32("StationID");
+            var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+
+            var draw = request.draw;
+            // Skiping number of Rows count  
+            var start = request.start;
+            // Paging Length 10,20  
+            var length = request.length;
+            // Sort Column Name  
+            var sortColumn = request.sortColumn;
+            // Sort Column Direction ( asc ,desc)  
+            var sortColumnDirection = request.sortColumnDirection;
+            // Search Value from (Search box)  
+            var searchValue = request.searchValue;
+
+            //Paging Size (10,20,50,100)  
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+            int recordsTotal = 0;
+            var area = _dbContext.Areas.FirstOrDefault(s => s.ID == request.areaId);
+            //var passedReservations = _dbContext.Reservations.AsEnumerable().Where(s => s.ReservationTime < DateTime.Now).ToList();
+            //foreach (var p in passedReservations)
+            //{
+            //	p.Status = ReservationStatus.Done;
+            //}
+            //_dbContext.SaveChanges();
+            // Getting all Customer data  
+            var customerData = _dbContext.Reservations.AsEnumerable().Where(s => s.AreaID == request.areaId && s.Status != ReservationStatus.Canceled && s.Status != ReservationStatus.Arrived && s.ReservationTime > DateTime.Now).OrderBy(s => s.ReservationTime).Select(s => new
+            {
+                ID = s.ID,
+                ReservationDate = s.ReservationTime.ToString("MM/dd/yyyy"),
+                ReservationTime = s.ReservationTime.ToString("HH:mm"),
+                Status = s.Status,
+                Duration = s.Duration,
+                GuestName = s.GuestName,
+                PhoneNumber = s.PhoneNumber,
+                Comments = s.Comments,
+                TableName = s.TableName
+            });
+
+            //total number of rows count   
+            recordsTotal = customerData.Count();
+            //Paging   
+            var data = customerData.Skip(skip).ToList();
+            if (pageSize != -1)
+            {
+                data = data.Take(pageSize).ToList();
+            }
+
+            //Mapear elementos para su envío utilizando la clase CustomerData, creada a partir de la información que se extrae en la query de CustomerData
+            List<CustomerData> cData = new List<CustomerData>();
+            foreach(var cd in data)
+            {
+                CustomerData d = new CustomerData();
+                d.ID = cd.ID;
+                d.ReservationDate = cd.ReservationDate;
+                d.ReservationTime = cd.ReservationTime;
+                d.Status = cd.Status;
+                d.Duration = cd.Duration;
+                d.GuestName = cd.GuestName;
+                d.PhoneNumber = cd.PhoneNumber;
+                d.Comments = cd.Comments;
+                d.TableName = cd.TableName;
+
+                cData.Add(d);
+            }
+
+
+            response.Success = true;
+            response.draw = draw;
+            response.recordsFiltered = recordsTotal;
+            response.recordsTotal = recordsTotal;
+            response.data = cData;
+
+            //Returning Json Data  
+            return Json(response);
+
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Error = ex.Message;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("GetUserWithoutCloseStation")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetUserWithoutCloseStation(int stationId)
+    {
+        var stationID = stationId;
+        var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+
+        GetUserWithoutCloseStationResponse response = new GetUserWithoutCloseStationResponse();
+
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+        DateTime dtFechaAux = objPOSCore.getCurrentWorkDate(stationId);
+        DateTime dtFechaInicio = new DateTime(dtFechaAux.Year, dtFechaAux.Month, dtFechaAux.Day, 0, 0, 0);
+        DateTime dtFechaFin = dtFechaInicio.AddDays(1).AddSeconds(-1);
+
+        var orders = _dbContext.OrderItems.Include(s => s.Order).Include(s => s.Order.Station).Where(s => (s.Status == OrderItemStatus.Paid || s.Status == OrderItemStatus.Kitchen) && s.UpdatedDate >= dtFechaInicio && s.UpdatedDate <= dtFechaFin && s.Order.Station.IDSucursal == objStation.IDSucursal).ToList();
+
+        var lstUsuarios =
+                (from o in orders
+                 group o by o.CreatedBy into newGroup
+                 select newGroup.Key).ToList();
+
+        string strUsuarios = "";
+        bool todosCerrados = true;
+
+        foreach (var objUsuario in lstUsuarios)
+        {
+
+            var transactions = _dbContext.OrderTransactions.Include(s => s.Order).Include(s => s.Order.Station).Where(s => s.UpdatedBy == objUsuario && (s.Type == TransactionType.Payment || s.Type == TransactionType.Refund) && s.Order.Station.IDSucursal == objStation.IDSucursal && s.Status == TransactionStatus.Open).ToList();
+            decimal total = 0;
+            if (transactions.Count > 0)
+            {
+                total = transactions.Sum(s => s.Amount);
+            }
+
+            if (total > 0)
+            {
+                if (!string.IsNullOrEmpty(strUsuarios))
+                {
+                    strUsuarios = strUsuarios + ", ";
+                }
+
+                strUsuarios = strUsuarios + objUsuario;
+                todosCerrados = false;
+            }
+        }
+
+        var ordersOpen = _dbContext.Orders.Include(s => s.Table).Include(s => s.Station).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).ThenInclude(s => s.ServingSizes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).ThenInclude(s => s.Answer).Where(s => s.Status != OrderStatus.Paid && s.Status != OrderStatus.Temp && s.Status != OrderStatus.Void && s.Status != OrderStatus.Moved && s.TotalPrice > 0 && s.Station.IDSucursal == objStation.IDSucursal).ToList();
+
+        if (ordersOpen.Any())
+        {
+            response.status = 2;
+            response.ordersOpen = ordersOpen;
+
+            return Json(response);
+
+        }
+
+
+        response.status = 1;
+        response.todos = todosCerrados;
+        response.usuarios = strUsuarios;
+
+        return Json(response);
+    }
+
+    //
+    [HttpPost("GetConduceOrders")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetConduceOrders([FromBody] ConduceOrderRequest request)
+    {
+        GetConduceOrdersResponse response = new GetConduceOrdersResponse();
+
+        try
+        {
+            var orders = _dbContext.Orders.Where(s => s.IsConduce && s.CustomerId == request.CustomerId & s.OrderType == request.Type).OrderBy(s => s.OrderTime).ToList();
+
+            response.Success = true;
+            response.result = orders;
+
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Error = e.Message;
+
+            return Json(response);
+        }
+
+    }
+
+    [HttpPost("MoveTable")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult MoveTable([FromBody] MoveTableModel model)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        MoveTableResponse response = new MoveTableResponse();
+
+        try
+        {
+            int status = objPOSCore.MoveTable(model);
+
+            response.Success = true;
+            response.status = status;
+            
+            if (status == 1) 
+                response.Message = "Se intentó mover a la misma mesa";
+            else 
+                response.Message = "Mesa movida correctamente";
+
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error al realizar la operación: " + e.Message;
+
+            return Json(response);
+        }
+
+    }
+
+    [HttpPost("GiveOrder")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GiveOrder([FromBody] GiveOrderRequest request)
+    {
+        GiveOrderResponse response = new GiveOrderResponse();
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+        try
+        {
+            var user = User.Identity.GetUserName();
+
+            int status = objPOSCore.GiveOrder(request.orderId, request.userId, request.stationId, user);
+            response.Success = true;
+            response.status = status;
+            response.Message = "La solicitud se realizó exitosamente.";
+            
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = "Ocurrió un error en la solicitud: " + e.Message;
+
+            return Json(response);
+        }
+    }
+
+    [HttpPost("RePrintOrder")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult RePrintOrder([FromBody]RePrintOrderRequest request)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        RePrintOrderResponse response = new RePrintOrderResponse();
+
+        try
+        {
+            int status = objPOSCore.ReprintOrder(request.orderId, request.stationId, request.db);
+
+            response.Success = true;
+            response.status = status;
+            response.Message = "La consulta se realizó correctamente";
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.status = 1;
+            response.Message = "Hubo un error durante la consulta: " + e.Message;
+            return Json(new { status = 1 });
+        }
+
+        return Json(response);
+    }
 }
