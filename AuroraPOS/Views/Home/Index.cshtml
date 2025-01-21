@@ -1,287 +1,519 @@
-﻿@using Microsoft.AspNetCore.Authorization
+﻿@using AuroraPOS.Controllers
+@using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 @{
 	ViewData["Title"] = "Home Page";
 	var branchs = (List<t_sucursal>)ViewBag.Branchs;
 	var fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 	var toDate = DateTime.Today;
+	var topProducts = (List<TopSaleProductModel>)ViewBag.TopProducts;
 }
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Button trigger modal -->
-
-<div class="card-widget-separator-wrapper">
-	<div class="card col-12 m-2">
-        <div class="card-body">
-            @*<div class="row">
-                <div class="col-12">
-                    <button id="btn-hoy" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('today');">Hoy</button>
-                    <button id="btn-ayer" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('yesterday');">Ayer</button>
-                    <button id="btn-ultimos-7-dias" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('last7days');">Ultimos 7 dias</button>
-                    <button id="btn-ultimo-mes" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('lastmonth');">Ultimo mes</button>
-                </div>
-            </div>*@
-                <div class="row">
-				<div class="col-sm-6 col-lg-4">
-
-					<label for="html5-date-input" class="col-md-3 col-form-label">@ViewLocalizer["Rango de fechas"]</label>
-					<select id="date-range-selector" class="select2 form-select">
-                                <option value="">Selecciona una fecha</option>
-                                <option value="today">Hoy</option>
-                                <option value="yesterday">Ayer</option>
-                                <option value="last7days">Últimos 7 días</option>
-                                <option value="last30days">Últimos 30 días</option>
-                                <option value="last90days">Últimos 90 días</option>
-                                <option value="last365days">Últimos 365 días</option>
-                                <option value="lastmonth">Mes pasado</option>
-                            </select>
-                       
-                    </div>
-				<div class="col-sm-6 col-lg-4">
-                         
-						<label for="html5-date-input" class="col-md-2 col-form-label">@ViewLocalizer["Date From"]</label>
-					<div class="col-md-10">
-						<input id="dashboard_filter_datefrom" class="form-control" type="date" placeholder="@ViewLocalizer["Choose Date"]" />
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row g-6">
+		@* Fechas *@
+		<div class="col-xxl-6">
+			<div class="card h-100">
+				<div class="card-header d-flex align-items-center justify-content-between">
+					<div class="card-title mb-0">
+						<h5 class="m-0 me-2">Rango de Fechas</h5>
 					</div>
-                          @*   <input  type="text" class="datetimepicker cal-icon" > *@
-                     
-                    </div>
-				<div class="col-sm-6 col-lg-4">
-                        
-						<label for="html5-date-input" class="col-md-2 col-form-label">@ViewLocalizer["Date To"]</label>
-					<div class="col-md-10">
-					<input id="dashboard_filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+				</div>
+				<div class="card-body">
+					@*<div class="row">
+						<div class="col-12">
+							<button id="btn-hoy" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('today');">Hoy</button>
+							<button id="btn-ayer" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('yesterday');">Ayer</button>
+							<button id="btn-ultimos-7-dias" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('last7days');">Ultimos 7 dias</button>
+							<button id="btn-ultimo-mes" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('lastmonth');">Ultimo mes</button>
+						</div>
+					</div>*@
+					<div class="row">
+						<div class="col-sm-6 col-lg-4">
+
+							<label for="html5-date-input" class="form-label">@ViewLocalizer["Rango de fechas"]</label>
+							<select id="date-range-selector" class="select2 form-select">
+								<option value="">Selecciona una fecha</option>
+								<option value="today">Hoy</option>
+								<option value="yesterday">Ayer</option>
+								<option value="last7days">Últimos 7 días</option>
+								<option value="last30days">Últimos 30 días</option>
+								<option value="last90days">Últimos 90 días</option>
+								<option value="last365days">Últimos 365 días</option>
+								<option value="lastmonth">Mes pasado</option>
+							</select>
+
+						</div>
+						<div class="col-sm-6 col-lg-4">
+
+							<label for="html5-date-input" class="form-label">@ViewLocalizer["Date From"]</label>
+							<div class="col-md-10">
+								<input id="dashboard_filter_datefrom" class="form-control" type="date" placeholder="@ViewLocalizer["Choose Date"]" />
+							</div>
+							@*   <input  type="text" class="datetimepicker cal-icon" > *@
+
+						</div>
+						<div class="col-sm-6 col-lg-4">
+
+							<label for="html5-date-input" class="form-label">@ViewLocalizer["Date To"]</label>
+							<div class="col-md-10">
+								<input id="dashboard_filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+						</div>
 					</div>
-                    </div>
-                </div>
+				</div>
+			</div>
+		</div>
+		@* /Fechas *@
 
+		@* Total Purchase Amount Card *@
+		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
+		{
+			<div class="col-lg col-sm-6">
+				<div class="card card-border-shadow-warning h-100">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-2">
+							<div class="avatar me-4">
+								<span class="avatar-initial rounded bg-label-warning"><img src="/vendor/img/icons/dash1.svg" alt="img"></span>
+							</div>
+							<h4 class="mb-0 total_purchase"></h4>
+						</div>
+						<p class="mb-1">@ViewLocalizer["Total Purchase Amount"]</p>
+					</div>
+				</div>
+			</div>
+		}
+		@* /Total Purchase Amount Card *@
 
-            </div>
-        </div>
-</div>
-<div class="row">
-	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
-	{
-        <div class="col-md-3 col-xl-2">
-			<div class="card bg-warning text-white">
-				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash1.svg" alt="img"></span></div>
-				<div class="card-body">
-				
-					<h5 class="total_purchase"></h5>
-					<p class="card-text">@ViewLocalizer["Total Purchase Amount"]</p>
+		@* Total Purchase Tax *@
+		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
+		{
+			<div class="col-lg col-sm-6">
+				<div class="card card-border-shadow-success h-100">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-2">
+							<div class="avatar me-4">
+								<span class="avatar-initial rounded bg-label-success"><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
+							</div>
+							<h4 class="mb-0 total_purchase_tax"></h4>
+						</div>
+						<p class="mb-1">@ViewLocalizer["Total Purchase Tax"]</p>
+					</div>
 				</div>
 			</div>
-		</div>
-@* 		<div class="col">
-			<div class="dash-widget" style="background:#FF9F43">
-				<div class="dash-widgetimg">
-					
-				</div>
-				<div class="dash-widgetcontent">
-					<h5 class="total_purchase"></h5>
-					<h6></h6>
-				</div>
-			</div>
-		</div> *@
-	}
-	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
-	{
-		<div class="col-md-3 col-xl-2">
-			<div class="card bg-info text-white">
-				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash2.svg" alt="img"></span></div>
-				<div class="card-body">
-					<h5 class="total_purchase_tax"></h5>
-					<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
-				</div>
-			</div>
-		</div>
-@* 		<div class="col">
-			<div class="dash-widget dash1" style="background:#00CFE8">
-				<div class="dash-widgetimg">
-					<span><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
-				</div>
-				<div class="dash-widgetcontent">
-					<h5 class="total_purchase_tax"></h5>
-					<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
-				</div>
-			</div>
-		</div> *@
-	}
-	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
-	{
-		<div class="col-md-3 col-xl-2">
-			<div class="card bg-primary text-white">
-				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash3.svg" alt="img"></span></div>
-				<div class="card-body">
-					<h5 class="total_sale"></h5>
-					<h6>@ViewLocalizer["Total Sale Amount"]</h6>
-				</div>
-			</div>
-		</div>
-@* 		<div class="col">
-			<div class="dash-widget dash2" style="background:#1B2850; color:white">
-				<div class="dash-widgetimg">
-					<span><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
-				</div>
-				<div class="dash-widgetcontent">
-					<h5 class="total_sale"></h5>
-					<h6>@ViewLocalizer["Total Sale Amount"]</h6>
-				</div>
-			</div>
-		</div> *@
-	}
-	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
-	{
-		<div class="col-md-3 col-xl-2">
-			<div class="card bg-success text-white">
-				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash4.svg" alt="img"></span></div>
-				<div class="card-body">
-					<h5 class="total_sale_tax"></h5>
-					<h6>@ViewLocalizer["Total Sale Tax"]</h6>
-				</div>
-			</div>
-		</div>
-@* 		<div class="col">
-			<div class="dash-widget dash3" style="background:#28C76F">
-				<div class="dash-widgetimg">
-					<span><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
-				</div>
-				<div class="dash-widgetcontent">
-					<h5 class="total_sale_tax"></h5>
-					<h6>@ViewLocalizer["Total Sale Tax"]</h6>
-				</div>
-			</div>
-		</div> *@
-	}
-	@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
-	{
+		}
+		@* /Total Purchase Tax *@
 
-		<div class="col-md-3 col-xl-2">
-			<div class="card bg-black text-white">
-				<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash5.svg" alt="img"></span></div>
+		@* Total Sale Amount *@
+		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
+		{
+			<div class="col-lg col-sm-6">
+				<div class="card card-border-shadow-info h-100">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-2">
+							<div class="avatar me-4">
+								<span class="avatar-initial rounded bg-label-info"><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
+							</div>
+							<h4 class="mb-0 total_sale"></h4>
+						</div>
+						<p class="mb-1">@ViewLocalizer["Total Sale Amount"]</p>
+					</div>
+				</div>
+			</div>
+		}
+		@* /Total Sale Amount *@
+
+		@* Total Sale Amount *@
+		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
+		{
+			<div class="col-lg col-sm-6">
+				<div class="card card-border-shadow-danger h-100">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-2">
+							<div class="avatar me-4">
+								<span class="avatar-initial rounded bg-label-danger"><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
+							</div>
+							<h4 class="mb-0 total_sale_tax"></h4>
+						</div>
+						<p class="mb-1">@ViewLocalizer["Total Sale Tax"]</p>
+					</div>
+				</div>
+			</div>
+		}
+		@* /Total Sale Amount *@
+
+		@* Total Sale Propina *@
+		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
+		{
+			<div class="col-lg col-sm-6">
+				<div class="card card-border-shadow-primary h-100">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-2">
+							<div class="avatar me-4">
+								<span class="avatar-initial rounded bg-label-primary"><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
+							</div>
+							<h4 class="mb-0 total_sale_propina"></h4>
+						</div>
+						<p class="mb-1">@ViewLocalizer["Total Sale Propina"]</p>
+					</div>
+				</div>
+			</div>
+		}
+		@* /Total Sale Propina *@
+
+		@* Productos más vendidos  *@
+		<div class="col-xxl-4 col-lg-4">
+			<div class="card h-100">
+				<div class="card-header d-flex align-items-center justify-content-between">
+					<div class="card-title mb-0">
+						<h5 class="mb-1">@ViewLocalizer["Top Sales Products"]</h5>
+						<p class="card-subtitle">Los productos más vendidos</p>
+					</div>
+				</div>
 				<div class="card-body">
-					<h5 class="total_sale_propina"></h5>
-					<h6>@ViewLocalizer["Total Sale Propina"]</h6>
+					<ul class="p-0 m-0">
+						@foreach (var tp in topProducts)
+						{
+							var image = "/vendor/img/product/product1.jpg";
+							@if (@tp.ProductImage != null && @tp.ProductImage != "")
+							{
+								image = tp.ProductImage;
+							}
+
+							<li class="d-flex mb-6">
+								<div class="avatar flex-shrink-0 me-4">
+									<span class="avatar-initial rounded bg-label-primary"><img class="ti ti-package ti-26px" src="@image" alt="img"></span>
+								</div>
+								<div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+									<div class="me-2">
+										<h6 class="mb-0 fw-normal">@tp.ProductName</h6>
+										<small class="text-primary fw-normal d-block">
+											COSTO: @tp.Cost
+										</small>
+									</div>
+									<div class="user-progress">
+										<h6 class="text-body mb-0">Qty: @tp.Qty</h6>
+									</div>
+								</div>
+							</li>
+						}
+
+					</ul>
 				</div>
 			</div>
 		</div>
-@* 
-		<div class="col">
-			<div class="dash-widget dash3" style="background:#88226F">
-				<div class="dash-widgetimg">
-					<span><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
-				</div>
-				<div class="dash-widgetcontent">
-					<h5 class="total_sale_propina"></h5>
-					<h6>@ViewLocalizer["Total Sale Propina"]</h6>
-				</div>
-			</div>
-		</div> *@
-	}	
-</div>
+		@* /Productos más vendidos *@
 
-<div class="row">
-	<div class="col-lg-7 col-sm-12 col-12 ">
-		<div class="card">
-			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
-				<h5 class="card-title mb-0">@ViewLocalizer["Inventory Total"]</h5>
-				<h6 class="inventory-total"></h6>
-			</div>
-			<div class="card-body" style="position: relative;">
-				<div class="table-responsive dataview"  style="min-height: 315px;">
-					<table id="inventory-list" class="table">
-						<thead>
-							<tr>
-								<th>@ViewLocalizer["Warehouse"] </th>
-								<th>@ViewLocalizer["Value"]</th>
-							</tr>
-						</thead>
-						<tbody>
-
-						</tbody>
-					</table>
+		@* Total de inventario *@
+		<div class="col-xxl-4 col-lg-4">
+			<div class="card h-100">
+				<div class="card-header d-flex align-items-center justify-content-between">
+					<div class="card-title mb-0">
+						<h5 class="m-0 me-2">@ViewLocalizer["Inventory Total"]</h5>
+					</div>
+				</div>
+				<div class="card-body" style="position: relative;">
+					<canvas id="chartjs-pie">
+					</canvas>
 				</div>
 			</div>
 		</div>
-		<div class="card ">
-			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
-				<h5 class="card-title mb-0">@ViewLocalizer["Alertas"]</h5>
-			</div>
-			<div class="card-body" style="position: relative;">
-				<div class="table-responsive dataview" style="min-height: 500px; max-height: 600px;">
+		@* /Total de inventario *@
+
+		@* Alertas *@
+        <div class="col-xxl-4 col-lg-4">
+			<div class="card h-100">
+				<div class="card-header d-flex align-items-center justify-content-between">
+					<div class="card-title mb-0">
+						<h5 class="mb-1">@ViewLocalizer["Alertas"]</h5>
+						<p class="card-subtitle">Alertas counter</p>
+					</div>
+				</div>
+				<div class="card-body p-0" style="overflow-y: auto; max-height: 400px;">
 					<table id="alert-list" class="table">
 						<tbody>
 						</tbody>
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="col-lg-5 col-sm-12 col-12 d-flex">
-		<div class="card flex-fill">
-			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
-				<h4 class="card-title mb-0">@ViewLocalizer["Top Sales Products"]</h4>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-lg-6 col-sm-6 col-12">
-						<div class="form-group category-body">
-							<label>@ViewLocalizer["Category"] </label>
-							<select id="filter-productcategory" class="select2 form-select">
-							</select>
-						</div>
-                    </div>
-					<div class="col-lg-6 col-sm-6 col-12">
-                        <div class="form-group category-body">
-							<label>@ViewLocalizer["Sucursal"] </label>
-							<select id="filter-branch" class="select2 form-select ">
-								<option>@ViewLocalizer["Choose sucursal"]</option>
-								@foreach (var b in branchs)
-								{
-									<option value="@b.ID">@b.Name</option>
-								}
-							</select>
-                        </div>
-                    </div>
+        </div>
+		@* /Alertas *@
+
+		@* Articulos dañados *@
+		<div class="col-12 order-5">
+			<div class="card">
+				<div class="card-header d-flex align-items-center justify-content-between">
+					<div class="card-title mb-0">
+						<h5 class="m-0 me-2">@ViewLocalizer["Damaged Articles"]</h5>
+					</div>
 				</div>
-				<div class="table-responsive dataview"  style="min-height: 315px;"> 
-					<table id="prod-list" class="table">
+				<div class="card-datatable table-responsive">
+					<div class="card-body">
+						<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+							<div class="table-responsive">
+								<table class="dt-route-vehicles table table-sm dataTable no-footer dtr-column" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" style="width: 789px;">
+									<thead>
+										<tr>
+											<th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 145px;" aria-label="location: activate to sort column descending" aria-sort="ascending">@ViewLocalizer["Item Name"]</th>
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 113px;" aria-label="starting route: activate to sort column ascending">@ViewLocalizer["Warehouse"]</th>
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 90px;" aria-label="ending route: activate to sort column ascending">@ViewLocalizer["Qty"]</th>
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 175px;" aria-label="warnings: activate to sort column ascending">@ViewLocalizer["Unit"]</th>
+											<th class="w-20 sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 0px;" aria-label="progress: activate to sort column ascending">@ViewLocalizer["Date"]</th>
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 175px;" aria-label="warnings: activate to sort column ascending">@ViewLocalizer["Status"]</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								<div style="width: 1%;"></div><div style="width: 1%;"></div>
+							</div>
+							<div class="row d-flex align-items-center">
+								<div class="col-sm-12 col-md-6">
+									<div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+										<ul class="pagination">
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		@* /Articulos dañados *@
+
+
+		@* separacion viejo codigo *@
+		@* <div class="row"> *@
+@* 			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
+			{
+				<div class="col-md-3 col-xl-2">
+					<div class="card bg-warning text-white">
+						<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash1.svg" alt="img"></span></div>
+						<div class="card-body">
+
+							<h5 class="total_purchase"></h5>
+							<p class="card-text">@ViewLocalizer["Total Purchase Amount"]</p>
+						</div>
+					</div>
+				</div>
+				commentado
+				<div class="col">
+					<div class="dash-widget" style="background:#FF9F43">
+						<div class="dash-widgetimg">
+
+						</div>
+						<div class="dash-widgetcontent">
+							<h5 class="total_purchase"></h5>
+							<h6></h6>
+						</div>
+					</div>
+				</div>
+			} *@
+@* 			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
+			{
+				<div class="col-md-3 col-xl-2">
+					<div class="card bg-info text-white">
+						<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash2.svg" alt="img"></span></div>
+						<div class="card-body">
+							<h5 class="total_purchase_tax"></h5>
+							<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
+						</div>
+					</div>
+				</div>
+				comentado
+				<div class="col">
+					<div class="dash-widget dash1" style="background:#00CFE8">
+						<div class="dash-widgetimg">
+							<span><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
+						</div>
+						<div class="dash-widgetcontent">
+							<h5 class="total_purchase_tax"></h5>
+							<h6>@ViewLocalizer["Total Purchase Tax"]</h6>
+						</div>
+					</div>
+				</div>
+			} *@
+@* 			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
+			{
+				<div class="col-md-3 col-xl-2">
+					<div class="card bg-primary text-white">
+						<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash3.svg" alt="img"></span></div>
+						<div class="card-body">
+							<h5 class="total_sale"></h5>
+							<h6>@ViewLocalizer["Total Sale Amount"]</h6>
+						</div>
+					</div>
+				</div>
+				comentado
+				<div class="col">
+					<div class="dash-widget dash2" style="background:#1B2850; color:white">
+						<div class="dash-widgetimg">
+							<span><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
+						</div>
+						<div class="dash-widgetcontent">
+							<h5 class="total_sale"></h5>
+							<h6>@ViewLocalizer["Total Sale Amount"]</h6>
+						</div>
+					</div>
+				</div>
+			} *@
+@* 			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
+			{
+				<div class="col-md-3 col-xl-2">
+					<div class="card bg-success text-white">
+						<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash4.svg" alt="img"></span></div>
+						<div class="card-body">
+							<h5 class="total_sale_tax"></h5>
+							<h6>@ViewLocalizer["Total Sale Tax"]</h6>
+						</div>
+					</div>
+				</div>
+				comentado
+				<div class="col">
+					<div class="dash-widget dash3" style="background:#28C76F">
+						<div class="dash-widgetimg">
+							<span><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
+						</div>
+						<div class="dash-widgetcontent">
+							<h5 class="total_sale_tax"></h5>
+							<h6>@ViewLocalizer["Total Sale Tax"]</h6>
+						</div>
+					</div>
+				</div>
+			} *@
+@* 			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
+			{
+
+				<div class="col-md-3 col-xl-2">
+					<div class="card bg-black text-white">
+						<div class="card-header cursor-move text-white"><span><img src="/vendor/img/icons/dash5.svg" alt="img"></span></div>
+						<div class="card-body">
+							<h5 class="total_sale_propina"></h5>
+							<h6>@ViewLocalizer["Total Sale Propina"]</h6>
+						</div>
+					</div>
+				</div>
+				comentado
+				<div class="col">
+					<div class="dash-widget dash3" style="background:#88226F">
+						<div class="dash-widgetimg">
+							<span><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
+						</div>
+						<div class="dash-widgetcontent">
+							<h5 class="total_sale_propina"></h5>
+							<h6>@ViewLocalizer["Total Sale Propina"]</h6>
+						</div>
+					</div>
+				</div>
+			} *@
+		@* </div> *@
+
+		@* <div class="row">
+			<div class="col-lg-7 col-sm-12 col-12 ">
+				<div class="card">
+					<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+						<h5 class="card-title mb-0">@ViewLocalizer["Inventory Total"]</h5>
+						<h6 class="inventory-total"></h6>
+					</div>
+					<div class="card-body" style="position: relative;">
+						<div class="table-responsive dataview" style="min-height: 315px;">
+							<table id="inventory-list" class="table">
+								<thead>
+									<tr>
+										<th>@ViewLocalizer["Warehouse"] </th>
+										<th>@ViewLocalizer["Value"]</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				commentado
+ 				<div class="card ">
+					<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+						<h5 class="card-title mb-0">@ViewLocalizer["Alertas"]</h5>
+					</div>
+					<div class="card-body" style="position: relative;">
+						<div class="table-responsive dataview" style="min-height: 500px; max-height: 600px;">
+							<table id="alert-list" class="table">
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-5 col-sm-12 col-12 d-flex">
+				<div class="card flex-fill">
+					<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+						<h4 class="card-title mb-0">@ViewLocalizer["Top Sales Products"]</h4>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group category-body">
+									<label>@ViewLocalizer["Category"] </label>
+									<select id="filter-productcategory" class="select2 form-select">
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-12">
+								<div class="form-group category-body">
+									<label>@ViewLocalizer["Sucursal"] </label>
+									<select id="filter-branch" class="select2 form-select ">
+										<option>@ViewLocalizer["Choose sucursal"]</option>
+										@foreach (var b in branchs)
+										{
+											<option value="@b.ID">@b.Name</option>
+										}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="table-responsive dataview" style="min-height: 315px;">
+							<table id="prod-list" class="table">
+								<thead>
+									<tr>
+										<th>@ViewLocalizer["No"] </th>
+										<th>@ViewLocalizer[""] </th>
+										<th>@ViewLocalizer["Products"] </th>
+										<th>@ViewLocalizer["Qty"] </th>
+										<th>@ViewLocalizer["Cost"]</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+ 		<div class="card mb-0">
+			<div class="card-body">
+				<h4 class="card-title">@ViewLocalizer["Damaged Articles"]</h4>
+				<div class="table-responsive dataview">
+					<table id="damage-list" class="table">
 						<thead>
 							<tr>
-								<th>@ViewLocalizer["No"] </th>
-								<th>@ViewLocalizer[""] </th>
-								<th>@ViewLocalizer["Products"] </th>
-								<th>@ViewLocalizer["Qty"] </th>
-								<th>@ViewLocalizer["Cost"]</th>
+								<th>@ViewLocalizer["ID"] </th>
+								<th>@ViewLocalizer["Warehouse"] </th>
+								<th>@ViewLocalizer["Item Name"] </th>
+								<th>@ViewLocalizer["Qty"]</th>
+								<th>@ViewLocalizer["Unit"]</th>
+								<th>@ViewLocalizer["Date"]</th>
+								<th>@ViewLocalizer["Status"]</th>
 							</tr>
 						</thead>
-						<tbody>
-
-						</tbody>
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-</div>
-<div class="card mb-0">
-	<div class="card-body">
-		<h4 class="card-title">@ViewLocalizer["Damaged Articles"]</h4>
-		<div class="table-responsive dataview">
-			<table id="damage-list" class="table">
-				<thead>
-					<tr>
-						<th>@ViewLocalizer["ID"] </th>
-						<th>@ViewLocalizer["Warehouse"] </th>
-						<th>@ViewLocalizer["Item Name"] </th>
-						<th>@ViewLocalizer["Qty"]</th>
-						<th>@ViewLocalizer["Unit"]</th>
-						<th>@ViewLocalizer["Date"]</th>
-						<th>@ViewLocalizer["Status"]</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
+		</div>  *@
 	</div>
 </div>
 <script>
@@ -292,7 +524,6 @@
     }
 
 	$(document).ready(function() {
-
 		debugger;
 		$("#dashboard_filter_datefrom").val('@fromDate.ToString("dd-MM-yyyy")').change();
 		$("#dashboard_filter_dateto").val('@toDate.ToString("dd-MM-yyyy")').change();
@@ -374,7 +605,8 @@
 					break;
 			}
 
-			damagetable.ajax.reload();
+			//damagetable.ajax.reload();
+			damagetable2.ajax.reload();
 		});
 
 		$("#filter-productcategory").change(function () {
@@ -391,47 +623,110 @@
 			var year = date.getFullYear();
 			return day + '-' + month + '-' + year;
 		}
-		var damagetable = $("#damage-list").DataTable({
-			"processing": true, // for show progress bar
-			"serverSide": true, // for process server side
-			"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
-			"orderMulti": false, // for disable multiple column at once
+
+		var damagetable2 = $("#DataTables_Table_0").DataTable({
+			"processing": true, // Mostrar barra de progreso
+			"serverSide": true, // Para manejar datos en el servidor
 			"ajax": {
 				"url": "/Inventory/GetDamageArticleList",
 				"type": "POST",
 				"datatype": "json"
 			},
-			'select': {
-				'style': 'multi'
-			},
-			"pageLength": 10,
-			"lengthMenu": [10, 25, 50],
-			"order": [[1, 'asc']],
+			"order": [[0, 'asc']], // Ordenar por la primera columna
+			"pageLength": 10, // Número de registros por página
+			"lengthMenu": [10, 25, 50], // Opciones para cambiar el número de registros por página
+			"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>', // DOM con controles
 			"columns": [
-
-				{ "data": "id", "name": "id", "autoWidth": true },
+				{
+					"data": "name", "name": "name", "autoWidth": true,
+					"render": function (data, type, row) {
+						return `
+							<div class="d-flex justify-content-start align-items-center user-name">
+								<div class="avatar-wrapper">
+									<div class="avatar me-4">
+										<span class="avatar-initial rounded-circle bg-label-primary">
+											<i class="ti ti-package ti-26px"></i>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex flex-column">
+									<a class="text-heading fw-medium">${data}</a>
+								</div>
+							</div>
+						`;
+					}
+				},
 				{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
-				{ "data": "name", "name": "name", "autoWidth": true },
 				{ "data": "qty", "name": "qty", "autoWidth": true },
 				{ "data": "unitName", "name": "unitName", "autoWidth": true },
 				{ "data": "damageDate", "name": "damageDate", "autoWidth": true },
 				{
-					'data': 'status', 'name': 'status',
-					render: function (data, type, row) {
-						if (row.status == 1) {
-							return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
-						}
-						else if (row.status == 2) {
-							return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
-						}
-						else if (row.status == 3) {
-							return "<span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>";
+					"data": "status", "name": "status",
+					"render": function (data, type, row) {
+						if (data == 1) {
+							return "<span class='badge rounded bg-label-warning'>@ViewLocalizer["Pending"]</span>";
+						} else if (data == 2) {
+							return "<span class='badge rounded bg-label-danger'>@ViewLocalizer["Canceled"]</span>";
+						} else if (data == 3) {
+							return "<span class='badge rounded bg-label-success'>@ViewLocalizer["Confirmed"]</span>";
 						}
 					},
 					"autoWidth": true
-				}				
-			]
+				}
+			],
+			"language": {
+				"info": "Showing _START_ to _END_ of _TOTAL_ entries",
+				"infoEmpty": "No entries available",
+				"lengthMenu": "Show _MENU_ entries",
+				"paginate": {
+					"previous": "<i class='ti ti-chevron-left'></i>",
+					"next": "<i class='ti ti-chevron-right'></i>"
+				}
+			},
+			"pagingType": "simple_numbers",
 		});
+
+		// var damagetable = $("#damage-list").DataTable({
+		// 	"processing": true, // for show progress bar
+		// 	"serverSide": true, // for process server side
+		// 	"dom": 'rt<"row"<"col-sm-3"l><"col-sm-6 s-txt"p><"col-sm-3 text-end"i>>',
+		// 	"orderMulti": false, // for disable multiple column at once
+		// 	"ajax": {
+		// 		"url": "/Inventory/GetDamageArticleList",
+		// 		"type": "POST",
+		// 		"datatype": "json"
+		// 	},
+		// 	'select': {
+		// 		'style': 'multi'
+		// 	},
+		// 	"pageLength": 10,
+		// 	"lengthMenu": [10, 25, 50],
+		// 	"order": [[1, 'asc']],
+		// 	"columns": [
+
+		// 		{ "data": "id", "name": "id", "autoWidth": true },
+		// 		{ "data": "warehouseName", "name": "warehouseName", "autoWidth": true },
+		// 		{ "data": "name", "name": "name", "autoWidth": true },
+		// 		{ "data": "qty", "name": "qty", "autoWidth": true },
+		// 		{ "data": "unitName", "name": "unitName", "autoWidth": true },
+		// 		{ "data": "damageDate", "name": "damageDate", "autoWidth": true },
+		// 		{
+		// 			'data': 'status', 'name': 'status',
+		// 			render: function (data, type, row) {
+		// 				if (row.status == 1) {
+		// 					return "<span class='badges bg-lightyellow'>@ViewLocalizer["Pending"]</span>";
+		// 				}
+		// 				else if (row.status == 2) {
+		// 					return "<span class='badges bg-lightred'>@ViewLocalizer["Canceled"]</span>";
+		// 				}
+		// 				else if (row.status == 3) {
+		// 					return "<span class='badges bg-lightgreen'>@ViewLocalizer["Confirmed"]</span>";
+		// 				}
+		// 			},
+		// 			"autoWidth": true
+		// 		}				
+		// 	]
+		// });
 	});
 
 	function LoadProductFilterCategory() {
@@ -521,23 +816,131 @@
 		});
 	}
 
+	// function GetInventoryStock() {
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/Home/GetInventoryTotal",
+	// 		success: function (data) {
+	// 			$(".inventory-total").text("$" + numberWithCommas(data.inventoryTotal.toFixed(2)))
+
+	// 			$("#inventory-list tbody").empty();
+	// 			for (var i = 0; i < data.inventoryStock.length; i++) {
+					
+	// 				var p = data.inventoryStock[i];
+									
+	// 				var html = `<tr><td> ${p.warehouse}</td><td>$${numberWithCommas(p.total.toFixed(2))}</td></tr>`;
+
+	// 				$("#inventory-list tbody").append(html);
+	// 			}
+	// 		},
+	// 		error: function () {
+	// 			toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+	// 		}
+	// 	});
+	// }
+
 	function GetInventoryStock() {
 
 		$.ajax({
 			type: "POST",
 			url: "/Home/GetInventoryTotal",
-			success: function (data) {
-				$(".inventory-total").text("$" + numberWithCommas(data.inventoryTotal.toFixed(2)))
+			success: function (res) {
+							var rootStyles = getComputedStyle(document.documentElement);
+			var centerTextColor = rootStyles.getPropertyValue('--bs-heading-color').trim();
 
-				$("#inventory-list tbody").empty();
-				for (var i = 0; i < data.inventoryStock.length; i++) {
-					
-					var p = data.inventoryStock[i];
-									
-					var html = `<tr><td> ${p.warehouse}</td><td>$${numberWithCommas(p.total.toFixed(2))}</td></tr>`;
+				Chart.register({
+					id: 'centerText',
+					beforeDraw: function(chart) {
+						if (chart.config.options.elements.center) {
+							var ctx = chart.ctx;
+							var centerConfig = chart.config.options.elements.center;
+							var fontStyle = centerConfig.fontStyle || 'Arial';
+							var totalText = centerConfig.totalText;
+							var totalValue = centerConfig.totalValue;
+							//var color = centerConfig.color || '#000';
+							var maxFontSize = centerConfig.maxFontSize || 75;
+							var sidePadding = centerConfig.sidePadding || 20;
+							var sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2);
+							ctx.font = "30px " + fontStyle;
 
-					$("#inventory-list tbody").append(html);
+							// Calcular la posición del texto total
+							var totalTextWidth = ctx.measureText(totalText).width;
+							var totalValueWidth = ctx.measureText(totalValue).width;
+							var elementWidth = (chart.innerRadius * 2) - sidePaddingCalculated;
+
+							// Ajustar el tamaño de la fuente para el valor total
+							var widthRatio = elementWidth / totalValueWidth;
+							var newFontSize = Math.floor(30 * widthRatio);
+							var elementHeight = (chart.innerRadius * 2);
+							var fontSizeToUse = Math.min(newFontSize, elementHeight, maxFontSize);
+							ctx.textAlign = 'center';
+							ctx.textBaseline = 'middle';
+							var centerX = ((chart.chartArea.left + chart.chartArea.right) / 2);
+							var centerY = ((chart.chartArea.top + chart.chartArea.bottom) / 2);
+							ctx.font = fontSizeToUse + "px " + fontStyle;
+							ctx.fillStyle = centerTextColor; // Usar el color de la variable CSS
+
+							// Dibujar el valor total en la parte superior
+							ctx.fillText(totalValue, centerX, centerY - 20);
+
+							// Ajustar el tamaño de la fuente para el texto total
+							ctx.font = "20px " + fontStyle;
+							ctx.fillStyle = centerTextColor; // Usar el color de la variable CSS
+
+							// Dibujar el texto total en la parte inferior
+							ctx.fillText(totalText, centerX, centerY + 20);
+						}
+					}
+				});
+
+				// Plugin personalizado para ajustar el tamaño del pointStyle
+
+				var labels = res.inventoryStock.map(stock => stock.warehouse + ": " + numberWithCommas(stock.total.toFixed(2)));
+				var data = res.inventoryStock.map(stock => stock.total.toFixed(2));
+
+				if (labels.length !== data.length) {
+					console.error("La longitud de las etiquetas y los datos no coincide.");
+					return;
 				}
+
+				new Chart(document.getElementById("chartjs-pie"), {
+				  type: "doughnut",
+				  data: {
+					labels: labels,
+					datasets: [{
+					  data: data,
+					  backgroundColor: res.inventoryStock.map((_, index) => `hsl(120, 80%, ${75 - index * 5}%)`),
+					  borderColor: "transparent",
+					  hoverOffset: 10 // Añadir desplazamiento al hacer hover
+					}]
+				  },
+				  options: {
+					maintainAspectRatio: false,
+					cutout: "80%",
+						plugins: {
+							legend: {
+								display: true,
+								position: 'bottom',
+								labels: {
+									usePointStyle: true,
+									pointStyle: 'circle',
+									color: centerTextColor, // Usar el color de la variable CSS para las etiquetas,
+									radius: 2
+								}
+							}
+						},
+						elements: {
+							center: {
+								totalText: 'Total', // Título que deseas mostrar en la parte inferior
+                                totalValue: numberWithCommas(res.inventoryTotal.toFixed(2)), // Valor total que deseas mostrar en la parte superior
+								color: centerTextColor, // Color del texto
+								maxFontSize: 75, // Tamaño máximo de la fuente
+								sidePadding: 20 // Espaciado lateral
+							}
+						}
+				  }
+				});
 			},
 			error: function () {
 				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})

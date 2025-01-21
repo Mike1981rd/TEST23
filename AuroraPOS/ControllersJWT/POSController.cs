@@ -1458,4 +1458,57 @@ public class POSController : Controller
 
         return Json(response);
     }
+
+    [HttpPost("AddEditReservation")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult AddEditReservation([FromBody]ReservationCreateModel reservation)
+    {
+        AddEditReservationResponse response = new AddEditReservationResponse();
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+        try
+        {
+            var result = objPOSCore.AddEditReservation(reservation, reservation.StationID);
+
+            response.Success = true;
+            response.status = result.Item1;
+            response.Message = result.Item2;
+
+            return Json(response);
+        }catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error en la consulta: " + e.Message;
+
+            return Json(response);
+        }
+    }
+
+    [HttpPost("CancelReservation")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult CancelReservation([FromBody]ReservationCreateModel request)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        CancelReservationResponse response = new CancelReservationResponse();
+
+        try
+        {
+            int status = objPOSCore.CancelReservation(request.ID);
+
+            response.Success = true;
+            response.status = status;
+            response.Message = "Operación realizada exitosamente";
+
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error en la consulta: " + e.Message;
+
+            return Json(response);
+        }
+    }
 }

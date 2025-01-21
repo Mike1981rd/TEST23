@@ -32,7 +32,8 @@ namespace AuroraPOS.Controllers
 		
 		public async Task<IActionResult> Index()
 		{
-			try
+
+            try
 			{
                 var user = _dbContext.User.ToList();
             }
@@ -41,9 +42,50 @@ namespace AuroraPOS.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-			ViewBag.Branchs = _dbContext.t_sucursal.ToList();
+            ViewBag.TopProducts = GetFirstTopSaleProducts();
+            ViewBag.Branchs = _dbContext.t_sucursal.ToList();
 			return View();
 		}
+
+		private List<TopSaleProductModel> GetFirstTopSaleProducts()
+		{
+            var items = _dbContext.OrderItems.Include(s => s.Order).ThenInclude(s => s.Station).Include(s => s.Product).ThenInclude(s => s.Category).Where(s => s.Status == OrderItemStatus.Paid).ToList();
+            int category = 0;
+            int branch = 0;
+
+            var products = new List<TopSaleProductModel>();
+
+            foreach (var item in items)
+            {
+                if (category > 0)
+                {
+                    if (item.Product.Category.ID != category) continue;
+                }
+                if (branch > 0)
+                {
+                    if (item.Order.Station != null && item.Order.Station.IDSucursal != branch) continue;
+                }
+
+                var exist = products.FirstOrDefault(s => s.ProductId == item.Product.ID);
+                if (exist == null)
+                {
+                    products.Add(new TopSaleProductModel()
+                    {
+                        ProductId = item.Product.ID,
+                        ProductName = item.Product.Name,
+                        ProductImage = item.Product.Photo,
+                        Cost = item.Product.ProductCost,
+                        Qty = item.Qty
+                    });
+                }
+                else
+                {
+                    exist.Qty += item.Qty;
+                }
+            }
+
+            return (products.OrderByDescending(s => s.Qty).Take(6).ToList());
+        }
 
 		public IActionResult Privacy()
 		{
