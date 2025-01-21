@@ -7896,90 +7896,103 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult AddEditReservation(ReservationCreateModel reservation)
         {
-			var reservationTime = new DateTime(2000, 1, 1);
-			try
-			{
-				reservationTime = DateTime.ParseExact(reservation.ReservationTimeStr, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
-			}
-			catch { }
-			if (reservationTime < DateTime.Now)
-            {
-                return Json(new { status = 1, message = "Invalid Reservation Time!" });
-            }
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
-            var table = _dbContext.AreaObjects.FirstOrDefault(s => s.ID == reservation.TableID && s.ObjectType == AreaObjectType.Table);
+            var result = objPOSCore.AddEditReservation(reservation, stationID);
 
-            var rst = reservationTime;
-            var ren = reservationTime.AddHours((double)reservation.Duration);
+            return Json(new { status = result.Item1, message = result.Item2 });
 
-            var reservations = _dbContext.Reservations.Where(s => s.ID != reservation.ID && s.Status != ReservationStatus.Canceled && s.TableID == reservation.TableID && s.ReservationTime.Date == reservationTime.Date).ToList();
-            foreach(var r in reservations)
-            {
-                var st = r.ReservationTime;
-                var en = r.ReservationTime.AddHours((double)r.Duration);
+            //var reservationTime = new DateTime(2000, 1, 1);
+            //try
+            //{
+            //	reservationTime = DateTime.ParseExact(reservation.ReservationTimeStr, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
+            //}
+            //catch { }
+            //if (reservationTime < DateTime.Now)
+            //         {
+            //             return Json(new { status = 1, message = "Invalid Reservation Time!" });
+            //         }
 
-                if (rst > en) continue;
-                if (ren < st) continue;
+            //         var table = _dbContext.AreaObjects.FirstOrDefault(s => s.ID == reservation.TableID && s.ObjectType == AreaObjectType.Table);
 
-                return Json(new { status = 1, message = "There is another reservation in the time." });
-            }
-			if (reservation.ID > 0)
-			{
-				var exist = _dbContext.Reservations.FirstOrDefault(s => s.ID == reservation.ID);
-				if (exist != null)
-				{
-                    exist.ReservationTime = reservationTime;
-                    exist.Duration = reservation.Duration;
-                    exist.ClientName = reservation.ClientName ?? "";
-                    exist.GuestName = reservation.GuestName??"";
-                    exist.GuestCount = reservation.GuestCount;
-                    exist.TableID = reservation.TableID;
-                    exist.Status = reservation.Status;
-                    exist.Comments = reservation.Comments??"";
-                    exist.Cost = reservation.Cost;
-                    exist.PhoneNumber = reservation.PhoneNumber;
-                    exist.TableName = table != null?table.Name:"";
-                    
-                    _dbContext.SaveChanges();
-				}
-			}
-            else
-			{
-				var stationID = int.Parse(GetCookieValue("StationID"));
-				var newReservation = new Reservation();
+            //         var rst = reservationTime;
+            //         var ren = reservationTime.AddHours((double)reservation.Duration);
 
-                newReservation.StationID = stationID;
-                newReservation.AreaID = reservation.AreaID;
-				newReservation.ReservationTime = reservationTime;
-				newReservation.Duration = reservation.Duration;
-				newReservation.ClientName = reservation.ClientName??"";
-				newReservation.GuestName = reservation.GuestName??"";
-				newReservation.GuestCount = reservation.GuestCount;
-				newReservation.TableID = reservation.TableID;
-				newReservation.Status = ReservationStatus.Open;
-				newReservation.Comments = reservation.Comments??"";
-				newReservation.Cost = reservation.Cost;
-				newReservation.PhoneNumber = reservation.PhoneNumber;
-				newReservation.TableName = table != null ? table.Name : "";
+            //         var reservations = _dbContext.Reservations.Where(s => s.ID != reservation.ID && s.Status != ReservationStatus.Canceled && s.TableID == reservation.TableID && s.ReservationTime.Date == reservationTime.Date).ToList();
+            //         foreach(var r in reservations)
+            //         {
+            //             var st = r.ReservationTime;
+            //             var en = r.ReservationTime.AddHours((double)r.Duration);
+
+            //             if (rst > en) continue;
+            //             if (ren < st) continue;
+
+            //             return Json(new { status = 1, message = "There is another reservation in the time." });
+            //         }
+            //if (reservation.ID > 0)
+            //{
+            //	var exist = _dbContext.Reservations.FirstOrDefault(s => s.ID == reservation.ID);
+            //	if (exist != null)
+            //	{
+            //                 exist.ReservationTime = reservationTime;
+            //                 exist.Duration = reservation.Duration;
+            //                 exist.ClientName = reservation.ClientName ?? "";
+            //                 exist.GuestName = reservation.GuestName??"";
+            //                 exist.GuestCount = reservation.GuestCount;
+            //                 exist.TableID = reservation.TableID;
+            //                 exist.Status = reservation.Status;
+            //                 exist.Comments = reservation.Comments??"";
+            //                 exist.Cost = reservation.Cost;
+            //                 exist.PhoneNumber = reservation.PhoneNumber;
+            //                 exist.TableName = table != null?table.Name:"";
+
+            //                 _dbContext.SaveChanges();
+            //	}
+            //}
+            //         else
+            //{
+            //	var stationID = int.Parse(GetCookieValue("StationID"));
+            //	var newReservation = new Reservation();
+
+            //             newReservation.StationID = stationID;
+            //             newReservation.AreaID = reservation.AreaID;
+            //	newReservation.ReservationTime = reservationTime;
+            //	newReservation.Duration = reservation.Duration;
+            //	newReservation.ClientName = reservation.ClientName??"";
+            //	newReservation.GuestName = reservation.GuestName??"";
+            //	newReservation.GuestCount = reservation.GuestCount;
+            //	newReservation.TableID = reservation.TableID;
+            //	newReservation.Status = ReservationStatus.Open;
+            //	newReservation.Comments = reservation.Comments??"";
+            //	newReservation.Cost = reservation.Cost;
+            //	newReservation.PhoneNumber = reservation.PhoneNumber;
+            //	newReservation.TableName = table != null ? table.Name : "";
 
 
-				_dbContext.Reservations.Add(newReservation);
-				_dbContext.SaveChanges();
-			}
+            //	_dbContext.Reservations.Add(newReservation);
+            //	_dbContext.SaveChanges();
+            //}
 
-			return Json(new {status = 0});
+            //return Json(new {status = 0});
         }
 
         [HttpPost]
         public JsonResult CancelReservation(ReservationCreateModel request)
         {
-            var reservations = _dbContext.Reservations.FirstOrDefault(s => s.ID == request.ID);
-            reservations.Status = ReservationStatus.Canceled;
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
 
-            _dbContext.SaveChanges();
-            return Json(new { status = 0 });
+            int status = objPOSCore.CancelReservation(request.ID);
+
+            return Json(new { status = status });
+
+            //var reservations = _dbContext.Reservations.FirstOrDefault(s => s.ID == request.ID);
+            //reservations.Status = ReservationStatus.Canceled;
+
+            //_dbContext.SaveChanges();
+            //return Json(new { status = 0 });
         }
-        
+
         public JsonResult GetReservations(int areaId)
         {
             var reservations = _dbContext.Reservations.Where(s => s.AreaID == areaId && s.ReservationTime > DateTime.Now).OrderBy(s=>s.ReservationTime).ToList();

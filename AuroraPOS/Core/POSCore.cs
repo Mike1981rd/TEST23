@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using AuroraPOS.ViewModels;
 using AuroraPOS.ModelsCentral;
+using System.Globalization;
 
 namespace AuroraPOS.Core;
 
@@ -2959,4 +2960,87 @@ public class POSCore
         return 0;
     }
 
+    public Tuple<int, string> AddEditReservation(ReservationCreateModel reservation, int stationId)
+    {
+        var reservationTime = new DateTime(2000, 1, 1);
+        try
+        {
+            reservationTime = DateTime.ParseExact(reservation.ReservationTimeStr, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture);
+        }
+        catch { }
+        if (reservationTime < DateTime.Now)
+        {
+            return new Tuple<int, string>(1, "Invalid Reservation Time!");
+        }
+
+        var table = _dbContext.AreaObjects.FirstOrDefault(s => s.ID == reservation.TableID && s.ObjectType == AreaObjectType.Table);
+
+        var rst = reservationTime;
+        var ren = reservationTime.AddHours((double)reservation.Duration);
+
+        var reservations = _dbContext.Reservations.Where(s => s.ID != reservation.ID && s.Status != ReservationStatus.Canceled && s.TableID == reservation.TableID && s.ReservationTime.Date == reservationTime.Date).ToList();
+        foreach (var r in reservations)
+        {
+            var st = r.ReservationTime;
+            var en = r.ReservationTime.AddHours((double)r.Duration);
+
+            if (rst > en) continue;
+            if (ren < st) continue;
+
+            return new Tuple<int, string>(1, "There is another reservation in the time.");
+        }
+        if (reservation.ID > 0)
+        {
+            var exist = _dbContext.Reservations.FirstOrDefault(s => s.ID == reservation.ID);
+            if (exist != null)
+            {
+                exist.ReservationTime = reservationTime;
+                exist.Duration = reservation.Duration;
+                exist.ClientName = reservation.ClientName ?? "";
+                exist.GuestName = reservation.GuestName ?? "";
+                exist.GuestCount = reservation.GuestCount;
+                exist.TableID = reservation.TableID;
+                exist.Status = reservation.Status;
+                exist.Comments = reservation.Comments ?? "";
+                exist.Cost = reservation.Cost;
+                exist.PhoneNumber = reservation.PhoneNumber;
+                exist.TableName = table != null ? table.Name : "";
+
+                _dbContext.SaveChanges();
+            }
+        }
+        else
+        {
+            var stationID = stationId;
+            var newReservation = new Reservation();
+
+            newReservation.StationID = stationID;
+            newReservation.AreaID = reservation.AreaID;
+            newReservation.ReservationTime = reservationTime;
+            newReservation.Duration = reservation.Duration;
+            newReservation.ClientName = reservation.ClientName ?? "";
+            newReservation.GuestName = reservation.GuestName ?? "";
+            newReservation.GuestCount = reservation.GuestCount;
+            newReservation.TableID = reservation.TableID;
+            newReservation.Status = ReservationStatus.Open;
+            newReservation.Comments = reservation.Comments ?? "";
+            newReservation.Cost = reservation.Cost;
+            newReservation.PhoneNumber = reservation.PhoneNumber;
+            newReservation.TableName = table != null ? table.Name : "";
+
+
+            _dbContext.Reservations.Add(newReservation);
+            _dbContext.SaveChanges();
+        }
+
+        return new Tuple<int, string>(0, "Operación realizada correctamente");
+    }
+    public int CancelReservation(long ID)
+    {
+        var reservations = _dbContext.Reservations.FirstOrDefault(s => s.ID == ID);
+        reservations.Status = ReservationStatus.Canceled;
+
+        _dbContext.SaveChanges();
+        return 0;
+    }
 }
