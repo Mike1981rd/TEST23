@@ -329,7 +329,7 @@
                         <div class="col-12">
                             <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                                 <table id="order-list" class="table" style="position:relative;">
-                                    <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
                                         <tr>
                                             <th>@ViewLocalizer["Action"] </th>
                                             <th>@ViewLocalizer["ID #"] </th>
@@ -399,7 +399,7 @@
                         <div class="col-12">
                             <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                                 <table id="order-paid-list" class="table" style="position:relative;">
-                                    <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
                                         <tr>
                                             <th>@ViewLocalizer["Action"] </th>
                                             <th>@ViewLocalizer["ID #"] </th>
@@ -577,7 +577,7 @@
                         <div class="col-12">
                             <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                                 <table id="order-list" class="table" style="position:relative;">
-                                    <thead class="border-top" style="position: sticky; top: 0; z-index:2;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
                                         <tr>
                                             <th>@ViewLocalizer["Action"] </th>
                                             <th>@ViewLocalizer["ID #"] </th>
@@ -732,7 +732,7 @@
                         <div class="col-12">
                             <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                                 <table id="customer-list" class="table" style="position:relative;">
-                                    <thead class="border-top style="position: sticky; top: 0; z-index:2;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
                                         <tr>
                                             <th>@ViewLocalizer["Action"]</th>
                                             <th>@ViewLocalizer["Avatar"] </th>
@@ -944,7 +944,9 @@
                     <div class="row">
                         <div class="drawer-money-container col-6 p-3">
                             <table class="table drawer-money">
-                                <thead>
+                                <thead class="table-light">
+                                    <tr>
+
                                     <th width="150">
                                         @ViewLocalizer["Money"]
                                     </th>
@@ -954,6 +956,7 @@
                                     <th width="100">
                                         @ViewLocalizer["Totals"]
                                     </th>
+                                    </tr>
                                     </thead>
                                 <tbody>
                                     @foreach (var d in denominations)
