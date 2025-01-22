@@ -56,11 +56,9 @@
                                             }
 
                                         </select>
-                                        <div class="add-icon" style="margin-left: 15px;">
-                                            <a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
-                                        </div>
+                                        <button id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
+                                           <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </button>
                                     </div>
 
                                 </div>
@@ -71,7 +69,7 @@
                                     <div class="d-flex">
                                         <select id="product-subcategory" class="select form-select" >
                                         </select>
-                                        <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="margin-left: 10px;">
+                                        <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
                                                 <img src="/vendor/img/icons/plus1.svg" alt="img">
                                             </a>
                                     </div>
@@ -84,7 +82,7 @@
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Printer Name"]</label>
                                     <div class="d-flex">
                                         <input type="text" class="form-control me-2" id="product-printername" placeholder="Printer title">
-                                        <button id="printer-capital" class="btn btn-primary">
+                                        <button id="printer-capital" class="btn btn-primary" style="width: 60px">
                                             Aa
                                         </button>
                                     </div>
@@ -138,11 +136,9 @@
                                             }
 
                                         </select>
-                                        <div class="add-icon">
-                                            <a id="add-course-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
-                                        </div>
+                                        <button id="add-course-modal" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </button>
                                     </div>
 
 
@@ -273,7 +269,7 @@
                                             <div class="row pt-2">
                                                 <div class="table-responsive" style="min-height: 200px; overflow: auto">
                                                     <table id="" class="table purchase-item">
-                                                        <thead style=" ">
+                                                        <thead class="table-light">
                                                             <tr>
                                                                 <th>@ViewLocalizer["Name"]</th>
                                                                 <th>@ViewLocalizer["Type"]</th>
@@ -300,7 +296,7 @@
                                             <div class="row question-info pt-2" style="display:none">
                                                 <div class="table-responsive" style="min-height: 200px; overflow: auto">
                                                     <table id="question-items-info" class="table">
-                                                        <thead style=" ">
+                                                        <thead class="table-light">
                                                             <tr>
                                                                 <th>@ViewLocalizer["Name"]</th>
                                                                 <th>@ViewLocalizer["Type"]</th>
@@ -457,7 +453,7 @@
                                         </div>
                                     </div>
                                     <table class="table reordertable">
-                                        <thead>
+                                        <thead class="table-light">
                                             <tr>
                                                 <td>
                                                     @ViewLocalizer["Name"]
@@ -494,7 +490,7 @@
                                 </div>
                             </div>
                             <table class="table reordertable">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
                                         <td>
                                             @ViewLocalizer["Name"]
@@ -562,7 +558,7 @@
                     <div class="col-12">
                         <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="servingsize-list" class="table " style="position:relative;">
-                                <thead class="border-top">
+                                <thead class="table-light">
                                     <tr>
                                         <th>@ViewLocalizer["Action"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -718,7 +714,7 @@
                     <div class="col-12">
                         <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                             <table id="subrecipe-list" class="table">
-                                <thead class="border-top">
+                                <thead class="table-light">
                                     <tr>
                                         <th>@ViewLocalizer["Select"]</th>
                                         <th>@ViewLocalizer["Name"] </th>
@@ -1276,7 +1272,7 @@
                                             <div class="row pt-2">
                                                 <div class="table-responsive" style="min-height: 200px; overflow: auto">
                                                     <table class="table purchase-item">
-                                                        <thead >
+                                                        <thead class="table-light">
                                                             <tr>
                                                                 <th>@ViewLocalizer["Name"]</th>
                                                                 <th>@ViewLocalizer["Type"]</th>
@@ -2436,76 +2432,94 @@
 
 
                                     </div>
-                                        <div id="flush-collapseOne-${size.id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-${size.id}" data-bs-parent="#accordionFlushExample-${size.id}">
-                                        <div class="accordion-body">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                        <button data-id="${size.id}" class="add-article-modal btn btn-submit me-2 p-2">Add Article</button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                                    <button data-id="${size.id}" class="add-subrecipe-modal btn btn-submit me-2 p-2">Add Sub Recipe</button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                                    <button data-id="${size.id}" class="add-product-modal btn btn-submit me-2 p-2">Add Product</button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                <div class="">
-                                                    <button data-id="${size.id}" class="btn-print-recipe btn btn-submit me-2 p-2">Print recipe</button>
-                                                </div>
-                                            </div>
-                                            </div>
-                                            <div class="row pt-2">
-                                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
-                                                    <table class="table purchase-item">
-                                                        <thead >
-                                                            <tr>
-                                                                <th>@ViewLocalizer["Name"]</th>
-                                                                <th>@ViewLocalizer["Type"]</th>
-                                                                <th>@ViewLocalizer["Brand"]</th>
-                                                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
-                                                                <th>@ViewLocalizer["Unit"]	</th>
-                                                                <th>@ViewLocalizer["Price"]	</th>
-                                                                <th>@ViewLocalizer["Sub Total"]</th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                            <tbody id="item-list-${size.id}">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                    <div class="col-lg-12 justify-content-center">
-                                                    <div class="total-order">
-                                                        <ul>
-                                                            <li class="total">
-                                                                <h4>@ViewLocalizer["Total"]</h4>
-                                                                <h5 class="po-total">$ 0.00</h5>
-                                                            </li>
-                                                            <li class="total">
-                                                                <h4>Precio Venta Producto</h4>
-                                                                <h5 class="po-price1" data-price='0'>$ 0.00</h5>
-                                                            </li>
-                                                            <li class="total">
-                                                                <h4>Precio de Venta Sugerido</h4>
-                                                                <h5 class="po-price-suggested">$ 0.00</h5>
-                                                            </li>
-                                                        </ul>
-                                                        <div class="card-body">
-                                                            <input type="text" class="price-suggest-percent js-range-slider irs--modern" name="my_range" value="" />
+                                    <br><br>
+                                        <div class="card" style="background: rgba(0,0,0,0.1)">
+                                            <div class="card-body">
+                                                <div id="flush-collapseOne-${size.id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-${size.id}" data-bs-parent="#accordionFlushExample-${size.id}">
+                                                <div class="accordion-body">
+                                                    <div class="row" style="display:flex; justify-content: space-evenly">
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                <button data-id="${size.id}" class="add-article-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Article</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                            <button data-id="${size.id}" class="add-subrecipe-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Sub Recipe</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                            <button data-id="${size.id}" class="add-product-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Product</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                        <div class="">
+                                                            <button data-id="${size.id}" class="btn-print-recipe btn btn-primary waves-effect waves-light me-2 p-2">Print recipe</button>
                                                         </div>
                                                     </div>
+                                                    </div>
+                                                    <div class="row pt-2">
+                                                        <div class="table-responsive" style="min-height: 200px; overflow: auto">
+                                                            <table class="table purchase-item">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th>@ViewLocalizer["Name"]</th>
+                                                                        <th>@ViewLocalizer["Type"]</th>
+                                                                        <th>@ViewLocalizer["Brand"]</th>
+                                                                        <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
+                                                                        <th>@ViewLocalizer["Unit"]	</th>
+                                                                        <th>@ViewLocalizer["Price"]	</th>
+                                                                        <th>@ViewLocalizer["Sub Total"]</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                    <tbody id="item-list-${size.id}">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 justify-content-center align-items-center">
+                                                                <div class="total-order d-flex col justify-content-center align-items-center" style="display: flex; flex-direction: column;">
+                                                                    <table style="border-collapse: collapse;">
+                                                                        <tr>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                                <label class="form-label">@ViewLocalizer["Total"]</label>
+                                                                            </td>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                                <label class=" po-total">$ 0.00</label>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                                <label class="form-label">Precio Venta Producto</label>
+                                                                            </td>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                                <label class="po-price1" data-price='0'>$ 0.00</label>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                                <label class="form-label">Precio de Venta Sugerido</label>
+                                                                            </td>
+                                                                            <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                                <label class="po-price-suggested">$ 0.00</label>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                    <div class="card-body" style="width: 100%">
+                                                                        <input type="text" class="price-suggest-percent js-range-slider irs--modern" name="my_range" value="" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                    </div>
+
                                 </div>
                             </div>
                 `

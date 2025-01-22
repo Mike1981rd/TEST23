@@ -12,6 +12,13 @@
 	var phistory = (List<PurchaseHistoryViewModel>)ViewBag.PurchaseOrderHistory;
 
 }
+
+<style>
+    .toast {
+        z-index: 9999 !important; /* Ajusta el valor según sea necesario */
+    }
+</style>
+
 <div class="content-wrapper">
 
     <!-- Content -->
@@ -32,6 +39,7 @@
 					<a id="submit2" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Submit"]</a>
 					@if (ViewBag.ArticleID > 0)
 					{
+						<input type="number" hidden class="form-control" id="article-id" placeholder="Article ID" value="@ViewBag.ArticleID" data-articleid="@ViewBag.ArticleID">
 						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Product"]</a>
 					}
 					else
@@ -53,10 +61,108 @@
 							<h5 class="card-tile mb-0">Información del artículo</h5>
 						</div>
 						<div class="card-body">
-							<div class="mb-6">
+							<div class="col mb-6">
 								<label class="form-label" for="ecommerce-product-name">@ViewLocalizer["Name"]</label>
 								<input type="text" class="form-control" id="article-name" placeholder="Article title">
 							</div>
+
+							<div class="row mb-6">
+								<div class="col-6">
+									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+										<select id="article-category" class="select form-control ">
+											<option value="">@ViewLocalizer["Choose category"]</option>
+											@foreach (var c in categories)
+											{
+												<option value="@c.ID">@c.Name</option>
+											}
+										</select>
+										<div class="ml-5">
+											<a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+										<select id="article-subcategory" class="select form-control">
+										</select>
+										<div class="add-icon">
+											<a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">
+												<img src="/vendor/img/icons/plus1.svg" alt="img">
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-6">
+								<div class="col">
+									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Brand"]</label>
+
+									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+										<select id="article-brand" class="select form-control ">
+											<option>Choose Brand</option>
+											@foreach (var b in brands)
+											{
+												if (b.IsSystemDefault)
+												{
+													<option value="@b.ID" selected>@b.Name</option>
+												}
+												else
+												{
+													<option value="@b.ID">@b.Name</option>
+												}
+
+											}
+										</select>
+										<div class="add-icon">
+											<a id="add-brand" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">
+												<img src="/vendor/img/icons/plus1.svg" alt="img">
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-6">
+								<div class="col-6">
+									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
+									<select id="article-tax" class="form-control  select">
+										@foreach (var b in taxs)
+										{
+											<option value="@b.ID">@b.TaxName - @b.TaxValue</option>
+										}
+									</select>
+								</div>
+								<div class="col-6">
+									<label class="form-label" for="ecommerce-product-barcotaggingde">Rendimiento (%)</label>
+									<input id="article-performance" onkeypress="return onlyDecimalKey(event)" value="100" type="text" class="form-control">
+								</div>
+							</div>
+
+							<div class="row mb-6">
+								<div class="col-3">
+									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Minimum"]</label>
+									<input id="article-min" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+								</div>
+								<div class="col-3">
+									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Maximum"]</label>
+									<input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+								</div>
+								<div class="col-3">
+									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Unit"]</label>
+									<select id="max-unit" class="select form-control ">
+									</select>
+								</div>
+								<div class="col-3">
+									<label class="form-label">&nbsp;</label>
+									<div class="form-group">
+										<button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
+									</div>
+								</div>
+							</div>
+
 							<div class="row mb-6">
 								<div class="col">
 									<form class="form-repeater">
@@ -82,7 +188,7 @@
 									</form>
 									<div class="table-responsive w-100" style="max-height: 300px; overflow:auto;">
 										<table class="table" style="position:relative;">
-											<thead class="border-header" style="position: sticky; top: 0; z-index:2;">
+											<thead class="table-light" style="position: sticky; top: 0; z-index:2;">
 												<tr>
 													<th>No </th>
 													<th style="width:150px;">@ViewLocalizer["Name"] </th>
@@ -103,45 +209,18 @@
 
 							<div class="row mb-6">
 								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Minimum"]</label>
-									<input id="article-min" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
-								</div>
-							</div>
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Maximum"]</label>
-									<input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
-								</div>
-							</div>
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Unit"]</label>
-									<select id="max-unit" class="select form-control ">
-									</select>
-								</div>
-							</div>
-							<div class="row mb-6">
-								<div class="col">
-									<label>&nbsp;</label>
-									<div class="form-group">
-										<button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
-									</div>
-								</div>
-							</div>
-							<div class="row mb-6">
-								<div class="col">
 									<label class="form-label">@ViewLocalizer["Existencia de seguridad(%)"]</label>
 									<input id="article-saftystock" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
 								</div>
 							</div>
-							<div class="row mb-6">
+@* 							<div class="row mb-6">
 								<div class="col">
 									<label class="form-label">&nbsp;</label>
 									<div class="form-group">
 										<button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							<div class="row mb-6">
 								<div class="col">
 									<label class="form-label">@ViewLocalizer["Order By"]</label>
@@ -231,86 +310,9 @@
 								</div>
 
 							</div> *@
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-category" class="select form-control ">
-											<option value="">@ViewLocalizer["Choose category"]</option>
-											@foreach (var c in categories)
-											{
-												<option value="@c.ID">@c.Name</option>
-											}
-										</select>
-										<div class="ml-5">
-											<a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-subcategory" class="select form-control">
-										</select>
-										<div class="add-icon">
-											<a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-												<img src="/vendor/img/icons/plus1.svg" alt="img">
-											</a>
-										</div>
-									</div>
 
-								</div>
-							</div>
 
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Brand"]</label>
 
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-brand" class="select form-control ">
-											<option>Choose Brand</option>
-											@foreach (var b in brands)
-											{
-												if (b.IsSystemDefault)
-												{
-													<option value="@b.ID" selected>@b.Name</option>
-												}
-												else
-												{
-													<option value="@b.ID">@b.Name</option>
-												}
-
-											}
-										</select>
-										<div class="add-icon">
-											<a id="add-brand" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-												<img src="/vendor/img/icons/plus1.svg" alt="img">
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
-									<select id="article-tax" class="form-control  select">
-										@foreach (var b in taxs)
-										{
-											<option value="@b.ID">@b.TaxName - @b.TaxValue</option>
-										}
-									</select>
-								</div>
-							</div>
-
-							<div class="row mb-6">
-								<div class="col">
-									<label class="form-label" for="ecommerce-product-barcotaggingde">Rendimiento (%)</label>
-									<input id="article-performance" onkeypress="return onlyDecimalKey(event)" value="100" type="text" class="form-control">
-								</div>
-							</div>
 						</div>
 					</div>
 
@@ -335,7 +337,7 @@
 							</form>
 							<div class="table-responsive" style="max-height: 500px; overflow:auto;">
 								<table class="table">
-									<thead>
+									<thead class="table-light">
 										<tr>
 											<th>@ViewLocalizer["Date"] </th>
 											<th>@ViewLocalizer["Supplier"]</th>
@@ -392,7 +394,7 @@
 								</form>
 							<div class="table-responsive w-100 mb-6" style="max-height: 300px; overflow:auto;">
 									<table class="table" style="position:relative;">
-										<thead class="" style="position: sticky; top: 0; z-index:2;">
+									<thead class="table-light" style="position: sticky; top: 0; z-index:2;">
 											<tr>
 												<th>ID </th>
 												<th>@ViewLocalizer["Supplier"] </th>
@@ -423,7 +425,7 @@
 								</form>
 							<div class="table-responsive mb-6">
 									<table class="table">
-										<thead>
+									<thead class="table-light">
 											<tr>
 												<th>Almacen </th>
 												<th>Unidad	</th>
@@ -461,7 +463,7 @@
 								</form>
 							<div class="table-responsive mb-6" style="max-height: 300px; overflow:auto;">
 									<table class="table">
-										<thead>
+									<thead class="table-light">
 											<tr>
 												<th>ID </th>
 												<th>@ViewLocalizer["Name"]	</th>
@@ -539,7 +541,7 @@
 								</form>
 							<div class="table-responsive mb-6">
 									<table class="table">
-										<thead>
+									<thead class="table-light">
 											<tr>
 												<th> </th>
 												<th>Unidad	</th>
@@ -671,7 +673,7 @@
 					<div class="row pt-2">
 						<div class="card-datatable table-responsive" style="height: 200px; overflow: auto">
 							<table id="purchase-item" class="table">
-								<thead class="border-top" style=" ">
+								<thead class="table-light" style=" ">
 									<tr>
 										<th>Name</th>
 										<th>Type</th>
@@ -735,7 +737,7 @@
 					<div class="col-12">
 						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="subrecipe-list" class="table">
-								<thead class="border-top">
+								<thead class="table-light">
 									<tr>
 										<th>@ViewLocalizer["Select"]</th>
 										<th>@ViewLocalizer["Name"] </th>
@@ -791,7 +793,7 @@
 					<div class="col-12">
 						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
 							<table id="brand-list" class="table" style="position:relative;">
-								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
+								<thead class="table-light" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Brand name"]</th>
 										<th>@ViewLocalizer["Action"]</th>
@@ -872,7 +874,7 @@
 					<div class="col-12">
 						<div class="card-datatable table-responsive" style="max-height:400px;">
 							<table id="unit-list" class="table" style="position:relative;">
-								<thead class="border-top" style="position: sticky; top: 0; z-index:2;">
+								<thead class="table-light" style="position: sticky; top: 0; z-index:2;">
 									<tr>
 										<th>@ViewLocalizer["Unit Name"]</th>
 										<th>@ViewLocalizer["Action"]</th>
@@ -967,7 +969,10 @@
 
 
 <script>
-
+	toastr.options = {
+		"positionClass": "toast-bottom-right", // Cambia esto a la posición deseada
+		"newestOnTop": false // Las notificaciones más nuevas se mostrarán en la parte inferior
+	};
 	$(document).ready(function () {
 		$("#productimg").on("mouseenter", function () {
 			var popupContent = document.createElement("div");
@@ -1769,8 +1774,8 @@
 			success: function (data, textStatus, jqXHR) {
 				$("#article-category").empty();
 				$("#article-category").append("<option value='' selected>Choose category</option>")
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
+				for (var i = 0; i < data.valor.length; i++) {
+					var d = data.valor[i];
 					$("#article-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#article-category").select2();
@@ -1784,8 +1789,8 @@
 
 				$("#product-category").empty();
 				$("#product-category").append("<option value='' selected>Choose category</option>")
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
+				for (var i = 0; i < data.valor.length; i++) {
+					var d = data.valor[i];
 
 					$("#product-category").append("<option value='" + d.id + "' data-taxes='" + JSON.stringify(d.taxes) + "' data-pchannels='" + JSON.stringify(d.printerChannels) + "'>" + d.name + "</option>")
 				}
