@@ -142,19 +142,19 @@
             <div class="col-lg-4 col-sm-12 col-12">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-lg-9 col-sm-6 col-6">
-                            <select id="editor-menu" class="select ">
-                                <option value="">@ViewLocalizer["Choose menu"]</option>
+                        <div class="col">
+                            <div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+                                <select id="editor-menu" class="select ">
+                                    <option value="">@ViewLocalizer["Choose menu"]</option>
 
-                            </select>
+                                </select>
+                                <div class="ml-5">
+                                    <a id="add-menu-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-3 col-sm-2 col-2 ps-0">
                             <div class="d-flex">
-                                <div class="add-icon px-1">
-                                    <a id="add-menu-modal" href="javascript:void(0);">
-                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                    </a>
-                                </div>
                                 <div class="edit-icon  px-1">
                                     <a id="edit-menu-modal" href="javascript:void(0);">
                                         <img src="/vendor/img/icons/edit.svg" alt="img">
@@ -175,11 +175,15 @@
         </div>
         <div id="group-panel">
             <div class="panel-title d-flex  align-items-center">
-                <label class="text-left px-5"> @ViewLocalizer["Groups"]</label>
-                <div  class="add-unit">
-                    <a  class="add-group-modal"  href="javascript:void(0);" >
-                        <img src="/vendor/img/icons/plus1.svg" alt="img">
-                    </a>
+                <div class="col mb-2">
+                    <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+                        <label class="text-left px-5"> @ViewLocalizer["Groups"]</label>
+                        <div class="add-icon">
+                            <a href="javascript:void(0);" class="add-group-modal btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="group-panel-main" class="d-flex p-2">
@@ -191,11 +195,15 @@
             <div class="col-lg-9 col-sm-9 col-12">
                 <div id="category-panel" class="h-40 p-2 bg-lightyellow">
                     <div class="panel-title d-flex  align-items-center">
-                        <label class="text-left px-5"> @ViewLocalizer["Category"]</label>
-                        <div class="add-unit">
-                            <a class="add-category-modal" href="javascript:void(0);">
-                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                            </a>
+                        <div class="col mb-2">
+                            <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+                                <label class="text-left px-5"> @ViewLocalizer["Category"]</label>
+                                <div class="add-icon">
+                                    <a href="javascript:void(0);" class="add-category-modal btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="category-panel-main" class="row">
@@ -204,11 +212,15 @@
                 </div>
                 <div id="product-panel" class="p-2">
                     <div class="panel-title d-flex  align-items-center">
-                        <label class="text-left px-5"> @ViewLocalizer["Products"]</label>
-                        <div  class="add-unit">
-                            <a  class="add-product-modal"  href="javascript:void(0);" >
-                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                            </a>
+                        <div class="col mb-2">
+                            <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+                                <label class="text-left px-5">@ViewLocalizer["Products"]</label>
+                                <div class="add-icon">
+                                    <a href="javascript:void(0);" class="add-product-modal btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+                                        <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="product-panel-main" class="row">
@@ -218,11 +230,15 @@
             </div>
             <div id="subcategory-panel" class="col-lg-3 col-sm-3 col-12 p-2">
                 <div class="panel-title d-flex  align-items-center">
-                    <label class="text-left px-5"> @ViewLocalizer["Sub Category"]</label>
-                    <div class="add-unit">
-                        <a  class="add-subcategory-modal"  href="javascript:void(0);" >
-                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                        </a>
+                    <div class="col mb-2">
+                        <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+                            <label class="text-left px-5">@ViewLocalizer["Sub Category"]</label>
+                            <div class="add-icon">
+                                <a href="javascript:void(0);" class="add-subcategory-modal btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+                                    <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="subcategory-panel-main" class="row">

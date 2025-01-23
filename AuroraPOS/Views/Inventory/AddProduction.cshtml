@@ -34,15 +34,13 @@
             <div class="row" data-articleid="0">
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
-                        <label class="form-label">@ViewLocalizer["Warehouse"]</label>
-                        <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
+                        <div class="col">
+                            <label class="form-label">@ViewLocalizer["Warehouse"]</label>
+                            <div class="d-flex justify-content-between search-id-group" style="gap: 10px">
                                 <select id="production-warehouse" class="select">
                                 </select>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                <div class="add-icon">
-                                    <a id="add-warehouse-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                <div class="ml-5">
+                                    <a id="add-warehouse-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
                                 </div>
                             </div>
                         </div>
@@ -63,15 +61,13 @@
             <div class="row">
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
-                        <label class="form-label">@ViewLocalizer["Sub Recipe"]</label>
-                        <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
+                        <div class="col">
+                            <label class="form-label">@ViewLocalizer["Sub Recipe"]</label>
+                            <div class="d-flex justify-content-between search-id-group" style="gap: 10px">
                                 <select id="production-subrecipe" class="select">
                                 </select>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                <div class="add-icon">
-                                    <a id="add-subrecipe-modal" href="javascript:void(0);"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                <div class="ml-5">
+                                    <a id="add-subrecipe-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +149,7 @@
                     }
                     else if (productionStatus == ProductionStatus.None)
                     {
-                        <a id="production-submit" href="javascript:void(0);" class="bbtn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                        <a id="production-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
                         <a id="production-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2">@ViewLocalizer["Cancel"]</a>
                         <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
                     }
