@@ -50,10 +50,10 @@
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
                         <label class="form-label">@ViewLocalizer["Date"] </label>
-                        <div class="input-groupicon">
+                        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
                             <input id="damage-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.DamageDate" class="datetimepicker form-control">
                             <div class="addonset">
-                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,33 @@
                 </div>
             </div>
             <br />
-            <div class="row">
+            <!-- Media -->
+            <div class=" mb-6">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 card-title">@ViewLocalizer["Photos"]</h5>
+                    <div href="javascript:void(0);" class="fw-medium">
+                        <div class="del-unit text-danger">
+                            <a class="del-photo " href="javascript:void(0);">
+                                <img src="/vendor/img/icons/minus.svg" alt="img">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center justify-content-center align-items-center">
+                    <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                        <input id="imgInpDamage" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                        <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                            <div id="damage-photos" class="col-sm-12 col-12 d-flex">
+                            </div>
+                            <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                            <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                            <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Media -->
+@*             <div class="row">
                 <div class="form-group px-3">
                     <label class="form-label">	@ViewLocalizer["Photos"]</label>
                     <div class="row">
@@ -123,9 +149,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
+            </div> *@
             <div class="row py-3">
                 <div class="col-lg-12 col-sm-12 col-12">
                     <div class="col mb-2">
