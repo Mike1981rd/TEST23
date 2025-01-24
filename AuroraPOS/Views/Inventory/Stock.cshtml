@@ -13,8 +13,17 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-3 col-sm-6 col-12">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6">
 					<div class="form-group">
+						<label class="form-label">@ViewLocalizer["Date From"]</label>
+						<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+							<input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+							<div class="addonset">
+								<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+							</div>
+						</div>
+					</div>
+@* 					<div class="form-group">
 						<label class="form-label">@ViewLocalizer["Date From"] </label>
 						<div class="input-groupicon">
 							<input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
@@ -22,10 +31,19 @@
 								<img src="/vendor/img/icons/calendars.svg" alt="img">
 							</div>
 						</div>
-					</div>
+					</div> *@
 				</div>
-				<div class="col-lg-3 col-sm-6 col-12">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6">
 					<div class="form-group">
+						<label class="form-label">@ViewLocalizer["Date To"]</label>
+						<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+							<input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+							<div class="addonset">
+								<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+							</div>
+						</div>
+					</div>
+@* 					<div class="form-group">
 						<label class="form-label">@ViewLocalizer["Date To"] </label>
 						<div class="input-groupicon">
 							<input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
@@ -33,16 +51,16 @@
 								<img src="/vendor/img/icons/calendars.svg" alt="img">
 							</div>
 						</div>
-					</div>
+					</div> *@
 				</div>
-				<div class="col-lg-3 col-sm-6 col-12">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6">
 					<div class="form-group">
 						<label class="form-label">@ViewLocalizer["Warehouse"]</label>
 						<select id="filter-warehouse" class="select">
 						</select>
 					</div>
 				</div>
-				<div class="col-lg-3 col-sm-6 col-12">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6">
 					<div class="form-group">
 						<label class="form-label">@ViewLocalizer["Reason"]</label>
 						<select id="filter-reason" class="select">
@@ -57,7 +75,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-lg-3 col-sm-6 col-12">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6">
 					<div class="form-group">
 						<label class="form-label">@ViewLocalizer["Type"]</label>
 						<select id="filter-itemtype" class="select">
@@ -67,7 +85,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-lg-5 col-sm-6 col-12">
+				<div class="col-lg-5 col-sm-6 col-12 mb-6">
 					<div class="form-group">
 						<div class="col">
 							<label class="form-label">@ViewLocalizer["Item"]</label>
@@ -81,7 +99,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
+				<div class="col-lg-3 col-sm-6 col-12 mb-6" style="padding-top: 20px;">
 					<button id="btn-result" class="btn btn-primary m-2">@ViewLocalizer["Generate"]</button>
 				</div>
 				<br />

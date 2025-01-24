@@ -10,7 +10,7 @@
                     <h6>@ViewLocalizer["Update inventory"]</h6>
                 </div>
             </div>
-            <div class="row" data-articleid="0">
+            <div class="row mb-6" data-articleid="0">
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
                         <div class="col">
@@ -40,19 +40,21 @@
                 </div>
             </div>
             <div class="row pt-2">
-                <div class="table-top">
+                <div class="table-top mb-6">
                     <div class="search-set d-flex w-100">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
+                        <div class="search-path" style="display: flex; align-items: center;">
+                            <a class="btn btn-filter" id="filter_search" style="margin: 1px; padding: 1px;">
                                 <img src="/vendor/img/icons/filter.svg" alt="img">
-                                <span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+                                <span id="img_close_span"></span>
                             </a>
                         </div>
-                        <div class="search-input">
+
+
+                        <div class="search-input" style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
                             <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
                             <div class="dataTables_filter"><label> <input id="filter-searchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
                         </div>
-                        <div class="search-input" style="margin-left: 30px;">
+                        <div class="search-input" style="margin-left: 30px;display: flex; flex-direction: row; align-items: center; gap: 2px;">
                             <a class="btn btn-searchset"><img src="/vendor/img/icons/scanners.svg" alt="img"></a>
                             <div class="dataTables_filter"><label> <input id="filter-barcode" type="search" class="barcode-scanner form-control form-control-sm" placeholder="@ViewLocalizer["Scanning"]" ..."></label></div>
                         </div>
@@ -63,9 +65,9 @@
                 </div>
                 <br/>
                 <!-- /Filter -->
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
+                <div class="card mb-6" id="filter_inputs">
+                    <div class="card-body ">
+                        <div class="row" style="display: flex; align-items: center;">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label class="form-label">@ViewLocalizer["Category"] </label>
@@ -374,12 +376,40 @@
             FilterArticle();
         });
 
-        $("#filter_search").click(function () {
-            if ($(this).hasClass("setclose")) {
-                $("#filter-category").val("").change();
-                $("#filter-subcategory").val("").change();
-            }
-        });
+        // $("#filter_search").click(function () {
+        //     if ($(this).hasClass("setclose")) {
+        //         $("#filter-category").val("").change();
+        //         $("#filter-subcategory").val("").change();
+        //     }
+        // });
+
+            // Inicializar el estado del filtro
+    var filterVisible = false;
+
+    // Evento de clic para el botón de filtro
+    $("#filter_search").click(function () {
+        // Alternar la visibilidad de la tarjeta de filtros
+        $("#filter_inputs").toggle();
+
+        // Cambiar el estado del botón y el icono
+        if (filterVisible) {
+            $(this).removeClass("setclose");
+            $("#img_close").remove();
+        } else {
+            $(this).addClass("setclose");
+            $(this).find("#img_close").attr("src", "/vendor/img/icons/closes.svg");
+            var img = "<img src='/vendor/img/icons/closes.svg' alt='img' id='img_close'>";
+            $("#img_close_span").append(img);
+        }
+
+        // Alternar el estado de visibilidad
+        filterVisible = !filterVisible;
+    });
+
+    // Inicializar la visibilidad de la tarjeta de filtros
+    $("#filter_inputs").hide();
+    filterVisible = false;
+
 
 
         $("#physicalcount-warehouse1").change(function () {

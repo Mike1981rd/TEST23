@@ -49,10 +49,10 @@
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
                         <label class="form-label">@ViewLocalizer["Date"] </label>
-                        <div class="input-groupicon">
+                        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
                             <input id="production-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.ProductionDate" class="datetimepicker form-control">
                             <div class="addonset">
-                                <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                             </div>
                         </div>
                     </div>
@@ -115,13 +115,17 @@
                 </div>
                 <br/>
                 <div class="col-lg-12 float-md-right">
-                    <div class="total-order">
-                        <ul>
-                            <li class="total">
-                                <h4>@ViewLocalizer["Total"]</h4>
-                                <h5 id="po-total">$ 0.00</h5>
-                            </li>
-                        </ul>
+                    <div class="total-order" style="display: flex; justify-content: center; align-items: center;">
+                        <table style="border-collapse: collapse; width: 30%;">
+                            <tr>
+                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                    <h5  style="margin: 0;">@ViewLocalizer["Total"]</h5>
+                                </td>
+                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                    <p id="po-total" style="margin: 0;">$ 0.00</p>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

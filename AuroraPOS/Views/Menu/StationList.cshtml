@@ -45,19 +45,25 @@
 
 
 <div class="modal fade" id="addstation" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Station"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Station"]
+					</h4>
+				</div>
                 <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1">ID</span>
                                 <input id="station-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
@@ -65,9 +71,9 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Price"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Price"]<span class="manitory">*</span></label>
                             <select id="station-price" class="select">
                                 <option value="1">Price 1</option>
                                 <option value="2">Price 2</option>
@@ -80,27 +86,27 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Menu"]</label>
+							<label class="form-label">@ViewLocalizer["Menu"]</label>
                             <select id="station-menu" class="select">
                             </select>
                         </div>
                     </div>
                  
 
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Status"]</label>
+							<label class="form-label">@ViewLocalizer["Status"]</label>
                             <select id="station-status" class="select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Sales Mode"]</label>
+							<label class="form-label">@ViewLocalizer["Sales Mode"]</label>
                             <select id="station-mode" class="select">
                                 <option value="0"> @ViewLocalizer["Restaurant"]</option>
                                 <option value="1"> @ViewLocalizer["Barcode"]</option>
@@ -108,47 +114,24 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Print Copy"]<span class="manitory">*</span></label>
+							<label class="form-label">@ViewLocalizer["Print Copy"]<span class="manitory">*</span></label>
                             <input id="station-printcopy" type="number" class="form-control" required>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>@ViewLocalizer["Sucursal"]</label>
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10">
-                                    <select id="station-branch" class="select ">
-                                        <option>@ViewLocalizer["Choose sucursal"]</option>
-                                        @foreach (var b in branchs)
-                                        {
-                                            <option value="@b.ID">@b.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                    <div class="add-icon">
-                                        <a id="add-branch" href="javascript:void(0);">
-                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
-                            <label>@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
+							<label class="form-label">@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
                             <select id="imprimir-precuenta-delivery" class="select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Precio Delivery"]</label>
+							<label class="form-label">@ViewLocalizer["Precio Delivery"]</label>
                             <select id="delivery-price" class="select">
                                 <option value="">Ninguno</option>
                                 <option value="1">Price 1</option>
@@ -162,13 +145,32 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
-                            <label>@ViewLocalizer["Delivery Prepare Type Default"]</label>
+							<label class="form-label">@ViewLocalizer["Delivery Prepare Type Default"]</label>
                             <select id="prepare-type-default" class="select">
                             </select>
                         </div>
                     </div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6">
+						<div class="form-group">
+							<div class="col">
+								<label class="form-label">@ViewLocalizer["Sucursal"]</label>
+								<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+									<select id="station-branch" class="select ">
+										<option>@ViewLocalizer["Choose sucursal"]</option>
+										@foreach (var b in branchs)
+										{
+											<option value="@b.ID">@b.Name</option>
+										}
+									</select>
+									<div class="ml-5">
+										<a id="add-branch" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
                     <div class="col-lg-12 col-sm-12 col-12">
 						<div class="col mb-2">
 							<div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
@@ -197,7 +199,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-lg-12 pt-5">
+                    <div class="col-lg-12 pt-5 mb-6">
                         <label>@ViewLocalizer["Printer Setup"]</label>
                         <div class="table-responsive">
                             <table class="table">
@@ -244,8 +246,8 @@
                 </div>
 			</div>
 			<div class="modal-footer">
-				<button id="edit-station" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
-				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+				<button id="edit-station" type="button" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+				<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
 	</div>
@@ -253,15 +255,21 @@
 
 <!-- Branch Modal -->
 <div class="modal fade" id="editbranch" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Sucursal"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Add/Edit Sucursal"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="form-group">
@@ -271,7 +279,7 @@
 									<span class="input-group-text" id="branch-id" data-id="">ID</span>
 									<input id="branch-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
 								</div>
-								<button id="edit-branch" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+								<button id="edit-branch" type="button" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</button>
 							</div>
 						</div>
 					</div>
@@ -299,15 +307,21 @@
 
 <!-- Question Modal-->
 <div class="modal fade" id="listareas" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Area List"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Area List"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="table-responsive w-100" style="max-height:400px;">
@@ -333,15 +347,21 @@
 
 
 <div class="modal fade" id="addgroupwarehouse" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Warehouses by Group"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Warehouses by Group"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="row">
 						<div class="col-lg-6 col-sm-6 col-12 pb-3">
@@ -367,7 +387,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="add-group-submit" type="button" class="btn btn-submit">@ViewLocalizer["Submit"]</button>
+				<button id="add-group-submit" type="button" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</button>
 				<button type="button" class="btn btn-cancel" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
 			</div>
 		</div>
@@ -598,7 +618,7 @@
 			var html = `<tr data-id='${area.id}'> <td>${area.name}</td>`;
 			html += `
 					<td><div>
-					<select class="area-price select">
+					<select class="area-price select form-select">
 						<option value="0">None</option>
 						<option value="1">Price 1</option>
 						<option value="2">Price 2</option>
@@ -800,7 +820,7 @@
 						var dddd = "";
 						if (c.printerChannel.isDefault) dddd = "Yes";
 
-						var phtml = `<select class='printer select'>`;
+						var phtml = `<select class='printer select form-select'>`;
 						phtml += `<option>Choose the printer</option>`
 						var printers = d.printers;
 						for(var j = 0; j < printers.length; j++)

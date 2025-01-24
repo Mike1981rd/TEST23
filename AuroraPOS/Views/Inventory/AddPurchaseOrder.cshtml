@@ -53,60 +53,62 @@
                             <h5 class="card-tile mb-0">Información de producto</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Supplier"]</label>
-                                <div class="d-flex justify-content-between" style="gap: 10px">
-                                    
-                                    <select id="purchase-supplier" class="select form-control">
-                                    </select>
-                                    <div class="add-icon">
-                                        <a id="add-supplier-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row mb-6">
                                 <div class="col">
-                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Warehouse"]</label>
+                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Supplier"]</label>
                                     <div class="d-flex justify-content-between" style="gap: 10px">
-                                        <select id="purchase-warehouse" class="select form-control">
+
+                                        <select id="purchase-supplier" class="select form-control">
                                         </select>
                                         <div class="add-icon">
-                                            <div class="add-icon">
-                                                <a id="add-warehouse-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                                            </div>
+                                            <a id="add-supplier-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
-                            <div class="row mb-6">
                                 <div class="col">
-                                    <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["NCF"]</label>
-                                    <input id="purchase-ncf" min="11" max="13" type="text" class="form-control">
-                                    <span class="form-text text-muted">11 ~ 13 digits | eg. 123133122221</span>
+                                    <div class="col">
+                                        <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Warehouse"]</label>
+                                        <div class="d-flex justify-content-between" style="gap: 10px">
+                                            <select id="purchase-warehouse" class="select form-control">
+                                            </select>
+                                            <div class="add-icon">
+                                                <div class="add-icon">
+                                                    <a id="add-warehouse-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-6">
                                 <div class="col">
-                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Terms"]</label>
-                                    <select id="purchase-terms" class="select form-select">
-                                        <option value="Contado">Contado</option>
-                                        <option value="Consignacion">Consignacion</option>
-                                        <option value="Credito">Credito</option>
-                                        <option value="Produccion">Produccion</option>
-                                    </select>
+                                    <div class="col">
+                                        <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["NCF"]</label>
+                                        <input id="purchase-ncf" min="11" max="13" type="text" class="form-control">
+                                        <span class="form-text text-muted">11 ~ 13 digits | eg. 123133122221</span>
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="row mb-6">
                                 <div class="col">
-                                    <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Order Date"] </label>
-                                    <div class="d-flex">
-                                        <input id="purchase-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker form-control">
-                                        <div class="addonset">
-                                            <img src="/vendor/img/icons/calendars.svg" alt="img">
+                                    <div class="col">
+                                        <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Terms"]</label>
+                                        <select id="purchase-terms" class="select form-select">
+                                            <option value="Contado">Contado</option>
+                                            <option value="Consignacion">Consignacion</option>
+                                            <option value="Credito">Credito</option>
+                                            <option value="Produccion">Produccion</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="col">
+                                        <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Order Date"] </label>
+                                        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                            <input id="purchase-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker form-control">
+                                            <div class="addonset">
+                                                <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -197,37 +199,35 @@
                                     <div data-repeater-list="group-a">
                                         <div data-repeater-item="">
                                             <div class="row mb-6">
-                                                <div class="col">
-                                                    <label class="form-label" for="ecommerce-product-barcode"> @ViewLocalizer["Discount"]</label>
-                                                    <div class="d-flex">
-                                                        <select id="item-discountunit-total" class="select form-control">
-                                                            <option selected value="%">%</option>
-                                                            <option value="$">$</option>
-                                                        </select>
-                                                        <input id="order-discount" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control">
+                                                <div class="col-4">
+                                                    <div class="col-4">
+                                                        <label class="form-label" for="ecommerce-product-barcode"> @ViewLocalizer["Discount"]</label>
+                                                        <div class="d-flex" style="gap: 10px">
+                                                            <input id="order-discount" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control col-10">
+                                                            <select id="item-discountunit-total" class="select form-control col-2">
+                                                                <option selected value="%">%</option>
+                                                                <option value="$">$</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-
-
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="col">
+                                                        <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Shipping"]</label>
+                                                        <input id="order-shipping" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="col">
+                                                        <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Tax"]</label>
+                                                        <select id="shipping-tax" class="select form-control">
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="row mb-6">
-                                                <div class="col">
-                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Shipping"]</label>
-                                                    <input id="order-shipping" onkeypress="return onlyDecimalKey(event)" placeholder="0.00" type="text" class="form-control">
 
-
-                                                </div>
-                                            </div>
-                                            <div class="row mb-6">
-                                                <div class="col">
-                                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Tax"]</label>
-                                                    <select id="shipping-tax" class="select form-control">
-                                                    </select>
-
-                                                </div>
-                                            </div>
                                             <div class="row">
-                                                <div class="col-lg-8 col-sm-6 col-12 table-responsive mb-3">
+                                                <div class="col table-responsive">
                                                     <table class="table">
                                                         <thead class="table-light">
                                                             <tr>
@@ -255,37 +255,65 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-12 float-md-right">
-                                        <div class="total-order">
-                                            <ul>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Base Taxable"]</label>
-                                                    <p id="po-basetaxable">$ 0.00</p>
-                                                </li>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Extra Amount"]</label>
-                                                    <p id="po-extent">$ 0.00</p>
-                                                </li>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Shipping"]</label>
-                                                    <p id="po-shipping">$ 0.00</p>
-                                                </li>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Discount"]</label>
-                                                    <p id="po-discount">$ 0.00</p>
-                                                </li>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Sub Total"]</label>
-                                                    <p id="po-subtotal">$ 0.00</p>
-                                                </li>
-                                                <li>
-                                                    <label class="form-label">@ViewLocalizer["Tax"]</label>
-                                                    <p id="po-tax">$ 0.00</p>
-                                                </li>
-                                                <li class="total">
-                                                    <label class="form-label">@ViewLocalizer["Net Total"]</label>
-                                                    <p id="po-total">$ 0.00</p>
-                                                </li>
-                                            </ul>
+                                        <div class="total-order" style="display: flex; justify-content: center; align-items: center;">
+                                            <table style="border-collapse: collapse; width: 30%;">
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Base Taxable"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-basetaxable" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Extra Amount"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-extent" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Shipping"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-shipping" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Discount"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-discount" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Sub Total"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-subtotal" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Tax"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-tax" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                        <label class="form-label">@ViewLocalizer["Net Total"]</label>
+                                                    </td>
+                                                    <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                        <p id="po-total" style="margin: 0;">$ 0.00</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
