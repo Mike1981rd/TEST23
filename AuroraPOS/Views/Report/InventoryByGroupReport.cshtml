@@ -6,77 +6,93 @@
     var groups = (List<Group>)ViewBag.Groups;
 }
 
-<div class="page-header">
-    <div class="page-title">
-        <h3>Costo de venta</h3>
-    </div>
-</div>
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="page-header">
+            <div class="page-title">
+                <h3>Costo de venta</h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Rango de fechas"]</label>
-                    <select id="date-range-selector" class="form-control">
-                        <option value="">Selecciona una fecha</option>
-                        <option value="today">Hoy</option>
-                        <option value="yesterday">Ayer</option>
-                        <option value="last7days">Últimos 7 días</option>
-                        <option value="last30days">Últimos 30 días</option>
-                        <option value="last90days">Últimos 90 días</option>
-                        <option value="last365days">Últimos 365 días</option>
-                        <option value="lastmonth">Mes pasado</option>
-                    </select>
-                </div>
-            </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date From"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date To"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Almacen"] </label>
+                            <select id="station-warehouse" class="select ">
+                                <option value=0>All</option>
+                                @foreach (var b in warehouses)
+                                {
+                                    <option value="@b.ID">@b.WarehouseName</option>
+                                }
+                            </select>
+                        </div>
 
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date From"] </label>
-                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date To"] </label>
-                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Almacen"] </label>
-                    <select id="station-warehouse" class="select ">
-                        <option value=0>All</option>
-                        @foreach (var b in warehouses)
-                        {
-                            <option value="@b.ID">@b.WarehouseName</option>
-                        }
-                    </select>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Group"]</label>
+                            <select id="report-group" class="form-control tagging select" multiple aria-hidden="true">
+                                @foreach (var g in groups)
+                                {
+                                    <option value="@g.ID" selected>@g.GroupName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+                        <button id="btn-report" class="btn btn-primary m-2 ">@ViewLocalizer["Generate Report"]</button>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+                        <button id="btn-excelreport" class="btn btn-primary m-2 ">@ViewLocalizer["Generate Excel Report"]</button>
+                    </div>
                 </div>
 
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Group"]</label>
-                    <select id="report-group" class="form-control tagging select" multiple aria-hidden="true">
-                        @foreach (var g in groups)
-                        {
-                            <option value="@g.ID" selected>@g.GroupName</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-                <button id="btn-report" class="btn btn-primary m-2 ">@ViewLocalizer["Generate Report"]</button>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-                <button id="btn-excelreport" class="btn btn-primary m-2 ">@ViewLocalizer["Generate Excel Report"]</button>
             </div>
         </div>
 
     </div>
 </div>
+
+
 <script>
 
     $(document).ready(function () {

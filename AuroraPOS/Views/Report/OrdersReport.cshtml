@@ -30,170 +30,186 @@
         background-color: floralwhite;
     }
 </style>
-<div class="page-header">
-    <div class="page-title">
-        <h3>@ViewLocalizer["Orders Report"]</h3>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-body">
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+        <div class="page-header">
+            <div class="page-title">
+                <h3>@ViewLocalizer["Orders Report"]</h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
 
-        <div class="row">
+                <div class="row mb-6">
 
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Rango de fechas"]</label>
-                    <select id="date-range-selector" class="form-control">
-                        <option value="">Selecciona una fecha</option>
-                        <option value="today">Hoy</option>
-                        <option value="yesterday">Ayer</option>
-                        <option value="last7days">Últimos 7 días</option>
-                        <option value="last30days">Últimos 30 días</option>
-                        <option value="last90days">Últimos 90 días</option>
-                        <option value="last365days">Últimos 365 días</option>
-                        <option value="lastmonth">Mes pasado</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date From"] </label>
-                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date To"] </label>
-                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Sucursal"] </label>
-                    <select id="station-branch" class="select ">
-                        <option value=0>Selecciona una sucursal</option>
-                        @foreach (var b in branchs)
-                        {
-                            <option value="@b.ID">@b.Name</option>
-                        }
-                    </select>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date From"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date To"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Sucursal"] </label>
+                            <select id="station-branch" class="select ">
+                                <option value=0>Selecciona una sucursal</option>
+                                @foreach (var b in branchs)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Cliente"] </label>
+                            <select id="user" class="js-example-basic-multiple" name="states[]" multiple="multiple">
+                                <option value=0>Selecciona un cliente</option>
+                                @foreach (var b in users)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Orden"] </label>
+                            <input id="orden" type="number" class="form-control" required="">
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Cliente"] </label>
-                    <select id="user" class="js-example-basic-multiple" name="states[]" multiple="multiple">
-                        <option value=0>Selecciona un cliente</option>
-                        @foreach (var b in users)
-                        {
-                            <option value="@b.ID">@b.Name</option>
-                        }
-                    </select>
+
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+
+                            <table id="report-orderlista-list" class="table">
+                                <thead class="table-light" id="ocultarthead">
+                                    <tr>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Fecha"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center"># @ViewLocalizer["Orden"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Subtotal"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Descuento"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["ITBIS"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Propina"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Prop. Voluntaria"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Delivery"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Tipo"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Total"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Costo"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">%@ViewLocalizer["Costo"]</th>
+                                        <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Ganancia"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ordersreports-body">
+                                    <tr>
+                                        <td colspan="15">
+                                            <table class="table table-striped">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>@ViewLocalizer["Producto"]</th>
+                                                        <th>@ViewLocalizer["Precio"]</th>
+                                                        <th>@ViewLocalizer["Qty"]</th>
+                                                        <th>@ViewLocalizer["Sub Total"]</th>
+                                                        <th>@ViewLocalizer["Descuento"]</th>
+                                                        <th>@ViewLocalizer["Itbis"]</th>
+                                                        <th>@ViewLocalizer["Propina"]</th>
+                                                        <th>@ViewLocalizer["Total"]</th>
+                                                        <th>@ViewLocalizer["Costo"]</th>
+                                                        <th>@ViewLocalizer["Costo"]</th>
+                                                        <th>@ViewLocalizer["Ganancia"]</th>
+                                                        @*     <th>@ViewLocalizer["Método de Pago"]</th> *@
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody id="report-ProductosOrdersreports-body">
+                                                    <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
+                                                        <td colspan="15">
+                                                            <div id="detalle-1" class="collapse">
+                                                                <table class="table table-striped">
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th>@ViewLocalizer["Artículo"]</th>
+                                                                            <th>@ViewLocalizer["Marca"]</th>
+                                                                            <th>@ViewLocalizer["Qty"]</th>
+                                                                            <th>@ViewLocalizer["Unidad"]</th>
+                                                                            <th>@ViewLocalizer["Costo"]</th>
+                                                                            <th>@ViewLocalizer["Total"]</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
+                                                        <td colspan="11">
+                                                            <!-- Colspan ajustado para cubrir las primeras 11 columnas -->
+                                                            <!-- Contenido de la fila -->
+                                                        </td>
+                                                        <td colspan="2">Mastercard 12345</td> <!-- Contenido de la nueva columna -->
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <canvas id="myChart11"></canvas>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Orden"] </label>
-                    <input id="orden" type="number" class="form-control" required="">
-                </div>
+
+
+
+
             </div>
         </div>
 
-
-
-        <div class="row">
-            <div class="col-lg-12 col-sm-12 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-
-                    <table id="report-orderlista-list" class="table">
-                        <thead class="table-light" id="ocultarthead">
-                            <tr>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Fecha"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center"># @ViewLocalizer["Orden"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Subtotal"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Descuento"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["ITBIS"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Propina"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Prop. Voluntaria"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Delivery"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Tipo"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Total"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Costo"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">%@ViewLocalizer["Costo"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Ganancia"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ordersreports-body">
-                            <tr>
-                                <td colspan="15">
-                                    <table class="table table-striped">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>@ViewLocalizer["Producto"]</th>
-                                                <th>@ViewLocalizer["Precio"]</th>
-                                                <th>@ViewLocalizer["Qty"]</th>
-                                                <th>@ViewLocalizer["Sub Total"]</th>
-                                                <th>@ViewLocalizer["Descuento"]</th>
-                                                <th>@ViewLocalizer["Itbis"]</th>
-                                                <th>@ViewLocalizer["Propina"]</th>
-                                                <th>@ViewLocalizer["Total"]</th>
-                                                <th>@ViewLocalizer["Costo"]</th>
-                                                <th>@ViewLocalizer["Costo"]</th>
-                                                <th>@ViewLocalizer["Ganancia"]</th>
-                                            @*     <th>@ViewLocalizer["Método de Pago"]</th> *@
-                                            </tr>
-
-                                        </thead>
-                                        <tbody id="report-ProductosOrdersreports-body">
-                                            <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
-                                                <td colspan="15">
-                                                    <div id="detalle-1" class="collapse">
-                                                        <table class="table table-striped">
-                                                            <thead class="table-light">
-                                                                <tr>
-                                                                    <th>@ViewLocalizer["Artículo"]</th>
-                                                                    <th>@ViewLocalizer["Marca"]</th>
-                                                                    <th>@ViewLocalizer["Qty"]</th>
-                                                                    <th>@ViewLocalizer["Unidad"]</th>
-                                                                    <th>@ViewLocalizer["Costo"]</th>
-                                                                    <th>@ViewLocalizer["Total"]</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                             
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr data-toggle="collapse" data-target="#detalle-1" class="clickable">
-                                                <td colspan="11">
-                                                    <!-- Colspan ajustado para cubrir las primeras 11 columnas -->
-                                                    <!-- Contenido de la fila -->
-                                                </td>
-                                                <td colspan="2">Mastercard 12345</td> <!-- Contenido de la nueva columna -->
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                          
-                        </tbody>
-                    </table>
-                
-                    <canvas id="myChart11"></canvas>
-                </div>
-            </div>
-          
-        </div>
-
-      
-
-
     </div>
 </div>
+
+
 
 
 

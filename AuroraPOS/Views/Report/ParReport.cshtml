@@ -2,49 +2,53 @@
 @{
 }
 
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+		<div class="page-header">
+			<div class="page-title">
+				<h3>Minimum and Par Report</h3>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body">
+				<div class="row mb-6">
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Supplier"] </label>
+							<select id="filter-supplier" class="select">
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+						<button id="create-porder" class="btn btn-primary m-2">@ViewLocalizer["Create Purchase Order"]</button>
+					</div>
+				</div>
 
-<div class="page-header">
-	<div class="page-title">
-		<h3>Minimum and Par Report</h3>
-	</div>
-</div>
-
-
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Supplier"] </label>
-					<select id="filter-supplier" class="select">
-					</select>
+				<div>
+					<table class="table">
+						<thead class="table-light">
+							<tr>
+								<th><input type="checkbox" class="select-all-check form-check" /></th>
+								<th>@ViewLocalizer["Name"]</th>
+								<th>@ViewLocalizer["Supplier"]</th>
+								<th>@ViewLocalizer["Unit"]</th>
+								<th>@ViewLocalizer["Cost"]</th>
+								<th>@ViewLocalizer["Stock"]</th>
+								<th>@ViewLocalizer["Par"]</th>
+								<th>@ViewLocalizer["Reorder"]</th>
+							</tr>
+						</thead>
+						<tbody id="par-report">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-				<button id="create-porder" class="btn btn-primary m-2">@ViewLocalizer["Create Purchase Order"]</button>
-			</div>
 		</div>
 
-		<div>
-			<table class="table">
-				<thead class="table-light">
-					<tr>
-						<th><input type="checkbox" class="select-all-check form-check" /></th>
-						<th>@ViewLocalizer["Name"]</th>
-						<th>@ViewLocalizer["Supplier"]</th>
-						<th>@ViewLocalizer["Unit"]</th>
-						<th>@ViewLocalizer["Cost"]</th>
-						<th>@ViewLocalizer["Stock"]</th>
-						<th>@ViewLocalizer["Par"]</th>
-						<th>@ViewLocalizer["Reorder"]</th>
-					</tr>
-				</thead>
-				<tbody id="par-report">
-				</tbody>
-			</table>
-		</div>
 	</div>
 </div>
+
+
 
 <div class="modal fade" id="editpurchaseorder" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-dialog-centered modal-simple" role="document">
@@ -63,11 +67,11 @@
 					</h4>
 				</div>
 				<div class="row">
-					<div class="col-12">
+					<div class="col">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Warehouse"]</label>
 							<div class="row">
-								<div class="col-lg-10 col-sm-10 col-10">
+								<div class="col">
 									<select id="purchase-warehouse" class="select">
 									</select>
 								</div>
