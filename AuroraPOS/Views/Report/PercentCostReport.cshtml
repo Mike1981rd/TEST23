@@ -1,36 +1,42 @@
 ﻿@{
 
 }
-<div class="page-header">
-	<div class="page-title">
-		<h3>Costos de productos</h3>
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+		<div class="page-header">
+			<div class="page-title">
+				<h3>Costos de productos</h3>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">Start Percent (%)</label>
+							<input class="form-control" id="start-percent" onkeypress="return onlyDecimalKey(event)" value="" type="text" />
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">End Percent (%) </label>
+							<input class="form-control" id="end-percent" onkeypress="return onlyDecimalKey(event)" value="" type="text" />
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+						<button id="btn-report" class="btn btn-primary m-2 ">Generate PDF Report</button>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+						<button id="btn-excelreport" class="btn btn-primary m-2 ">Generate Excel Report</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>Start Percent (%)</label>
-					<input id="start-percent"  onkeypress="return onlyDecimalKey(event)" value="" type="text" />
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>End Percent (%) </label>
-					<input id="end-percent" onkeypress="return onlyDecimalKey(event)" value="" type="text" />
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-				<button id="btn-report" class="btn btn-primary m-2 ">Generate PDF Report</button>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-				<button id="btn-excelreport" class="btn btn-primary m-2 ">Generate Excel Report</button>
-			</div>
-		</div>
-	</div>
-</div>
+
 
 <script>
 

@@ -3,33 +3,52 @@
 *@
 @{
 }
-<div class="page-header">
-	<div class="page-title">
-		<h3>@ViewLocalizer["Sales by Payment Method Report"]</h3>
+
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+		<div class="page-header">
+			<div class="page-title">
+				<h3>@ViewLocalizer["Sales by Payment Method Report"]</h3>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Date From"]</label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Date To"]</label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+						<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </div>
 
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Date From"] </label>
-					<input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Date To"] </label>
-					<input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-				<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
-			</div>
-		</div>
-	</div>
-</div>
+
+
+
 
 <script>
 

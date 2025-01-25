@@ -5,330 +5,352 @@
     var users = (List<User>)ViewBag.Users;
     var branchs = (List<t_sucursal>)ViewBag.Branchs;
 }
-<div class="page-header">
-    <div class="page-title">
-        <h3>Cierre del dia</h3>
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+        <div class="page-header">
+            <div class="page-title">
+                <h3>Cierre del dia</h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+
+                <div class="row mb-6">
+
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Rango de fechas"]</label>
+                            <select id="date-range-selector" class="form-control">
+                                <option value="">Selecciona una fecha</option>
+                                <option value="today">Hoy</option>
+                                <option value="yesterday">Ayer</option>
+                                <option value="last7days">Últimos 7 días</option>
+                                <option value="last30days">Últimos 30 días</option>
+                                <option value="last90days">Últimos 90 días</option>
+                                <option value="last365days">Últimos 365 días</option>
+                                <option value="lastmonth">Mes pasado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date From"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date To"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Sucursal"] </label>
+                            <select id="station-branch" class="select ">
+                                <option value=0>Selecciona una sucursal</option>
+                                @foreach (var b in branchs)
+                                {
+                                    <option value="@b.ID">@b.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Usuario"] </label>
+                            <select id="user" class="select ">
+                                <option value=0>Selecciona un usuario</option>
+                                @foreach (var b in users)
+                                {
+                                    <option value="@b.ID">@b.FullName</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Cierre"] </label>
+                            <select id="cierre" class="select ">
+                                <option value=0>Selecciona un usuario</option>
+                                @foreach (var b in users)
+                                {
+                                    <option value="@b.ID">@b.FullName</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart11"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Tipo de Orden"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-tipo-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart8"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Transacciones"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-transacciones-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart3"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                            @ViewLocalizer["Ventas al Contado"]
+
+                                            <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_al_contado')">Ver Detalle</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-contado-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart5"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                            @ViewLocalizer["Tarjetas de Crédito"]
+                                            <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_tarjeta')">Ver Detalle</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-tarjetas-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart9"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">
+                                            @ViewLocalizer["Otras Ventas"]
+                                            <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_otras')">Ver Detalle</button>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="report-otras-ventas-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart6"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Impuestos x Grupo"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-impuestos-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart12"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Legal"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-propinas-legal-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Domicilio"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-domicilio-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart10"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Voluntaria"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-propinas-voluntaria-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Grupo"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-x-grupo-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart14"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Categoria"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-categoria-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart7"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Horas"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-ventas-hora-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart13"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12 mb-6">
+                        <div class="table-responsive" style="padding-bottom:70px;">
+                            <table id="report-list" class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Descuentos"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-descuentos-body">
+                                </tbody>
+                            </table>
+                            <canvas id="myChart4"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
 
-        <div class="row">
-
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Rango de fechas"]</label>
-                    <select id="date-range-selector" class="form-control">
-                        <option value="">Selecciona una fecha</option>
-                        <option value="today">Hoy</option>
-                        <option value="yesterday">Ayer</option>
-                        <option value="last7days">Últimos 7 días</option>
-                        <option value="last30days">Últimos 30 días</option>
-                        <option value="last90days">Últimos 90 días</option>
-                        <option value="last365days">Últimos 365 días</option>
-                        <option value="lastmonth">Mes pasado</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date From"] </label>
-                    <input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Date To"] </label>
-                    <input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Sucursal"] </label>
-                    <select id="station-branch" class="select ">
-                        <option value=0>Selecciona una sucursal</option>
-                        @foreach (var b in branchs)
-                        {
-                            <option value="@b.ID">@b.Name</option>
-                        }
-                    </select>
-                </div>
-
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Usuario"] </label>
-                    <select id="user" class="select ">
-                        <option value=0>Selecciona un usuario</option>
-                        @foreach (var b in users)
-                        {
-                            <option value="@b.ID">@b.FullName</option>
-                        }
-                    </select>
-                </div>
-
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 ">
-                <div class="form-group">
-                    <label>@ViewLocalizer["Cierre"] </label>
-                    <select id="cierre" class="select ">
-                        <option value=0>Selecciona un usuario</option>
-                        @foreach (var b in users)
-                        {
-                            <option value="@b.ID">@b.FullName</option>
-                        }
-                    </select>
-                </div>
-
-            </div>
-        </div>
-
-
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart11"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Tipo de Orden"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-tipo-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart8"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Transacciones"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-transacciones-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart3"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
-                                    @ViewLocalizer["Ventas al Contado"]
-
-                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_al_contado')">Ver Detalle</button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-contado-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart5"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
-                                    @ViewLocalizer["Tarjetas de Crédito"]
-                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_tarjeta')">Ver Detalle</button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-tarjetas-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart9"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">
-                                    @ViewLocalizer["Otras Ventas"]
-                                    <button class="btn btn-submit me-2" style="float: right; padding-top: 1px; padding-bottom: 1px; background: crimson;" onclick="verDetalle('ventas_otras')">Ver Detalle</button>
-                                </th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody id="report-otras-ventas-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart6"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Impuestos x Grupo"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-impuestos-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart12"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Legal"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-propinas-legal-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Domicilio"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-domicilio-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart10"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Propina Voluntaria"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-propinas-voluntaria-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart2"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Grupo"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-x-grupo-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart14"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Categoria"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-categoria-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart7"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Ventas x Horas"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-ventas-hora-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart13"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
-                    <table id="report-list" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th colspan="2" style="background-color:orange; color:white; text-align:center">@ViewLocalizer["Descuentos"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-descuentos-body">
-                        </tbody>
-                    </table>
-                    <canvas id="myChart4"></canvas>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-</div>
 
 
 <div class="modal fade" id="moreinfomodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-fullscreen modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+@*             <div class="modal-header">
                 <h5 class="supplier-modal-title">@ViewLocalizer["Detalles"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> *@
             <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">
+                        @ViewLocalizer["Detalles"]
+                    </h4>
+                </div>
                 <div class="row table-responsive">
 
                     <div id="ventas-contado-detalle-div" class="col-12" style="display:none">

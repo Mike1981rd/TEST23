@@ -3,61 +3,79 @@
 *@
 @{
 }
-<div class="page-header">
-	<div class="page-title">
-		<h3>@ViewLocalizer["Void Product Report"]</h3>
-	</div>
-</div>
-
-<div class="card">
-	<div class="card-body">
-		<div class="row">
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Date From"] </label>
-					<input id="filter_datefrom" type="text" class="datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12">
-				<div class="form-group">
-					<label>@ViewLocalizer["Date To"] </label>
-					<input id="filter_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
-				</div>
-			</div>
-			<div class="col-lg-3 col-sm-6 col-12" style="padding-top: 20px;">
-				<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+<div class="content-wrapper">
+	<div class="container-xxl flex-grow-1 container-p-y">
+		<div class="page-header">
+			<div class="page-title">
+				<h3>@ViewLocalizer["Void Product Report"]</h3>
 			</div>
 		</div>
-        <div class="row">
-            <div class="col-lg-12 col-sm-12 col-12">
-                <div class="table-responsive" style="padding-bottom:70px;">
+		<div class="card">
+			<div class="card-body">
+				<div class="row mb-6">
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Date From"]</label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12">
+						<div class="form-group">
+							<label class="form-label">@ViewLocalizer["Date To"]</label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">
+						<button id="btn-report" class="btn btn-primary m-2">@ViewLocalizer["Generate Report"]</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-sm-12 col-12">
+						<div class="table-responsive" style="padding-bottom:70px;">
 
-                    <table id="report-productista-list" class="table">
-                        <thead class="table-light" id="ocultarthead">
-                            <tr>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Order#"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Monto"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Producto"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Qty"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Creado"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Cancelado"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Razon"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Usuario"]</th>
-                                <th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Void by"]</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-productista-list-body">
-                        </tbody>
-                    </table>
+							<table id="report-productista-list" class="table">
+								<thead class="table-light" id="ocultarthead">
+									<tr>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Order#"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Monto"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Producto"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Qty"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Creado"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Cancelado"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Razon"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Usuario"]</th>
+										<th style="background-color:#493F5E; color:white; text-align:center">@ViewLocalizer["Void by"]</th>
+									</tr>
+								</thead>
+								<tbody id="report-productista-list-body">
+								</tbody>
+							</table>
 
-                    <canvas id="myChart11"></canvas>
-                </div>
-            </div>
+							<canvas id="myChart11"></canvas>
+						</div>
+					</div>
 
-        </div>
+				</div>
+
+			</div>
+		</div>
 
 	</div>
 </div>
+
+
+
+
 
 <script>
 

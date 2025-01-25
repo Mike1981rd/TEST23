@@ -34,7 +34,7 @@
 
             <div class="row">
                 <!-- First column-->
-                <div class="col-12 col-lg-8">
+                <div class="col">
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -51,33 +51,27 @@
                                     <div class="d-flex">
                                         <select id="article-category" class="select form-modal">
                                             <option value="">@ViewLocalizer["Choose category"]</option>
-                                            @foreach (var c in categories)
+                                            @foreach (var t in categories)
                                             {
-                                                <option value="@c.ID">@c.Name</option>
+                                                <option value="@t.ID">@t.Name</option>
                                             }
+
                                         </select>
-                                        <div class="add-icon">
-                                            <a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
-                                        </div>
+                                        <button id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </button>
                                     </div>
 
                                 </div>
-                            </div>
-                            <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
                                     <div class="d-flex">
                                         <select id="article-subcategory" class="select form-control">
                                         </select>
-                                        <div class="add-icon">
-                                            <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
-                                        </div>
+                                        <button id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </button>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -101,7 +95,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcotaggingde">
-                                        @ViewLocalizer["Unit"]/label>
+                                        @ViewLocalizer["Unit"]</label>
                                     <select id="max-unit" class="select form-control">
                                     </select>
                                 </div>
@@ -125,13 +119,8 @@
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Barcode"]</label>
                                     <div class="d-flex">
-                                        <div class="col-8">
-                                            <input id="subrecipe-barcode" type="text" class="form-control">
-                                        </div>
-                                        <div class="col-4">
-                                            <button id="print-label" class="btn btn-primary waves-effect waves-light me-2">Generate Barcode</button>
-                                        </div>
-
+                                        <input id="subrecipe-barcode" type="text" class="form-control me-2">
+                                        <button id="print-label" class="btn btn-primary">Generate Barcode</button>
                                     </div>
                                 </div>
                             </div>
@@ -148,11 +137,13 @@
                                         <div data-repeater-item="">
                                             <div class="row mb-6">
                                                 <div class="col">
-                                                    <h6 for="ecommerce-product-barcode">@ViewLocalizer["Units"]</h6>
-                                                    <div class="add-icon mx-1">
-                                                        <a id="unit-plus" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">
-                                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                                        </a>
+                                                    <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+                                                        <h6 class="text-left" style="margin: 0;" for="ecommerce-product-barcode">@ViewLocalizer["Units"] </h6>
+                                                        <div class="add-icon">
+                                                            <a id="unit-plus" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+                                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                     <br />
                                                     <div class="card-datatable table-responsive" style="max-height: 300px; overflow:auto;">
@@ -234,7 +225,8 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-6">
-                                               
+                                                <h5 class="card-title mb-0">Opciones</h5>
+
                                                 <div class="col">
                                                     <div class="row pt-2">
                                                         <div class="card-datatable table-responsive">
@@ -257,9 +249,58 @@
                                                             </table>
                                                         </div>
                                                     </div>
-                                                   
-
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                    <a id="add-article-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Article"]</a>
+
+                                                    </div>
+                                                    <div class="col">
+                                                    <a id="add-subrecipe-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Sub Recipe"]</a>
+
+                                                    </div>
+                                                    <div class="col">
+                                                        <a id="print-recipe" href="javascript:void(0);" class="btn btn-default  btn-info me-2 p-2">@ViewLocalizer["Print Recipe"]</a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <!-- Base Price -->
+                                                <div class="mb-6">
+                                                    <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Unit"]</label>
+                                                    <select id="subrecipe-unit" class="select form-control">
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-12 float-md-right">
+                                                    <div class="total-order" style="display: flex; justify-content: center; align-items: center;">
+                                                        <table style="border-collapse: collapse; width: 30%;">
+                                                            <tr>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                    <h5 style="margin: 0;">@ViewLocalizer["Total"]</h5>
+                                                                </td>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                    <p id="po-total" style="margin: 0;">$ 0.00</p>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+@*                                                 <div class="mb-6">
+                                                    <div class="total-order">
+                                                        <ul>
+                                                            <li class="total">
+                                                                <h4>@ViewLocalizer["Total"]</h4>
+                                                                <h5 id="po-total">$ 0.00</h5>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div> *@
+                                                <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Status"]</label>
+                                                <select id="product-status" class="select form-control">
+                                                    <option value="1">@ViewLocalizer["Active"]</option>
+                                                    <option value="0">@ViewLocalizer["Inactive"]</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -274,9 +315,9 @@
                             <!-- /Options-->
                         </div>
                     </div>
-                <div class="col-12 col-lg-4">
+@*                 <div class="col-12 col-lg-4">
                     <!-- Pricing Card -->
-                    <div class="card mb-6">
+                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Opciones</h5>
                         </div>
@@ -316,10 +357,10 @@
                                 <option value="0">@ViewLocalizer["Inactive"]</option>
                             </select>
                         </div>
-                    </div>
+                    </div> 
                     <!-- /Pricing Card -->
 
-                </div>
+                </div> *@
                 </div>
                 <!-- /Inventory -->
                 <!-- /Second column -->
@@ -520,25 +561,43 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Packing Date"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="label-date" type="text" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+@*                         <div class="form-group">
                             <label>@ViewLocalizer["Packing Date"]</label>
                             <input id="label-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                        </div>
+                        </div> *@
                     </div>
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Expire Date"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                                <input id="label-expire-date" type="text" value="@DateTime.Today.AddDays(10).ToString("dd/MM/yyyy")" class="datetimepicker form-control">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+@*                         <div class="form-group">
                             <label>@ViewLocalizer["Expire Date"]</label>
                             <input id="label-expire-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(10).ToString("dd/MM/yyyy")">
-                        </div>
+                        </div> *@
                     </div>
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
                             <label>@ViewLocalizer["Copies"]</label>
                             <input id="label-copies" type="number" class="form-control" value="1" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-sm-6 col-12 pb-3">
+                    <div class="col-lg-6 col-sm-6 col-12 pb-3 mb-6">
                         <div class="form-group mb-0">
                             <label>@ViewLocalizer["Dimension"]</label>
                             <select id="label-dimension" class="select">
