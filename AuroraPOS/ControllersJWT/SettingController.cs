@@ -110,7 +110,7 @@ namespace AuroraPOS.ControllersJWT
             try
             {
                 var stations = _dbContext.Stations
-                    .Select(s => new Station { ID = s.ID, Name = s.Name })
+                    .Select(s => new Station { ID = s.ID, Name = s.Name, SalesMode = s.SalesMode})
                     .ToList();
 
                 if (stations.Any() && soloTipoKiosco)
