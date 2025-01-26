@@ -198,7 +198,7 @@ public class POSController : Controller
 
     [HttpGet("GetMenuGroupList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuGroupList([FromBody] int stationId)
+    public JsonResult GetMenuGroupList(int stationId)
     {
         var response = new MenuGroupResponse();
         try
@@ -209,6 +209,60 @@ public class POSController : Controller
             if (menuGroupList != null)
             {
                 response.Valor = menuGroupList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+    
+    [HttpGet("GetMenuCategoryList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuCategoryList(long groupId)
+    {
+        var response = new GetMenuCategoryListResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuCategoryList = objPOSCore.GetMenuCategoryList(groupId);
+
+            if (menuCategoryList != null)
+            {
+                response.Valor = menuCategoryList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
+    
+    [HttpGet("GetMenuSubCategoryList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuSubCategoryList(long categoryId)
+    {
+        var response = new GetMenuSubCategoryListResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuSubCategoryList = objPOSCore.GetMenuSubCategoryList(categoryId);
+
+            if (menuSubCategoryList != null)
+            {
+                response.Valor = menuSubCategoryList;
                 response.Success = true;
                 return Json(response);
             }
@@ -739,6 +793,8 @@ public class POSController : Controller
             return Json(response);
         }
     }
+    
+    
 
     [HttpPost("Checkout")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
