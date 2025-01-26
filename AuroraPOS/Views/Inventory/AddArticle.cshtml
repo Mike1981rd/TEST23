@@ -524,6 +524,12 @@
 									</div>
 								</div>
 							</div>
+							<div class="row mb-6">
+								<div class="col">
+									<label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
+									<textarea id="article-description" class="form-control"></textarea>
+								</div>
+							</div>
 
 @* 							<div class="row mb-6">
 								<div class="col">
@@ -1040,6 +1046,7 @@
 			var status = $("#article-status").val() == "1";
 			var deplete = parseInt($("#article-deplete").val());
 			var saftystock = parseInt($("#article-saftystock").val());
+			var description = $("#article-description").val();
 			if (!category) category = 0;
 			if (!subcategory) subcategory = 0;
 			if (!tax) tax = 0;
@@ -1119,7 +1126,8 @@
 				Suppliers: suppliers,
 				ItemUnits: itemunits,
 				Barcode: barcode,
-				primarySupplier: primarySupplier
+				primarySupplier: primarySupplier,
+				Description: description
 			}
 
 			$.ajax({
@@ -1491,6 +1499,11 @@
 					if (data) {
 						$("#article-id").data("articleid", data.id)
 						$("#article-name").val(data.name);
+						if(!data.description) {
+							$("#article-description").text("Agrega una descripción al producto");
+						} else {
+							$("#article-description").val(data.description);
+						}
 						if (data.category) {
 							SelectCategory(data.category);
 						}

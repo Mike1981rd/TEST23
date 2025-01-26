@@ -19,8 +19,10 @@
 		public bool InventoryCountDownActive { get; set; }
 		public long CourseID { get; set; }
 		public bool HasServingSize { get; set; }
-		
-		public List<ProductRecipeItem>? RecipeItems { get; set; }
+        public string? Description { get; set; }
+
+
+        public List<ProductRecipeItem>? RecipeItems { get; set; }
 		public List<ProductServingSize>? ServingSizes { get; set; }
 		public ICollection<SubCategory>?  SubCategories { get; set; }
 		public virtual ICollection<Question>?  Questions { get; set; }

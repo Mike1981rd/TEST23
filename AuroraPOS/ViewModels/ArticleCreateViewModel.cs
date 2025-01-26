@@ -25,8 +25,9 @@ namespace AuroraPOS.ViewModels
 		public long PrimarySupplier { get; set; }
 		public List<long> Suppliers { get; set; }
 		public List<ItemUnit> ItemUnits { get; set; }
+        public string? Description { get; set; }
 
-		public string ImageUpload { get; set; }
+        public string ImageUpload { get; set; }
 
     }
 

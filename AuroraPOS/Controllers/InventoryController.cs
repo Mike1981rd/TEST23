@@ -1178,7 +1178,8 @@ namespace AuroraPOS.Controllers
 				article.DepleteCondition = (DepleteCondition) model.DepleteCondition;
 				article.SaftyStock =model.SaftyStock;
 				article.PrimarySupplier = model.PrimarySupplier;
-				//article.Photo = model.Photo;
+				article.Description = model.Description;
+                //article.Photo = model.Photo;
 
                 //Guardamos la imagen del archivo
                 if (!string.IsNullOrEmpty(model.ImageUpload) && !model.ImageUpload.Contains("http:") && !model.ImageUpload.Contains("https:"))

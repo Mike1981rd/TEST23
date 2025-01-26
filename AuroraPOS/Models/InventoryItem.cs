@@ -22,6 +22,7 @@
         public DepleteCondition DepleteCondition { get; set; }
         public virtual ICollection<ItemUnit>? Items { get; set; }
         public virtual ICollection<Supplier>? Suppliers { get; set; }
+        public string? Description { get; set; }
     }
 
     public enum DepleteCondition

@@ -1307,6 +1307,7 @@ namespace AuroraPOS.Controllers
                         existing.Barcode = model.Barcode;
                         existing.CourseID = model.CourseID;
                         existing.HasServingSize = model.HasServingSize;
+                        existing.Description = model.Description;
 
                         if (!string.IsNullOrEmpty(model.Barcode))
                         {
