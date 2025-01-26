@@ -45,12 +45,19 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetProductList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetProductList([FromBody]GetProductListRequest rq)
+        public JsonResult GetProductList(string searchValue, string category, string barcode, string status, string db)
         {
             var response = new MenuProductListResponse();
             var menu = new MenuCore(_userService, _dbContext, _context);
-
+            
+            var rq = new GetProductListRequest();
+            
             rq.length = -1;
+            rq.searchValue = searchValue;
+            rq.category = category;
+            rq.barcode = barcode;
+            rq.status = status;
+            rq.db = db;
 
             try
             {

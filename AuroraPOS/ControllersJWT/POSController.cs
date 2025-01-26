@@ -186,10 +186,10 @@ public class POSController : Controller
 
         return tienePermiso;
     }
-
+    
     [HttpGet("GetArea")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetArea([FromBody] long areaID)
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] 
+    public JsonResult GetArea(long areaID)
     {
         var objPOSCore = new POSCore(_userService, _dbContext,_printService, _context);
         var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
@@ -1245,7 +1245,7 @@ public class POSController : Controller
                 data = data.Take(pageSize).ToList();
             }
 
-            //Mapear elementos para su envío utilizando la clase CustomerData, creada a partir de la información que se extrae en la query de CustomerData
+            //Mapear elementos para su envï¿½o utilizando la clase CustomerData, creada a partir de la informaciï¿½n que se extrae en la query de CustomerData
             List<CustomerData> cData = new List<CustomerData>();
             foreach(var cd in data)
             {
@@ -1389,7 +1389,7 @@ public class POSController : Controller
             response.status = status;
             
             if (status == 1) 
-                response.Message = "Se intentó mover a la misma mesa";
+                response.Message = "Se intentï¿½ mover a la misma mesa";
             else 
                 response.Message = "Mesa movida correctamente";
 
@@ -1399,7 +1399,7 @@ public class POSController : Controller
         {
             response.Success = false;
             response.status = -1;
-            response.Message = "Ocurrió un error al realizar la operación: " + e.Message;
+            response.Message = "Ocurriï¿½ un error al realizar la operaciï¿½n: " + e.Message;
 
             return Json(response);
         }
@@ -1420,14 +1420,14 @@ public class POSController : Controller
             int status = objPOSCore.GiveOrder(request.orderId, request.userId, request.stationId, user);
             response.Success = true;
             response.status = status;
-            response.Message = "La solicitud se realizó exitosamente.";
+            response.Message = "La solicitud se realizï¿½ exitosamente.";
             
             return Json(response);
         }
         catch (Exception e)
         {
             response.Success = false;
-            response.Message = "Ocurrió un error en la solicitud: " + e.Message;
+            response.Message = "Ocurriï¿½ un error en la solicitud: " + e.Message;
 
             return Json(response);
         }
@@ -1446,7 +1446,7 @@ public class POSController : Controller
 
             response.Success = true;
             response.status = status;
-            response.Message = "La consulta se realizó correctamente";
+            response.Message = "La consulta se realizï¿½ correctamente";
         }
         catch (Exception e)
         {
@@ -1479,7 +1479,7 @@ public class POSController : Controller
         {
             response.Success = false;
             response.status = -1;
-            response.Message = "Ocurrió un error en la consulta: " + e.Message;
+            response.Message = "Ocurriï¿½ un error en la consulta: " + e.Message;
 
             return Json(response);
         }
@@ -1498,7 +1498,7 @@ public class POSController : Controller
 
             response.Success = true;
             response.status = status;
-            response.Message = "Operación realizada exitosamente";
+            response.Message = "Operaciï¿½n realizada exitosamente";
 
             return Json(response);
         }
@@ -1506,7 +1506,7 @@ public class POSController : Controller
         {
             response.Success = false;
             response.status = -1;
-            response.Message = "Ocurrió un error en la consulta: " + e.Message;
+            response.Message = "Ocurriï¿½ un error en la consulta: " + e.Message;
 
             return Json(response);
         }
