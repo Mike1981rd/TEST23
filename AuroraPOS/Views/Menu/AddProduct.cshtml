@@ -226,6 +226,12 @@
 
                                                 </div>
                                             </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
+                                                    <textarea id="product-description" class="form-control"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div>
@@ -870,6 +876,8 @@
         var courseId = parseInt($("#product-course").val());
         if (!courseId) courseId = 0;
 
+        var description = $("#product-description").val();
+
         var data = {
             ID: @ViewBag.ProductID,
             Name: name,
@@ -897,7 +905,8 @@
             HasServingSize: servingsize == "1",
             Recipes: recipes,
             Questions: questions,
-            ProductServingSizeItems: servingsizeitems
+            ProductServingSizeItems: servingsizeitems,
+            Description: description,
         }
 
         $.ajax({
@@ -980,6 +989,11 @@
                         $("#product-name").val(data.name);
                         $("#product-printername").val(data.printer);
                         $("#product-barcode").val(data.barcode);
+                        if(!data.description) {
+                            $("#product-description").text("Agrega una descripción al producto");
+                        } else {
+                            $("#product-description").val(data.description);
+                        }
                         if (!data.barcode) {
                             $("#print-label").text("Generate Barcode");
                         } 
@@ -2086,20 +2100,21 @@
             url: "/Menu/GetAllActiveCategoryList",
             type: "POST",
             success: function (data, textStatus, jqXHR) {
-                //$("#product-category").empty();
-                //$("#product-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
+                $("#product-category").empty();
+                $("#product-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
+
+                for (var i = 0; i < data.valor.length; i++) {
+                    var d = data.valor[i];
 
                     $("#product-category").append("<option value='" + d.id + "' data-course='" + d.courseID + "' data-taxes='" + JSON.stringify(d.taxes) + "' data-propinas='" + JSON.stringify(d.propinas) + "' data-pchannels='" + JSON.stringify(d.printerChannels) + "'>" + d.name + "</option>")
                 }
-                // $("#product-category").select2();
-                // if (category) {
-                //     $("#product-category").val(category.id).change();
-                // }
-                //else {
-                //    $("#product-category").val('').change();
-                //}
+                $("#product-category").select2();
+                if (category) {
+                    $("#product-category").val(category.id).change();
+                }
+                else {
+                   $("#product-category").val('').change();
+                }
 
             },
             error: function (jqXHR, textStatus, errorThrown) {

@@ -896,7 +896,7 @@
 
 				// Plugin personalizado para ajustar el tamaño del pointStyle
 
-				var labels = res.inventoryStock.map(stock => stock.warehouse + ": " + numberWithCommas(stock.total.toFixed(2)));
+				var labels = res.inventoryStock.map(stock => stock.warehouse + ": $" + numberWithCommas(stock.total.toFixed(2)));
 				var data = res.inventoryStock.map(stock => stock.total.toFixed(2));
 
 				if (labels.length !== data.length) {
@@ -933,7 +933,7 @@
 						elements: {
 							center: {
 								totalText: 'Total', // Título que deseas mostrar en la parte inferior
-                                totalValue: numberWithCommas(res.inventoryTotal.toFixed(2)), // Valor total que deseas mostrar en la parte superior
+                                totalValue: "$" + numberWithCommas(res.inventoryTotal.toFixed(2)), // Valor total que deseas mostrar en la parte superior
 								color: centerTextColor, // Color del texto
 								maxFontSize: 75, // Tamaño máximo de la fuente
 								sidePadding: 20 // Espaciado lateral
