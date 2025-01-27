@@ -7,7 +7,12 @@
 	var groups = (List<Group>)ViewBag.Groups;
 	var canadd = (bool)ViewBag.CanAdd;
 }
+<style>
+	.select2-container {
+		z-index: 9999 !important; /* Asegura que el dropdown esté por encima de otros elementos */
+	}
 
+</style>
 <div class="container-xxl flex-grow-1 container-p-y">
 	<div class="card">
 		<div class="card-body">
@@ -74,7 +79,7 @@
 					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
 							<label class="form-label">@ViewLocalizer["Price"]<span class="manitory">*</span></label>
-                            <select id="station-price" class="select">
+                            <select id="station-price" class="form-select">
                                 <option value="1">Price 1</option>
                                 <option value="2">Price 2</option>
                                 <option value="3">Price 3</option>
@@ -87,9 +92,9 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12 mb-6">
-                        <div class="form-group">
+                        <div class="form-group mb-0">
 							<label class="form-label">@ViewLocalizer["Menu"]</label>
-                            <select id="station-menu" class="select">
+                            <select id="station-menu" class="select form-select ">
                             </select>
                         </div>
                     </div>
@@ -98,7 +103,7 @@
                     <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
 							<label class="form-label">@ViewLocalizer["Status"]</label>
-                            <select id="station-status" class="select">
+							<select id="station-status" class="form-select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
                             </select>
@@ -107,7 +112,7 @@
                     <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
 							<label class="form-label">@ViewLocalizer["Sales Mode"]</label>
-                            <select id="station-mode" class="select">
+							<select id="station-mode" class="form-select">
                                 <option value="0"> @ViewLocalizer["Restaurant"]</option>
                                 <option value="1"> @ViewLocalizer["Barcode"]</option>
                                 <option value="2"> @ViewLocalizer["Kiosk"]</option>
@@ -123,7 +128,7 @@
 					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group mb-0">
 							<label class="form-label">@ViewLocalizer["Imprimir Precuenta En Delivery"]</label>
-                            <select id="imprimir-precuenta-delivery" class="select">
+							<select id="imprimir-precuenta-delivery" class="form-select">
                                 <option value="1"> @ViewLocalizer["Active"]</option>
                                 <option value="0"> @ViewLocalizer["InActive"]</option>
                             </select>
@@ -132,7 +137,7 @@
                     <div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
 							<label class="form-label">@ViewLocalizer["Precio Delivery"]</label>
-                            <select id="delivery-price" class="select">
+							<select id="delivery-price" class="form-select">
                                 <option value="">Ninguno</option>
                                 <option value="1">Price 1</option>
                                 <option value="2">Price 2</option>
@@ -148,8 +153,11 @@
 					<div class="col-lg-4 col-sm-6 col-12 mb-6">
                         <div class="form-group">
 							<label class="form-label">@ViewLocalizer["Delivery Prepare Type Default"]</label>
-                            <select id="prepare-type-default" class="select">
-                            </select>
+							<div class="d-flex">
+								<select id="prepare-type-default" class="select form-select ">
+
+								</select>
+							</div>
                         </div>
                     </div>
 					<div class="col-lg-3 col-sm-6 col-12 mb-6">
@@ -157,7 +165,7 @@
 							<div class="col">
 								<label class="form-label">@ViewLocalizer["Sucursal"]</label>
 								<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-									<select id="station-branch" class="select ">
+									<select id="station-branch" class="form-select">
 										<option>@ViewLocalizer["Choose sucursal"]</option>
 										@foreach (var b in branchs)
 										{
@@ -396,6 +404,7 @@
 
 <script>
 	$(document).ready(function(){
+		//$("#station-menu").select2();
 		LoadMenu();
 		LoadWarehouse();
 		LoadPreparetypes();
@@ -678,7 +687,7 @@
                 $("#station-menu").append("<option value='' selected>@ViewLocalizer["Choose menu"]</option>")
                 for (var i = 0; i < data.length; i++) {
                     var d = data[i];
-
+					console.log(data[i]);
                     $("#station-menu").append("<option value='" + d.id + "' data-id='" + d.id + "' data-name='" + d.name + "' data-desc='" + d.description + "'>" + d.name + "</option>")
                 }
                 $("#station-menu").select2();
