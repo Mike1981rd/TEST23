@@ -457,7 +457,7 @@ public class POSCore
         var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.Article && s.ItemId == item.ID);
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funciï¿½n de SettingsCore para obtener el dï¿½a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -497,7 +497,7 @@ public class POSCore
 
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funciï¿½n de SettingsCore para obtener el dï¿½a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -3033,7 +3033,7 @@ public class POSCore
             _dbContext.SaveChanges();
         }
 
-        return new Tuple<int, string>(0, "Operación realizada correctamente");
+        return new Tuple<int, string>(0, "Operaciï¿½n realizada correctamente");
     }
     public int CancelReservation(long ID)
     {
@@ -3042,5 +3042,63 @@ public class POSCore
 
         _dbContext.SaveChanges();
         return 0;
+    }
+    
+    public Order Kiosk(Station station, string userName, int orderId = 0)
+    {
+            Order order = null;
+            if (orderId > 0)
+            {
+                order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+                
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType; //Kiosk
+                //HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
+            }
+            else
+            {
+                order = new Order();
+
+                {
+                    var user = userName;
+                    order.Station = station;
+                    order.WaiterName = user;
+                    order.OrderMode = OrderMode.Standard;
+                    order.OrderType = OrderType.Delivery;
+                    order.Status = OrderStatus.Temp;
+
+                    if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+                    {
+                        order.PrepareTypeID = station.PrepareTypeDefault.Value; 
+                    }
+                    else
+                    {
+                        order.PrepareTypeID = 4; //Kiosk
+                    }
+
+                    var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                    order.PrepareType = prepareType;
+
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+                    order.ComprobantesID = voucher.ID;
+
+                    _dbContext.Orders.Add(order);
+
+                    var delivery = new Delivery();
+                    delivery.Order = order;
+                    delivery.Status = StatusEnum.Nuevo;
+                    delivery.StatusUpdated = DateTime.Now;
+                    delivery.DeliveryTime = DateTime.Now;
+
+                    _dbContext.Deliverys.Add(delivery);
+
+                    _dbContext.SaveChanges();
+
+                    //HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+                }
+
+            }
+
+            return order;
     }
 }

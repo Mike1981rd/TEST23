@@ -1567,4 +1567,118 @@ public class POSController : Controller
             return Json(response);
         }
     }
+    
+    [HttpGet("Kiosk")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult Kiosk(int stationId, int orderId = 0)
+    {
+        var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
+        KioskResponse response = new KioskResponse();
+
+        try
+        {
+            var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationId);
+            var products = _dbContext.Products.Where(s => s.IsActive).ToList();
+            response.sucursalId = station.IDSucursal;
+            response.products  = products;
+
+            var denominations = _dbContext.Denominations.OrderByDescending(s => s.Amount).ToList();
+            response.denominations = denominations;
+
+            var paymentMethods = _dbContext.PaymentMethods.Where(s => s.IsActive).ToList();
+            response.paymentMethods = paymentMethods;
+
+            response.showExpectedPayment = PermissionChecker("Permission.POS.ShowExpectedPayment");
+            response.branchs = _dbContext.t_sucursal.ToList();
+
+            if (station == null)
+            {
+                throw new Exception("Estación no existe");
+            }
+            
+            response.otherUsers = _dbContext.User.Where(s => s.Username != User.Identity.GetUserName()).ToList();
+
+            Order order = null;
+            var userName = HttpContext.User.Identity.GetUserName();
+            
+            order = objPOSCore.Kiosk(station, userName,orderId);
+            response.currentOrderID = (int)order.ID;
+            
+
+            /*
+            if (orderId > 0)
+            {
+                order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+
+                if (order.PaymentStatus == PaymentStatus.Partly )
+                {
+                    return Redirect("/POS/Checkout?orderId=" + orderId);
+                }
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType; //Kiosk
+                HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
+            }
+            else
+            {
+                order = new Order();
+
+                {
+                    var user = HttpContext.User.Identity.GetUserName();
+                    order.Station = station;
+                    order.WaiterName = user;
+                    order.OrderMode = OrderMode.Standard;
+                    order.OrderType = OrderType.Delivery;
+                    order.Status = OrderStatus.Temp;
+
+                    if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+                    {
+                        order.PrepareTypeID = station.PrepareTypeDefault.Value;
+                    }
+                    else
+                    {
+                        order.PrepareTypeID = 4; //Kiosk
+                    }
+
+                    var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                    order.PrepareType = prepareType;
+
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+                    order.ComprobantesID = voucher.ID;
+
+                    _dbContext.Orders.Add(order);
+
+                    var delivery = new Delivery();
+                    delivery.Order = order;
+                    delivery.Status = StatusEnum.Nuevo;
+                    delivery.StatusUpdated = DateTime.Now;
+                    delivery.DeliveryTime = DateTime.Now;
+
+                    _dbContext.Deliverys.Add(delivery);
+
+                    _dbContext.SaveChanges();
+
+                    HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+                }
+
+            }
+            */
+
+            var reasons = _dbContext.CancelReasons.ToList();
+            response.cancelReasons = reasons;
+            response.discounts = _dbContext.Discounts.Where(s => s.IsActive && !s.IsDeleted).ToList();
+            
+            response.order = order;
+
+            response.Success = true;
+
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            response.order = null;
+            response.Success = false;
+            response.Error = ex.Message;
+            return Json(response);
+        }
+    }
 }

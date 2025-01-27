@@ -810,6 +810,21 @@ namespace AuroraPOS.Controllers
             ViewBag.OtherUsers = _dbContext.User.Where(s => s.Username != User.Identity.GetUserName()).ToList();
 
             Order order = null;
+            var userName = HttpContext.User.Identity.GetUserName();
+            
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            order = objPOSCore.Kiosk(station, userName,orderId);
+            HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+
+            if (orderId > 0)
+            {
+                if (order.PaymentStatus == PaymentStatus.Partly)
+                {
+                    return Redirect("/POS/Checkout?orderId=" + orderId);
+                }
+            }
+
+            /*
             if (orderId > 0)
             {
                 order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
@@ -836,7 +851,7 @@ namespace AuroraPOS.Controllers
 
                     if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
                     {
-                        order.PrepareTypeID = station.PrepareTypeDefault.Value; 
+                        order.PrepareTypeID = station.PrepareTypeDefault.Value;
                     }
                     else
                     {
@@ -865,6 +880,7 @@ namespace AuroraPOS.Controllers
                 }
 
             }
+            */
 
             var reasons = _dbContext.CancelReasons.ToList();
             ViewBag.CancelReasons = reasons;
@@ -1351,19 +1367,26 @@ namespace AuroraPOS.Controllers
                 var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
                 var orderItems = objPOSCore.GetOrderItems(orderId, dividerId);
 
+                
+                
                 if (orderItems != null)
                 {
                     response.Valor = orderItems;
                     response.Success = true;
-                    return Json(response);
+                    
+                    //return Json(response);
+                    
+                    return Json(new { status = 0, items = orderItems.Items.OrderBy(s=>s.CourseID).ToList(), orderItems.Order });
                 }
-                return Json(null);
+                //return Json(null);
+                return Json(new { status = 1 });
             }
             catch (Exception ex)
             {
                 response.Error = ex.Message;
                 response.Success = false;
-                return Json(response);
+                //return Json(response);
+                return Json(new { status = 1 });
             }
 
 
