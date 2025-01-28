@@ -275,6 +275,33 @@ public class POSController : Controller
             return Json(response);
         }
     }
+    
+    [HttpGet("GetMenuProductList")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult GetMenuProductList(long subCategoryId, string db)
+    {
+        var response = new GetMenuProductListResponse();
+
+        try
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, db);
+
+            if (menuProductList != null)
+            {
+                response.Valor = menuProductList;
+                response.Success = true;
+                return Json(response);
+            }
+            return Json(null);
+        }
+        catch (Exception ex)
+        {
+            response.Error = ex.Message;
+            response.Success = false;
+            return Json(response);
+        }
+    }
 
     [HttpGet("GetOrderItems")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
