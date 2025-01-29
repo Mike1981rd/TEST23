@@ -457,7 +457,7 @@ public class POSCore
         var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.Article && s.ItemId == item.ID);
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funci�n de SettingsCore para obtener el d�a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -497,7 +497,7 @@ public class POSCore
 
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funci�n de SettingsCore para obtener el d�a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -3032,7 +3032,7 @@ public class POSCore
             _dbContext.SaveChanges();
         }
 
-        return new Tuple<int, string>(0, "Operación realizada correctamente");
+        return new Tuple<int, string>(0, "Operaci�n realizada correctamente");
     }
     public int CancelReservation(long ID)
     {

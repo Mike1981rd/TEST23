@@ -103,15 +103,20 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetStations")]
         [AllowAnonymous]
-        public JsonResult GetStations()
+        public JsonResult GetStations(bool soloTipoKiosco = true)
         {
             GetStationsResponse result = new GetStationsResponse();
 
             try
             {
                 var stations = _dbContext.Stations
-                    .Select(s => new Station { ID = s.ID, Name = s.Name })
+                    .Select(s => new Station { ID = s.ID, Name = s.Name, SalesMode = s.SalesMode, IDSucursal = s.IDSucursal})
                     .ToList();
+
+                if (stations.Any() && soloTipoKiosco)
+                {
+                    stations = (from s in stations where s.SalesMode == SalesMode.Kiosk select s).ToList();
+                }
 
                 if(stations.Any())
                 {
