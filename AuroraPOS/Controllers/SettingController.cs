@@ -2940,9 +2940,9 @@ namespace AuroraPOS.Controllers
 
             var objDay = new WorkDay();
 
-            
 
-            DeactivateWorkDay();                               
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            settingsCore.DeactivateWorkDay(stationID);
 
             objDay.Day = selectedDate;
             objDay.IsActive = true;
@@ -2956,7 +2956,10 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult CloseDiaTrabajo()
         {
-            DeactivateWorkDay();
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
+
+            settingsCore.DeactivateWorkDay(stationID);
             
             return Json("OK");
         }
@@ -2988,20 +2991,20 @@ namespace AuroraPOS.Controllers
             return Json(null);
         }
 
-        private void DeactivateWorkDay()
-        {
-            var stationID = int.Parse(GetCookieValue("StationID"));
-            var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+   //     private void DeactivateWorkDay()
+   //     {
+   //         var stationID = int.Parse(GetCookieValue("StationID"));
+   //         var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
 
-            var lstDays = _dbContext.WorkDay.Where(d=>d.IsActive==true && d.IDSucursal==objStation.IDSucursal).ToList();
+   //         var lstDays = _dbContext.WorkDay.Where(d=>d.IsActive==true && d.IDSucursal==objStation.IDSucursal).ToList();
 
-			foreach (var objDay in lstDays) {
-				objDay.IsActive = false;
+			//foreach (var objDay in lstDays) {
+			//	objDay.IsActive = false;
 
-            }
+   //         }
 
-            _dbContext.SaveChanges();            
-        }
+   //         _dbContext.SaveChanges();            
+   //     }
 
         public string GetCookieValue(string key)
         {

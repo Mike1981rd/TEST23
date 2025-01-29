@@ -639,7 +639,6 @@ public class POSCore
         return null;
     }
 
-
     //    if (station == null)
     //        return RedirectToAction("Login");
 
@@ -3100,5 +3099,89 @@ public class POSCore
             }
 
             return order;
+    }
+
+    public int UpdateCustomerName(long orderID, string clientName)
+    {
+        var order = _dbContext.Orders.FirstOrDefault(o => o.ID == orderID);
+        if (order == null)
+        {
+            return 1;
+        }
+
+        // Actualizar el nombre del cliente en la orden
+        order.ClientName = clientName;
+        _dbContext.SaveChanges();
+
+        return 0;
+    }
+
+    public long SubmitConduceOrders(SubmitConduceOrdersRequest request, int stationId)
+    {
+        var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == request.CustomerId);
+        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+        var newOrder = new Order()
+        {
+            Station = station,
+            OrderType = request.Type,
+            OrderMode = OrderMode.Conduce,
+            OrderTime = DateTime.Now,
+            Status = OrderStatus.Temp,
+            ClientName = customer.Name,
+            CustomerId = customer.ID,
+            Delivery = 0,
+            Items = new List<OrderItem>(),
+        };
+        _dbContext.Orders.Add(newOrder);
+        _dbContext.SaveChanges();
+
+        var items = new List<OrderItem>();
+        var orders = new List<Order>();
+        int index = 0;
+        foreach (var o in request.Orders)
+        {
+            var order = GetOrder(o);
+
+            newOrder.Delivery += order.Delivery;
+
+            if (index == 0)
+            {
+                newOrder.ComprobantesID = order.ComprobantesID;
+                newOrder.ComprobanteName = order.ComprobanteName;
+            }
+            foreach (var item in order.Items)
+            {
+                var nitem = item.CopyThis();
+
+                var existItem = new OrderItem();
+                var isExist = false;
+                foreach (var eitem in items)
+                {
+                    if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID)
+                    {
+                        isExist = true;
+                        existItem = eitem;
+                    }
+                }
+
+                if (isExist)
+                {
+                    existItem.Qty += item.Qty;
+                }
+                else
+                {
+                    items.Add(nitem);
+                }
+            }
+            order.ConduceOrderId = newOrder.ID;
+        }
+        newOrder.Items = items;
+        _dbContext.SaveChanges();
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == newOrder.ComprobantesID);
+
+        newOrder.GetTotalPrice(voucher);
+        _dbContext.SaveChanges();
+        return newOrder.ID;
     }
 }

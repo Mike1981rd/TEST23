@@ -26,7 +26,7 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetDiaDeTrabajo")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetDiaDeTrabajo([FromBody] int stationId)
+        public JsonResult GetDiaDeTrabajo(int stationId)
         {
             var response = new DiaDeTrabajoResponse();
             try
@@ -138,7 +138,7 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetActiveCustomerList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetActiveCustomerList([FromBody] ActiveCustomerListRequest request)
+        public JsonResult GetActiveCustomerList(ActiveCustomerListRequest request)
         {
             var response = new ActiveCustomerListResponse();
             try
@@ -164,7 +164,7 @@ namespace AuroraPOS.ControllersJWT
 
         [HttpGet("GetPrepareTypes")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public JsonResult GetPrepareTypes([FromBody] PrepareTypesRequest request)
+        public JsonResult GetPrepareTypes(PrepareTypesRequest request)
         {
             var response = new PrepareTypesResponse();
             try
@@ -284,6 +284,17 @@ namespace AuroraPOS.ControllersJWT
 
                 return Json(response);
             }
+        }
+
+        [HttpPost("CloseDiaTrabajo")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult CloseDiaTrabajo([FromBody] int stationID)
+        {
+            var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
+           settingsCore.DeactivateWorkDay(stationID);
+
+            return Json("OK");
         }
 
     }

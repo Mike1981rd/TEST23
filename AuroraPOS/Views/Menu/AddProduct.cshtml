@@ -46,6 +46,12 @@
                             </div>
                             <div class="row mb-6">
                                 <div class="col">
+                                    <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
+                                    <textarea id="product-description" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
                                     <div class="d-flex">
                                         <select id="product-category" class="select form-select ">
@@ -92,7 +98,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
-                                    <select id="product-taxes" class="form-control  select">
+                                    <select multiple id="product-taxes" class="form-control  select">
                                         @foreach (var t in taxs)
                                         {
                                             <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
@@ -104,7 +110,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Propinas"]</label>
-                                    <select id="product-propinas" class="form-control  select">
+                                    <select multiple id="product-propinas" class="form-control  select">
                                         @foreach (var t in propinas)
                                         {
                                             <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
@@ -116,7 +122,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Printer Channels"]</label>
-                                    <select id="product-printerChannels" class="form-control tagging select">
+                                    <select multiple id="product-printerChannels" class="form-control tagging select">
                                         @foreach (var p in printerChannels)
                                         {
                                             <option value="@p.ID">@p.Name </option>
@@ -224,12 +230,6 @@
                                                         <option value="0">@ViewLocalizer["Inactive"]</option>
                                                     </select>
 
-                                                </div>
-                                            </div>
-                                            <div class="row mb-6">
-                                                <div class="col">
-                                                    <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Description"]</label>
-                                                    <textarea id="product-description" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                         </div>

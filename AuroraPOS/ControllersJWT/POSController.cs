@@ -42,7 +42,7 @@ public class POSController : Controller
 
     [HttpGet("Station")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult Station([FromBody] StationRequest request)
+    public JsonResult Station(StationRequest request)
     {
         var station = _dbContext.Stations.Include(s => s.Areas.Where(t => !t.IsDeleted)).ThenInclude(s => s.AreaObjects.Where(s => s.ObjectType == AreaObjectType.Table && !s.IsDeleted)).FirstOrDefault(s => s.ID == request.StationId);
         ViewBag.Sucursal = station.IDSucursal;
@@ -305,7 +305,7 @@ public class POSController : Controller
 
     [HttpGet("GetOrderItems")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderItems([FromBody] long orderId, [FromBody] int dividerId = 0)
+    public JsonResult GetOrderItems(long orderId, int dividerId = 0)
     {
         var response = new GetOrderItemResponse();
         try
@@ -331,7 +331,7 @@ public class POSController : Controller
 
     [HttpGet("GetAreasInStation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreasInStation([FromBody] int stationID, [FromBody] string db)
+    public JsonResult GetAreasInStation(int stationID, string db)
     {
         var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
@@ -349,7 +349,7 @@ public class POSController : Controller
 
     [HttpGet("GetAreaObjectsInArea")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreaObjectsInArea([FromBody] AreaObjectsInAreaRequest request)
+    public JsonResult GetAreaObjectsInArea(AreaObjectsInAreaRequest request)
     {
         var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
         POSAreaObjectsInAreaResponse response = new POSAreaObjectsInAreaResponse();
@@ -376,7 +376,7 @@ public class POSController : Controller
     //pendiente
     [HttpGet("GetOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderList([FromBody]GetOrderListRequest request)
+    public JsonResult GetOrderList(GetOrderListRequest request)
     {
         GetOrderListResponse response = new GetOrderListResponse();
 
@@ -386,8 +386,10 @@ public class POSController : Controller
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == request.StationId);
 
             //Paging Size (10,20,50,100)  
-            int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
-            int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
+            //int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
+            int pageSize = -1;
+            //int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
+            int skip = 0;
             int recordsTotal = 0;
 
             var area = _dbContext.Areas.FirstOrDefault(s => s.ID == request.AreaId);
@@ -480,7 +482,7 @@ public class POSController : Controller
     //pendiente
     [HttpGet("GetPaidOrderList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public IActionResult GetPaidOrderList([FromBody] GetPaidOrderListRequest request)
+    public IActionResult GetPaidOrderList(GetPaidOrderListRequest request)
     {
         try
         {
@@ -488,8 +490,10 @@ public class POSController : Controller
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == request.StationId);
 
             //Paging Size (10,20,50,100)  
-            int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
-            int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
+            //int pageSize = request.Length != null ? Convert.ToInt32(request.Length) : 0;
+            int pageSize = -1;
+            int skip = 0;
+            //int skip = request.Start != null ? Convert.ToInt32(request.Start) : 0;
             int recordsTotal = 0;
 
             var area = _dbContext.Areas.FirstOrDefault(s => s.ID == request.AreaId);
@@ -579,7 +583,7 @@ public class POSController : Controller
 
     [HttpGet("CheckReservation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult CheckReservation([FromBody] int tableId)
+    public JsonResult CheckReservation(int tableId)
     {
         var reservation = _dbContext.Reservations.Where(s => s.TableID == tableId && s.Status == ReservationStatus.Open).ToList();
 
@@ -796,7 +800,7 @@ public class POSController : Controller
 
     [HttpGet("GetOrderItemsInCheckout")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetOrderItemsInCheckout([FromBody] OrderItemsInCheckoutRequest request)
+    public JsonResult GetOrderItemsInCheckout(OrderItemsInCheckoutRequest request)
     {
         var response = new GetOrderItemsInCheckoutResponse();
 
@@ -1072,7 +1076,7 @@ public class POSController : Controller
 
     [HttpGet("GetAnswerDetail")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAnswerDetail([FromBody] int answerId, [FromBody] int servingSizeId)
+    public JsonResult GetAnswerDetail(int answerId, int servingSizeId)
     {
         var response = new AnswerDetailResponse();
 
@@ -1271,9 +1275,9 @@ public class POSController : Controller
     }
 
     //
-    [HttpPost("GetReservationList")]
+    [HttpGet("GetReservationList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public IActionResult GetReservationList([FromBody] GetReservationListRequest request)
+    public IActionResult GetReservationList(GetReservationListRequest request)
     {
         GetReservationListResponse response = new GetReservationListResponse();
 
@@ -1282,17 +1286,17 @@ public class POSController : Controller
             var stationID = request.stationId; // HttpContext.Session.GetInt32("StationID");
             var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
 
-            var draw = request.draw;
+            //var draw = request.draw;
             // Skiping number of Rows count  
-            var start = request.start;
+            var start = 0;//var start = request.start;
             // Paging Length 10,20  
-            var length = request.length;
+            var length = -1;
             // Sort Column Name  
-            var sortColumn = request.sortColumn;
+            //var sortColumn = request.sortColumn;
             // Sort Column Direction ( asc ,desc)  
-            var sortColumnDirection = request.sortColumnDirection;
+            //var sortColumnDirection = request.sortColumnDirection;
             // Search Value from (Search box)  
-            var searchValue = request.searchValue;
+            //var searchValue = request.searchValue;
 
             //Paging Size (10,20,50,100)  
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
@@ -1348,7 +1352,7 @@ public class POSController : Controller
 
 
             response.Success = true;
-            response.draw = draw;
+            //response.draw = draw;
             response.recordsFiltered = recordsTotal;
             response.recordsTotal = recordsTotal;
             response.data = cData;
@@ -1472,7 +1476,7 @@ public class POSController : Controller
             response.status = status;
             
             if (status == 1) 
-                response.Message = "Se intent� mover a la misma mesa";
+                response.Message = "Se intentó mover a la misma mesa";
             else 
                 response.Message = "Mesa movida correctamente";
 
@@ -1562,6 +1566,7 @@ public class POSController : Controller
         {
             response.Success = false;
             response.status = -1;
+            response.Message = "Ocurrió un error en la consulta: " + e.Message;
             response.Message = "Ocurri� un error en la consulta: " + e.Message;
 
             return Json(response);
@@ -1621,6 +1626,189 @@ public class POSController : Controller
             if (station == null)
             {
                 throw new Exception("Estación no existe");
+            }
+            
+            response.otherUsers = _dbContext.User.Where(s => s.Username != User.Identity.GetUserName()).ToList();
+
+            Order order = null;
+            var userName = HttpContext.User.Identity.GetUserName();
+            
+            order = objPOSCore.Kiosk(station, userName,orderId);
+            response.currentOrderID = (int)order.ID;
+            
+
+            /*
+            if (orderId > 0)
+            {
+                order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+
+                if (order.PaymentStatus == PaymentStatus.Partly )
+                {
+                    return Redirect("/POS/Checkout?orderId=" + orderId);
+                }
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType; //Kiosk
+                HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
+            }
+            else
+            {
+                order = new Order();
+
+                {
+                    var user = HttpContext.User.Identity.GetUserName();
+                    order.Station = station;
+                    order.WaiterName = user;
+                    order.OrderMode = OrderMode.Standard;
+                    order.OrderType = OrderType.Delivery;
+                    order.Status = OrderStatus.Temp;
+
+                    if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+                    {
+                        order.PrepareTypeID = station.PrepareTypeDefault.Value;
+                    }
+                    else
+                    {
+                        order.PrepareTypeID = 4; //Kiosk
+                    }
+
+                    var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                    order.PrepareType = prepareType;
+
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+                    order.ComprobantesID = voucher.ID;
+
+                    _dbContext.Orders.Add(order);
+
+                    var delivery = new Delivery();
+                    delivery.Order = order;
+                    delivery.Status = StatusEnum.Nuevo;
+                    delivery.StatusUpdated = DateTime.Now;
+                    delivery.DeliveryTime = DateTime.Now;
+
+                    _dbContext.Deliverys.Add(delivery);
+
+                    _dbContext.SaveChanges();
+
+                    HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+                }
+
+            }
+            */
+
+            var reasons = _dbContext.CancelReasons.ToList();
+            response.cancelReasons = reasons;
+            response.discounts = _dbContext.Discounts.Where(s => s.IsActive && !s.IsDeleted).ToList();
+            
+            response.order = order;
+
+            response.Success = true;
+
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            response.order = null;
+            response.Success = false;
+            response.Error = ex.Message;
+            return Json(response);
+        }
+    }
+
+    [HttpPost("UpdateCustomerName")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult UpdateCustomerName([FromBody] OrderInfoModel model)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        UpdateCustomerNameResponse response = new UpdateCustomerNameResponse();
+
+        try
+        {
+            int status = objPOSCore.UpdateCustomerName(model.OrderId, model.ClientName);
+            response.status = status;
+
+            if (status == 1)
+            {
+                response.Message = "No se encontr� la orden con el ID proporcionado.";
+            }
+            else
+            {
+                response.Message = "Se actualiz� el nombre del cliente exitosamente.";
+            }
+
+            response.Success = true;
+
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = "Ocurri� un error al actualizar el nombre del cliente: " + ex.Message;
+            response.status = -1;
+
+            return Json(response);
+        }
+    }
+
+    [HttpPost("SubmitConduceOrders")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult SubmitConduceOrders([FromBody] SubmitConduceOrdersRequest request, [FromBody] int stationId)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        SubmitConduceOrdersResponse response = new SubmitConduceOrdersResponse();
+
+        if (request.Orders.Count == 0)
+        {
+            response.status = 1;
+            response.Success = false;
+            response.Message = "No se encontraron �rdenes para conduce";
+
+            return Json(response);
+        }
+
+        try
+        {
+            response.newOrderId = objPOSCore.SubmitConduceOrders(request, stationId);
+            response.Success = true;
+            response.status = 0;
+
+            return Json(response);
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurri� un error al realizar la operaci�n: " + ex.Message;
+
+            return Json(response);
+        }
+    }
+    
+    [HttpGet("Kiosk")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult Kiosk(int stationId, int orderId = 0)
+    {
+        var objPOSCore =  new POSCore(_userService, _dbContext,_printService, _context);
+        KioskResponse response = new KioskResponse();
+
+        try
+        {
+            var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationId);
+            var products = _dbContext.Products.Where(s => s.IsActive).ToList();
+            response.sucursalId = station.IDSucursal;
+            response.products  = products;
+
+            var denominations = _dbContext.Denominations.OrderByDescending(s => s.Amount).ToList();
+            response.denominations = denominations;
+
+            var paymentMethods = _dbContext.PaymentMethods.Where(s => s.IsActive).ToList();
+            response.paymentMethods = paymentMethods;
+
+            response.showExpectedPayment = PermissionChecker("Permission.POS.ShowExpectedPayment");
+            response.branchs = _dbContext.t_sucursal.ToList();
+
+            if (station == null)
+            {
+                throw new Exception("Estaci�n no existe");
             }
             
             response.otherUsers = _dbContext.User.Where(s => s.Username != User.Identity.GetUserName()).ToList();

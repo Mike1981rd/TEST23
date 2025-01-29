@@ -265,5 +265,22 @@ namespace AuroraPOS.Core
 
             return cxcList;
         }
+
+        public void DeactivateWorkDay(int stationID)
+        {
+            //var stationID = int.Parse(GetCookieValue("StationID"));
+            var objStation = _dbContext.Stations.Where(d => d.ID == stationID).FirstOrDefault();
+
+            var lstDays = _dbContext.WorkDay.Where(d => d.IsActive == true && d.IDSucursal == objStation.IDSucursal).ToList();
+
+            foreach (var objDay in lstDays)
+            {
+                objDay.IsActive = false;
+
+            }
+
+            _dbContext.SaveChanges();
+        }
     }
+
 }

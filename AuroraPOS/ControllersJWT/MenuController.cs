@@ -61,7 +61,7 @@ namespace AuroraPOS.ControllersJWT
 
             try
             {
-                response.Valor = menu.GetProductList(rq.draw,rq.start,rq.length,rq.sortColumn,rq.sortColumnDirection,rq.searchValue,rq.all,rq.category,rq.barcode,rq.status,rq.db);
+                response.Valor = menu.GetProductList("",0,-1,rq.sortColumn,rq.sortColumnDirection,rq.searchValue,rq.all,rq.category,rq.barcode,rq.status,rq.db);
                 response.Success = true;
                 return Json(response);
             }
