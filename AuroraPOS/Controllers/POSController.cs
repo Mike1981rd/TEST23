@@ -1611,10 +1611,7 @@ namespace AuroraPOS.Controllers
             }
         }
 
-
-
-
-
+        //ya existe en poscore
         private Order GetOrder(long OrderId)
         {
             var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.PrepareType).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).ThenInclude(s=>s.Answer).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s=>s.Divides).Include(s=>s.Area).Include(s=>s.Table).FirstOrDefault(o => o.ID == OrderId);
@@ -4431,20 +4428,31 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult UpdateCustomerName([FromBody] OrderInfoModel model)
         {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             try
             {
-                // Obtener la orden correspondiente al ID proporcionado
-                var order = _dbContext.Orders.FirstOrDefault(o => o.ID == model.OrderId);
-                if (order == null)
+                int status = objPOSCore.UpdateCustomerName(model.OrderId, model.ClientName);
+
+                if(status == 1)
                 {
                     return Json(new { error = "No se encontró la orden con el ID proporcionado." });
                 }
 
-                // Actualizar el nombre del cliente en la orden
-                order.ClientName = model.ClientName;
-                _dbContext.SaveChanges();
-
                 return Json(new { success = true, message = "Se actualizó el nombre del cliente exitosamente." });
+
+                //// Obtener la orden correspondiente al ID proporcionado
+                //var order = _dbContext.Orders.FirstOrDefault(o => o.ID == model.OrderId);
+                //if (order == null)
+                //{
+                //    return Json(new { error = "No se encontró la orden con el ID proporcionado." });
+                //}
+
+                //// Actualizar el nombre del cliente en la orden
+                //order.ClientName = model.ClientName;
+                //_dbContext.SaveChanges();
+
+                //return Json(new { success = true, message = "Se actualizó el nombre del cliente exitosamente." });
             }
             catch (Exception ex)
             {
@@ -8515,6 +8523,8 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult SubmitConduceOrders([FromBody] SubmitConduceOrdersRequest request)
         {
+            POSCore objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
             if (request.Orders.Count == 0)
             {
                 return Json(new { status = 1 });
@@ -8522,71 +8532,77 @@ namespace AuroraPOS.Controllers
 
             try
             {
-                var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == request.CustomerId);
-				var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-				var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
-				var newOrder = new Order()
-                {
-                    Station = station,
-                    OrderType = request.Type,
-                    OrderMode = OrderMode.Conduce,
-                    OrderTime = DateTime.Now,
-                    Status = OrderStatus.Temp,
-                    ClientName = customer.Name,
-                    CustomerId = customer.ID,
-                    Delivery = 0,
-                    Items = new List<OrderItem>(),
-                };
-                _dbContext.Orders.Add(newOrder);
-                _dbContext.SaveChanges();
+                var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
 
-                var items = new List<OrderItem>();
-                var orders = new List<Order>();
-                int index = 0;
-                foreach (var o in request.Orders)
-                {
-                    var order = GetOrder(o);
-					
-                    newOrder.Delivery += order.Delivery;
-                    
-                    if (index == 0)
-                    {
-                        newOrder.ComprobantesID = order.ComprobantesID;
-                        newOrder.ComprobanteName = order.ComprobanteName;
-                    }
-                    foreach (var item in order.Items)
-                    {
-                        var nitem = item.CopyThis();
+                var newOrderID = objPOSCore.SubmitConduceOrders(request, stationID);
+                
+                return Json(new { status = 0, id = newOrderID });
 
-                        var existItem = new OrderItem();
-                        var isExist = false;
-                        foreach (var eitem in items)
-                        {
-                            if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID)
-                            {
-                                isExist = true;
-                                existItem = eitem;
-                            }
-                        }
+                //            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == request.CustomerId);
+                //var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+                //var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+                //var newOrder = new Order()
+                //            {
+                //                Station = station,
+                //                OrderType = request.Type,
+                //                OrderMode = OrderMode.Conduce,
+                //                OrderTime = DateTime.Now,
+                //                Status = OrderStatus.Temp,
+                //                ClientName = customer.Name,
+                //                CustomerId = customer.ID,
+                //                Delivery = 0,
+                //                Items = new List<OrderItem>(),
+                //            };
+                //            _dbContext.Orders.Add(newOrder);
+                //            _dbContext.SaveChanges();
 
-                        if (isExist)
-                        {
-                            existItem.Qty += item.Qty;
-                        }
-                        else
-                        {
-                            items.Add(nitem);
-                        }
-                    }
-                    order.ConduceOrderId = newOrder.ID;
-                }
-                newOrder.Items = items;
-                _dbContext.SaveChanges();
-                var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == newOrder.ComprobantesID);
+                //            var items = new List<OrderItem>();
+                //            var orders = new List<Order>();
+                //            int index = 0;
+                //            foreach (var o in request.Orders)
+                //            {
+                //                var order = GetOrder(o);
 
-                newOrder.GetTotalPrice(voucher);
-                _dbContext.SaveChanges();
-                return Json(new { status = 0, id = newOrder.ID });
+                //                newOrder.Delivery += order.Delivery;
+
+                //                if (index == 0)
+                //                {
+                //                    newOrder.ComprobantesID = order.ComprobantesID;
+                //                    newOrder.ComprobanteName = order.ComprobanteName;
+                //                }
+                //                foreach (var item in order.Items)
+                //                {
+                //                    var nitem = item.CopyThis();
+
+                //                    var existItem = new OrderItem();
+                //                    var isExist = false;
+                //                    foreach (var eitem in items)
+                //                    {
+                //                        if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID)
+                //                        {
+                //                            isExist = true;
+                //                            existItem = eitem;
+                //                        }
+                //                    }
+
+                //                    if (isExist)
+                //                    {
+                //                        existItem.Qty += item.Qty;
+                //                    }
+                //                    else
+                //                    {
+                //                        items.Add(nitem);
+                //                    }
+                //                }
+                //                order.ConduceOrderId = newOrder.ID;
+                //            }
+                //            newOrder.Items = items;
+                //            _dbContext.SaveChanges();
+                //            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == newOrder.ComprobantesID);
+
+                //            newOrder.GetTotalPrice(voucher);
+                //            _dbContext.SaveChanges();
+                //            return Json(new { status = 0, id = newOrder.ID });
             }
             catch (Exception ex)
             {

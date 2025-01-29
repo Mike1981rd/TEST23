@@ -457,7 +457,7 @@ public class POSCore
         var existingWarehouseStock = _dbContext.WarehouseStocks.FirstOrDefault(s => s.Warehouse == warehouse && s.ItemType == ItemType.Article && s.ItemId == item.ID);
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funciÃ³n de SettingsCore para obtener el dÃ­a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -497,7 +497,7 @@ public class POSCore
 
         var warehouseHistoryItem = new WarehouseStockChangeHistory();
 
-        //reutilizando la función de SettingsCore para obtener el día
+        //reutilizando la funciÃ³n de SettingsCore para obtener el dÃ­a
         SettingsCore settings = new SettingsCore(_userService, _dbContext, _context);
         warehouseHistoryItem.ForceDate = settings.GetDia(stationId);
 
@@ -638,7 +638,6 @@ public class POSCore
 
         return null;
     }
-
 
     //    if (station == null)
     //        return RedirectToAction("Login");
@@ -3033,7 +3032,7 @@ public class POSCore
             _dbContext.SaveChanges();
         }
 
-        return new Tuple<int, string>(0, "Operación realizada correctamente");
+        return new Tuple<int, string>(0, "OperaciÃ³n realizada correctamente");
     }
     public int CancelReservation(long ID)
     {
@@ -3042,5 +3041,147 @@ public class POSCore
 
         _dbContext.SaveChanges();
         return 0;
+    }
+    
+    public Order Kiosk(Station station, string userName, int orderId = 0)
+    {
+            Order order = null;
+            if (orderId > 0)
+            {
+                order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
+                
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType; //Kiosk
+                //HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
+            }
+            else
+            {
+                order = new Order();
+
+                {
+                    var user = userName;
+                    order.Station = station;
+                    order.WaiterName = user;
+                    order.OrderMode = OrderMode.Standard;
+                    order.OrderType = OrderType.Delivery;
+                    order.Status = OrderStatus.Temp;
+
+                    if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
+                    {
+                        order.PrepareTypeID = station.PrepareTypeDefault.Value; 
+                    }
+                    else
+                    {
+                        order.PrepareTypeID = 4; //Kiosk
+                    }
+
+                    var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                    order.PrepareType = prepareType;
+
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+                    order.ComprobantesID = voucher.ID;
+
+                    _dbContext.Orders.Add(order);
+
+                    var delivery = new Delivery();
+                    delivery.Order = order;
+                    delivery.Status = StatusEnum.Nuevo;
+                    delivery.StatusUpdated = DateTime.Now;
+                    delivery.DeliveryTime = DateTime.Now;
+
+                    _dbContext.Deliverys.Add(delivery);
+
+                    _dbContext.SaveChanges();
+
+                    //HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+                }
+
+            }
+
+            return order;
+    }
+
+    public int UpdateCustomerName(long orderID, string clientName)
+    {
+        var order = _dbContext.Orders.FirstOrDefault(o => o.ID == orderID);
+        if (order == null)
+        {
+            return 1;
+        }
+
+        // Actualizar el nombre del cliente en la orden
+        order.ClientName = clientName;
+        _dbContext.SaveChanges();
+
+        return 0;
+    }
+
+    public long SubmitConduceOrders(SubmitConduceOrdersRequest request, int stationId)
+    {
+        var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == request.CustomerId);
+        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.Include(s => s.Areas).FirstOrDefault(s => s.ID == stationID);
+        var newOrder = new Order()
+        {
+            Station = station,
+            OrderType = request.Type,
+            OrderMode = OrderMode.Conduce,
+            OrderTime = DateTime.Now,
+            Status = OrderStatus.Temp,
+            ClientName = customer.Name,
+            CustomerId = customer.ID,
+            Delivery = 0,
+            Items = new List<OrderItem>(),
+        };
+        _dbContext.Orders.Add(newOrder);
+        _dbContext.SaveChanges();
+
+        var items = new List<OrderItem>();
+        var orders = new List<Order>();
+        int index = 0;
+        foreach (var o in request.Orders)
+        {
+            var order = GetOrder(o);
+
+            newOrder.Delivery += order.Delivery;
+
+            if (index == 0)
+            {
+                newOrder.ComprobantesID = order.ComprobantesID;
+                newOrder.ComprobanteName = order.ComprobanteName;
+            }
+            foreach (var item in order.Items)
+            {
+                var nitem = item.CopyThis();
+
+                var existItem = new OrderItem();
+                var isExist = false;
+                foreach (var eitem in items)
+                {
+                    if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID)
+                    {
+                        isExist = true;
+                        existItem = eitem;
+                    }
+                }
+
+                if (isExist)
+                {
+                    existItem.Qty += item.Qty;
+                }
+                else
+                {
+                    items.Add(nitem);
+                }
+            }
+            order.ConduceOrderId = newOrder.ID;
+        }
+        newOrder.Items = items;
+        _dbContext.SaveChanges();
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == newOrder.ComprobantesID);
+
+        newOrder.GetTotalPrice(voucher);
+        _dbContext.SaveChanges();
+        return newOrder.ID;
     }
 }

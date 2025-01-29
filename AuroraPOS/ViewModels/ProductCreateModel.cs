@@ -31,7 +31,7 @@ namespace AuroraPOS.ViewModels
         public List<ProductServingSizeModel> ProductServingSizeItems { get; set; }
         public List<ProductRecipeItemModel> Recipes { get; set; }
         public List<ProductQuestionModel> Questions { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
 
         public string ImageUpload { get; set; }

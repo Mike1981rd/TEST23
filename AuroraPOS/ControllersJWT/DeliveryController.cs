@@ -22,6 +22,28 @@ namespace AuroraPOS.ControllersJWT
             _dbContext = dbContext._context;
         }
 
+        [HttpGet("Index")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult Index(int? stationId)
+        {
+            DeliveryIndexResponse response = new DeliveryIndexResponse();
+
+            response.cancelReasons = _dbContext.CancelReasons.ToList();
+            response.Branchs = _dbContext.t_sucursal.ToList();
+            response.filterBranch = HttpContext.Session.GetInt32("FilterBranch");
+
+            int? getStation = 0; //= int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
+
+            if (stationId != null)
+            {
+                getStation = stationId;
+                var objEstacion = _dbContext.Stations.Where(s => s.ID == getStation).First();
+                response.SucursalActual = objEstacion.IDSucursal;
+            }
+
+            return Json(response);
+        }
+
         [HttpGet("GetDeliveryList")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public JsonResult GetDeliveryList([FromBody] GetDeliveryRequest request)
@@ -47,6 +69,24 @@ namespace AuroraPOS.ControllersJWT
                 response.Error = ex.Message;
                 return Json(response);
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetDelivery(long Id)
+        {
+            try
+            {
+                var objDelivery = _dbContext.Deliverys.Where(s => s.ID == Id).First();
+
+                return Json(new { status = 0, data = objDelivery });
+
+            }
+            catch (Exception ex)
+            {
+                var m = ex;
+            }
+
+            return Json(new { status = 1 });
         }
     }
 }

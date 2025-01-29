@@ -11,7 +11,7 @@
         public int? Branch { get; set; } = 0;
         public int? Factura { get; set; } = 0;
         public int StationId { get; set; }
-        public int? Start { get; set; } = 0;
-        public int? Length { get; set; } = 10;
+        //public int? Start { get; set; } = 0;
+        //public int? Length { get; set; } = 10;
     }
 }
