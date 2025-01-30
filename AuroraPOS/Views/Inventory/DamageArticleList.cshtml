@@ -8,22 +8,22 @@
 			<h5 class="card-title">@ViewLocalizer["Damaged Article List"]</h5>
 			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
 				<div class="col-md-2">
-					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
+					<input id="filter-searchtext" type="search" class="form-control mt-6" placeholder="@ViewLocalizer["Search"]">
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Date From"] </label>
+					<label class="form-label">@ViewLocalizer["Date From"] </label>
 					<input id="damage_filter_datefrom" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Date To"] </label>
+					<label class="form-label">@ViewLocalizer["Date To"] </label>
 					<input id="damage_filter_dateto" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2 mt-6">
 					<select id="damage-warehouse" class="select">
 						<option>@ViewLocalizer["Choose Warehouse"]</option>
 					</select>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2 mt-6">
 					<select id="damage-status" class="select">
 						<option value="">@ViewLocalizer["Choose Status"]</option>
 						<option value="1">@ViewLocalizer["Pending"]</option>

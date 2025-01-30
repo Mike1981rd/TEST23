@@ -342,10 +342,10 @@
                                     }
                                     else if (orderStatus == PurchaseOrderStatus.Ordered)
                                     {
-                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Save"]</a>
                                         <a id="purchase-cancel" href="javascript:void(0);" class="btn btn-default btn-danger me-2 bg-lightred">@ViewLocalizer["Cancel"]</a>
-                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
-                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen me-2">@ViewLocalizer["Received"]</a>
+                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen me-2">@ViewLocalizer["Report"]</a>
                                     }
                                     else if (orderStatus == PurchaseOrderStatus.Cancelled)
                                     {
@@ -353,16 +353,16 @@
                                     }
                                     else if (orderStatus == PurchaseOrderStatus.None)
                                     {
-                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Save"]</a>
+                                        <a id="purchase-submit" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Save"]</a>
                                         <a id="purchase-send" href="javascript:void(0);" class="btn btn-default btn-info me-2">@ViewLocalizer["Order"]</a>
-                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Received"]</a>
+                                        <a id="purchase-receive" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen me-2">@ViewLocalizer["Received"]</a>
 
                                     }
                                     else if (orderStatus == PurchaseOrderStatus.Received)
                                     {
-                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen">@ViewLocalizer["Report"]</a>
+                                        <a id="purchase-report" href="javascript:void(0);" class="btn btn-default btn-primary bg-lightgreen me-2">@ViewLocalizer["Report"]</a>
                                     }
-                                    <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                                    <a id="purchase-return" href="/Inventory/PurchaseOrderList" class="btn btn-label-secondary waves-effect me-2">@ViewLocalizer["Return"]</a>
                                 </div>
                             </div>
                         </div>

@@ -52,7 +52,7 @@ namespace AuroraPOS.ControllersJWT
             
             var rq = new GetProductListRequest();
             
-            rq.length = -1;
+            //rq.length = -1;
             rq.searchValue = searchValue;
             rq.category = category;
             rq.barcode = barcode;
