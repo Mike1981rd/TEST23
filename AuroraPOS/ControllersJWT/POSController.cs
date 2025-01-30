@@ -1600,6 +1600,7 @@ public class POSController : Controller
         }
     }
     
+    /*
     [HttpGet("Kiosk")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public JsonResult Kiosk(int stationId, int orderId = 0)
@@ -1693,7 +1694,7 @@ public class POSController : Controller
                 }
 
             }
-            */
+            
 
             var reasons = _dbContext.CancelReasons.ToList();
             response.cancelReasons = reasons;
@@ -1712,7 +1713,7 @@ public class POSController : Controller
             response.Error = ex.Message;
             return Json(response);
         }
-    }
+    }*/
 
     [HttpPost("UpdateCustomerName")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
