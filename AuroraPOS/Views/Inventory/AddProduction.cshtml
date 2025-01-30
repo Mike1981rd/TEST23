@@ -14,7 +14,7 @@
                     <h6>@ViewLocalizer["Add/Update Production"]</h6>
                 </div>
 
-                <div class="page-btn">
+                <div class="page-btn mb-2">
                     <h5 id="production-id" data-id="@ViewBag.ProductionID"></h5>
 
                     @if (productionStatus == ProductionStatus.Pending)
@@ -31,7 +31,7 @@
                     }
                 </div>
             </div>
-            <div class="row" data-articleid="0">
+            <div class="row mb-2" data-articleid="0">
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
                         <div class="col">
@@ -57,6 +57,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                    <div class="form-group">
+                        <label class="form-label">@ViewLocalizer["Unit"]</label>
+                        <select id="production-unit" class="select ">
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-3 col-sm-6 col-12">
@@ -73,17 +80,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-sm-6 col-12">
+                <div class="col-lg-3 col-sm-6 col-12">
                     <div class="form-group">
                         <label class="form-label">@ViewLocalizer["Qty"]</label>
-                        <input id="production-qty" onkeypress="return onlyDecimalKey(event)" value="1" type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                    <div class="form-group">
-                        <label class="form-label">@ViewLocalizer["Unit"]</label>
-                        <select id="production-unit" class="select ">
-                        </select>
+                        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                            <input id="production-qty" onkeypress="return onlyDecimalKey(event)" value="1" type="text" class="form-control">
+                            <div class="addonset" style="opacity: 0%;">
+                                <img src="/vendor/img/icons/calendars.svg" alt="img" width="20" >
+                            </div>
+                        </div>
+@*                         <label class="form-label">@ViewLocalizer["Qty"]</label>
+                        <input id="production-qty" onkeypress="return onlyDecimalKey(event)" value="1" type="text" class="form-control"> *@
                     </div>
                 </div>
                 <div class="col-lg-2 col-sm-6 col-12">
@@ -95,7 +102,7 @@
             </div>
             <br/>
             <div class="row pt-2">
-                <div class="card-datatable table-responsive" style="height: 300px; overflow: auto">
+                <div class="card-datatable table-responsive" @* style="height: 300px; overflow: auto" *@>
                     <table id="purchase-item" class="table">
                         <thead class="table-light">
                             <tr>

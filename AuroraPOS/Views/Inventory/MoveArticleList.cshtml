@@ -7,32 +7,32 @@
 		<div class="card-header">
 			<h5 class="card-title">@ViewLocalizer["Move Article List"]</h5>
 			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
-				<div class="col-md-1">
+				<div class="col-md-2 mt-7">
 					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Order Date From"] </label>
+					<label class="form-label">@ViewLocalizer["Order Date From"] </label>
 					<input id="move_filter_datefrom" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Order Date To"] </label>
+					<label class="form-label">@ViewLocalizer["Order Date To"] </label>
 					<input id="move_filter_dateto" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]">
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Source Warehouse"] </label>
+					<labe class="form-label"l>@ViewLocalizer["Source Warehouse"] </labe>
 					<select id="move-warehousefrom" class="select">
 						<option>Choose Supplier</option>
 						<option>Supplier</option>
 					</select>
 				</div>
 				<div class="col-md-2">
-					<label>@ViewLocalizer["Target Warehouse"] </label>
+					<label class="form-label">@ViewLocalizer["Target Warehouse"] </label>
 					<select id="move-warehouseto" class="select">
 						<option>Choose Supplier</option>
 						<option>Supplier</option>
 					</select>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2 mt-6">
 					<select id="filter-status" class="form-select text-capitalize">
 						<option value="">@ViewLocalizer["Choose Status"]</option>
 						<option value="1">@ViewLocalizer["Pending"]</option>
