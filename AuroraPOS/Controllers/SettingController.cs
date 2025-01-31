@@ -1071,8 +1071,48 @@ namespace AuroraPOS.Controllers
             return Json(new { status = 0 });
         }
 
-        public IActionResult Roles()
+        public async Task<IActionResult> Roles()
         {
+            try
+            {
+                // Obtener todos los roles que no están eliminados junto con el conteo de usuarios asociados a cada rol
+                var roles = await _dbContext.Role
+                    .Where(s => !s.IsDeleted)
+                                .Select(role => new RoleCardViewModel
+                                {
+                                    ID = role.ID,
+                                    RoleName = role.RoleName,
+                                    Priority = role.Priority,
+                                    UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)),
+                                    UserImages = _dbContext.User
+                    .Where(user => user.Roles.Any(r => r.RoleName == role.RoleName))
+                    .Select(user => user.ProfileImage)
+                    .ToList()
+                                })
+            .ToListAsync();
+                //       .Select(role => new {
+                //           role.ID,
+                //           role.RoleName,
+                //           role.Priority,
+                //           UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)), // Contar usuarios por rol
+                //           userImages = _dbContext.User
+                //.Where(user => user.Roles.Any(r => r.RoleName == role.RoleName))
+                //.Select(user => user.ProfileImage) // Seleccionar la imagen de perfil
+                //.ToList()
+                //       })
+                //       .ToListAsync();
+
+                ViewBag.Roles = roles;
+
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores, registrar el error
+                Console.WriteLine(ex.Message);
+                //return StatusCode(500, "Internal server error");
+            }
+
+
             return View();
         }
 
@@ -1223,7 +1263,11 @@ namespace AuroraPOS.Controllers
                         role.ID,
                         role.RoleName,
                         role.Priority,
-                        UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)) // Contar usuarios por rol
+                        UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)), // Contar usuarios por rol
+                        userImages = _dbContext.User
+            .				Where(user => user.Roles.Any(r => r.RoleName == role.RoleName))
+							.Select(user => user.ProfileImage) // Seleccionar la imagen de perfil
+							.ToList()
                     })
                     .ToListAsync();
 

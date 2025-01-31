@@ -223,7 +223,7 @@
 							if ('@showCost' == "True") {
 								costhead = "<th>Cost($)</th>";
 							}
-							html += `<tr><td colspan='5'><div class='mx-3 p-2'><table class='w-100'><thead><tr><th>Date</th><th>Qty</th>${costhead}<th>Balance</th><th>Usuario</th><th>Razon</th></tr></thead><tbody class='history-item'>`;
+							html += `<tr><td colspan='12'><div class="table-responsive mx-6 py-6"><table class='table w-100'><thead class="table-light"><tr><th>Date</th><th>Qty</th>${costhead}<th>Balance</th><th>Usuario</th><th>Razon</th></tr></thead><tbody class='history-item'>`;
 							for (var k = 0; k < d.history.length; k++) {
 								var h = d.history[k];
 								var qtycol = ""
@@ -250,7 +250,7 @@
 								costfooter = `<td>${d.totalCost}</td>`;
 							}
 
-							html += `<tr data-qty='${d.totalQty}'><td></td><td><h6>Total</h6></td>${costfooter}<td class='item-qty'>${d.totalQty.toFixed(2)}</td><td></td><td></td></tr>`
+							html += `<tr data-qty='${d.totalQty}'><td></td><td><h6 style='margin: 0;'>Total</h6></td>${costfooter}<td class='item-qty'>${d.totalQty.toFixed(2)}</td><td></td><td></td></tr>`
 							html += `</tbody></table></div></td></tr>`;
 
 							$("#stock-result").append(html);
