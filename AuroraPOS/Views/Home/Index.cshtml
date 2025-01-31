@@ -12,17 +12,18 @@
 
 <!-- Button trigger modal -->
 <div class="container-xxl flex-grow-1 container-p-y">
-	<div class="row g-6">
+	<div class="row">
 		@* Fechas *@
-		<div class="col-xxl-6">
-			<div class="card h-100">
-				<div class="card-header d-flex align-items-center justify-content-between">
-					<div class="card-title mb-0">
-						<h5 class="m-0 me-2">Rango de Fechas</h5>
+		<div class="row mx-0 mb-6 px-0 py-0">
+			<div class="col">
+				<div class="card h-100 ">
+					<div class="card-header d-flex align-items-center justify-content-between">
+						<div class="card-title mb-0">
+							<h5 class="m-0 me-2">Rango de Fechas</h5>
+						</div>
 					</div>
-				</div>
-				<div class="card-body">
-					@*<div class="row">
+					<div class="card-body">
+						@*<div class="row">
 						<div class="col-12">
 							<button id="btn-hoy" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('today');">Hoy</button>
 							<button id="btn-ayer" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('yesterday');">Ayer</button>
@@ -30,36 +31,37 @@
 							<button id="btn-ultimo-mes" class="btn btn-submit me-1" style="background-color:#008bd9;" onclick="SetRangeSelector('lastmonth');">Ultimo mes</button>
 						</div>
 					</div>*@
-					<div class="row">
-						<div class="col-sm-6 col-lg-4">
+						<div class="row">
+							<div class="col-sm-6 col-lg-4">
 
-							<label for="html5-date-input" class="form-label">@ViewLocalizer["Rango de fechas"]</label>
-							<select id="date-range-selector" class="select2 form-select">
-								<option value="">Selecciona una fecha</option>
-								<option value="today">Hoy</option>
-								<option value="yesterday">Ayer</option>
-								<option value="last7days">Últimos 7 días</option>
-								<option value="last30days">Últimos 30 días</option>
-								<option value="last90days">Últimos 90 días</option>
-								<option value="last365days">Últimos 365 días</option>
-								<option value="lastmonth">Mes pasado</option>
-							</select>
+								<label for="html5-date-input" class="form-label">@ViewLocalizer["Rango de fechas"]</label>
+								<select id="date-range-selector" class="select2 form-select">
+									<option value="">Selecciona una fecha</option>
+									<option value="today">Hoy</option>
+									<option value="yesterday">Ayer</option>
+									<option value="last7days">Últimos 7 días</option>
+									<option value="last30days">Últimos 30 días</option>
+									<option value="last90days">Últimos 90 días</option>
+									<option value="last365days">Últimos 365 días</option>
+									<option value="lastmonth">Mes pasado</option>
+								</select>
 
-						</div>
-						<div class="col-sm-6 col-lg-4">
-
-							<label for="html5-date-input" class="form-label">@ViewLocalizer["Date From"]</label>
-							<div class="col-md-10">
-								<input id="dashboard_filter_datefrom" class="form-control" type="date" placeholder="@ViewLocalizer["Choose Date"]" />
 							</div>
-							@*   <input  type="text" class="datetimepicker cal-icon" > *@
+							<div class="col-sm-6 col-lg-4">
 
-						</div>
-						<div class="col-sm-6 col-lg-4">
+								<label for="html5-date-input" class="form-label">@ViewLocalizer["Date From"]</label>
+								<div class="col-md-10">
+									<input id="dashboard_filter_datefrom" class="form-control" type="date" placeholder="@ViewLocalizer["Choose Date"]" />
+								</div>
+								@*   <input  type="text" class="datetimepicker cal-icon" > *@
 
-							<label for="html5-date-input" class="form-label">@ViewLocalizer["Date To"]</label>
-							<div class="col-md-10">
-								<input id="dashboard_filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+							</div>
+							<div class="col-sm-6 col-lg-4">
+
+								<label for="html5-date-input" class="form-label">@ViewLocalizer["Date To"]</label>
+								<div class="col-md-10">
+									<input id="dashboard_filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -68,103 +70,108 @@
 		</div>
 		@* /Fechas *@
 
-		@* Total Purchase Amount Card *@
-		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
-		{
-			<div class="col-lg col-sm-6">
-				<div class="card card-border-shadow-warning h-100">
-					<div class="card-body">
-						<div class="d-flex align-items-center mb-2">
-							<div class="avatar me-4">
-								<span class="avatar-initial rounded bg-label-warning"><img src="/vendor/img/icons/dash1.svg" alt="img"></span>
+		@* Cards *@
+		<div class="row mx-0 px-0 py-0">
+			@* Total Purchase Amount Card *@
+			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchase")).Result.Succeeded)
+			{
+				<div class="col-lg col-sm-6 mb-6">
+					<div class="card card-border-shadow-warning h-100">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-2">
+								<div class="avatar me-4">
+									<span class="avatar-initial rounded bg-label-warning"><img src="/vendor/img/icons/dash1.svg" alt="img"></span>
+								</div>
+								<h4 class="mb-0 total_purchase"></h4>
 							</div>
-							<h4 class="mb-0 total_purchase"></h4>
+							<p class="mb-1">@ViewLocalizer["Total Purchase Amount"]</p>
 						</div>
-						<p class="mb-1">@ViewLocalizer["Total Purchase Amount"]</p>
 					</div>
 				</div>
-			</div>
-		}
-		@* /Total Purchase Amount Card *@
+			}
+			@* /Total Purchase Amount Card *@
 
-		@* Total Purchase Tax *@
-		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
-		{
-			<div class="col-lg col-sm-6">
-				<div class="card card-border-shadow-success h-100">
-					<div class="card-body">
-						<div class="d-flex align-items-center mb-2">
-							<div class="avatar me-4">
-								<span class="avatar-initial rounded bg-label-success"><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
+			@* Total Purchase Tax *@
+			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalPurchaseTax")).Result.Succeeded)
+			{
+				<div class="col-lg col-sm-6 mb-6">
+					<div class="card card-border-shadow-success h-100">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-2">
+								<div class="avatar me-4">
+									<span class="avatar-initial rounded bg-label-success"><img src="/vendor/img/icons/dash2.svg" alt="img"></span>
+								</div>
+								<h4 class="mb-0 total_purchase_tax"></h4>
 							</div>
-							<h4 class="mb-0 total_purchase_tax"></h4>
+							<p class="mb-1">@ViewLocalizer["Total Purchase Tax"]</p>
 						</div>
-						<p class="mb-1">@ViewLocalizer["Total Purchase Tax"]</p>
 					</div>
 				</div>
-			</div>
-		}
-		@* /Total Purchase Tax *@
+			}
+			@* /Total Purchase Tax *@
 
-		@* Total Sale Amount *@
-		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
-		{
-			<div class="col-lg col-sm-6">
-				<div class="card card-border-shadow-info h-100">
-					<div class="card-body">
-						<div class="d-flex align-items-center mb-2">
-							<div class="avatar me-4">
-								<span class="avatar-initial rounded bg-label-info"><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
-							</div>
-							<h4 class="mb-0 total_sale"></h4>
-						</div>
-						<p class="mb-1">@ViewLocalizer["Total Sale Amount"]</p>
-					</div>
-				</div>
-			</div>
-		}
-		@* /Total Sale Amount *@
 
-		@* Total Sale Amount *@
-		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
-		{
-			<div class="col-lg col-sm-6">
-				<div class="card card-border-shadow-danger h-100">
-					<div class="card-body">
-						<div class="d-flex align-items-center mb-2">
-							<div class="avatar me-4">
-								<span class="avatar-initial rounded bg-label-danger"><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
+			@* Total Sale Amount *@
+			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSales")).Result.Succeeded)
+			{
+				<div class="col-lg col-sm-6 mb-6">
+					<div class="card card-border-shadow-info h-100">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-2">
+								<div class="avatar me-4">
+									<span class="avatar-initial rounded bg-label-info"><img src="/vendor/img/icons/dash3.svg" alt="img"></span>
+								</div>
+								<h4 class="mb-0 total_sale"></h4>
 							</div>
-							<h4 class="mb-0 total_sale_tax"></h4>
+							<p class="mb-1">@ViewLocalizer["Total Sale Amount"]</p>
 						</div>
-						<p class="mb-1">@ViewLocalizer["Total Sale Tax"]</p>
 					</div>
 				</div>
-			</div>
-		}
-		@* /Total Sale Amount *@
+			}
+			@* /Total Sale Amount *@
 
-		@* Total Sale Propina *@
-		@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
-		{
-			<div class="col-lg col-sm-6">
-				<div class="card card-border-shadow-primary h-100">
-					<div class="card-body">
-						<div class="d-flex align-items-center mb-2">
-							<div class="avatar me-4">
-								<span class="avatar-initial rounded bg-label-primary"><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
+			@* Total Sale Amount *@
+			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesTax")).Result.Succeeded)
+			{
+				<div class="col-lg col-sm-6 mb-6">
+					<div class="card card-border-shadow-danger h-100">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-2">
+								<div class="avatar me-4">
+									<span class="avatar-initial rounded bg-label-danger"><img src="/vendor/img/icons/dash4.svg" alt="img"></span>
+								</div>
+								<h4 class="mb-0 total_sale_tax"></h4>
 							</div>
-							<h4 class="mb-0 total_sale_propina"></h4>
+							<p class="mb-1">@ViewLocalizer["Total Sale Tax"]</p>
 						</div>
-						<p class="mb-1">@ViewLocalizer["Total Sale Propina"]</p>
 					</div>
 				</div>
-			</div>
-		}
-		@* /Total Sale Propina *@
+			}
+			@* /Total Sale Amount *@
+
+			@* Total Sale Propina *@
+			@if ((AuthorizationService.AuthorizeAsync(User, "Permission.DASHBOARD.TotalSalesPropina")).Result.Succeeded)
+			{
+				<div class="col-lg col-sm-6 mb-6">
+					<div class="card card-border-shadow-primary h-100">
+						<div class="card-body">
+							<div class="d-flex align-items-center mb-2">
+								<div class="avatar me-4">
+									<span class="avatar-initial rounded bg-label-primary"><img src="/vendor/img/icons/dash5.svg" alt="img"></span>
+								</div>
+								<h4 class="mb-0 total_sale_propina"></h4>
+							</div>
+							<p class="mb-1">@ViewLocalizer["Total Sale Propina"]</p>
+						</div>
+					</div>
+				</div>
+			}
+			@* /Total Sale Propina *@
+		</div>
+		@* /Cards *@
 
 		@* Productos más vendidos  *@
-		<div class="col-xxl-4 col-lg-4">
+		<div class="col-xxl-4 col-lg-4 mb-6 mt-0">
 			<div class="card h-100">
 				<div class="card-header d-flex align-items-center justify-content-between">
 					<div class="card-title mb-0">
@@ -207,7 +214,7 @@
 		@* /Productos más vendidos *@
 
 		@* Total de inventario *@
-		<div class="col-xxl-4 col-lg-4">
+		<div class="col-xxl-4 col-lg-4 mb-6 mt-0">
 			<div class="card h-100">
 				<div class="card-header d-flex align-items-center justify-content-between">
 					<div class="card-title mb-0">
@@ -223,7 +230,7 @@
 		@* /Total de inventario *@
 
 		@* Alertas *@
-        <div class="col-xxl-4 col-lg-4">
+		<div class="col-xxl-4 col-lg-4 mb-6 mt-0">
 			<div class="card h-100">
 				<div class="card-header d-flex align-items-center justify-content-between">
 					<div class="card-title mb-0">
