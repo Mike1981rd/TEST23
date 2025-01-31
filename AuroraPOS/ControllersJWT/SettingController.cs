@@ -146,6 +146,12 @@ namespace AuroraPOS.ControllersJWT
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
                 var activeCustomerList = settingsCore.GetActiveCustomerList(request);
 
+                if (activeCustomerList.activeCustomers.Any())
+                {
+                    activeCustomerList.activeCustomers =
+                        activeCustomerList.activeCustomers.OrderBy(m => m.Name).ToList();
+                }
+
                 if (activeCustomerList != null)
                 {
                     response.Valor = activeCustomerList;
@@ -219,6 +225,12 @@ namespace AuroraPOS.ControllersJWT
             try
             {
                 var customers = settingsCore.GetActiveCustomers();
+
+                if (customers.Any())
+                {
+                    customers = customers.OrderBy(m => m.Name).ToList();    
+                }
+                
 
                 response.result = customers;
                 response.Success = true;
