@@ -23,30 +23,30 @@
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h6 class="fw-normal mb-0 text-body"> Total @role.UserCount users</h6>
                                     <ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
-                                        @for(int i = 0; i < 3 && i < role.UserImages.Count; i++)
+                                        @for(int i = 0; i < 3 && i < role.UserInfo.Count; i++)
                                         {
-                                            var image = role.UserImages[i];
+                                            var info = role.UserInfo[i];
 
-                                            @if (image != null && image != "") 
+                                            @if (info.ImageUrl != null && info.ImageUrl != "")
                                             {
-                                                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Avatar" data-bs-original-title="Avatar">
-                                                    <img class="rounded-circle" src="@image" alt="Avatar">
+                                                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="@info.UserName" data-bs-original-title="@info.UserName">
+                                                    <img class="rounded-circle" src="@info.ImageUrl" alt="Avatar">
                                                 </li>
                                             } else{
-                                                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Avatar" data-bs-original-title="Avatar">
+                                                <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="@info.UserName" data-bs-original-title="@info.UserName">
                                                     <img class="rounded-circle" src="/user_img.jpg" alt="Avatar">
                                                 </li>
                                             }
 
 										}
-                                        @if(role.UserImages.Count - 3 > 0)
+                                        @if(role.UserInfo.Count - 3 > 0)
                                         {
-                                            int more = role.UserImages.Count - 3;
+                                            int more = role.UserInfo.Count - 3;
                                             <li class="avatar">
                                                 <span class="avatar-initial rounded-circle pull-up" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="@more more">+@more</span>
                                             </li>
                                         }
-                                        @if (role.UserImages.Count == 0)
+                                        @if (role.UserInfo.Count == 0)
                                         {
                                             <li class="avatar">
                                                 <span class="avatar-initial rounded-circle pull-up" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="No users">0</span>

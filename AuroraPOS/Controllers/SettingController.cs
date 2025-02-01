@@ -1084,12 +1084,16 @@ namespace AuroraPOS.Controllers
                                     RoleName = role.RoleName,
                                     Priority = role.Priority,
                                     UserCount = _dbContext.User.Count(user => user.Roles.Any(r => r.RoleName == role.RoleName)),
-                                    UserImages = _dbContext.User
-                    .Where(user => user.Roles.Any(r => r.RoleName == role.RoleName))
-                    .Select(user => user.ProfileImage)
-                    .ToList()
+                                    UserInfo = _dbContext.User
+												.Where(user => user.Roles.Any(r => r.RoleName == role.RoleName))
+												.Select(user => new RoleUserInfoViewModel
+                                                {
+                                                    UserName = user.FullName,
+                                                    ImageUrl = user.ProfileImage
+                                                })
+                    							.ToList()
                                 })
-            .ToListAsync();
+					.ToListAsync();
                 //       .Select(role => new {
                 //           role.ID,
                 //           role.RoleName,
