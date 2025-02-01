@@ -131,15 +131,21 @@
 
 <!-- Sub Recipe Modal -->
 <div class="modal fade" id="listitems" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+@* 			<div class="modal-header">
 				<h5 class="item-modal-title">@ViewLocalizer["Article / Sub Recipe List"]</h5>
 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>
+			</div> *@
 			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center mb-6">
+					<h4 class="mb-2">
+						@ViewLocalizer["Article / Sub Recipe List"]
+					</h4>
+				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="table-responsive w-100" style="max-height:400px;">
