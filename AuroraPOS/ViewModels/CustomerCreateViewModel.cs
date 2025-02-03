@@ -18,5 +18,7 @@ namespace AuroraPOS.ViewModels
         public string Address2 { get; set; }
         public long? ZoneId { get; set; }
         public long? VoucherId { get; set; }
-	}
+        public string? Company { get; set; }
+
+    }
 }

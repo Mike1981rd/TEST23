@@ -67,6 +67,24 @@
 						<h4 class="mb-2">@ViewLocalizer["Add/Edit Customer"]</h4>
 					</div>
 					<div class="row">
+						<div class="mb-6" style="padding-right: 0;">
+							<div style="display: flex; flex-direction: column; width: 100% !important">
+								<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+								<div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: 100%">
+									<input id="customer-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
+									<a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Cargar datos</a>
+								</div>
+								<label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
+								<label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
+
+							</div>
+						</div>
+						<div class="mb-6" style="padding-right: 0;">
+								<div style="display: flex; flex-direction: column; width: 100% !important" ">
+									<label class="form-label">@ViewLocalizer["Compañia"]<span class="manitory">*</span></label>
+									<input id="compania-name" type="text" class="form-control" readonly>
+								</div>
+						</div>
 						<div class="d-flex mb-6" style="gap: 10px">
 							<div class="col-lg-6 col-sm-6 col-12">
 								<div class="form-group">
@@ -74,12 +92,12 @@
 									<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
 								</div>
 							</div>
-							<div class="col-lg-6 col-sm-6 col-12">
+@* 							<div class="col-lg-6 col-sm-6 col-12">
 								<div class="form-group">
 									<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
 									<input id="customer-rnc" type="text" class="form-control" required>
 								</div>
-							</div>
+							</div> *@
 						</div>
 						<div class="d-flex mb-6" style="gap: 10px">
 							<div class="col-lg-6 col-sm-6 col-12">
@@ -531,6 +549,46 @@
 		$("#filter-searchtext").on("change keyup", function () {
 			FilterCustomer()
 		});
+
+		$("#carga-datos-rnc").click(function () {
+
+			const rnc = $('#customer-rnc').val();
+
+			$.ajax({
+				url: "/Setting/ObtenerDatosDGII",
+				type: "POST",
+				dataType: "json",
+				data: { RNC: rnc },
+				success: function (response) {
+					if (response) {
+						console.log(response);
+
+						if(response.isValid === true) {
+							$('#compania-name').val(response.compania);
+							toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+							$('#label-rnc-validado').prop('hidden', false);
+							$('#label-rnc-novalidado').prop('hidden', true);
+						} else {
+							toastr.error("El RNC no es valido", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+							$('#label-rnc-validado').prop('hidden', true);
+							$('#label-rnc-novalidado').prop('hidden', false);
+						}
+					} else {
+							toastr.error("Ocurrió un error inesperado", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+							$('#label-rnc-validado').prop('hidden', true);
+							$('#label-rnc-novalidado').prop('hidden', false);
+					}
+				},
+				error: function (xhr, status, error) {
+					//console.error("Error en la petición AJAX:", error);
+					toastr.error("Error en la petición AJAX" + error, { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+					$('#label-rnc-validado').prop('hidden', true);
+					$('#label-rnc-novalidado').prop('hidden', false);
+				}
+			});
+		
+		});
+
 		$(".btn-detalle").click(function () {
 			$("#cxcdetalle").modal("show");
 			$("#addcustomer").modal("hide");
@@ -716,7 +774,8 @@
 			var photo = $("#productimg").data("avatar");
 			var zone = parseInt($("#customer-zone").val())
 			var active = $("#customer-status").val()
-			var id = parseInt($("#addcustomer").data("id"))
+			var id = parseInt($("#addcustomer").data("id"));
+			var company = $('#compania-name').val();
 			var data = {
 				ID : id,
 				RNC: rnc,
@@ -731,7 +790,8 @@
 				Avatar : photo,
 				VoucherId: voucher,
 				DeliveryZoneID: zone,
-				IsActive: active == "1"
+				IsActive: active == "1",
+				Company: company
 			}
 
 			$.ajax({
@@ -791,6 +851,7 @@
 	function AddCustomer() {
 		$("#customer-name").val("");
 		$("#customer-rnc").val("");
+		$('#compania-name').val("");
 		$("#customer-phone").val("");
 		$("#customer-email").val("");
 		$("#customer-address1").val("");
@@ -806,9 +867,15 @@
 		GetAccountItems(5, 0)
 		$("#addcustomer").data("id", 0);
 		$("#addcustomer").modal("show");
+
+		$('#label-rnc-validado').prop('hidden', true);
+		$('#label-rnc-novalidado').prop('hidden', true);
 	}
 
 	function EditCustomer(id) {
+		$('#label-rnc-validado').prop('hidden', true);
+		$('#label-rnc-novalidado').prop('hidden', true);
+
 		$.ajax({
 			url: "/Setting/GetCustomer?customerId=" + id,
 			type: "POST",
@@ -816,6 +883,7 @@
 				if (customer) {
 					$("#customer-name").val(customer.name);
 					$("#customer-rnc").val(customer.rnc);
+					$('#compania-name').val(customer.company);
 					$("#customer-phone").val(customer.phone);
 					$("#customer-email").val(customer.email);
 					$("#customer-address1").val(customer.address1);

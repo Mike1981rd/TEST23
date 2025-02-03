@@ -22,6 +22,9 @@ using AuroraPOS.Services;
 using AuroraPOS.Core;
 using AuroraPOS.ModelsJWT;
 using PuppeteerSharp;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace AuroraPOS.Controllers
 {
@@ -492,7 +495,9 @@ namespace AuroraPOS.Controllers
 					existing.Avatar = request.Avatar;
 					existing.IsActive = request.IsActive;
 					existing.DeliveryZoneID = request.DeliveryZoneID;
-					if (request.VoucherId > 0)
+					existing.Company = request.Company;
+
+                    if (request.VoucherId > 0)
 					{
 						var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
 						existing.Voucher = voucher;
@@ -518,7 +523,8 @@ namespace AuroraPOS.Controllers
 					existing.Avatar = request.Avatar;
 					existing.IsActive = request.IsActive;
 					existing.DeliveryZoneID = request.DeliveryZoneID;
-					if (request.VoucherId > 0)
+                    existing.Company = request.Company;
+                    if (request.VoucherId > 0)
 					{
 						var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
 						existing.Voucher = voucher;
@@ -2469,7 +2475,7 @@ namespace AuroraPOS.Controllers
 		{
 			try
 			{
-				var pdocument = new PrintDocument();
+				var pdocument = new System.Drawing.Printing.PrintDocument(); //evitar error de nombres con selenium
 				pdocument.PrinterSettings.PrinterName = model.Printer;
 				pdocument.DefaultPageSettings.PaperSize = new PaperSize();
                 pdocument.PrintPage += new PrintPageEventHandler(outPrinter_PrintPage);
@@ -3624,12 +3630,80 @@ namespace AuroraPOS.Controllers
 
 			return Json(new { status = 0 });
 		}
-		#endregion
 
-	}
+		[HttpPost]
+		public JsonResult ObtenerDatosDGII(string RNC)
+		{
+			var options = new ChromeOptions();
+            options.AddArguments("headless");
+			//options.AddArguments("start-maximized");
+            DatosDGIIResponse responseDatos = new DatosDGIIResponse();
+            responseDatos.isValid = false;
+
+            using (IWebDriver driver = new ChromeDriver(options))
+			{
+                driver.Navigate().GoToUrl("https://www.dgii.gov.do/app/WebApps/ConsultasWeb/consultas/rnc.aspx");
+
+				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                wait.Until(driver => driver.FindElement(By.TagName("body")));
+
+				IWebElement inputRNC = driver.FindElement(By.Id("ctl00_cphMain_txtRNCCedula"));
+				IWebElement buscarRNCBtn = driver.FindElement(By.Id("ctl00_cphMain_btnBuscarPorRNC"));
+
+                inputRNC.SendKeys(RNC);
+
+				buscarRNCBtn.Click();
+
+                try
+                {
+                    var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
+                    responseDatos.isValid = true;
+					responseDatos.compania = nombre;
+
+                    Response.ContentType = "application/json";
+                    return Json(new { isValid = responseDatos.isValid, compania = responseDatos.compania });
+
+                    // Procesar el elemento encontrado
+                }
+                catch (NoSuchElementException)
+                {
+                    // Manejo del caso cuando el elemento no se encuentra
+                    responseDatos.isValid = false;
+                    return Json(new { isValid = responseDatos.isValid});
+
+                }
+
+                //        wait.Until(driver =>
+                //driver.FindElements(By.Id("ctl00_cphMain_lblInformacion")).Count > 0 ||
+                //driver.FindElements(By.Id("ctl00_cphMain_dvDatosContribuyentes")).Count > 0);
+
+                //           if (driver.FindElement(By.Id("ctl00_cphMain_lblInformacion")).Text.Length > 1)
+                //           {
+                //responseDatos.isValid = false;
+                //           }
+                //           else
+
+                //if (driver.FindElement(By.Id("ctl00_cphMain_dvDatosContribuyentes")) > 0)
+                //{
+                //                //IWebElement nombreElement = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[2]/td[1]"));
+                //                //responseDatos.compania = nombreElement.Text;
+
+                //ALTER TABLE "Customers"
+                //ADD COLUMN "Company" TEXT;
+            }
+		}
+        #endregion
+
+    }
+
+	public class DatosDGIIResponse
+	{
+		public bool isValid { get; set; }
+		public string? compania { get; set; }
+    }
 
 
-	public class PrinterChannelModel : PrinterChannel
+    public class PrinterChannelModel : PrinterChannel
 	{
 		public string PrinterName { get; set; }
 	}

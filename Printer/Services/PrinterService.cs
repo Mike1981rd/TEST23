@@ -99,37 +99,49 @@ namespace Printer.Services
 
 
         private async Task ConsultaImpresionEImprime(object state)
-{
-    try
-    {
-        // Solicitar trabajos pendientes desde el servidor.
-        var client = _httpClientFactory.CreateClient();
-        var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
-        var response = await client.GetAsync(url);
+        {
+            try
+            {
+                // Solicitar trabajos pendientes desde el servidor.
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
+                var response = await client.GetAsync(url);
 
+                //using (var scope = _serviceProvider.createScope())
+                //{
+                //    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                //    if (dbContext == null)
+                //    {
+                //        _logger.LogError("No se pudo obtener el contexto de la base de datos.");
+                //        return;
+                //    }
+                //    var pendingTasks = dbContext.PrinterTasks
+                //    .Where(t => t.Status == (int)PrinterTasksStatus.Pendiente)
+                //    .ToList();
+                //}
                 // Asegúrate de que la respuesta fue exitosa.
                 if (response.IsSuccessStatusCode)
-        {
-            var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
-
-            if (respuesta?.Cantidad > 0)
-            {
-                foreach (var objImpresion in respuesta.Impresiones)
                 {
-                    PrintToPrinter(objImpresion.Impresora, objImpresion.Html);
+                    var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
+
+                    if (respuesta?.Cantidad > 0)
+                    {
+                        foreach (var objImpresion in respuesta.Impresiones)
+                        {
+                            PrintToPrinter(objImpresion.Impresora, objImpresion.Html);
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning($"No se pudieron obtener las impresiones pendientes. Código de estado: {response.StatusCode}");
                 }
             }
-        }
-        else
-        {
-            _logger.LogWarning($"No se pudieron obtener las impresiones pendientes. Código de estado: {response.StatusCode}");
-        }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al consultar impresiones pendientes.");
+            }
     }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error al consultar impresiones pendientes.");
-    }
-}
 
 
 

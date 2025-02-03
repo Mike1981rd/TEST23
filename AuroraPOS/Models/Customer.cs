@@ -13,7 +13,8 @@
 		public string? PostalCode { get; set; } = string.Empty;
 		public string? Country { get; set; } = string.Empty;
 		public string? Avatar { get; set; } = string.Empty;
-		public decimal Balance { get; set; } 
+		public string? Company { get; set; } = string.Empty;
+        public decimal Balance { get; set; } 
 		public decimal CreditLimit { get; set; }
 		public int CreditDays { get; set; }
 		public Voucher? Voucher { get; set; }
