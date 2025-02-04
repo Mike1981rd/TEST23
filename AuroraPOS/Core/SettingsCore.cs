@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using OpenQA.Selenium.Chrome;
+using AuroraPOS.Controllers;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace AuroraPOS.Core
 {
@@ -280,6 +284,49 @@ namespace AuroraPOS.Core
             }
 
             _dbContext.SaveChanges();
+        }
+
+        public DatosDGIIResponse ObtenerDatosDGII(string RNC)
+        {
+            var options = new ChromeOptions();
+            options.AddArguments("headless");
+            //options.AddArguments("start-maximized");
+            DatosDGIIResponse responseDatos = new DatosDGIIResponse();
+            responseDatos.isValid = false;
+
+            using (IWebDriver driver = new ChromeDriver(options))
+            {
+                driver.Navigate().GoToUrl("https://www.dgii.gov.do/app/WebApps/ConsultasWeb/consultas/rnc.aspx");
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                wait.Until(driver => driver.FindElement(By.TagName("body")));
+
+                IWebElement inputRNC = driver.FindElement(By.Id("ctl00_cphMain_txtRNCCedula"));
+                IWebElement buscarRNCBtn = driver.FindElement(By.Id("ctl00_cphMain_btnBuscarPorRNC"));
+
+                inputRNC.SendKeys(RNC);
+
+                buscarRNCBtn.Click();
+
+                try
+                {
+                    var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
+                    responseDatos.isValid = true;
+                    responseDatos.compania = nombre;
+
+                    //Response.ContentType = "application/json";
+                    return responseDatos;
+
+                    // Procesar el elemento encontrado
+                }
+                catch (NoSuchElementException)
+                {
+                    // Manejo del caso cuando el elemento no se encuentra
+                    responseDatos.isValid = false;
+                    return responseDatos;
+
+                }
+            }
         }
     }
 

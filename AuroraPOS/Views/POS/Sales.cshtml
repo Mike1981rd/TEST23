@@ -1420,6 +1420,21 @@
                         </h4>
                     </div>
                     <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+                                <input id="customer-rnc" type="text" class="form-control mb-2" aria-describedby="basic-addon1" required>
+								<a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Cargar datos</a>
+                                <label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
+                                <label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["Compañia"]<span class="manitory">*</span></label>
+                                <input id="compania-name" type="text" class="form-control" aria-describedby="basic-addon1" readonly>
+                            </div>
+                        </div>
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
@@ -1444,12 +1459,12 @@
                                 <input id="customer-address2" type="text" class="form-control" required>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-sm-6 col-12">
+@*                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
                                 <input id="customer-rnc" type="text" class="form-control" required>
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Comprobantes"]</label>
@@ -1742,6 +1757,45 @@
         LoadPrepareTypes();
         var defaultDeliveryValue = "Para llevar";
         setVisualMode();
+
+        $("#carga-datos-rnc").click(function () {
+
+            const rnc = $('#customer-rnc').val();
+
+            $.ajax({
+                url: "/Setting/ObtenerDatosDGII",
+                type: "POST",
+                dataType: "json",
+                data: { RNC: rnc },
+                success: function (response) {
+                    if (response) {
+                        console.log(response);
+
+                        if(response.isValid === true) {
+                            $('#compania-name').val(response.compania);
+                            toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', false);
+                            $('#label-rnc-novalidado').prop('hidden', true);
+                        } else {
+                            toastr.error("El RNC no es valido", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                        }
+                    } else {
+                            toastr.error("Ocurrió un error inesperado", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    //console.error("Error en la petición AJAX:", error);
+                    toastr.error("Error en la petición AJAX" + error, { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                    $('#label-rnc-validado').prop('hidden', true);
+                    $('#label-rnc-novalidado').prop('hidden', false);
+                }
+            });
+
+        });
 
         function LoadOrderItems2(itemId) {
 
@@ -5575,6 +5629,9 @@
     }
 
     function EditCustomer(id) {
+        $('#label-rnc-validado').prop('hidden', true);
+        $('#label-rnc-novalidado').prop('hidden', true);
+
         $.ajax({
             url: "/Setting/GetCustomer?customerId=" + id,
             type: "POST",
@@ -5587,6 +5644,7 @@
                     $("#customer-phone").val(customer.phone);
                     $("#customer-email").val(customer.email);
                     $("#customer-zone").val(customer.deliveryZoneID).change();
+                    $('#compania-name').val(customer.company);
 
                     if (customer.voucher) {
                         $("#customer-voucher").val(customer.voucher.id).change();
@@ -5611,10 +5669,14 @@
         $("#customer-phone").val("");
         $("#customer-email").val("");
         $("#customer-voucher").val(0).change();
+        $('#compania-name').val("");
 
         $("#addcustomer").data("id", 0);
         $("#addcustomer").modal("show");
         $('#listcustomer').modal("hide");
+
+        $('#label-rnc-validado').prop('hidden', true);
+        $('#label-rnc-novalidado').prop('hidden', true);
 
         SelectVoucher();
         SelectZones();
@@ -5667,7 +5729,8 @@
         var address2 = $("#customer-address2").val();
         var zone = parseInt($("#customer-zone").val())
         var voucher = parseInt($("#customer-voucher").val())
-        var id = parseInt($("#addcustomer").data("id"))
+        var id = parseInt($("#addcustomer").data("id"));
+        var company = $('#compania-name').val();
         var data = {
             id: id,
             RNC: rnc,
@@ -5677,7 +5740,8 @@
             Address1: address1,
             Address2: address2,
             ZoneId: zone,
-            VoucherId: voucher
+            VoucherId: voucher,
+            Company: company
         }
 
         $.ajax({

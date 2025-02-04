@@ -8,6 +8,10 @@ using AuroraPOS.Models;
 using AuroraPOS.ModelsJWT;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using AuroraPOS.Controllers;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium;
 
 namespace AuroraPOS.ControllersJWT
 {
@@ -307,6 +311,32 @@ namespace AuroraPOS.ControllersJWT
            settingsCore.DeactivateWorkDay(stationID);
 
             return Json("OK");
+        }
+
+        [HttpGet("ObtenerDatosDGII")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult ObtenerDatosDGII(string RNC)
+        {
+            GetDatosDGIIResponse response = new GetDatosDGIIResponse();
+            DatosDGIIResponse data = new DatosDGIIResponse();
+
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
+            try
+            {
+                data = settingsCore.ObtenerDatosDGII(RNC);
+                response.Valor = data;
+                response.Success = true;
+
+                return Json(response);
+            } catch (Exception e)
+            {
+                response.Success = false;
+                response.Error = "Ocurrió un error en la consulta: " + e.Message;
+
+                return Json(response);
+            }
+
         }
 
     }
