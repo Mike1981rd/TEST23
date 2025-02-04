@@ -558,7 +558,7 @@ namespace AuroraPOS.Controllers
 					existing.Address1 = request.Address1;
 					existing.Address2 = request.Address2;
 					existing.DeliveryZoneID = request.ZoneId;
-
+					existing.Company = request.Company;
                     /*if (request.ZoneId > 0)
                     {
                         var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
@@ -588,6 +588,7 @@ namespace AuroraPOS.Controllers
                     existing.Address1 = request.Address1;
                     existing.Address2 = request.Address2;
                     existing.DeliveryZoneID = request.ZoneId;
+                    existing.Company = request.Company;
 
                     /*if (request.ZoneId > 0)
                     {
@@ -3634,63 +3635,11 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult ObtenerDatosDGII(string RNC)
 		{
-			var options = new ChromeOptions();
-            options.AddArguments("headless");
-			//options.AddArguments("start-maximized");
-            DatosDGIIResponse responseDatos = new DatosDGIIResponse();
-            responseDatos.isValid = false;
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
 
-            using (IWebDriver driver = new ChromeDriver(options))
-			{
-                driver.Navigate().GoToUrl("https://www.dgii.gov.do/app/WebApps/ConsultasWeb/consultas/rnc.aspx");
+            DatosDGIIResponse responseDatos = settingsCore.ObtenerDatosDGII(RNC);
 
-				WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until(driver => driver.FindElement(By.TagName("body")));
-
-				IWebElement inputRNC = driver.FindElement(By.Id("ctl00_cphMain_txtRNCCedula"));
-				IWebElement buscarRNCBtn = driver.FindElement(By.Id("ctl00_cphMain_btnBuscarPorRNC"));
-
-                inputRNC.SendKeys(RNC);
-
-				buscarRNCBtn.Click();
-
-                try
-                {
-                    var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
-                    responseDatos.isValid = true;
-					responseDatos.compania = nombre;
-
-                    Response.ContentType = "application/json";
-                    return Json(new { isValid = responseDatos.isValid, compania = responseDatos.compania });
-
-                    // Procesar el elemento encontrado
-                }
-                catch (NoSuchElementException)
-                {
-                    // Manejo del caso cuando el elemento no se encuentra
-                    responseDatos.isValid = false;
-                    return Json(new { isValid = responseDatos.isValid});
-
-                }
-
-                //        wait.Until(driver =>
-                //driver.FindElements(By.Id("ctl00_cphMain_lblInformacion")).Count > 0 ||
-                //driver.FindElements(By.Id("ctl00_cphMain_dvDatosContribuyentes")).Count > 0);
-
-                //           if (driver.FindElement(By.Id("ctl00_cphMain_lblInformacion")).Text.Length > 1)
-                //           {
-                //responseDatos.isValid = false;
-                //           }
-                //           else
-
-                //if (driver.FindElement(By.Id("ctl00_cphMain_dvDatosContribuyentes")) > 0)
-                //{
-                //                //IWebElement nombreElement = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[2]/td[1]"));
-                //                //responseDatos.compania = nombreElement.Text;
-
-                //ALTER TABLE "Customers"
-                //ADD COLUMN "Company" TEXT;
-            }
+            return Json(new { isValid = responseDatos.isValid, compania = responseDatos.compania });
 		}
         #endregion
 
