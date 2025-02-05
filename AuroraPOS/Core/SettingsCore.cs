@@ -10,6 +10,8 @@ using OpenQA.Selenium.Chrome;
 using AuroraPOS.Controllers;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
+
 
 namespace AuroraPOS.Core
 {
@@ -298,7 +300,7 @@ namespace AuroraPOS.Core
             {
                 driver.Navigate().GoToUrl("https://www.dgii.gov.do/app/WebApps/ConsultasWeb/consultas/rnc.aspx");
 
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(4));
                 wait.Until(driver => driver.FindElement(By.TagName("body")));
 
                 IWebElement inputRNC = driver.FindElement(By.Id("ctl00_cphMain_txtRNCCedula"));
@@ -310,6 +312,8 @@ namespace AuroraPOS.Core
 
                 try
                 {
+                    var div = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("ctl00_cphMain_divBusqueda")));
+                    
                     var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
                     responseDatos.isValid = true;
                     responseDatos.compania = nombre;
