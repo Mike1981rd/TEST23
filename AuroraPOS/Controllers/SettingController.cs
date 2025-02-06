@@ -3639,7 +3639,7 @@ namespace AuroraPOS.Controllers
 
             DatosDGIIResponse responseDatos = settingsCore.ObtenerDatosDGII(RNC);
 
-            return Json(new { isValid = responseDatos.isValid, compania = responseDatos.compania });
+            return Json(new { isValid = responseDatos.isValid, compania = responseDatos.compania, nombre = responseDatos.nombre });
 		}
         #endregion
 
@@ -3648,6 +3648,7 @@ namespace AuroraPOS.Controllers
 	public class DatosDGIIResponse
 	{
 		public bool isValid { get; set; }
+		public string? nombre { get; set; }
 		public string? compania { get; set; }
     }
 
