@@ -314,9 +314,12 @@ namespace AuroraPOS.Core
                 {
                     var div = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("ctl00_cphMain_divBusqueda")));
                     
-                    var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
+                    var compania = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[3]/td[2]")).Text;
+                    responseDatos.compania = compania;
+                    var nombre = driver.FindElement(By.XPath("//table[@id='ctl00_cphMain_dvDatosContribuyentes']/tbody/tr[2]/td[2]")).Text;
+                    responseDatos.nombre = nombre;
+
                     responseDatos.isValid = true;
-                    responseDatos.compania = nombre;
 
                     //Response.ContentType = "application/json";
                     return responseDatos;

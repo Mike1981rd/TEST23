@@ -22,6 +22,36 @@
 			flex: 0 0 auto; /* El botón no debe crecer ni encogerse */
 		}
 
+	.contenedor {
+		position: relative; 
+		background-color: transparent;
+		border: 2px solid var(--bs-border-color);
+		border-radius: 15px; 
+		padding: 20px;
+		padding-top: 40px;
+	}
+
+	.titulo {
+		position: absolute;
+		top: -20px; 
+		left: 10px;
+		background-color: var(--bs-modal-bg); 
+		z-index: 2; 
+		padding: 5px 10px;
+	}
+
+	
+	.contenedor::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 40px; 
+		height: 40px; 
+		background-color: transparent; 
+		border-top-left-radius: 20px; 
+		z-index: 1;
+	}
 </style>
 
 <div class="content-wrapper">
@@ -67,141 +97,157 @@
 						<h4 class="mb-2">@ViewLocalizer["Add/Edit Customer"]</h4>
 					</div>
 					<div class="row">
-						<div class="mb-6" style="padding-right: 0;">
-							<div style="display: flex; flex-direction: column; width: 100% !important">
-								<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
-								<div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: 100%">
-									<input id="customer-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
-									<a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Validar</a>
-								</div>
-								<label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
-								<label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
-
-							</div>
-						</div>
-						<div class="mb-6" style="padding-right: 0;">
-								<div style="display: flex; flex-direction: column; width: 100% !important" ">
-									<label class="form-label">@ViewLocalizer["Compañia"]<span class="manitory">*</span></label>
-									<input id="compania-name" type="text" class="form-control" readonly>
-								</div>
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-									<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-								</div>
-							</div>
-@* 							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
-									<input id="customer-rnc" type="text" class="form-control" required>
-								</div>
-							</div> *@
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-									<input id="customer-phone" type="text" class="form-control phone_format" required>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-									<input id="customer-email" type="text" class="form-control" required>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Address"]</label>
-									<input id="customer-address1" type="text" class="form-control" required>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["City"]</label>
-									<input id="customer-city" type="text" class="form-control" required>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Limit of Credit"]</label>
-									<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Credit Days"]</label>
-									<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-3 col-sm-3 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Balance"]</label>
-									<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
-
-								</div>
-							</div>
-
-							<div class="col-lg-2 col-sm-2 col-12">
-								<div class="form-group">
-									<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
-								</div>
-							</div>
-							<div class="col-lg-2 col-sm-2 col-12">
-								<div class="form-group">
-									<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex mb-6" style="gap: 10px">
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Comprobantes"]</label>
-									<div class="row">
-										<div class="col-lg-10 col-sm-10 col-10">
-											<select id="customer-voucher" class="select ">
-												<option value="">Choose comprobantes</option>
-
-
-											</select>
+						@* Datos Fiscales *@
+						<div class="mb-6" style="padding: 0;">
+							<div class="contenedor">
+								<h5 class="titulo">Datos Fiscales</h5>
+								<div class="mb-6" style="padding-right: 0;">
+									<div style="display: flex; flex-direction: column; width: 100% !important">
+										<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+										<div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: 100%">
+											<input id="customer-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
+											<a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Validar</a>
 										</div>
-										<div class="col-lg-2 col-sm-2 col-2 ps-0">
-											<div class="add-icon">
-												<a id="add-voucher-modal" href="javascript:void(0);">
-													<img src="/vendor/img/icons/plus1.svg" alt="img">
-												</a>
+										<div class="divloading mt-2" style="display: none">
+											<div class="spinner-border text-primary " role="status" style="width: 15px; height: 15px">
+												<span class="visually-hidden">Loading...</span>
 											</div>
+											Validando...
 										</div>
+										<label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
+										<label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
+
+									</div>
+								</div>
+								<div class="mb-6" style="padding: 0;">
+									<div style="display: flex; flex-direction: column; width: 100% !important" ">
+										<label class="form-label">@ViewLocalizer["Compañia"]<span class="manitory">*</span></label>
+										<input id="compania-name" type="text" class="form-control" readonly>
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-6 col-sm-6 col-12">
-								<div class="form-group">
-									<label class="form-label">@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
-									<select id="customer-zone" class="select ">
-										<option value="">Zonas</option>
-									</select>
+						</div>
+						@* /Datos Fiscales *@
+
+						@* Datos Generales *@
+						<div class="mb-6" style="padding: 0;">
+							<div class="contenedor">
+								<h5 class="titulo">Datos Generales</h5>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+											<input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+										</div>
+									</div>
+								</div>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+											<input id="customer-phone" type="text" class="form-control phone_format" required>
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+											<input id="customer-email" type="text" class="form-control" required>
+										</div>
+									</div>
+								</div>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Address"]</label>
+											<input id="customer-address1" type="text" class="form-control" required>
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["City"]</label>
+											<input id="customer-city" type="text" class="form-control" required>
+										</div>
+									</div>
+								</div>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Limit of Credit"]</label>
+											<input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Credit Days"]</label>
+											<input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+										</div>
+									</div>
+								</div>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-3 col-sm-3 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Balance"]</label>
+											<input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+
+										</div>
+									</div>
+
+									<div class="col-lg-2 col-sm-2 col-12">
+										<div class="form-group">
+											<button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
+										</div>
+									</div>
+									<div class="col-lg-2 col-sm-2 col-12">
+										<div class="form-group">
+											<button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
+										</div>
+									</div>
+								</div>
+								<div class="d-flex mb-6" style="gap: 10px">
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Comprobantes"]</label>
+											<div class="row">
+												<div class="col-lg-10 col-sm-10 col-10">
+													<select id="customer-voucher" class="select ">
+														<option value="">Choose comprobantes</option>
+
+
+													</select>
+												</div>
+												<div class="col-lg-2 col-sm-2 col-2 ps-0">
+													<div class="add-icon">
+														<a id="add-voucher-modal" href="javascript:void(0);">
+															<img src="/vendor/img/icons/plus1.svg" alt="img">
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-12">
+										<div class="form-group">
+											<label class="form-label">@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
+											<select id="customer-zone" class="select ">
+												<option value="">Zonas</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6 col-sm-6 col-12">
+									<div class="form-group mb-2">
+										<label class="form-label">@ViewLocalizer["Status"]</label>
+										<select id="customer-status" class="select">
+											<option value="1"> @ViewLocalizer["Active"]</option>
+											<option value="0"> @ViewLocalizer["InActive"]</option>
+										</select>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-sm-6 col-12">
-							<div class="form-group mb-2">
-								<label class="form-label">@ViewLocalizer["Status"]</label>
-								<select id="customer-status" class="select">
-									<option value="1"> @ViewLocalizer["Active"]</option>
-									<option value="0"> @ViewLocalizer["InActive"]</option>
-								</select>
-							</div>
-						</div>
-						<div class="row mt-4">
+						@* /Datos Generales *@
+
+						<div class="row mt-4" style="padding: 0;">
 							@* ----- Control para subir archivos ----- *@
 
 							<div class="card mb-6">
@@ -229,7 +275,7 @@
 							</div>
 
 						</div>
-						<div class="row py-1">
+						<div class="row py-1" style="padding: 0;">
 							<div class="col-lg-12 col-sm-12 col-12">
 								<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
 									<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
@@ -554,32 +600,47 @@
 
 			const rnc = $('#customer-rnc').val();
 
+			$('#label-rnc-validado').prop('hidden', true);
+			$('#label-rnc-novalidado').prop('hidden', true);
+			$('.divloading').show();
+
 			$.ajax({
 				url: "/Setting/ObtenerDatosDGII",
 				type: "POST",
 				dataType: "json",
 				data: { RNC: rnc },
 				success: function (response) {
+					$('.divloading').hide();
+
 					if (response) {
 						console.log(response);
 
 						if(response.isValid === true) {
 							$('#compania-name').val(response.compania);
+							$('#customer-name').val(response.nombre);
+
 							toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
 							$('#label-rnc-validado').prop('hidden', false);
 							$('#label-rnc-novalidado').prop('hidden', true);
 						} else {
+							$('#compania-name').val("");
+
 							toastr.error("El RNC no es valido", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
 							$('#label-rnc-validado').prop('hidden', true);
 							$('#label-rnc-novalidado').prop('hidden', false);
 						}
 					} else {
+							$('#compania-name').val("");
+
 							toastr.error("Ocurrió un error inesperado", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
 							$('#label-rnc-validado').prop('hidden', true);
 							$('#label-rnc-novalidado').prop('hidden', false);
 					}
 				},
 				error: function (xhr, status, error) {
+					$('.divloading').hide();
+					$('#compania-name').val("");
+
 					//console.error("Error en la petición AJAX:", error);
 					toastr.error("Error en la petición AJAX" + error, { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
 					$('#label-rnc-validado').prop('hidden', true);
