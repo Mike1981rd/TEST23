@@ -4305,148 +4305,153 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult UpdateOrderInfo([FromBody]OrderInfoModel model)
 		{
-            var customer = _dbContext.Customers.Include(s => s.Voucher).FirstOrDefault(s => s.ID == model.CustomerId);
-            var order = _dbContext.Orders.Include(s=>s.Divides).Include(s => s.PrepareType).FirstOrDefault(s => s.ID == model.OrderId);
-            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.IsPrimary);
-            Console.WriteLine(customer);
-            if (model.DividerId > 0)
-            {
-                if (order.Divides == null) order.Divides = new List<DividerItem>();
-                var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DividerId);
-                if (divide != null)
-                {
-                    divide.ClientName = model.ClientName;
-                    divide.ClientId = model.CustomerId;
-                    if (customer != null)
-                    {
-                        if (!model.DontChangeVoucher) {
-                            divide.ComprebanteId = customer.Voucher.ID;
-                        }                                               
-                    }
-                    else
-                    {
-                        divide.ComprebanteId = voucher.ID;
-                        
-                    }
-                }
-                else
-                {
-                    divide = new DividerItem()
-                    {
-                        DividerNum = model.DividerId,
-                        ClientId = model.CustomerId,
-                        ClientName = model.ClientName,
-                        
-                    };
-                    if (customer != null)
-                    {
-                        if (!model.DontChangeVoucher)
-                        {
-                            divide.ComprebanteId = customer.Voucher.ID;
-                        }                                                   
-                    }
-                    else
-                    {
-                        divide.ComprebanteId = voucher.ID;
-                    }
-                    order.Divides.Add(divide);
-                }
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            UpdateOrderInfoModel response = objPOSCore.UpdateOrderInfo(model);
 
-                _dbContext.SaveChanges();
-            }
-            else
-            {
-                order.ClientName = model.ClientName;
-                order.CustomerId = model.CustomerId;
-                if (order.CustomerId > 0)
-                {
-                    if (customer != null && customer.Voucher != null)
-                    {
-                        if (!model.DontChangeVoucher)
-                        {
-                            order.ComprobantesID = customer.Voucher.ID;
-                            order.ComprobanteName = customer.Voucher.Name;
-                        }
-                        
-                    }
-                    else
-                    {
-                        order.ComprobantesID = voucher.ID;
-                        order.ComprobanteName = "";
-                    }
-                }
-                else
-                {
-                    order.ComprobantesID = 1;
-                    order.ComprobanteName = "";
-                }
-                _dbContext.SaveChanges();
-            }
+            return Json(new { status = response.status, ComprobanteName = response.ComprobanteName, deliverycost = response.deliverycost, deliverytime = response.deliverytime, customerName = response.customerName });
 
-            decimal deliverycost = 0;
-            decimal deliverytime = 0;
+            //var customer = _dbContext.Customers.Include(s => s.Voucher).FirstOrDefault(s => s.ID == model.CustomerId);
+            //var order = _dbContext.Orders.Include(s=>s.Divides).Include(s => s.PrepareType).FirstOrDefault(s => s.ID == model.OrderId);
+            //var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.IsPrimary);
+            //Console.WriteLine(customer);
+            //if (model.DividerId > 0)
+            //{
+            //    if (order.Divides == null) order.Divides = new List<DividerItem>();
+            //    var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DividerId);
+            //    if (divide != null)
+            //    {
+            //        divide.ClientName = model.ClientName;
+            //        divide.ClientId = model.CustomerId;
+            //        if (customer != null)
+            //        {
+            //            if (!model.DontChangeVoucher) {
+            //                divide.ComprebanteId = customer.Voucher.ID;
+            //            }                                               
+            //        }
+            //        else
+            //        {
+            //            divide.ComprebanteId = voucher.ID;
 
-            if (customer != null && order.OrderType == OrderType.Delivery)
-            {
-                var deliveryzone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == customer.DeliveryZoneID);
-                if (deliveryzone != null && !order.PrepareType.SinChofer)
-                {
-                    order.Delivery = deliveryzone.Cost;
-                }
-                else {
-                    order.Delivery = 0;
-                }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        divide = new DividerItem()
+            //        {
+            //            DividerNum = model.DividerId,
+            //            ClientId = model.CustomerId,
+            //            ClientName = model.ClientName,
 
-                bool deliveryExists = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).Any();
+            //        };
+            //        if (customer != null)
+            //        {
+            //            if (!model.DontChangeVoucher)
+            //            {
+            //                divide.ComprebanteId = customer.Voucher.ID;
+            //            }                                                   
+            //        }
+            //        else
+            //        {
+            //            divide.ComprebanteId = voucher.ID;
+            //        }
+            //        order.Divides.Add(divide);
+            //    }
 
-                if (deliveryExists)
-                {
-                    var delivery = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).First();
+            //    _dbContext.SaveChanges();
+            //}
+            //else
+            //{
+            //    order.ClientName = model.ClientName;
+            //    order.CustomerId = model.CustomerId;
+            //    if (order.CustomerId > 0)
+            //    {
+            //        if (customer != null && customer.Voucher != null)
+            //        {
+            //            if (!model.DontChangeVoucher)
+            //            {
+            //                order.ComprobantesID = customer.Voucher.ID;
+            //                order.ComprobanteName = customer.Voucher.Name;
+            //            }
 
-                    delivery.CustomerID = customer.ID;
-                    delivery.Address1 = customer.Address1 ??"";
-                    delivery.Adress2 = customer.Address2 ??"";
-                    delivery.DeliveryZoneID = customer.DeliveryZoneID;
+            //        }
+            //        else
+            //        {
+            //            order.ComprobantesID = voucher.ID;
+            //            order.ComprobanteName = "";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        order.ComprobantesID = 1;
+            //        order.ComprobanteName = "";
+            //    }
+            //    _dbContext.SaveChanges();
+            //}
 
-                    if(delivery.DeliveryZoneID != null && delivery.DeliveryZoneID>0)
-                    {
-                        var zone = _dbContext.DeliveryZones.Where(s => s.IsActive).Where(s => s.ID == delivery.DeliveryZoneID).First();
-                        deliverycost = zone.Cost;
-                        deliverytime = zone.Time;
-                    }                    
-                    
-                    _dbContext.SaveChanges();
-                }
-                else
-                {
-                    var delivery = new Delivery();
-                    delivery.CustomerID = customer.ID;
-                    delivery.Address1 = customer.Address1 ??"";
-                    delivery.Adress2 = customer.Address2??"";
-                    delivery.DeliveryZoneID = customer.DeliveryZoneID;
-                    delivery.OrderID = order.ID;
-                    delivery.Order = order;
+            //decimal deliverycost = 0;
+            //decimal deliverytime = 0;
 
-                    _dbContext.Deliverys.Add(delivery);
-                    _dbContext.SaveChanges();
-                }
-            
-            }
+            //if (customer != null && order.OrderType == OrderType.Delivery)
+            //{
+            //    var deliveryzone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == customer.DeliveryZoneID);
+            //    if (deliveryzone != null && !order.PrepareType.SinChofer)
+            //    {
+            //        order.Delivery = deliveryzone.Cost;
+            //    }
+            //    else {
+            //        order.Delivery = 0;
+            //    }
 
-            var order1 = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == model.OrderId);
-           
-            if (customer != null && customer.Voucher!=null)
-            {
-                voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == customer.Voucher.ID);
-            }
-                      
-            order1.GetTotalPrice(voucher);
-            _dbContext.SaveChanges();
+            //    bool deliveryExists = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).Any();
 
-            return Json(new { status = 0, ComprobanteName = voucher.Name, deliverycost = deliverycost, deliverytime= deliverytime, customerName = customer?.Name });
-		}
+            //    if (deliveryExists)
+            //    {
+            //        var delivery = _dbContext.Deliverys.Include(s => s.Order).Where(s => s.IsActive).Where(s => s.Order.ID == order.ID).First();
 
-       
+            //        delivery.CustomerID = customer.ID;
+            //        delivery.Address1 = customer.Address1 ??"";
+            //        delivery.Adress2 = customer.Address2 ??"";
+            //        delivery.DeliveryZoneID = customer.DeliveryZoneID;
+
+            //        if(delivery.DeliveryZoneID != null && delivery.DeliveryZoneID>0)
+            //        {
+            //            var zone = _dbContext.DeliveryZones.Where(s => s.IsActive).Where(s => s.ID == delivery.DeliveryZoneID).First();
+            //            deliverycost = zone.Cost;
+            //            deliverytime = zone.Time;
+            //        }                    
+
+            //        _dbContext.SaveChanges();
+            //    }
+            //    else
+            //    {
+            //        var delivery = new Delivery();
+            //        delivery.CustomerID = customer.ID;
+            //        delivery.Address1 = customer.Address1 ??"";
+            //        delivery.Adress2 = customer.Address2??"";
+            //        delivery.DeliveryZoneID = customer.DeliveryZoneID;
+            //        delivery.OrderID = order.ID;
+            //        delivery.Order = order;
+
+            //        _dbContext.Deliverys.Add(delivery);
+            //        _dbContext.SaveChanges();
+            //    }
+
+            //}
+
+            //var order1 = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == model.OrderId);
+
+            //if (customer != null && customer.Voucher!=null)
+            //{
+            //    voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == customer.Voucher.ID);
+            //}
+
+            //order1.GetTotalPrice(voucher);
+            //_dbContext.SaveChanges();
+
+            //return Json(new { status = 0, ComprobanteName = voucher.Name, deliverycost = deliverycost, deliverytime= deliverytime, customerName = customer?.Name });
+        }
+
+
 
         [HttpPost]
         public JsonResult UpdateCustomerName([FromBody] OrderInfoModel model)
