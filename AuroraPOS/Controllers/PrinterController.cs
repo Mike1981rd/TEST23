@@ -86,6 +86,7 @@
                     foreach (var objPending in pendingJobs)
                     {
                         var objPrintJob = new PrintJobModel();
+                        objPrintJob.Id = objPending.ID;
                         objPrintJob.Type =  objPending.Type.Value;
                         objPrintJob.PhysicalName =  objPending.PhysicalName;
                         objPrintJob.StationId =  objPending.StationId.HasValue ? objPending.StationId.Value : -1;
