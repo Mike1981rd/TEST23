@@ -25,6 +25,7 @@ using PuppeteerSharp;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using NPOI.SS.Formula.Functions;
 
 namespace AuroraPOS.Controllers
 {
@@ -478,144 +479,173 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult EditCustomer([FromBody] CustomerCreateViewModel request)
 		{
-			try
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
+            try
+            {
+                Tuple<int, long> result = settingsCore.EditCustomer(request);
+
+                return Json(new { status = result.Item1, id = result.Item2 });
+            }
+            catch
 			{
-				var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
-				if (existing != null)
-				{					
-					existing.Name = request.Name;
-					existing.Phone = request.Phone;
-					existing.Email = request.Email;
-					existing.RNC = request.RNC;
-					existing.Address1 = request.Address1;
-					existing.City = request.City;
-					existing.CreditLimit = request.CreditLimit;
-					existing.CreditDays = request.CreditDays;
-					existing.Balance = request.Balance;
-					existing.Avatar = request.Avatar;
-					existing.IsActive = request.IsActive;
-					existing.DeliveryZoneID = request.DeliveryZoneID;
-					existing.Company = request.Company;
-
-                    if (request.VoucherId > 0)
-					{
-						var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
-						existing.Voucher = voucher;
-					}
-					
-
-					_dbContext.SaveChanges();
-					return Json(new { status = 0, id = existing.ID });
-				}
-				else
-				{	
-
-					existing = new Customer();
-					existing.Name = request.Name;
-					existing.Phone = request.Phone;
-					existing.Email = request.Email;
-					existing.RNC = request.RNC;
-					existing.Address1 = request.Address1;
-					existing.City = request.City;
-					existing.CreditLimit = request.CreditLimit;
-					existing.CreditDays = request.CreditDays;
-					existing.Balance = request.Balance;
-					existing.Avatar = request.Avatar;
-					existing.IsActive = request.IsActive;
-					existing.DeliveryZoneID = request.DeliveryZoneID;
-                    existing.Company = request.Company;
-                    if (request.VoucherId > 0)
-					{
-						var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
-						existing.Voucher = voucher;
-					}
-
-					_dbContext.Customers.Add(existing);
-					_dbContext.SaveChanges();
-					return Json(new { status = 0, id = existing.ID });
-				}
 
 			}
-			catch { }
+            return Json(new { status = 1 });
 
-			return Json(new { status = 1 });
-		}
+            //try
+            //{
+            //	var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
+            //	if (existing != null)
+            //	{					
+            //		existing.Name = request.Name;
+            //		existing.Phone = request.Phone;
+            //		existing.Email = request.Email;
+            //		existing.RNC = request.RNC;
+            //		existing.Address1 = request.Address1;
+            //		existing.City = request.City;
+            //		existing.CreditLimit = request.CreditLimit;
+            //		existing.CreditDays = request.CreditDays;
+            //		existing.Balance = request.Balance;
+            //		existing.Avatar = request.Avatar;
+            //		existing.IsActive = request.IsActive;
+            //		existing.DeliveryZoneID = request.DeliveryZoneID;
+            //		existing.Company = request.Company;
+
+            //                 if (request.VoucherId > 0)
+            //		{
+            //			var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+            //			existing.Voucher = voucher;
+            //		}
+
+
+            //		_dbContext.SaveChanges();
+            //		return Json(new { status = 0, id = existing.ID });
+            //	}
+            //	else
+            //	{	
+
+            //		existing = new Customer();
+            //		existing.Name = request.Name;
+            //		existing.Phone = request.Phone;
+            //		existing.Email = request.Email;
+            //		existing.RNC = request.RNC;
+            //		existing.Address1 = request.Address1;
+            //		existing.City = request.City;
+            //		existing.CreditLimit = request.CreditLimit;
+            //		existing.CreditDays = request.CreditDays;
+            //		existing.Balance = request.Balance;
+            //		existing.Avatar = request.Avatar;
+            //		existing.IsActive = request.IsActive;
+            //		existing.DeliveryZoneID = request.DeliveryZoneID;
+            //                 existing.Company = request.Company;
+            //                 if (request.VoucherId > 0)
+            //		{
+            //			var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+            //			existing.Voucher = voucher;
+            //		}
+
+            //		_dbContext.Customers.Add(existing);
+            //		_dbContext.SaveChanges();
+            //		return Json(new { status = 0, id = existing.ID });
+            //	}
+
+            //}
+            //catch { }
+
+            //return Json(new { status = 1 });
+        }
         [HttpPost]
         public JsonResult EditCustomerSimple([FromBody] CustomerSimpleCreateViewModel request)
         {
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
             try
             {
-				Debug.WriteLine(request.VoucherId);
-                var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
-				Debug.WriteLine(existing);
-                if (existing != null)
-                {
-					Debug.WriteLine("existe");
-                    existing.Name = request.Name;
-                    existing.RNC = request.RNC;
-                    existing.Phone = request.Phone;
-                    existing.Email = request.Email;
-					existing.Address1 = request.Address1;
-					existing.Address2 = request.Address2;
-					existing.DeliveryZoneID = request.ZoneId;
-					existing.Company = request.Company;
-                    /*if (request.ZoneId > 0)
-                    {
-                        var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
-                        existing.Zone = zone;
-                    }*/
+                Tuple<int, long> result = settingsCore.EditCustomerSimple(request);
 
-                    if (request.VoucherId > 0)
-                    {
-                        var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
-						Debug.WriteLine("ola");
-						Debug.WriteLine(voucher);
-                        existing.Voucher = voucher;
-                    }
-
-
-                    _dbContext.SaveChanges();
-                    return Json(new { status = 0, customerid = existing .ID});
-                }
-                else
-                {
-                    Debug.WriteLine("no existe");
-                    existing = new Customer();
-                    existing.Name = request.Name;
-					existing.RNC = request.RNC;
-                    existing.Phone = request.Phone;
-                    existing.Email = request.Email;
-                    existing.Address1 = request.Address1;
-                    existing.Address2 = request.Address2;
-                    existing.DeliveryZoneID = request.ZoneId;
-                    existing.Company = request.Company;
-
-                    /*if (request.ZoneId > 0)
-                    {
-                        var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
-                        existing.Zone = zone;
-                    }*/
-
-                    if (request.VoucherId > 0)
-                    {
-                        Debug.WriteLine("ola2");
-                        
-                        var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
-                        Debug.WriteLine(voucher);
-                        existing.Voucher = voucher;
-                    }
-
-                    _dbContext.Customers.Add(existing);
-                    _dbContext.SaveChanges();
-                    return Json(new { status = 0, customerid = existing.ID });
-                }
-
+                return Json(new { status = result.Item1, customerid = result.Item2 });
             }
-            catch (Exception ex) {
-				var m = ex;
-			}
+            catch (Exception ex)
+            {
+                var m = ex;
+            }
 
             return Json(new { status = 1 });
+
+            //         try
+            //         {
+            //	Debug.WriteLine(request.VoucherId);
+            //             var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
+            //	Debug.WriteLine(existing);
+            //             if (existing != null)
+            //             {
+            //		Debug.WriteLine("existe");
+            //                 existing.Name = request.Name;
+            //                 existing.RNC = request.RNC;
+            //                 existing.Phone = request.Phone;
+            //                 existing.Email = request.Email;
+            //		existing.Address1 = request.Address1;
+            //		existing.Address2 = request.Address2;
+            //		existing.DeliveryZoneID = request.ZoneId;
+            //		existing.Company = request.Company;
+            //                 /*if (request.ZoneId > 0)
+            //                 {
+            //                     var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
+            //                     existing.Zone = zone;
+            //                 }*/
+
+            //                 if (request.VoucherId > 0)
+            //                 {
+            //                     var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+            //			Debug.WriteLine("ola");
+            //			Debug.WriteLine(voucher);
+            //                     existing.Voucher = voucher;
+            //                 }
+
+
+            //                 _dbContext.SaveChanges();
+            //                 return Json(new { status = 0, customerid = existing .ID});
+            //             }
+            //             else
+            //             {
+            //                 Debug.WriteLine("no existe");
+            //                 existing = new Customer();
+            //                 existing.Name = request.Name;
+            //		existing.RNC = request.RNC;
+            //                 existing.Phone = request.Phone;
+            //                 existing.Email = request.Email;
+            //                 existing.Address1 = request.Address1;
+            //                 existing.Address2 = request.Address2;
+            //                 existing.DeliveryZoneID = request.ZoneId;
+            //                 existing.Company = request.Company;
+
+            //                 /*if (request.ZoneId > 0)
+            //                 {
+            //                     var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
+            //                     existing.Zone = zone;
+            //                 }*/
+
+            //                 if (request.VoucherId > 0)
+            //                 {
+            //                     Debug.WriteLine("ola2");
+
+            //                     var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+            //                     Debug.WriteLine(voucher);
+            //                     existing.Voucher = voucher;
+            //                 }
+
+            //                 _dbContext.Customers.Add(existing);
+            //                 _dbContext.SaveChanges();
+            //                 return Json(new { status = 0, customerid = existing.ID });
+            //             }
+
+            //         }
+            //         catch (Exception ex) {
+            //	var m = ex;
+            //}
+
+            //         return Json(new { status = 1 });
         }
 
         [HttpPost]

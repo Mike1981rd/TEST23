@@ -11,6 +11,7 @@ using AuroraPOS.Controllers;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using AuroraPOS.ViewModels;
 
 
 namespace AuroraPOS.Core
@@ -333,6 +334,132 @@ namespace AuroraPOS.Core
                     return responseDatos;
 
                 }
+            }
+        }
+
+        public Tuple<int, long> EditCustomer(CustomerCreateViewModel request)
+        {
+            var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
+            if (existing != null)
+            {
+                existing.Name = request.Name;
+                existing.Phone = request.Phone;
+                existing.Email = request.Email;
+                existing.RNC = request.RNC;
+                existing.Address1 = request.Address1;
+                existing.City = request.City;
+                existing.CreditLimit = request.CreditLimit;
+                existing.CreditDays = request.CreditDays;
+                existing.Balance = request.Balance;
+                existing.Avatar = request.Avatar;
+                existing.IsActive = request.IsActive;
+                existing.DeliveryZoneID = request.DeliveryZoneID;
+                existing.Company = request.Company;
+
+                if (request.VoucherId > 0)
+                {
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+                    existing.Voucher = voucher;
+                }
+
+
+                _dbContext.SaveChanges();
+                return new Tuple<int, long>(0, existing.ID);
+            }
+            else
+            {
+
+                existing = new Customer();
+                existing.Name = request.Name;
+                existing.Phone = request.Phone;
+                existing.Email = request.Email;
+                existing.RNC = request.RNC;
+                existing.Address1 = request.Address1;
+                existing.City = request.City;
+                existing.CreditLimit = request.CreditLimit;
+                existing.CreditDays = request.CreditDays;
+                existing.Balance = request.Balance;
+                existing.Avatar = request.Avatar;
+                existing.IsActive = request.IsActive;
+                existing.DeliveryZoneID = request.DeliveryZoneID;
+                existing.Company = request.Company;
+                if (request.VoucherId > 0)
+                {
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+                    existing.Voucher = voucher;
+                }
+
+                _dbContext.Customers.Add(existing);
+                _dbContext.SaveChanges();
+                return new Tuple<int, long>(0, existing.ID);
+            }
+        }
+
+        public Tuple<int, long> EditCustomerSimple(CustomerSimpleCreateViewModel request)
+        {
+            //Debug.WriteLine(request.VoucherId);
+            var existing = _dbContext.Customers.FirstOrDefault(x => x.ID == request.ID);
+            //Debug.WriteLine(existing);
+            if (existing != null)
+            {
+                //Debug.WriteLine("existe");
+                existing.Name = request.Name;
+                existing.RNC = request.RNC;
+                existing.Phone = request.Phone;
+                existing.Email = request.Email;
+                existing.Address1 = request.Address1;
+                existing.Address2 = request.Address2;
+                existing.DeliveryZoneID = request.ZoneId;
+                existing.Company = request.Company;
+                /*if (request.ZoneId > 0)
+                {
+                    var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
+                    existing.Zone = zone;
+                }*/
+
+                if (request.VoucherId > 0)
+                {
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+                    //Debug.WriteLine("ola");
+                    //Debug.WriteLine(voucher);
+                    existing.Voucher = voucher;
+                }
+
+
+                _dbContext.SaveChanges();
+                return new Tuple<int, long>(0, existing.ID);
+            }
+            else
+            {
+                //Debug.WriteLine("no existe");
+                existing = new Customer();
+                existing.Name = request.Name;
+                existing.RNC = request.RNC;
+                existing.Phone = request.Phone;
+                existing.Email = request.Email;
+                existing.Address1 = request.Address1;
+                existing.Address2 = request.Address2;
+                existing.DeliveryZoneID = request.ZoneId;
+                existing.Company = request.Company;
+
+                /*if (request.ZoneId > 0)
+                {
+                    var zone = _dbContext.DeliveryZones.FirstOrDefault(s => s.ID == request.ZoneId);
+                    existing.Zone = zone;
+                }*/
+
+                if (request.VoucherId > 0)
+                {
+                    //Debug.WriteLine("ola2");
+
+                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == request.VoucherId);
+                    //Debug.WriteLine(voucher);
+                    existing.Voucher = voucher;
+                }
+
+                _dbContext.Customers.Add(existing);
+                _dbContext.SaveChanges();
+                return new Tuple<int, long>(0, existing.ID);
             }
         }
     }

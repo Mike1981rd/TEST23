@@ -12,6 +12,8 @@ using AuroraPOS.Controllers;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
+using AuroraPOS.ViewModels;
+using System.Diagnostics;
 
 namespace AuroraPOS.ControllersJWT
 {
@@ -337,6 +339,70 @@ namespace AuroraPOS.ControllersJWT
                 return Json(response);
             }
 
+        }
+
+        [HttpPost("EditCustomer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult EditCustomer([FromBody] CustomerCreateViewModel request)
+        {
+            EditCustomerResponse response = new EditCustomerResponse();
+
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
+            try
+            {
+                Tuple<int, long> result = settingsCore.EditCustomer(request);
+
+                response.status = result.Item1;
+                response.Id = result.Item2;
+
+                response.Success = true;
+
+                response.Message = "Cliente guardado correctamente";
+
+                return Json(response);
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = "Ocurrió un error al guardar el cliente: " + e.Message;
+
+                response.status = 1;
+
+                return Json(response);
+            }
+
+        }
+
+        [HttpPost("EditCustomerSimple")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public JsonResult EditCustomerSimple([FromBody] CustomerSimpleCreateViewModel request)
+        {
+            EditCustomerResponse response = new EditCustomerResponse();
+            SettingsCore settingsCore = new SettingsCore(_userService, _dbContext, _context);
+
+            try
+            {
+                Tuple<int, long> result = settingsCore.EditCustomerSimple(request);
+
+                response.status = result.Item1;
+                response.Id = result.Item2;
+
+                response.Success = true;
+
+                response.Message = "Cliente guardado correctamente";
+
+                return Json(response);
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = "Ocurrió un error al guardar el cliente: " + e.Message;
+
+                response.status = 1;
+
+                return Json(response);
+            }
         }
 
     }
