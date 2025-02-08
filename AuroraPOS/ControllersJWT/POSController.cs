@@ -1897,4 +1897,29 @@ public class POSController : Controller
             return Json(response);
         }
     }
+
+    [HttpPost("UpdateOrderInfo")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public UpdateOrderInfoResponse UpdateOrderInfo([FromBody] OrderInfoModel model)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        UpdateOrderInfoResponse response = new UpdateOrderInfoResponse();
+
+        try
+        {
+            response.Data = objPOSCore.UpdateOrderInfo(model);
+            response.Success = true;
+            response.Message = "La orden fue actualizada correctamente";
+            response.status = response.Data.status;
+
+            return response;
+        } catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = "Ocurrió un error al actualizar la información de la orden: " + e.Message;
+            response.status = -1;
+
+            return response;
+        }
+    }
 }
