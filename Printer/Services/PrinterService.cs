@@ -13,6 +13,9 @@ using RestSharp;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using System.Text;
+using System.Diagnostics;
 
 namespace Printer.Services
 {
@@ -27,6 +30,7 @@ namespace Printer.Services
         private Timer _timer;
         private readonly string _apiUrl;
         private readonly string _getPendingPrintJobsEndpoint;
+        private readonly string _updatePrintJobStatusEndpoint;
 
         public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
@@ -34,6 +38,7 @@ namespace Printer.Services
             _httpClientFactory = httpClientFactory;
             _apiUrl = configuration["PrinterSettings:ApiUrl"];
             _getPendingPrintJobsEndpoint = configuration["PrinterSettings:GetPendingPrintJobsEndpoint"];
+            _updatePrintJobStatusEndpoint = configuration["PrinterSettings:UpdatePrintJobStatusEndpoint"];
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -76,15 +81,22 @@ namespace Printer.Services
 
                 if (File.Exists(iconsExePath))
                 {
-                    bool success = UserSession.LaunchProcessInUserSession(iconsExePath);
-                    if (success)
+                    Process.Start(new ProcessStartInfo
                     {
-                        _logger.LogInformation("Aplicación de bandeja del sistema iniciada correctamente.");
-                    }
-                    else
-                    {
-                        _logger.LogError("No se pudo iniciar la aplicación de bandeja en la sesión del usuario.");
-                    }
+                        FileName = iconsExePath,
+                        UseShellExecute = true,
+                        WorkingDirectory = Path.GetDirectoryName(iconsExePath)
+                    });
+                    _logger.LogInformation("Aplicación de bandeja del sistema iniciada correctamente.");
+                    //bool success = UserSession.LaunchProcessInUserSession(iconsExePath);
+                    //if (success)
+                    //{
+                    //    _logger.LogInformation("Aplicación de bandeja del sistema iniciada correctamente.");
+                    //}
+                    //else
+                    //{
+                    //    _logger.LogError("No se pudo iniciar la aplicación de bandeja en la sesión del usuario.");
+                    //}
                 }
                 else
                 {
@@ -107,28 +119,30 @@ namespace Printer.Services
                 var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
                 var response = await client.GetAsync(url);
 
-                //using (var scope = _serviceProvider.createScope())
-                //{
-                //    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                //    if (dbContext == null)
-                //    {
-                //        _logger.LogError("No se pudo obtener el contexto de la base de datos.");
-                //        return;
-                //    }
-                //    var pendingTasks = dbContext.PrinterTasks
-                //    .Where(t => t.Status == (int)PrinterTasksStatus.Pendiente)
-                //    .ToList();
-                //}
                 // Asegúrate de que la respuesta fue exitosa.
                 if (response.IsSuccessStatusCode)
                 {
                     var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
 
-                    if (respuesta?.Cantidad > 0)
+                    if (respuesta?.cantidad > 0 || respuesta?.lista.Count > 0)
                     {
-                        foreach (var objImpresion in respuesta.Impresiones)
+                        foreach (var objImpresion in respuesta.lista)
                         {
-                            PrintToPrinter(objImpresion.Impresora, objImpresion.Html);
+                            var order = objImpresion.printJobOrder;
+                            await PrintToPrinter(objImpresion.physicalName, order);
+
+                            //actualizar el estado del trabajo de impresión a Impreso
+                            var body = new StringContent(
+                                JsonSerializer.Serialize(new UpdatePrintJobRequest { Id = objImpresion.id }),
+                                Encoding.UTF8,
+                                "application/json"
+                            );
+
+                            var url_upd = $"{_apiUrl}{_updatePrintJobStatusEndpoint}";
+                            var res = await client.PutAsync(url_upd, body);
+                            var info = await response.Content.ReadAsStringAsync();
+                            _logger.LogInformation(info);
+
                         }
                     }
                 }
@@ -145,7 +159,7 @@ namespace Printer.Services
 
 
 
-        private async Task PrintToPrinter(string printerName, string htmlContent)
+        private async Task PrintToPrinter(string printerName, PrintOrderModel order)
         {
             try
             {
@@ -167,30 +181,56 @@ namespace Printer.Services
                 TicketPrinter ticketPrinter = new TicketPrinter();
 
                 // Agregar un logotipo
-                Image logo = Image.FromFile("logo.png"); // Asegúrate de que el archivo exista
+                string projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string logoPath = Path.Combine(projectDirectory, "Resources", "logo.png");
+                Image logo = Image.FromFile(logoPath); // Asegúrate de que el archivo exista
+                //Image logo = Image.FromFile("logo.png"); // Asegúrate de que el archivo exista
                 ticketPrinter.AddImage(logo); // Tamaño: ancho = 100, alto = 50                
 
                 // Agregar líneas de texto con alineación
-                ticketPrinter.AddLine("TIENDA XYZ", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                //ticketPrinter.AddLine("TIENDA XYZ", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                ticketPrinter.AddLine(order.empresa + "," + order.empresa1, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
                 ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString(), new Font("Arial", 8), TextAlign.Center);
                 ticketPrinter.AddEmptyLine();
 
                 // Agregar columnas con alineación
                 ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                
                 ticketPrinter.AddLine("--------------------------------------------------------");
-
+                
                 // Agregar filas de tabla
-                ticketPrinter.AddColumns(new[] { "Artículo 1", "2", "$10.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-                ticketPrinter.AddColumns(new[] { "Artículo 2 Artículo 2 Artículo 2 Artículo 2", "1", "$15.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                foreach (PrintOrderItemModel item in order.items)
+                {
+                    decimal total = 0.0M;
+                    string amountString = item.amount.Substring(1);
+                    if (decimal.TryParse(amountString, out decimal amount))
+                    {
+                        if (int.TryParse(item.qty, out int quantity))
+                        {
+                            total = amount * quantity;
+                        }
+                    }
+
+                    ticketPrinter.AddColumns(new[] { item.nombre, item.qty, item.amount, total.ToString("C") }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                }
+                //ticketPrinter.AddColumns(new[] { "Artículo 1", "2", "$10.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                //ticketPrinter.AddColumns(new[] { "Artículo 2 Artículo 2 Artículo 2 Artículo 2", "1", "$15.00", "$10.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Regular), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                
                 ticketPrinter.AddLine("--------------------------------------------------------");
 
                 // Total
-                ticketPrinter.AddColumns(new[] { "Total", "", "", "$35.00" }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Subtotal", "", "", order.subtotal }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Taxes", "", "", order.taxes1 }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Propina", "", "", order.propina }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddColumns(new[] { "Total", "", "", order.total }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                ticketPrinter.AddLine("--------------------------------------------------------");
+                ticketPrinter.AddColumns(new[] { "Devuelto", "", "", order.devuelto }, new[] { 110f, 30f, 60f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+
                 ticketPrinter.AddEmptyLine();
 
                 // Agregar texto multilínea
-                string longText = "Este es un texto muy largo que necesita dividirse en varias líneas para ajustarse al ancho del ticket.";
-                ticketPrinter.AddMultilineText(longText, new Font("Arial", 10));
+                //string longText = "Este es un texto muy largo que necesita dividirse en varias  quitarle el primerolíneas para ajustarse al ancho del ticket.";
+                //ticketPrinter.AddMultilineText(longText, new Font("Arial", 10));
 
                 // Mensaje de agradecimiento
                 ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);

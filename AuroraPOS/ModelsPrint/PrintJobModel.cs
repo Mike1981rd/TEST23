@@ -7,6 +7,6 @@ public class PrintJobModel
     public int Type { get; set; }   
     public string PhysicalName { get; set; }   
     public long StationId { get; set; }   
-    public long SucursalId { get; set; }   
-    public string Json { get; set; }
+    public long SucursalId { get; set; }
+    public PrintOrderModel printJobOrder { get; set; }
 }
