@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using System.Text;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Printer.Services
 {
@@ -27,10 +28,11 @@ namespace Printer.Services
         private const string ServerIp = "127.0.0.1"; // Cambia a la IP real
         private const int ServerPort = 7205; // Cambia al puerto real
         private readonly ILogger<PrinterService> _logger; // Inyectar el logger
-        private Timer _timer;
+        private System.Threading.Timer _timer;
         private readonly string _apiUrl;
         private readonly string _getPendingPrintJobsEndpoint;
         private readonly string _updatePrintJobStatusEndpoint;
+        private NotifyIcon _notifyIcon;
 
         public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
@@ -48,10 +50,11 @@ namespace Printer.Services
             try
             {
                 // Iniciar la aplicación de la bandeja del sistema
-                await StartTrayApplication();
+                //await StartTrayApplication();
+                StartTrayIcon();
 
                 // Configurar el Timer para ejecutar el método cada 2 segundos
-                _timer = new Timer(state => ConsultaImpresionEImprime(state), null, 0, 2000); // Intervalo en milisegundos
+                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 2000); // Intervalo en milisegundos
             }
             catch (Exception ex)
             {
@@ -69,7 +72,20 @@ namespace Printer.Services
             _logger.LogInformation("El servicio de impresión se ha detenido.");
         }
 
+        private void StartTrayIcon()
+        {
+            _notifyIcon = new NotifyIcon
+            {
+                Icon = new Icon("Resources/favicon.ico"), // Usar un icono personalizado
+                Visible = true,
+                Text = "Servicio de impresión en ejecución"
+            };
 
+            // Opcionalmente, agregar un menú contextual al icono
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            contextMenu.Items.Add("Salir", null, (sender, e) => Application.Exit());
+            _notifyIcon.ContextMenuStrip = contextMenu;
+        }
 
         //Iniciar el programa de fondo que contiene la lógica del icono en UI
         private async Task StartTrayApplication()

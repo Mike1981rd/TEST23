@@ -15,7 +15,8 @@ namespace Icons
             NotifyIcon notifyIcon = new NotifyIcon
             {
                 // Usar un icono genérico del sistema
-                Icon = SystemIcons.Information, // Este es un icono genérico que viene con Windows
+                //Icon = SystemIcons.Information, // Este es un icono genérico que viene con Windows
+                Icon = new Icon("Resources/favicon.ico"),
                 Visible = true,
                 Text = "Servicio de impresión en ejecución"
             };
