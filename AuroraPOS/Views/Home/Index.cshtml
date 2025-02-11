@@ -48,19 +48,27 @@
 
 							</div>
 							<div class="col-sm-6 col-lg-4">
-
-								<label for="html5-date-input" class="form-label">@ViewLocalizer["Date From"]</label>
-								<div class="col-md-10">
-									<input id="dashboard_filter_datefrom" class="form-control" type="date" placeholder="@ViewLocalizer["Choose Date"]" />
+								<div class="col">
+									<label for="html5-date-input" class="form-label">@ViewLocalizer["Date From"]</label>
+									<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+										<input id="dashboard_filter_datefrom" class="form-control datetimepicker" type="text" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY" />
+										<div class="addonset">
+											<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+										</div>
+									</div>
 								</div>
 								@*   <input  type="text" class="datetimepicker cal-icon" > *@
 
 							</div>
 							<div class="col-sm-6 col-lg-4">
-
-								<label for="html5-date-input" class="form-label">@ViewLocalizer["Date To"]</label>
-								<div class="col-md-10">
-									<input id="dashboard_filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+								<div class="col">
+									<label for="html5-date-input" class="form-label">@ViewLocalizer["Date To"]</label>
+									<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+										<input id="dashboard_filter_dateto" type="text" class="form-control datetimepicker" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
+										<div class="addonset">
+											<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

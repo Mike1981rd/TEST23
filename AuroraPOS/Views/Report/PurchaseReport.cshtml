@@ -29,15 +29,25 @@
 						</div>
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Date From"] </label>
-							<input id="filter_datefrom" type="date" class="form-control" placeholder="@ViewLocalizer["Choose Date"]">
+						<div class="col">
+							<label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Date From"] </label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_datefrom" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker form-control" data-format="DD-MM-YYYY">
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12">
-						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Date To"] </label>
-							<input id="filter_dateto" type="date" class="form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+						<div class="col">
+							<label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Date To"] </label>
+							<div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+								<input id="filter_dateto" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.OrderDate" class="datetimepicker form-control" data-format="DD-MM-YYYY" placeholder="@ViewLocalizer["Choose Date"]>
+								<div class="addonset">
+									<img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-lg-3 col-sm-6 col-12 mb-6 pt-4">

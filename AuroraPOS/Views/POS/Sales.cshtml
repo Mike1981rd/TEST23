@@ -1827,6 +1827,26 @@
                             $('#compania-name').val(response.compania);
                             $('#customer-name').val(response.nombre);
 
+                            voucher = {
+								name: "Credito Fiscal",
+								class: "B01",
+								reorder: 0,
+								secuencia: 11734,
+								isPrimary: false,
+								isRequireRNC: true,
+								taxes: null,
+								id: 2,
+								createdDate: "2024-03-11T17:22:48.568779Z",
+								updatedDate: "2024-09-03T21:01:30.182946Z",
+								isActive: true,
+								isDeleted: false,
+								createdBy: "ADMIN",
+								updatedBy: "ADMIN",
+								forceDate: null,
+								forceUpdatedBy: null
+							}
+							SelectVoucher(voucher);
+
                             toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
                             $('#label-rnc-validado').prop('hidden', false);
                             $('#label-rnc-novalidado').prop('hidden', true);
@@ -5853,13 +5873,13 @@
                     $("#customer-voucher").val(0).change();
                 }
 
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
+                // for (var i = 0; i < data.length; i++) {
+                //     var d = data[i];
 
-                    if (d.isPrimary) {
-                        $("#customer-voucher").val(d.id).change();
-                    }
-                }
+                //     if (d.isPrimary) {
+                //         $("#customer-voucher").val(d.id).change();
+                //     }
+                // }
 
 
 

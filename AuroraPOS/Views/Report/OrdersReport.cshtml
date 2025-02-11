@@ -62,7 +62,7 @@
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Date From"]</label>
                             <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
-                                <input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control">
+                                <input id="filter_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                 <div class="addonset">
                                     <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                                 </div>
@@ -73,7 +73,7 @@
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Date To"]</label>
                             <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
-                                <input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")">
+                                <input id="filter_dateto" type="text" placeholder="@ViewLocalizer["Choose Date"]" class="datetimepicker form-control" value="@DateTime.Today.ToString("dd-MM-yyyy")" data-format="DD-MM-YYYY">
                                 <div class="addonset">
                                     <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                                 </div>
