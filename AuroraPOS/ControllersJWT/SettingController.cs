@@ -150,6 +150,7 @@ namespace AuroraPOS.ControllersJWT
             try
             {
                 var settingsCore = new SettingsCore(_userService, _dbContext, _context);
+                request.Length = -1;
                 var activeCustomerList = settingsCore.GetActiveCustomerList(request);
 
                 if (activeCustomerList.activeCustomers.Any())
