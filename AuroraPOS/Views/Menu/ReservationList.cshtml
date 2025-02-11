@@ -18,11 +18,11 @@
 				</div>
 				<div class="col-md-2">
 					<label>@ViewLocalizer["Date To"] </label>
-					<input id="filter_reservation_dateto" type="text" class="form-control datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+					<input id="filter_reservation_dateto" type="text" class="form-control datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
 					<label>@ViewLocalizer["Date From"] </label>
-					<input id="filter_reservation_datefrom" type="text" class="form-control datetimepicker cal-icon" value="@DateTime.Today.AddDays(-10).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+					<input id="filter_reservation_datefrom" type="text" class="form-control datetimepicker cal-icon" value="@DateTime.Today.AddDays(-10).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
 					<select id="filter-station" class="select">

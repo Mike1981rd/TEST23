@@ -565,7 +565,7 @@
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Packing Date"]</label>
                             <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
-                                <input id="label-date" type="text" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                <input id="label-date" type="text" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                 <div class="addonset">
                                     <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                                 </div>
@@ -580,7 +580,7 @@
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Expire Date"]</label>
                             <div style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
-                                <input id="label-expire-date" type="text" value="@DateTime.Today.AddDays(10).ToString("dd/MM/yyyy")" class="datetimepicker form-control">
+                                <input id="label-expire-date" type="text" value="@DateTime.Today.AddDays(10).ToString("dd/MM/yyyy")" class="datetimepicker form-control" data-format="DD/MM/YYYY">
                                 <div class="addonset">
                                     <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
                                 </div>

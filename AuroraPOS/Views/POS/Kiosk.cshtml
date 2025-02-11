@@ -1490,7 +1490,7 @@
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date From"] </label>
                                  <div class="input-groupicon">
-                                    <input id="filter_reprint_datefrom2" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                    <input id="filter_reprint_datefrom2" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                     <div class="addonset">
                                         <img src="/vendor/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -1501,7 +1501,7 @@
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date To"] </label>
                                 <div class="input-groupicon">
-                                    <input id="filter_reprint_dateto2" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                    <input id="filter_reprint_dateto2" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                     <div class="addonset">
                                         <img src="/vendor/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -1601,13 +1601,13 @@
                         <div class="col-lg-4 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date From"] </label>
-                                <input id="filter_refund_datefrom2" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                                <input id="filter_refund_datefrom2" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
                             </div>
                         </div>
                         <div class="col-lg-4 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date To"] </label>
-                                <input id="filter_refund_dateto2" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]">
+                                <input id="filter_refund_dateto2" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
                             </div>
                         </div>
                         <div class="col-lg-4 col-sm-4 col-12 ">
@@ -2021,6 +2021,27 @@
                         if(response.isValid === true) {
                             $('#compania-name').val(response.compania);
                             $('#customer-name').val(response.nombre);
+
+                            voucher = {
+								name: "Credito Fiscal",
+								class: "B01",
+								reorder: 0,
+								secuencia: 11734,
+								isPrimary: false,
+								isRequireRNC: true,
+								taxes: null,
+								id: 2,
+								createdDate: "2024-03-11T17:22:48.568779Z",
+								updatedDate: "2024-09-03T21:01:30.182946Z",
+								isActive: true,
+								isDeleted: false,
+								createdBy: "ADMIN",
+								updatedBy: "ADMIN",
+								forceDate: null,
+								forceUpdatedBy: null
+							}
+							SelectVoucher(voucher);
+
                             toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
                             $('#label-rnc-validado').prop('hidden', false);
                             $('#label-rnc-novalidado').prop('hidden', true);
@@ -5911,13 +5932,13 @@
                     $("#customer-voucher").val(0).change();
                 }
 
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
+                // for (var i = 0; i < data.length; i++) {
+                //     var d = data[i];
 
-                    if (d.isPrimary) {
-                        $("#customer-voucher").val(d.id).change();
-                    }
-                }
+                //     if (d.isPrimary) {
+                //         $("#customer-voucher").val(d.id).change();
+                //     }
+                // }
 
             },
             error: function (jqXHR, textStatus, errorThrown) {

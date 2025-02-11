@@ -314,13 +314,13 @@
                         <div class="col-lg-4 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date From"] </label>
-                                <input id="filter_barcode_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                                <input id="filter_barcode_datefrom" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"] data-format="DD-MM-YYYY">
                             </div>
                         </div>
                         <div class="col-lg-4 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date To"] </label>
-                                <input id="filter_barcode_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                                <input id="filter_barcode_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"] data-format="DD-MM-YYYY">
                             </div>
                         </div>
                     </div>
@@ -375,7 +375,7 @@
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date From"] </label>
                                 <div class="d-flex">
-                                    <input id="filter_reprint_datefrom1" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                    <input id="filter_reprint_datefrom1" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                     <div class="addonset">
                                         <img src="/vendor/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -386,7 +386,7 @@
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date To"] </label>
                                 <div class="d-flex">
-                                    <input id="filter_reprint_dateto1" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                    <input id="filter_reprint_dateto1" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                     <div class="addonset">
                                         <img src="/vendor/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -558,7 +558,7 @@
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date From"] </label>
                                 <div class="d-flex">
-                                    <input id="filter_reprint_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control">
+                                    <input id="filter_reprint_datefrom" type="text" placeholder="@ViewLocalizer["Choose Date"]" value="@DateTime.Today.AddDays(-7).ToString("dd-MM-yyyy")" class="datetimepicker form-control" data-format="DD-MM-YYYY">
                                     <div class="addonset">
                                         <img src="/vendor/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -568,7 +568,7 @@
                         <div class="col-lg-4 col-sm-6 col-12">
                             <div class="form-group">
                                 <label class="form-label">@ViewLocalizer["Date To"] </label>
-                                <input id="filter_reprint_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"]>
+                                <input id="filter_reprint_dateto" type="text" class="datetimepicker cal-icon" value="@DateTime.Today.ToString("dd-MM-yyyy")" placeholder="@ViewLocalizer["Choose Date"] data-format="DD-MM-YYYY">
                             </div>
                         </div>
                     </div>
