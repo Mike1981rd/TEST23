@@ -1,0 +1,1885 @@
+﻿
+@{
+    ViewData["Title"] = "AddCustomer";
+    Customer customer = ViewBag.Customer;
+    long Id = customer != null ? customer.ID : 0;//
+    string avatar = (customer != null && customer.Avatar != "") ? customer.Avatar : "/vendor/img/product/noimage.png";//
+    string name = customer != null ? customer.Name : "";//
+    string rnc = customer != null ? customer.RNC : "";
+    string company = customer != null ? customer.Company : "";//
+    string phone = customer != null ? customer.Phone : "";
+    string email = customer != null ? customer.Email : "";
+    string country = customer != null ? customer.Country : "";
+    string state = customer != null ? customer.State : "";
+    string city = customer != null ? customer.City : " ";
+    string address1 = customer != null ? customer.Address1 : "";
+    decimal creditLimit = customer != null ? customer.CreditLimit : 0.0M;
+    int creditDays = customer != null ? customer.CreditDays : 0;
+    decimal balance = customer != null ? customer.Balance : 0.0M;
+    long voucherId = (customer != null && customer.Voucher != null) ? customer.Voucher.ID : 0;
+    bool isActive = customer != null ? customer.IsActive : false;
+    long? deliveryZoneID = customer != null ? customer.DeliveryZoneID : 0;
+    string deliveryZone = ViewBag.DeliveryZone;
+    var taxes = (List<Tax>)ViewBag.Taxes;
+}
+
+<style>
+    .filter-row {
+        display: flex; /* Usa flexbox para alinear elementos en la misma fila */
+        justify-content: space-between; /* Distribuye los elementos uniformemente a lo largo del contenedor */
+        margin-bottom: 20px; /* Espacio inferior para separar de la tabla */
+    }
+
+        .filter-row input,
+        .filter-row button {
+            flex: 1; /* Los campos de entrada y el botón ocuparán el mismo espacio */
+            margin-right: 10px; /* Espacio entre los elementos */
+        }
+
+        .filter-row button {
+            flex: 0 0 auto; /* El botón no debe crecer ni encogerse */
+        }
+
+    .contenedor {
+        position: relative;
+        background-color: transparent;
+        border: 2px solid var(--bs-border-color);
+        border-radius: 15px;
+        padding: 20px;
+        padding-top: 40px;
+    }
+
+    .titulo {
+        position: absolute;
+        top: -20px;
+        left: 10px;
+        background-color: var(--bs-modal-bg);
+        z-index: 2;
+        padding: 5px 10px;
+    }
+
+
+    .contenedor::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        border-top-left-radius: 20px;
+        z-index: 1;
+    }
+
+    .select2-container {
+        z-index: 9999 !important; /* Asegura que el dropdown esté por encima de otros elementos */
+    }
+</style>
+
+<div class="content-wrapper">
+
+
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
+            <div class="mb-2 mb-sm-0">
+                <h4 class="mb-1">
+                    Customer ID #@Id
+                </h4>
+@*                 <p class="mb-0">
+                    Aug 17, 2020, 5:48 (ET)
+                </p> *@
+            </div>
+            @* <button type="button" class="btn btn-label-danger delete-customer waves-effect">Delete Customer</button> *@
+        </div>
+
+
+        <div class="row">
+            <!-- Customer-detail Sidebar -->
+            <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+                <!-- Customer-detail Card -->
+                <div class="card mb-6">
+                    <div class="card-body pt-12">
+                        <div class="customer-avatar-section">
+                            <div class="d-flex align-items-center flex-column">
+
+                                <img class="img-fluid rounded mb-4" src="@avatar" height="120" width="120" alt="User avatar">
+                                <div class="customer-info text-center mb-6">
+                                    <h5 class="mb-0">@name</h5>
+                                    <span>Customer ID #@Id</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around flex-wrap mb-6 gap-0 gap-md-3 gap-lg-4">
+                            <div class="d-flex align-items-center gap-4 me-5">
+                                <div class="avatar">
+                                    <div class="avatar-initial rounded bg-label-primary">
+                                        <i class="ti ti-calendar ti-lg"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">@creditDays</h5>
+                                    <span>@ViewLocalizer["Credit Days"]</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="avatar">
+                                    <div class="avatar-initial rounded bg-label-primary">
+                                        <i class="ti ti-currency-dollar ti-lg"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">$@creditLimit</h5>
+                                    <span>@ViewLocalizer["Limit of Credit"]</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-container">
+                            <h5 class="pb-4 border-bottom text-capitalize mt-6 mb-4">Datos Generales</h5>
+                            <ul class="list-unstyled mb-6">
+                                <li class="mb-2">
+                                    <span class="h6 me-1">Status:</span>
+                                    @if(isActive == true){
+                                        <span class="badge bg-label-success">Active</span>
+                                    } else {
+                                        <span class="badge bg-label-danger">Inactive</span>
+                                    }
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Email"]:</span>
+                                    <span>@email</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Phone"]:</span>
+                                    <span>@phone</span>
+                                </li>
+
+                                <li class="mb-2">
+                                    <span class="h6 me-1">Country:</span>
+                                    <span>@country</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">State:</span>
+                                    <span>@state</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["City"]:</span>
+                                    <span>@city</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Address"]:</span>
+                                    <span>@address1</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Comprobantes"]:</span>
+                                    <span>@customer.Voucher.Name</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Zone"]:</span>
+                                    <span>@deliveryZone</span>
+                                </li>
+                            </ul>
+                            <h5 class="pb-4 border-bottom text-capitalize mt-6 mb-4">Datos Fiscales</h5>
+                            <ul class="list-unstyled mb-6">
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["RNC"]:</span>
+                                    <span>@rnc</span>
+                                </li>
+                                <li class="mb-2">
+                                    <span class="h6 me-1">@ViewLocalizer["Compañia"]:</span>
+                                    <span>@company</span>
+                                </li>
+                            </ul>
+                            <div class="d-flex justify-content-center">
+                                <a href="javascript:;" onclick=EditCustomer(@Id) class="btn btn-primary w-100 waves-effect waves-light" data-bs-target="#addcustomer" data-bs-toggle="modal">Editar</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Customer-detail Card -->
+                <!-- Plan Card -->
+@* 
+                <div class="card mb-4 bg-gradient-primary">
+                    <div class="card-body">
+                        <div class="row justify-content-between mb-4">
+                            <div class="col-md-12 col-lg-7 col-xl-12 col-xxl-7 text-center text-lg-start text-xl-center text-xxl-start order-1  order-lg-0 order-xl-1 order-xxl-0">
+                                <h5 class="card-title text-white text-nowrap mb-4">Upgrade to premium</h5>
+                                <p class="card-text text-white">Upgrade customer to premium membership to access pro features.</p>
+                            </div>
+                            <span class="col-md-12 col-lg-5 col-xl-12 col-xxl-5 text-center mx-auto mx-md-0 mb-2"><img src="../../assets/img/illustrations/rocket.png" class="w-px-75 m-2" alt="3dRocket"></span>
+                        </div>
+                        <button class="btn btn-white text-primary w-100 fw-medium shadow-xs waves-effect waves-light" data-bs-target="#upgradePlanModal" data-bs-toggle="modal">Upgrade to premium</button>
+                    </div>
+                </div> *@
+
+                <!-- /Plan Card -->
+            </div>
+            <!--/ Customer Sidebar -->
+            <!-- Customer Content -->
+            <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+                <!-- Customer Pills -->
+                <div class="nav-align-top">
+                    <ul class="nav nav-pills flex-column flex-md-row mb-6 row-gap-2">
+                        <li class="nav-item"><a class="nav-link active waves-effect waves-light" href="javascript:void(0);"><i class="ti ti-user ti-sm me-1_5"></i>Overview</a></li>
+@*                         <li class="nav-item"><a class="nav-link waves-effect waves-light" href="app-ecommerce-customer-details-security.html"><i class="ti ti-lock ti-sm me-1_5"></i>Security</a></li>
+                        <li class="nav-item"><a class="nav-link waves-effect waves-light" href="app-ecommerce-customer-details-billing.html"><i class="ti ti-map-pin ti-sm me-1_5"></i>Address &amp; Billing</a></li>
+                        <li class="nav-item"><a class="nav-link waves-effect waves-light" href="app-ecommerce-customer-details-notifications.html"><i class="ti ti-bell ti-sm me-1_5"></i>Notifications</a></li> *@
+                    </ul>
+                </div>
+                <!--/ Customer Pills -->
+                <!-- / Customer cards -->
+                <div class="row text-nowrap">
+                    <div class="col mb-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-icon mb-2">
+                                    <div class="avatar">
+                                        <div class="avatar-initial rounded bg-label-primary">
+                                            <i class="ti ti-currency-dollar ti-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h5 class="card-title mb-2">@ViewLocalizer["Balance"]</h5>
+                                    <div class="d-flex align-items-baseline gap-1">
+                                        <h5 class="text-primary mb-0">$@balance</h5>
+                                        <p class="mb-0"> de balance</p>
+                                    </div>
+                                    <p class="mb-0 text-truncate">Balance actual de la cuenta</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+@*                     <div class="col-md-6 mb-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-icon mb-2">
+                                    <div class="avatar">
+                                        <div class="avatar-initial rounded bg-label-success">
+                                            <i class="ti ti-gift ti-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h5 class="card-title mb-2">Loyalty Program</h5>
+                                    <span class="badge bg-label-success mb-2">Platinum member</span>
+                                    <p class="mb-0">3000 points to next tier</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-icon mb-2">
+                                    <div class="avatar">
+                                        <div class="avatar-initial rounded bg-label-warning">
+                                            <i class="ti ti-star ti-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h5 class="card-title mb-2">Wishlist</h5>
+                                    <div class="d-flex align-items-baseline gap-1">
+                                        <h5 class="text-warning mb-0">15</h5>
+                                        <p class="mb-0">Items in wishlist</p>
+                                    </div>
+                                    <p class="mb-0 text-truncate">Receive notification when items go on sale</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-icon mb-2">
+                                    <div class="avatar">
+                                        <div class="avatar-initial rounded bg-label-info">
+                                            <i class="ti ti-crown ti-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h5 class="card-title mb-2">Coupons</h5>
+                                    <div class="d-flex align-items-baseline gap-1">
+                                        <h5 class="text-info mb-0">21</h5>
+                                        <p class="mb-0">Coupons you win</p>
+                                    </div>
+
+                                    <p class="mb-0 text-truncate">Use coupon on next purchase</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                </div>
+
+
+                <!-- / customer cards -->
+                <!-- Accounting table -->
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                    <h5 class="text-left">@ViewLocalizer["Accounting"]</h5>
+                                </div>
+                                <div class="card-datatable table-responsive">
+                                    <table class="table reordertable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <td>
+                                                    @ViewLocalizer["Name"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Type"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Number"]
+                                                </td>
+                                                <td>
+                                                    @ViewLocalizer["Action"]
+                                                </td>
+                                        </thead>
+                                        <tbody id="accounting-list1">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Movimientos de CxC table -->
+                <!-- Invoice table -->
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                    <h5 class="text-left">@ViewLocalizer["Movimientos de CxC's"]</h5>
+                                </div>
+                                <div class="mb-6" style="display: flex; flex-direction: row; gap: 6px;">
+                                    <!-- Campo de filtro por fecha inicial -->
+                                    <input type="date" id="start-date" class="form-control">
+
+                                    <!-- Campo de filtro por fecha final -->
+                                    <input type="date" id="end-date" class="form-control">
+
+                                    <!-- Campo de filtro por ID de orden -->
+                                    <input type="text" id="order-id" placeholder="ID de Trans." class="form-control">
+
+                                    <!-- Botón para aplicar filtros -->
+                                    <button id="apply-filters" class="btn btn-primary w-100 waves-effect waves-light">Aplicar</button>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table id="cxc-list1" class="table" style="overflow-x: hidden;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>@ViewLocalizer["Type"] </th>
+                                                <th>@ViewLocalizer["CXC"] </th>
+                                                <th>@ViewLocalizer["ID Trans."] </th>
+                                                <th>@ViewLocalizer["Date"] </th>
+                                                <th>@ViewLocalizer["Amount"] </th>
+                                                <th>@ViewLocalizer["Method"]</th>
+                                                <th>@ViewLocalizer["Payment Type"]</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Movimientos de CxC table -->
+                <!-- Accounting table -->
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                    <h5 class="text-left">@ViewLocalizer["Estado de Cuentas x Cobrar"]</h5>
+                                </div>
+                                <div class="card-datatable table-responsive">
+                                    <table id="cxc-list-movimientos1" class="table" style="overflow-x: hidden;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>@ViewLocalizer["CXC"] </th>
+                                                <th>@ViewLocalizer["Fecha"] </th>
+                                                <th>@ViewLocalizer["Vence"] </th>
+                                                <th>@ViewLocalizer["Días vencimiento"] </th>
+                                                <th>@ViewLocalizer["Monto"] </th>
+                                                <th>@ViewLocalizer["Abono"]</th>
+                                                <th>@ViewLocalizer["Balance"]</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Movimientos de CxC table -->
+            </div>
+            <!--/ Customer Content -->
+        </div>
+
+    </div>
+    <!-- / Content -->
+
+    <div class="modal fade" id="addcustomer" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg  modal-simple modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">@ViewLocalizer["Add/Edit Customer"]</h4>
+                    </div>
+                    <div class="row">
+                        @* Datos Fiscales *@
+                        <div class="mb-6" style="padding: 0;">
+                            <div class="contenedor">
+                                <h5 class="titulo">Datos Fiscales</h5>
+                                <div class="mb-6" style="padding-right: 0;">
+                                    <div style="display: flex; flex-direction: column; width: 100% !important">
+                                        <label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
+                                        <div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: 100%">
+                                            <input id="customer-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                                            <a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Validar</a>
+                                        </div>
+                                        <div class="divloading mt-2" style="display: none">
+                                            <div class="spinner-border text-primary " role="status" style="width: 15px; height: 15px">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            Validando...
+                                        </div>
+                                        <label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
+                                        <label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
+
+                                    </div>
+                                </div>
+                                <div class="mb-6" style="padding: 0;">
+                                    <div style="display: flex; flex-direction: column; width: 100% !important" ">
+                                        <label class="form-label">@ViewLocalizer["Compañia"]<span class="manitory">*</span></label>
+                                        <input id="compania-name" type="text" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                    @* /Datos Fiscales *@
+
+                                    @* Datos Generales *@
+                        <div class="mb-6" style="padding: 0;">
+                            <div class="contenedor">
+                                <h5 class="titulo">Datos Generales</h5>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                                            <input id="customer-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+                                            <input id="customer-phone" type="text" class="form-control phone_format" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+                                            <input id="customer-email" type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Address"]</label>
+                                            <input id="customer-address1" type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["City"]</label>
+                                            <input id="customer-city" type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Limit of Credit"]</label>
+                                            <input id="customer-limit" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Credit Days"]</label>
+                                            <input id="customer-days" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-3 col-sm-3 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Balance"]</label>
+                                            <input id="customer-balance" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control" required>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-2 col-12">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-submit btn-movimientos mt-4">@ViewLocalizer["Movimientos"]</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-2 col-12">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-submit btn-detalle mt-4">@ViewLocalizer["Detalle"]</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-6" style="gap: 10px">
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Comprobantes"]</label>
+                                            <div class="row">
+                                                <div class="col-lg-10 col-sm-10 col-10">
+                                                    <select id="customer-voucher" class="select ">
+                                                        <option value="">Choose comprobantes</option>
+
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                                    <div class="add-icon">
+                                                        <a id="add-voucher-modal" href="javascript:void(0);">
+                                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">@ViewLocalizer["Zone"]<span class="manitory">*</span></label>
+                                            <select id="customer-zone" class="select ">
+                                                <option value="">Zonas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-12">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label">@ViewLocalizer["Status"]</label>
+                                        <select id="customer-status" class="select">
+                                            <option value="1"> @ViewLocalizer["Active"]</option>
+                                            <option value="0"> @ViewLocalizer["InActive"]</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        @* /Datos Generales *@
+
+                        <div class="row mt-4" style="padding: 0;">
+            @* ----- Control para subir archivos ----- *@
+
+                            <div class="card mb-6">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+                                    <div href="javascript:void(0);" class="fw-medium">
+                                        <div class="del-unit text-danger">
+                                            <a class="del-photo " href="javascript:void(0);">
+                                @ViewLocalizer["Limpiar"]
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center justify-content-center align-items-center">
+                                    <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                        <input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                        <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                            <img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+                                            <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                            <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                            <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row py-1" style="padding: 0;">
+                            <div class="col-lg-12 col-sm-12 col-12">
+                                <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                    <h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
+                                    <div class="add-unit">
+                                        <a class="add-accounting-item" href="javascript:void(0);">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-datatable table-responsive">
+                                    <table class="table reordertable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <td>
+                                    @ViewLocalizer["Name"]
+                                                </td>
+                                                <td>
+                                    @ViewLocalizer["Type"]
+                                                </td>
+                                                <td>
+                                    @ViewLocalizer["Number"]
+                                                </td>
+                                                <td>
+                                    @ViewLocalizer["Action"]
+                                                </td>
+                                        </thead>
+                                        <tbody id="accounting-list">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="edit-customer" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cxcmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-simple" role="document" style="max-width:1000px;">
+            <div class="modal-content">
+            @* 				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Movimientos de CxC's"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div> *@
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">
+                        @ViewLocalizer["Movimientos de CxC's"]
+                        </h4>
+                    </div>
+                    <div class="filter-row">
+                        <!-- Campo de filtro por fecha inicial -->
+                        <input type="date" id="start-date" class="form-control">
+
+                        <!-- Campo de filtro por fecha final -->
+                        <input type="date" id="end-date" class="form-control">
+
+                        <!-- Campo de filtro por ID de orden -->
+                        <input type="text" id="order-id" placeholder="ID de Trans." class="form-control">
+
+                        <!-- Botón para aplicar filtros -->
+                        <button id="apply-filters" class="btn btn-submit">Aplicar filtros</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="cxc-list" class="table" style="overflow-x: hidden;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>@ViewLocalizer["Type"] </th>
+                                    <th>@ViewLocalizer["CXC"] </th>
+                                    <th>@ViewLocalizer["ID Trans."] </th>
+                                    <th>@ViewLocalizer["Date"] </th>
+                                    <th>@ViewLocalizer["Amount"] </th>
+                                    <th>@ViewLocalizer["Method"]</th>
+                                    <th>@ViewLocalizer["Payment Type"]</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cxcdetalle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-simple" role="document" style="max-width:1000px;">
+            <div class="modal-content">
+            @* 				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Estado de Cuentas x Cobrar"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div> *@
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">
+                        @ViewLocalizer["Estado de Cuentas x Cobrar"]
+                        </h4>
+                    </div>
+                    <div class="card-datatable table-responsive">
+                        <table id="cxc-list-movimientos" class="table" style="overflow-x: hidden;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>@ViewLocalizer["CXC"] </th>
+                                    <th>@ViewLocalizer["Fecha"] </th>
+                                    <th>@ViewLocalizer["Vence"] </th>
+                                    <th>@ViewLocalizer["Días vencimiento"] </th>
+                                    <th>@ViewLocalizer["Monto"] </th>
+                                    <th>@ViewLocalizer["Abono"]</th>
+                                    <th>@ViewLocalizer["Balance"]</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="listvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-simple" role="document">
+            <div class="modal-content">
+            @* 				<div class="modal-header">
+					<h5 class="group-modal-title">@ViewLocalizer["Recipe List"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div> *@
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">
+                        @ViewLocalizer["Recipe List"]
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a id="add-voucher" href="javascript:void(0);" onclick="AddVoucher()" class="btn btn-primary waves-effect waves-light"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Recipe"]</a>
+                        </div>
+                        <div class="col-12">
+                            <div class="card-datatable table-responsive w-100" style="max-height:400px;">
+                                <table id="voucher-list" class="table" style="position:relative;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
+                                        <tr>
+                                            <th>@ViewLocalizer["Action"] </th>
+                                            <th>@ViewLocalizer["Name"] </th>
+                                            <th>@ViewLocalizer["Class"] </th>
+                                            <th>@ViewLocalizer["Reorder"] </th>
+                                            <th>@ViewLocalizer["Sequence"] </th>
+                                            <th>@ViewLocalizer["Require RNC"] </th>
+                                            <th>@ViewLocalizer["Status"] </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addvoucher" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+        <div class="modal-dialog modal-lg modal-simple" role="document">
+            <div class="modal-content">
+            @* 				<div class="modal-header">
+					<h5 class="supplier-modal-title">@ViewLocalizer["Add/Edit Voucher"]</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div> *@
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">
+                        @ViewLocalizer["Add/Edit Voucher"]
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-12">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">ID</span>
+                                    <input id="voucher-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12 pt-2">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["Prefix"]</label>
+                                <input id="voucher-class" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12 pt-2">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["Sequence"]</label>
+                                <input id="voucher-sequence" type="text" onkeypress="return onlyDecimalKey(event)" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-12  pt-2">
+                            <div class="form-group mb-0">
+                                <label class="form-label">@ViewLocalizer["Require RNC"]</label>
+                                <select id="voucher-requirernc" class="select">
+                                    <option value="1"> @ViewLocalizer["Yes"]</option>
+                                    <option value="0"> @ViewLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-12 col-12 pt-2">
+                            <div class="form-group">
+                                <label class="form-label">@ViewLocalizer["Tax exempt"]</label>
+                                <select id="voucher-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
+                                @foreach (var t in taxes)
+                                {
+                                        <option value="@t.ID">@t.TaxName - @t.TaxValue %</option>
+                                }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6 pt-2">
+                            <div class="form-group mb-0">
+                                <label class="form-label">@ViewLocalizer["Status"]</label>
+                                <select id="voucher-status" class="select">
+                                    <option value="1"> @ViewLocalizer["Active"]</option>
+                                    <option value="0"> @ViewLocalizer["InActive"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="edit-voucher" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="content-backdrop fade"></div>
+
+</div>
+
+@{
+    @await Component.InvokeAsync("Accounting", new { })
+}
+
+<script>
+    function GetAccountItems1(target, item, other) {
+		var data = {
+			Target: target,
+			ItemID: item
+		}
+		if (!other) other = "";
+		$.ajax({
+			url: "/Setting/GetAccountItem",
+			type: "POST",
+			data: data,
+			success: function (data, textStatus, jqXHR) {
+				if (data) {
+					$("#accounting-list1" + other).empty();
+					for (var i = 0; i < data.length; i++) {
+						var item = data[i];
+
+						var html = `<tr data-id='${item.account.id}' data-type='${item.account.accountType.id}'><td>${item.account.accountDescription.name}</td><td><div class="">${item.account.accountType.name}</div></td>
+										<td><div class="">
+												${item.account.number}
+										</div>
+										</td>
+									<td>
+										<div class="remove-btn">
+											<a href="javascript:void(0);" class="delete-accounting-item"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+										</div>
+									</td></tr>`
+						$("#accounting-list1" + other).append(html);
+					}
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+			}
+		});
+	}
+
+    function formatDate(date) {
+        // Obtener el día, mes y año
+        var day = date.getDate();
+        var month = date.getMonth() + 1; // Se agrega 1 porque los meses comienzan desde 0
+        var year = date.getFullYear().toString().slice(-2); // Obtener solo los últimos dos dígitos del año
+
+        // Agregar ceros iniciales si es necesario
+        if (day < 10) {
+            day = '0' + day;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        // Devolver la fecha formateada
+        return day + '/' + month + '/' + year;
+    }
+
+    function formatDateForInput(date) {
+        // Obtener el año, mes y día de la fecha
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0'); // El mes se incrementa en 1 porque los meses en JavaScript son de 0 a 11
+        var day = date.getDate().toString().padStart(2, '0');
+
+        // Retorna la fecha formateada en formato "AAAA-MM-DD"
+        return year + '-' + month + '-' + day;
+    }
+
+    // Esta función suma días a una fecha y retorna la nueva fecha
+    function addDaysToDate(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + parseInt(days));
+        return result;
+    }
+
+    function calculateDaysBetweenDates(startDate, endDate) {
+        const oneDay = 24 * 60 * 60 * 1000; // milisegundos en un día
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        const differenceInTime = startDateObj.getTime()- endDateObj.getTime();
+        const differenceInDays = Math.round(differenceInTime / oneDay);
+
+        return differenceInDays;
+    }
+
+    $(document).ready(() => {
+            GetAccountItems1(5, @Id);
+
+
+            // Obtener el nombre del cliente
+            //var customerName = @name;
+            var customerId = @Id;
+            // Limpiar la tabla antes de agregar los nuevos datos
+            $('#cxc-list1').DataTable().destroy();
+            $('#cxc-list1').DataTable().clear().draw();
+            // Realizar la petición AJAX para obtener los datos de CxC
+            $("#apply-filters").click(function () {
+                var startDate = $("#start-date").val();
+                var endDate = $("#end-date").val();
+                var orderId = $("#order-id").val();
+
+                console.log(startDate);
+                // Filtrar la tabla DataTable por fecha y ID de orden
+                var table = $('#cxc-list1').DataTable();
+                table.columns(3).search(startDate).draw(); // Filtrar por fecha en la cuarta columna
+                table.columns(3).search(endDate).draw();// Filtrar por fecha en la cuarta columna
+                table.columns(2).search(orderId).draw(); // Filtrar por ID de orden en la tercera columna
+            });
+            $.ajax({
+                url: "/Setting/GetCxCList2",
+                type: "POST",
+                dataType: "json",
+                data: { cliente: customerId },
+                success: function (response) {
+                    // Verificar si la respuesta contiene datos válidos
+                    if (response && Array.isArray(response) && response.length > 0) {
+
+
+                        // Agregar los datos a la tabla
+                        response.forEach(function (item) {
+                            console.log(item);
+                            var formattedDate = formatDateForInput(new Date(item.paymentDate));
+                            var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+                            var transactionType = item.referenceId === 0 ? 'CXC' : SaldadoCXC(response, item.referenceId) ? 'Saldo' : 'Abono';
+                            var row = [
+                                transactionType,
+                                idToShow,
+                                item.id,
+                                formattedDate,
+                                item.amount,
+                                item.method,
+                                item.paymentType,
+                            ];
+                            $('#cxc-list1').DataTable().row.add(row).draw();
+                        });
+                    } else {
+                        $('#cxc-list1').DataTable().row.add(['Sin CxC disponibles', '', '', '', '', '', '']).draw();
+                        console.error("La respuesta no tiene la estructura esperada.");
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                    console.error("Error en la petición AJAX:", error);
+                }
+            });
+
+            // Obtener el nombre del cliente
+            var customerName = "@name";
+            var days = $("#customer-days").val();
+            // Limpiar la tabla antes de agregar los nuevos datos
+            $('#cxc-list-movimientos1').DataTable().destroy();
+            $('#cxc-list-movimientos1').DataTable().clear().draw();
+            $.ajax({
+                url: "/Setting/GetCxCList3",
+                type: "POST",
+                dataType: "json",
+                data: { customerName: customerName },
+                success: function (response) {
+                    if (response && Array.isArray(response) && response.length > 0) {
+                        var totalAmount = 0;
+                        var totalTemporaryDifference = 0;
+                        var totalBalance = 0;
+
+                        response.forEach(function (item) {
+                            console.log(item);
+                            var balance = item.beforeBalance + item.temporaryDifference; // Calculamos el balance
+                            // Solo proceder si el balance es diferente de 0
+                            if (balance !== 0) {
+                                var formattedDate = formatDateForInput(new Date(item.paymentDate));
+                                var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+                                var adjustedDate = addDaysToDate(new Date(item.paymentDate), days); // Suma días
+                                var formattedAdjustedDate = formatDateForInput(adjustedDate); // Formatea la nueva fecha
+                                var today = new Date();
+                                var daysBetween = calculateDaysBetweenDates(today, adjustedDate);
+
+                                var row = [
+                                    item.id,
+                                    formattedDate,
+                                    formattedAdjustedDate,
+                                    daysBetween,
+                                    item.beforeBalance.toFixed(2),
+                                    item.temporaryDifference.toFixed(2),
+                                    item.afterBalance.toFixed(2),
+                                ];
+
+                                $('#cxc-list-movimientos1').DataTable().row.add(row).draw();
+
+                                // Acumulamos los totales solo para los ítems incluidos
+                                totalAmount += item.beforeBalance;
+                                totalTemporaryDifference += item.temporaryDifference;
+                                totalBalance += item.afterBalance;
+                            }
+                        });
+
+                        // Verificar si se agregó al menos una fila para decidir si mostrar los totales
+                        if (totalBalance !== 0) {
+                            $('#cxc-list-movimientos1').DataTable().row.add([
+                                'Totales',
+                                '',
+                                '',
+                                '',
+                                totalAmount.toFixed(2),
+                                totalTemporaryDifference.toFixed(2),
+                                totalBalance.toFixed(2)
+                            ]).draw();
+                        }
+                    } else {
+                        $('#cxc-list-movimientos1').DataTable().row.add(['Sin CxC disponibles', '', '', '', '', '', '']).draw();
+                        console.error("La respuesta no tiene la estructura esperada.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en la petición AJAX:", error);
+                }
+            });
+
+
+        $("#carga-datos-rnc").click(function () {
+
+            const rnc = $('#customer-rnc').val();
+
+            $('#label-rnc-validado').prop('hidden', true);
+            $('#label-rnc-novalidado').prop('hidden', true);
+            $('.divloading').show();
+
+            $.ajax({
+                url: "/Setting/ObtenerDatosDGII",
+                type: "POST",
+                dataType: "json",
+                data: { RNC: rnc },
+                success: function (response) {
+                    $('.divloading').hide();
+
+                    if (response) {
+                        console.log(response);
+
+                        if(response.isValid === true) {
+                            $('#compania-name').val(response.compania);
+                            $('#customer-name').val(response.nombre);
+                            voucher = {
+                                name: "Credito Fiscal",
+                                class: "B01",
+                                reorder: 0,
+                                secuencia: 11734,
+                                isPrimary: false,
+                                isRequireRNC: true,
+                                taxes: null,
+                                id: 2,
+                                createdDate: "2024-03-11T17:22:48.568779Z",
+                                updatedDate: "2024-09-03T21:01:30.182946Z",
+                                isActive: true,
+                                isDeleted: false,
+                                createdBy: "ADMIN",
+                                updatedBy: "ADMIN",
+                                forceDate: null,
+                                forceUpdatedBy: null
+                            }
+                            SelectVoucher(voucher);
+
+                            toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', false);
+                            $('#label-rnc-novalidado').prop('hidden', true);
+                        } else {
+                            $('#compania-name').val("");
+
+                            toastr.error("El RNC no es valido", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                        }
+                    } else {
+                            $('#compania-name').val("");
+
+                            toastr.error("Ocurrió un error inesperado", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('.divloading').hide();
+                    $('#compania-name').val("");
+
+                    //console.error("Error en la petición AJAX:", error);
+                    toastr.error("Error en la petición AJAX" + error, { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                    $('#label-rnc-validado').prop('hidden', true);
+                    $('#label-rnc-novalidado').prop('hidden', false);
+                }
+            });
+
+        });
+
+        $(".btn-detalle").click(function () {
+            $("#cxcdetalle").modal("show");
+            $("#addcustomer").modal("hide");
+
+            // Obtener el nombre del cliente
+            var customerName = $("#customer-name").val();
+            var days = $("#customer-days").val();
+            // Limpiar la tabla antes de agregar los nuevos datos
+            $('#cxc-list-movimientos').DataTable().destroy();
+            $('#cxc-list-movimientos').DataTable().clear().draw();
+            $.ajax({
+                url: "/Setting/GetCxCList3",
+                type: "POST",
+                dataType: "json",
+                data: { customerName: customerName },
+                success: function (response) {
+                    if (response && Array.isArray(response) && response.length > 0) {
+                        var totalAmount = 0;
+                        var totalTemporaryDifference = 0;
+                        var totalBalance = 0;
+
+                        response.forEach(function (item) {
+                            console.log(item);
+                            var balance = item.beforeBalance + item.temporaryDifference; // Calculamos el balance
+                            // Solo proceder si el balance es diferente de 0
+                            if (balance !== 0) {
+                                var formattedDate = formatDateForInput(new Date(item.paymentDate));
+                                var idToShow = item.referenceId === 0 ? '' : item.referenceId;
+                                var adjustedDate = addDaysToDate(new Date(item.paymentDate), days); // Suma días
+                                var formattedAdjustedDate = formatDateForInput(adjustedDate); // Formatea la nueva fecha
+                                var today = new Date();
+                                var daysBetween = calculateDaysBetweenDates(today, adjustedDate);
+
+                                var row = [
+                                    item.id,
+                                    formattedDate,
+                                    formattedAdjustedDate,
+                                    daysBetween,
+                                    item.beforeBalance.toFixed(2),
+                                    item.temporaryDifference.toFixed(2),
+                                    item.afterBalance.toFixed(2),
+                                ];
+
+                                $('#cxc-list-movimientos').DataTable().row.add(row).draw();
+
+                                // Acumulamos los totales solo para los ítems incluidos
+                                totalAmount += item.beforeBalance;
+                                totalTemporaryDifference += item.temporaryDifference;
+                                totalBalance += item.afterBalance;
+                            }
+                        });
+
+                        // Verificar si se agregó al menos una fila para decidir si mostrar los totales
+                        if (totalBalance !== 0) {
+                            $('#cxc-list-movimientos').DataTable().row.add([
+                                'Totales',
+                                '',
+                                '',
+                                '',
+                                totalAmount.toFixed(2),
+                                totalTemporaryDifference.toFixed(2),
+                                totalBalance.toFixed(2)
+                            ]).draw();
+                        }
+                    } else {
+                        $('#cxc-list-movimientos').DataTable().row.add(['Sin CxC disponibles', '', '', '', '', '', '']).draw();
+                        console.error("La respuesta no tiene la estructura esperada.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en la petición AJAX:", error);
+                }
+            });
+
+        });
+
+        function SaldadoCXC(response , CxcId) {
+            var cxctotal = 0;
+            var cxcabonado = 0;
+            response.forEach(function (item) {
+                if (item.id == CxcId || item.referenceId == CxcId) {
+                    if (item.referenceId === 0) {
+                        cxctotal = item.amount;
+                    } else {
+                        cxcabonado = cxcabonado + item.amount;
+                    }
+                }
+            });
+
+            if (cxctotal == cxcabonado) {
+                return true;
+            } else {
+                return false
+            }
+        }
+
+        SelectVoucher();
+        SelectZones();
+
+        $("#edit-customer").click(function () {
+            var name = $("#customer-name").val();
+            if (!name || name == "") {
+                toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+                return;
+            }
+
+            var phone = $("#customer-phone").val();
+
+            var email = $("#customer-email").val();
+            var address = $("#customer-address1").val();
+            var city = $("#customer-city").val();
+            var rnc = $("#customer-rnc").val();
+            var limit = parseFloatCorrect($("#customer-limit").val())
+            var balance = parseFloatCorrect($("#customer-balance").val())
+            var days = parseInt($("#customer-days").val())
+            if (!days) days = 0;
+            var voucher = parseInt($("#customer-voucher").val())
+            if (!voucher) voucher = 0;
+            var photo = $("#productimg").data("avatar");
+            var zone = parseInt($("#customer-zone").val())
+            var active = $("#customer-status").val()
+            var id = parseInt($("#addcustomer").data("id"));
+            var company = $('#compania-name').val();
+            var data = {
+                ID : id,
+                RNC: rnc,
+                Name : name,
+                Phone: phone,
+                Email : email,
+                Address1 : address,
+                City : city,
+                CreditLimit : limit,
+                CreditDays : days,
+                Balance: balance,
+                Avatar : photo,
+                VoucherId: voucher,
+                DeliveryZoneID: zone,
+                IsActive: active == "1",
+                Company: company
+            }
+
+            $.ajax({
+                url: "/Setting/EditCustomer",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == 0) {
+                        SaveAccountItems(5, data.id, function () {
+                            $("#customer-list").DataTable().draw();
+                            $("#addcustomer").modal("hide");
+                            window.location.href = "/Setting/EditCustomer?customerId=@Id";
+                        })
+                    }
+                    else if (data.status == 2) {
+                        toastr.error("@ViewLocalizer["The customer with same contact info already exists. Please confirm or check if the one exists."]", {})
+                    }
+                    else {
+                        toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            });
+
+        });
+
+        $(".del-photo").click(function () {
+            $("#productimg").attr("src", "/vendor/img/product/noimage.png");
+            $("#productimg").data("avatar", "");
+            $("#imgInpProduct").val("")
+        })
+
+        $("#imgInpProduct").change(function () {
+            readProductBackURL(this);
+        });
+
+        $("#add-voucher-modal").click(function () {
+            $("#listvoucher").modal("show");
+        })
+    });
+
+    function readProductBackURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#productimg').attr('src', e.target.result);
+                $("#productimg").data("avatar", e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function AddCustomer() {
+        $("#customer-name").val("");
+        $("#customer-rnc").val("");
+        $('#compania-name').val("");
+        $("#customer-phone").val("");
+        $("#customer-email").val("");
+        $("#customer-address1").val("");
+        $("#customer-city").val("");
+        $("#customer-limit").val("");
+        $("#customer-days").val("");
+        $("#customer-balance").val("");
+        $("#customer-voucher").val(0).change();
+        $("#customer-zone").val(0).change();
+        $("#productimg").attr("src", "/vendor/img/product/noimage.png");
+        $("#productimg").data("avatar", "");
+        $("#customer-status").val(1).change();
+        GetAccountItems(5, 0)
+        $("#addcustomer").data("id", 0);
+        $("#addcustomer").modal("show");
+
+        $('#label-rnc-validado').prop('hidden', true);
+        $('#label-rnc-novalidado').prop('hidden', true);
+    }
+
+    function EditCustomer(id) {
+        $('#label-rnc-validado').prop('hidden', true);
+        $('#label-rnc-novalidado').prop('hidden', true);
+
+        $.ajax({
+            url: "/Setting/GetCustomer?customerId=" + id,
+            type: "POST",
+            success: function (customer, textStatus, jqXHR) {
+                if (customer) {
+                    $("#customer-name").val(customer.name);
+                    $("#customer-rnc").val(customer.rnc);
+                    $('#compania-name').val(customer.company);
+                    $("#customer-phone").val(customer.phone);
+                    $("#customer-email").val(customer.email);
+                    $("#customer-address1").val(customer.address1);
+                    $("#customer-city").val(customer.city);
+                    $("#customer-limit").val(numberWithCommas(customer.creditLimit.toFixed(2)));
+                    $("#customer-days").val(customer.creditDays);
+                    $("#customer-balance").val(numberWithCommas(customer.balance.toFixed(2)));
+                    if (customer.voucher) {
+                        $("#customer-voucher").val(customer.voucher.id).change();
+                    } else {
+                        $("#customer-voucher").val(0).change();
+                    }
+                    if (customer.isActive) {
+                        $("#customer-status").val(1).change();
+                    }
+                    else {
+                        $("#customer-status").val(0).change();
+                    }
+                    $("#customer-zone").val(customer.deliveryZoneID).change();
+                    if (customer.avatar == "") {
+                        $("#productimg").attr("src", "/vendor/img/product/noimage.png");
+                    } else {
+                        $("#productimg").attr("src", customer.avatar);
+                    }
+                    $("#productimg").data("avatar", customer.avatar);
+                    GetAccountItems(5, customer.id)
+                    $("#addcustomer").data("id", customer.id);
+                    $("#addcustomer").modal("show");
+
+                    // Actualizar el balance con el totalAmount
+                    $.ajax({
+                        url: "/Setting/GetCxCList",
+                        type: "POST",
+                        dataType: "json",
+                        data: { customerName: customer.name },
+                        success: function (response) {
+                            if (response && Array.isArray(response) && response.length > 0) {
+                                var totalAmount = response.reduce((acc, cur) => acc + cur.temporaryDifference, 0);
+                                totalAmount = totalAmount.toFixed(2);
+                                $("#customer-balance").val(totalAmount);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error en la petición AJAX:", error);
+                        }
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
+
+
+    // voucher
+    function SelectVoucher(voucher) {
+        $.ajax({
+            url: "/Setting/GetActiveVoucherList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                $("#customer-voucher").empty();
+                $("#customer-voucher").append("<option value='' selected>@ViewLocalizer["Choose recipe"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-voucher").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#customer-voucher").select2();
+                if (voucher) {
+                    $("#customer-voucher").val(voucher.id).change();
+                }
+                else {
+                    $("#customer-voucher").val(0).change();
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listvoucher").modal("hide");
+    }
+
+    function AddVoucher() {
+        $("#voucher-name").val("");
+        $("#voucher-class").val("");
+        $("#voucher-taxes").val("").change();
+        $("#voucher-sequence").val(1).change();
+        $("#voucher-requirernc").val(0).change();
+        $("#voucher-status").val(1).change();
+        $("#addvoucher").data("id", 0);
+
+        $("#addvoucher").modal("show");
+    }
+
+    $("#voucher-list").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "ajax": {
+            "url": "/Setting/GetVouchers",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "paging": false,
+        "order": [[1, 'asc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<div class='d-flex align-items-center'><a class='me-3 d-inline-block' href='javascript:void(0);' onclick='EditVoucher(" + row.id + ")'><img src='/vendor/img/icons/edit.svg' alt='img'></a><a class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick='SelectVoucher(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-check'></span></span></a></div>";
+                },
+            },
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "class", "name": "class", "autoWidth": true },
+            { "data": "reorder", "name": "reorder", "autoWidth": true },
+            { "data": "secuencia", "name": "secuencia", "autoWidth": true },
+            { "data": "isRequireRNC", "name": "isRequireRNC", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'isActive',
+                render: function (data, type, row) {
+                    if (row.isActive) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                    }
+                    else {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
+
+        ]
+    });
+
+    function EditVoucher(id) {
+        $.ajax({
+            url: "/Setting/GetVoucher?voucherId=" + id,
+            type: "POST",
+            success: function (voucher, textStatus, jqXHR) {
+                if (voucher) {
+                    $("#voucher-name").val(voucher.name)
+                    $("#voucher-class").val(voucher.class)
+
+                    $("#voucher-sequence").val(voucher.secuencia)
+                    if (voucher.isRequireRNC) {
+                        $("#voucher-requirernc").val(1).change();
+                    }
+                    else {
+                        $("#voucher-requirernc").val(0).change();
+                    }
+                    var taxes = [];
+                    if (voucher.taxes) {
+                        for (var i = 0; i < voucher.taxes.length; i++) {
+                            taxes.push("" + voucher.taxes[i].id);
+                        }
+                        $("#voucher-taxes").val(taxes).change();
+                    }
+                    else {
+                        $("#voucher-taxes").val("").change();
+                    }
+
+                    if (voucher.isActive) {
+                        $("#voucher-status").val(1).change();
+                    }
+                    else {
+                        $("#voucher-status").val(0).change();
+                    }
+                    $("#addvoucher").data("id", voucher.id)
+
+                    $("#addvoucher").modal("show");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+    $("#edit-voucher").click(function () {
+        var name = $("#voucher-name").val();
+        if (!name || name == "") {
+            toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+            return;
+        }
+
+        var id = parseInt($("#addvoucher").data("id"));
+        var cls = $("#voucher-class").val();
+        var reorder = parseFloatCorrect($("#voucher-reorder").val());
+        var seq = parseInt($("#voucher-sequence").val());
+
+        var data = {
+            ID: id,
+            Name: name,
+            Class: cls,
+            TaxeIDs: $("#voucher-taxes").val(),
+            Secuencia: seq,
+            IsRequireRNC: $("#voucher-requirernc").val() == "1",
+            IsActive: $("#voucher-status").val() == "1",
+        };
+
+        $.ajax({
+            url: "/Setting/EditVoucher",
+            type: "POST",
+            data: data,
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == 0) {
+                    $("#voucher-list").DataTable().draw();
+                    $("#addvoucher").modal("hide");
+                }
+                else if (data.status == 2) {
+                    toastr.error("@ViewLocalizer["The name and amount should be unique."]", {})
+                }
+                else {
+                    toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+
+    function SelectZones() {
+        $.ajax({
+            url: "/Setting/GetActiveDeliveryZoneList",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                //Delivery
+                $("#delivery-zone").empty();
+                $("#delivery-zone").append("<option value='' selected>@ViewLocalizer["Choose Zone"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#delivery-zone").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#delivery-zone").select2();
+
+                $("#delivery-zone").val(0).change();
+
+
+                //Customer
+                $("#customer-zone").empty();
+                $("#customer-zone").append("<option value='' selected>@ViewLocalizer["Choose Zone"]</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+
+                    $("#customer-zone").append("<option value='" + d.id + "' >" + d.name + "</option>")
+                }
+                $("#customer-zone").select2();
+
+                $("#customer-zone").val(0).change();
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+
+        $("#listvoucher").modal("hide");
+    }
+
+    var customertable = $("#customer-list").DataTable({
+        "processing": true,
+        "serverSide": true,
+        dom:
+            '<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+            '<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
+            '<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
+            '>t' +
+            '<"row"' +
+            '<"col-sm-12 col-md-6"i>' +
+            '<"col-sm-12 col-md-6"p>' +
+            '>',
+        "orderMulti": false,
+        "ajax": {
+            "url": "/Setting/GetCustomers",
+            "type": "POST",
+            "datatype": "json"
+        },
+        'select': {
+            'style': 'multi'
+        },
+        "pageLength": 30,
+        "lengthMenu": [30,50, 75, 100],
+        "order": [[2, 'desc']],
+        "columns": [
+            {
+                'data': 'action', 'name': 'action',
+                render: function (data, type, row) {
+                    return "<a class='me-3' href='javascript:void(0);'  onclick=EditCustomer('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+                },
+            },
+            {
+                'data': 'avatar', 'name': 'avatar',
+                render: function (data, type, row) {
+                    if (!row.avatar) {
+                        return "";
+                    }
+                    else {
+                        return "<img src='" + row.avatar + "' alt = 'avatar' style='max-height:40px; max-width:40px;' >";
+                    }
+                },
+                "autoWidth": true
+            },
+
+            { "data": "name", "name": "name", "autoWidth": true },
+            {
+                'data': 'status', 'name': 'isActive',
+                render: function (data, type, row) {
+                    if (row.isActive) {
+                        return "<span class='badges bg-lightgreen'>@ViewLocalizer["Active"]</span>";
+                    }
+                    else {
+                        return "<span class='badges bg-lightred'>@ViewLocalizer["InActive"]</span>";
+                    }
+                },
+                "autoWidth": true
+            },
+            { "data": "phone", "name": "phone", "autoWidth": true },
+            { "data": "email", "name": "email", "autoWidth": true },
+            { "data": "rnc", "name": "rnc", "autoWidth": true },
+            {
+                "data": "balance", "name": "balance", "autoWidth": true,
+                render: function (data, type, row) {
+                    return numberWithCommas(row.balance.toFixed(2));
+                },
+            },
+            { "data": "address1", "name": "address1", "autoWidth": true },
+        ],
+        buttons: [
+            {
+                extend: 'collection',
+                className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+                text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
+                buttons: [
+                    {
+                        extend: 'print',
+                        text: '<i class="ti ti-printer me-2" ></i>Print',
+                        className: 'dropdown-item',
+                        exportOptions: {
+                            columns: [1, 3, 4, 5, 6],
+                            format: {
+                                body: function (inner, coldex, rowdex) {
+                                    if (inner.length <= 0) return inner;
+                                    var el = $.parseHTML(inner);
+                                    var result = '';
+                                    $.each(el, function (index, item) {
+                                        if (item.classList !== undefined && item.classList.contains('customer-name')) {
+                                            result = result + item.lastChild.firstChild.textContent;
+                                        } else if (item.innerText === undefined) {
+                                            result = result + item.textContent;
+                                        } else result = result + item.innerText;
+                                    });
+                                    return result;
+                                }
+                            }
+                        },
+                        customize: function (win) {
+                            // Customize print view for dark
+                            $(win.document.body)
+                                .css('color', headingColor)
+                                .css('border-color', borderColor)
+                                .css('background-color', bodyBg);
+                            $(win.document.body)
+                                .find('table')
+                                .addClass('compact')
+                                .css('color', 'inherit')
+                                .css('border-color', 'inherit')
+                                .css('background-color', 'inherit');
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="ti ti-file me-2" ></i>Csv',
+                        className: 'dropdown-item',
+                        exportOptions: {
+                            columns: [1, 3, 4, 5, 6],
+                            format: {
+                                body: function (inner, coldex, rowdex) {
+                                    if (inner.length <= 0) return inner;
+                                    var el = $.parseHTML(inner);
+                                    var result = '';
+                                    $.each(el, function (index, item) {
+                                        if (item.classList !== undefined && item.classList.contains('customer-name')) {
+                                            result = result + item.lastChild.firstChild.textContent;
+                                        } else if (item.innerText === undefined) {
+                                            result = result + item.textContent;
+                                        } else result = result + item.innerText;
+                                    });
+                                    return result;
+                                }
+                            }
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="ti ti-file-export me-2"></i>Excel',
+                        className: 'dropdown-item',
+                        exportOptions: {
+                            columns: [1, 3, 4, 5, 6],
+                            format: {
+                                body: function (inner, coldex, rowdex) {
+                                    if (inner.length <= 0) return inner;
+                                    var el = $.parseHTML(inner);
+                                    var result = '';
+                                    $.each(el, function (index, item) {
+                                        if (item.classList !== undefined && item.classList.contains('customer-name')) {
+                                            result = result + item.lastChild.firstChild.textContent;
+                                        } else if (item.innerText === undefined) {
+                                            result = result + item.textContent;
+                                        } else result = result + item.innerText;
+                                    });
+                                    return result;
+                                }
+                            }
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="ti ti-file-text me-2"></i>Pdf',
+                        className: 'dropdown-item',
+                        exportOptions: {
+                            columns: [1, 3, 4, 5, 6],
+                            format: {
+                                body: function (inner, coldex, rowdex) {
+                                    if (inner.length <= 0) return inner;
+                                    var el = $.parseHTML(inner);
+                                    var result = '';
+                                    $.each(el, function (index, item) {
+                                        if (item.classList !== undefined && item.classList.contains('customer-name')) {
+                                            result = result + item.lastChild.firstChild.textContent;
+                                        } else if (item.innerText === undefined) {
+                                            result = result + item.textContent;
+                                        } else result = result + item.innerText;
+                                    });
+                                    return result;
+                                }
+                            }
+                        }
+                    },
+                ]
+            },
+            {
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Customer Modal"]</span>',
+                className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+                action: function () {
+                    AddCustomer();
+                    //window.location.href = "/Setting/AddCustomer";
+                }
+            },
+            {
+                text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Customer"]</span>',
+                className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+                action: function () {
+                    //AddCustomer();
+                    window.location.href = "/Setting/AddCustomer";
+                }
+            }
+        ]
+    });
+
+    function FilterCustomer() {
+        var searchText = $("#filter-searchtext").val();
+
+        customertable.columns(0).search(searchText);
+
+        customertable.draw();
+    }
+</script>
