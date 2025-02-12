@@ -1264,7 +1264,8 @@
 			{
 				'data': 'action', 'name': 'action',
 				render: function (data, type, row) {
-					return "<a class='me-3' href='javascript:void(0);'  onclick=EditCustomer('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					return "<a class='me-3' href='/Setting/EditCustomer?customerId="+ row.id + "'><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
+					//return "<a class='me-3' href='javascript:void(0);'  onclick=EditCustomer('" + row.id + "'); ><img src='/vendor/img/icons/edit.svg' alt='img'></a>";
 				},
 			},
 			{
@@ -1422,8 +1423,17 @@
 				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
 				action: function () {
 					AddCustomer();
+					//window.location.href = "/Setting/AddCustomer";
 				}
-			}
+			},
+			// {
+			// 	text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Customer"]</span>',
+			// 	className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+			// 	action: function () {
+			// 		//AddCustomer();
+			// 		window.location.href = "/Setting/AddCustomer";
+			// 	}
+			// }
 		]
 	});
 

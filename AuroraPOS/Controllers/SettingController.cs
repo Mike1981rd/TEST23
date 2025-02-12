@@ -52,6 +52,17 @@ namespace AuroraPOS.Controllers
             return View();
         }
 
+		public IActionResult EditCustomer(long customerId = 0)
+		{
+            ViewBag.Taxes = _dbContext.Taxs.Where(s => s.IsActive).ToList();
+            var customer = _dbContext.Customers.Include(s => s.Voucher).FirstOrDefault(s => s.ID == customerId);
+			ViewBag.Customer = customer;
+			var deliveryZone = _dbContext.DeliveryZones.FirstOrDefault(s => s.IsActive && s.ID == customer.DeliveryZoneID);
+			ViewBag.DeliveryZone = deliveryZone.Name;
+			//var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsActive && s.ID == customer.Voucher.).ToList();
+            return View();
+		}
+
 		public IActionResult Accounts()
 		{
 			return View();
