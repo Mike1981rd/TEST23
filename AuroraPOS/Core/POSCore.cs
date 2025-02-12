@@ -3158,7 +3158,7 @@ public class POSCore
                 var isExist = false;
                 foreach (var eitem in items)
                 {
-                    if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID)
+                    if (nitem.MenuProductID == eitem.MenuProductID && nitem.ServingSizeID == eitem.ServingSizeID && nitem.SubTotal == eitem.SubTotal)
                     {
                         isExist = true;
                         existItem = eitem;

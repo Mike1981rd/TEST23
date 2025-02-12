@@ -496,7 +496,7 @@
                     html += item_html;
 
                     if (item.isCompleted) {
-                        html += ` </div></div></div>`;
+                        html += `</div><div class="card-footer p-2 bg-grey d-flex justify-content-around" style="background-color:${color}"><div></div><a class="btn btn-primary btn-block w-25 btn-done">Done</a></div></div></div>`;
                     }
                     else if (item.isNew) {
                         html += `</div><div class="card-footer p-2 bg-grey d-flex justify-content-center" style="background-color:${color}"><a class="btn btn-success btn-block w-50 btn-okorder">OK</a></div></div></div>`;
