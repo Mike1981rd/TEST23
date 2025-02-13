@@ -33,12 +33,149 @@
     <!-- Main CSS -->
     <!-- Main CSS -->
     <link rel="stylesheet" href="~/vendor/css/style.css">
+
     <style>
         body, html {
             height: 100%;
             margin: 0;
         }
 
+        .login-page-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            height: 100%;
+        }
+
+        .side-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content: space-around;
+            width: 100%;
+            height: 100%;
+            padding-top: 5%;
+        }
+
+        .pin {
+            all: unset;
+            width: 140px;
+            height: 80px;
+            /*margin: 10px;
+            opacity: 70%;*/
+            color: white;
+            font-size: 30px !important;
+            font-weight: 500;
+            text-align: center;
+            background-color: grey;
+            background-size: 100% 100%;
+            /*border: 2px solid white;*/
+            border-radius: 10px;
+            /*padding-top:20px;*/
+        }
+
+        .pin:hover {
+                background-color: rgba(150,150,150,255);
+                transition: all 0.05s ease-in;
+         }
+         
+         .pin:active {
+                background-color: #425dcf;
+            }
+
+        .panel-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panel {
+            all: unset;
+        }
+
+        .time-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .title-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4,1fr);
+            gap: 10px;
+            width: auto;
+        }
+
+        .grid-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            font-size: 25px !important;
+        }
+
+        .input-pin-container {
+            border-bottom: solid 0.5px #d1d1d1;
+            width: 100%;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .display-pin {
+            font-size: 25px !important;
+        }
+
+        .time-text {
+            font-size: 140px;
+            padding: 0;
+            margin: 0;
+            align-items: end;
+            line-height: 140px;
+        }
+
+        .date-text {
+            padding: 0;
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .title-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .company-text {
+            font-size: 30px;
+        }
+
+        .logo-panel {
+            all: unset;
+            width: 30px;
+        }
+
+        .input-pin-container .del-button {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translate(-150%, -50%);
+        }
     </style>
 </head>
 <body class="account-page" style="background-color:#000;">
@@ -46,50 +183,95 @@
         <div class="whirly-loader"> </div>
     </div>
     <!-- Main Wrapper -->
-    <div class="main-wrapper" style="background-color: #000">
-        <img class="logo-panel " src="~/vendor/img/logo-circle-04.png" />
+    <div class="main-wrapper" style="background-color: #000; height: 100%;">
+        @* <img class="logo-panel " src="~/vendor/img/logo-circle-04.png" /> *@
 
-        <div class="panel">
-            <div style=" ">
-                <div id="input-pin" class="d-flex justify-content-center" data-value="" style="height:100px; padding-left:14px;">
-                    <div class="display-pin"></div>
-                    <div class="display-pin"></div>
-                    <div class="display-pin"></div>
-                    <div class="display-pin"></div>
+        <div class="login-page-container">
+            <div class="side-content">
+                <div class="time-content">
+                    <p class="time-text" id="text-time"8:00</p>
+                    <p class="date-text" id="text-date">Day, Month #th</p>
+                </div>
+                <div class="title-content">
+                    <img class="logo-panel " src="~/vendor/img/logo-circle-04.png" width="20px" height="20px"/>
+
+                    <h1 class="company-text">Aurora</h1>
                 </div>
             </div>
-            <div class="d-flex justify-content-center">
-                <div>
-                    <div class="pin" data-num="1" style="">1
+            <div class="panel-content">
+                <div class="panel">
+                    <div class="input-pin-container" style=" ">
+                        <div class="del-button pin" data-num="del" style="all: unset; position: absolute; left: 100%; top: 50%; transform: translate(-100%, -50%); padding: 20px">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="#ffff" d="M8.108 3a3 3 0 0 0-2.544 1.41l-4.08 6.53a2 2 0 0 0 0 2.12l4.08 6.53A3 3 0 0 0 8.108 21H19a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3zm8.427 12.536a1 1 0 0 1-1.414 0L13 13.414l-2.121 2.122a1 1 0 1 1-1.415-1.415L11.586 12L9.464 9.879a1 1 0 0 1 1.415-1.415L13 10.586l2.121-2.122a1 1 0 1 1 1.414 1.415L14.415 12l2.12 2.121a1 1 0 0 1 0 1.415" stroke-width="0.5" stroke="#ffff" /></g></svg>
+                        </div>
+                        <div id="input-pin" class="d-flex justify-content-center" data-value="" style="height:100px; padding-left:14px;">
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                            <div class="display-pin"></div>
+                        </div>
                     </div>
-                    <div class="pin" data-num="4" style="">4
+                    <div class="grid-container">
+                        <div class="grid-item pin" data-num="1">1</div>
+                        <div class="grid-item pin" data-num="2">2</div>
+                        <div class="grid-item pin" data-num="3">3</div>
+                        <div class="grid-item pin" data-num="4">4</div>
+                        <div class="grid-item pin" data-num="5">5</div>
+                        <div class="grid-item pin" data-num="6">6</div>
+                        <div class="grid-item pin" data-num="7">7</div>
+                        <div class="grid-item pin" data-num="8">8</div>
+                        <div class="grid-item pin" data-num="9">9</div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item pin" data-num="0">0</div>
+                        <div class="grid-item"></div>
                     </div>
-                    <div class="pin" data-num="7" style="">7
+                    @*                 <div class="d-flex justify-content-center">
+                    <div>
+                        <div class="pin" data-num="1" style="">
+                            1
+                        </div>
+                        <div class="pin" data-num="4" style="">
+                            4
+                        </div>
+                        <div class="pin" data-num="7" style="">
+                            7
+                        </div>
+                        <div class="pin" data-num="" style="">
+                            *
+                        </div>
                     </div>
-                    <div class="pin" data-num="" style="">*
+                    <div>
+                        <div class="pin" data-num="2" style="">
+                            2
+                        </div>
+                        <div class="pin" data-num="5" style="">
+                            5
+                        </div>
+                        <div class="pin" data-num="8" style="">
+                            8
+                        </div>
+                        <div class="pin" data-num="0" style="">
+                            0
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class="pin" data-num="2" style="">2
+                    <div>
+                        <div class="pin" data-num="3" style="">
+                            3
+                        </div>
+                        <div class="pin" data-num="6" style="">
+                            6
+                        </div>
+                        <div class="pin" data-num="9" style="">
+                            9
+                        </div>
+                        <div class="pin" data-num="del" style="">
+                            DEL
+                        </div>
                     </div>
-                    <div class="pin" data-num="5" style="">5
-                    </div>
-                    <div class="pin" data-num="8" style="">8
-                    </div>
-                    <div class="pin" data-num="0" style="">0
-                    </div>
-                </div>
-                <div>
-                    <div class="pin" data-num="3" style="">3
-                    </div>
-                    <div class="pin" data-num="6" style="">6
-                    </div>
-                    <div class="pin" data-num="9" style="">9
-                    </div>
-                    <div class="pin" data-num="del" style="">DEL
-                    </div>
+                </div> *@
                 </div>
             </div>
+
         </div>
     </div>
     <!-- /Main Wrapper -->
@@ -111,9 +293,37 @@
     <script src="~/vendor/plugins/toastr/toastr.js"></script>
 
     <script>
+        function updateReloj () {
+            const reloj = document.getElementById('text-time');
+
+            const fecha = new Date();
+            let horas = fecha.getHours();
+            let minutos = fecha.getMinutes();
+
+            horas = horas < 10 ? '0' + horas : horas;
+            minutos = minutos < 10 ? '0' + minutos : minutos;
+
+            reloj.textContent = `${horas}:${minutos}`;
+        }
+
+        setInterval(updateReloj, 1000);
+
+        updateReloj();
+
         $(document).ready(function() {
             ShowLoader();
+
+            const date = new Date();
+            const options = {
+                weekday: 'short',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            const formattedDate = date.toLocaleDateString('en-US', options);
+            $("#text-date").text((_, c) => formattedDate);
         })
+
         $("body").on("keydown", function (e) {
             var code = e.keyCode || e.which;
 
