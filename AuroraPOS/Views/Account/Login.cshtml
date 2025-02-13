@@ -112,6 +112,16 @@
             color: #fff; /* Asegúrate que el texto en los selects también sea blanco */
             background-color: #333; /* Opcional: Cambia el fondo de los inputs/selects en modo oscuro */
         }
+
+        .input-white {
+            background-color: white !important; 
+            color: black !important;
+            border: solid 1px gray;
+        }
+
+        .input-white::placeholder {
+                color: gray !important;
+        }
     </style>
 </head>
 <body class="account-page">
@@ -174,7 +184,7 @@
                             <div class="form-login">
                                 <label>@ViewLocalizer["Company"]</label>
                                 <div class="pass-group">
-                                    <select asp-for="Database" asp-items="SelectDatabase" class="form-control"></select>
+                                    <select asp-for="Database" asp-items="SelectDatabase" class="form-control input-white"></select>
                                 </div>
                             </div>
                         }
@@ -184,7 +194,7 @@
                             <div class="form-login">
                                 <label>@ViewLocalizer["Username"]</label>
                                 <div class="form-addons">
-                                    <input class="form-control" type="text" placeholder="@ViewLocalizer["Enter your username or email address"]" asp-for="UserName" required>
+                                    <input class="form-control input-white" type="text" placeholder="@ViewLocalizer["Enter your username or email address"]" asp-for="UserName" required>
                                
                                 </div>
                             </div>
@@ -193,11 +203,11 @@
                                 <div class="input-group input-group-merge">
                                     <input type="password"
                                            id="password"
-                                           class="form-control"
+                                           class="form-control input-white"
                                            name="password"
                                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                            aria-describedby="password" />
-                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                    <span id="show-password" class="input-group-text cursor-pointer"><i id="show-password-icon" class="ti ti-eye-off"></i></span>
                                 </div>
                             </div>
                             <div class="form-login">
@@ -209,7 +219,7 @@
                                         <div class="pass-group">
                                             <input type="text"
                                                    asp-for="CaptchaCode"
-                                                   class="form-control"
+                                                   class="form-control input-white"
                                                    placeholder="@ViewLocalizer["Captcha Code"]"
                                                    autocomplete="off"
                                                    minlength="4"
@@ -307,7 +317,18 @@
                 $("form").submit();
             });
 
+            $("#show-password").click(function () {
+                if($("#show-password-icon").attr('class') === "ti ti-eye-off"){
+                    $("#show-password-icon").removeClass('ti ti-eye-off').addClass('ti ti-eye');
+                    $("#password").attr('type', 'text');
+                }
+                else{
+                    $("#show-password-icon").removeClass('ti ti-eye').addClass('ti ti-eye-off');
+                    $("#password").attr('type', 'password');
 
+                }
+
+            })
         });
 
         // Selecciona todos los enlaces del tema

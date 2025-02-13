@@ -1108,7 +1108,7 @@ function UpdateDisplay() {
 	var index = 0;
 	$(".display-pin").each(function () {
 		if (index + 1 <= value.length) {
-			$(this).text("*")
+			$(this).html("&#8226;") //bullet point, si no se quiere, cambiar a .text("*") como anteriormente estaba
 		}
 		else {
 			$(this).text("");
