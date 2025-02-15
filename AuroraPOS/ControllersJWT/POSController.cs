@@ -1,4 +1,4 @@
-using AuroraPOS.Core;
+﻿using AuroraPOS.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
