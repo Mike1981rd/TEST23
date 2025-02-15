@@ -81,6 +81,14 @@
     <!-- Custom JS -->
     <script src="/vendor/js/script.js"></script>
     <style>
+        body[data-theme="dark"] .modal-content {
+            background-color: #171525;
+        }
+
+        body[data-theme="dark"] .card, body[data-theme="dark"] .card .card-header {
+            background-color: #171525;
+        }
+
         ::-webkit-scrollbar {
             width: 0px;
             height: 0px !important;
@@ -116,14 +124,608 @@
             border-top-left-radius: 20px;
             z-index: 1;
         }
+
+        /* NUEVOS ESTILOS */
+
+        .main-page-kiosk {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            background: #000100;
+            gap: 4px;
+        }
+
+        .header-info {
+            width: 100%;
+            height: 8%;
+            background: #222d42;
+            display:flex;
+            padding: 4px;
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+        }
+
+        .main-content {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+            padding-left: 4px;
+            padding-right: 4px;
+            overflow: hidden;
+        }
+
+        .footer-menu {
+            width: 100%;
+            height: 10%;
+
+            display: flex;
+            flex-direction: row;
+            background: #171525;
+            gap: 4px;
+        }
+
+        .cuenta-side-menu {
+            width: 40%;
+            height: 100%;
+            
+
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            border-radius: 4px;
+
+        }
+
+        .elements-main-menu {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+        }
+
+       .user-info-container {
+           all: unset;
+           display: flex;
+           flex-direction: row;
+           align-items: center;
+           justify-content: space-between;
+           height: auto;
+           background: #1f2b41;
+           border-radius: 10px;
+           padding: 8px;
+
+           margin: 8px;
+       }
+
+       .order-info-menu {
+           all: unset;
+           display: flex;
+           height: 100%;
+           flex-direction: column;
+           justify-content: space-between;
+           border-radius: 4px;
+           overflow: hidden;
+        }
+
+       .table-body {
+                      all: unset;
+           overflow: hidden;
+           overflow-y: scroll;
+           background: none;
+           border-radius: 0;
+       }
+
+       .order-table {
+           margin: 0;
+           height: 100%;
+           overflow: hidden;
+       }
+
+              .order-table > .table {
+           overflow-x: hidden;
+           overflow-y: scroll;
+           height: 100%;
+       }
+
+       .order-summary {
+           all: unset;
+           border-top: solid 1px #A0A0A0;
+           padding: 4px;
+       }
+
+       .order-info-options {
+           width: 100%;
+       }
+
+       .bottom-grid {
+           all: unset;
+           display: flex;
+           flex-direction: row;
+           gap: 4px;
+       }
+
+
+       .btn-modern {
+           background-color: #171525 !important;
+           color: white;
+           width: 100%;
+           border-radius: 4px;
+       }
+
+       .btn-modern-small {
+           width: 130px;
+       }
+
+       #order-cancel, #order-save, #order-print, #order-pay{
+           background-color: #425dcf !important;
+
+       }
+
+       #order-cancel:hover, #order-save:hover, #order-print:hover, #order-pay:hover{
+           background-color: #434e64 !important;
+
+       }
+
+       #order-cancel {
+           background-color: #413d5a !important;
+           color: red;
+       }
+
+       #order-pay {
+           background-color: #00906a !important;
+       }
+
+       .btn-modern:hover {
+           background-color: #413d5a !important;
+           color: white;
+       }
+
+       .user-cuenta-container {
+           display: flex;
+           flex-direction: column;
+           width: 100%;
+           height: 100%;
+           justify-content: space-between;
+           background: #171525;
+           border-radius: 4px;
+           overflow: hidden;
+        }
+
+       .kiosk-category-panel {
+           display: flex;
+           flex-direction: column;
+           width: 20%;
+           height: 100%;
+           padding: 0;
+           overflow-x: hidden;
+           overflow-y: hidden;
+           background: #171525;
+           border-radius: 4px;
+        }
+
+       .category-item-container {
+           width: 100%;
+           height: 100%;
+           padding: 0;
+           border-radius: 4px;
+       }
+
+       .category-item-kiosk {
+           background: none;
+           border: none;
+           border-bottom: solid 1px #A0A0A0;
+           border-radius: 0;
+       }
+
+       .active {
+           background: #425dcf !important;
+       }
+
+       .category-item-kiosk:hover {
+           background: #425dcf !important;
+           color: white;
+       }
+
+       .items-qty-container {
+           width: 100%;
+           height: 100%;
+
+           display: flex;
+           flex-direction: column;
+           gap: 4px;
+       }
+
+       .qty-panel-container {
+           display: flex;
+           flex-direction: row;
+           background: #171525;
+           padding: 4px;
+           gap: 4px;
+           border-radius: 4px;
+        }
+
+       .kiosk-qty {
+           min-width: 15%;
+           padding: 0px;
+           border-radius: 4px;
+           margin-bottom: 0;
+           font-size: 16px !important;
+        }
+
+       .kiosk-qty-keyboard {
+            background: #202c42;
+            border: 0;
+            border-radius: 4px;
+            padding: 0;
+            font-size: 16px !important;
+            margin: 0;
+       }
+
+       .kiosk-qty-keyboard:hover {
+           background: #425dcf;
+           color: white;
+
+       }
+
+       .product-panels-container {
+           display: flex;
+           flex-direction: column;
+           width: 100%;
+           height: 100%;
+           overflow: hidden;
+           gap: 8px;
+       }
+
+       .product-panel-main-kiosk {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(auto-fill, minmax(60px, auto)); /* Fila mínima de 20px */
+            height: 100%;
+            overflow: hidden;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            gap: 8px;
+
+            border-bottom: solid 1px rgba(255,255,255,0.4);
+       }
+
+       .static-product-panel-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(auto-fill, minmax(60px, auto)); /* Fila mínima de 20px */
+            height: 100%;
+            overflow: hidden;
+            overflow-y: scroll !important;
+            overflow-x: hidden;
+            gap: 8px;
+       }
+
+       .product-item-kiosk {
+           all: unset;
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
+           align-items: center;
+           width: 100%;
+           border-radius: 4px;
+           border: none;
+           border-bottom: solid 4px #9E1B32;
+           background: #343f54;
+           min-height: 60px;
+           position: relative;
+           overflow: hidden; /* Asegura que nada se desborde */
+       }
+
+       .product-item-kiosk > h5 {
+           margin: 0;
+       }
+
+        .product-item-kiosk > img {
+                width: 100%; /* Hace que la imagen ocupe todo el ancho del div */
+                height: 100%; /* Hace que la imagen ocupe toda la altura del div */
+                object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+                object-position: center; /* Centra la imagen dentro del div */
+        }
+
+        .total {
+            color: #425dcf;
+            font-size: 16px !important;
+            font-weight: bold;
+        }
+
+        .sub-total:hover {
+            background: #425dcf;
+        }
+
+        .product-item-kiosk > .card-img-overlay {
+            background: rgba(52,63,84,0.8) !important;
+            transition: all 0.1s ease-in;
+        }
+
+        .product-item-kiosk:hover > .card-img-overlay {
+            background: #434e64 !important;
+        }
+
+        .product-item-kiosk:hover {
+            background: #434e64;
+            cursor: pointer;
+        }
+
+        .product-title {
+            text-align: center;
+        }
+
+        .order-item:hover {
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #425dcf !important;
+            border-color: #425dcf !important;
+        }
+
+        .btn-label-secondary {
+            background-color: #171525 !important;
+           color: white;
+           border-radius: 4px;
+        }
+
+        .serving-size-item {
+            background: #343f54 !important;
+        }
+
+        .serving-size-item:hover {
+                background: #434e64 !important;
+                cursor: pointer;
+        }
     </style>
 </head>
 <body data-theme="dark">
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-    <div class="main-wrapper d-flex " style="background:black;">
+
+    <div class="main-page-kiosk">
+        <div class="header-info">
+            <p>Customers</p>
+        </div>
+        <div class="main-content">
+            <div class="details show cuenta-side-menu">
+                <div class="user-cuenta-container">
+                    @* Datos de usuario *@
+                    <div class="top user-info-container">
+                        <div class="">
+                                @if (Model.Table != null)
+                                {
+                                        <div><span id="order-mesa-header">@Model.Table.Name</span></div>
+                                }
+                                else
+                                {
+                                    if (Model.PrepareType != null)
+                                    {
+                                                    <div><span id="order-mesa-header">@Model.PrepareType.Name</span></div>
+                                    }
+                                    else
+                                    {
+                                                    <div><span id="order-mesa-header">@ViewLocalizer["TO GO"]</span></div>
+                                    }
+                                }
+                            <div>@ViewLocalizer["Waiter"]: <span class="order-waiter">@Model.WaiterName</span></div>
+                            <div>@ViewLocalizer["Cliente"]: <span class="order-client">@Model.ClientName</span></div>
+                            <div>@ViewLocalizer["Comprobante"]: <span class="order-comprobante">@Model.ComprobanteName</span></div>
+                            <div id="lbl-fecha"></div>
+                        </div>
+                        <a class="search-product" href="javascript:void(0);" style="width: 20%; max-width: 20%;">
+                            <img class="sales-logo" src="/vendor/img/logo-04.png" alt="">
+                        </a>
+                            @*                     <a class="" href="javascript:void(0);" style="width: 20%;">
+                            <img id="order-tools" class="sales-setting" src="/vendor/img/settings.png" alt="">
+                        </a> *@
+                        <input type="hidden" id="divide-num" value="0" />
+                    </div>
+                        @* /Datos de usuario *@
+
+                        @* Datos de usuario *@
+                    <div class="content order-item-content order-info-menu">
+                        <div class="order-table">
+                            <div id="order-item-table" class="table">
+                                <div class="table-header">
+                                    <div class="tr">
+                                        <div class="td" style="text-align: left">@* @ViewLocalizer["Item"] *@</div>
+                                        <div class="td"></div>
+                                        <div class="td" style="text-align: left">@* @ViewLocalizer["Qty"] *@</div>
+                                        <div class="td" style="text-align: left">@* @ViewLocalizer["Price"] *@</div>
+                                        <div class="td" style="text-align: left">@* @ViewLocalizer["Amt"] *@</div>
+                                    </div>
+                                </div>
+                                <div id="order-item-list" class="table-body">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="sub-total"><span>@ViewLocalizer["Subtotal"]:</span><span id="order-subtotal">00.00</span></div>
+                            <div class="sub-total"><span>@ViewLocalizer["Discount"]:</span><span id="order-discount">00.00</span></div>
+                            <div class="order-discount-items">
+                            </div>
+                            <div class="sub-total">
+                                <span>@ViewLocalizer["Tax"]:</span><span id="order-tax">0</span>
+                            </div>
+                            <div class="order-tax-items">
+                            </div>
+                            <div class="sub-total">
+                                <span>@ViewLocalizer["Propina"]:</span><span id="order-propina">0</span>
+                            </div>
+                            <div class="order-propina-items">
+                            </div>
+
+                            <div class="sub-total" style="display:none"><span>@ViewLocalizer["TIP"]:</span><span id="order-tip">0</span></div>
+                                @if (Model.OrderType == OrderType.Delivery)
+                                {
+                                    <div class="sub-total"><span>@ViewLocalizer["Delivery"]:</span><span id="order-delivery-cost">$0.00</span></div>
+                                    <div class="sub-total"><span>@ViewLocalizer["Time"]:</span><span id="order-delivery-time"></span></div>
+                                }
+                            <div class="total" id="order-total">00.00</div>
+                            <div class="justify-content-between d-flex" style="display:none !important"><span id="payment-status" class="pt-2" style="font-size: large">@Model.PaymentStatus</span><span class="total text-success" id="order-paid-total">@Model.PayAmount</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-info-options">
+                    <div class="bottom-grid">
+                        <button id="order-cancel" class="btn btn-modern">@ViewLocalizer["Cancel"]</button>
+                        <button id="order-save" class="btn btn-modern">@ViewLocalizer["Send"]</button>
+                        <button id="order-print" class="btn btn-modern">@ViewLocalizer["Print"]</button>
+                        <button id="order-pay" class="btn btn-modern">@ViewLocalizer["Pagar"]</button>
+                    </div>
+                </div>
+                <span id="hambugur"> || </span>
+            </div>
+            <div id="group-panel-main" class="inner" style="display:none;">
+            </div>
+            <div id="subcategory-panel-main" class="inner" style="display:none;">
+            </div>
+            <div class="products elements-main-menu">
+                <div id="category-panel-main" class="kiosk-category-panel"></div>
+                <div class="items-qty-container">
+                    <div class="qty-panel-container">
+                        <input id="kiosk-qty" class="kiosk-qty" value="" type="text">
+                        <button class="btn kiosk-qty-keyboard" style="background:#9E1B32;">C</button>
+                        <button class="btn kiosk-qty-keyboard">1</button>
+                        <button class="btn kiosk-qty-keyboard">2</button>
+                        <button class="btn kiosk-qty-keyboard">3</button>
+                        <button class="btn kiosk-qty-keyboard">4</button>
+                        <button class="btn kiosk-qty-keyboard">5</button>
+                        <button class="btn kiosk-qty-keyboard">6</button>
+                        <button class="btn kiosk-qty-keyboard">7</button>
+                        <button class="btn kiosk-qty-keyboard">8</button>
+                        <button class="btn kiosk-qty-keyboard">9</button>
+                        <button class="btn kiosk-qty-keyboard">0</button>
+                    </div>
+                    <div class="product-panels-container">
+                        <div id="forcedquestioncustommodal" class="custommodal" style="display: none; width: 100%; height:100%; overflow-y: scroll;">
+                            <!-- Forced question modal -->
+                            <div class="" id="forcedquestionmodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
+                                <div class="" role="document" style="border:none;height:100%;">
+                                    <div class="modal-content" style="height: 100vh !important;">
+
+                                        <!-- Modal-header
+                                        <div class="modal-header">
+                                            <h5 class="smartbuton-modal-title">@ViewLocalizer["Forced Questions"]</h5>
+                                            <div class="">
+                                                <button id="question-cancel" type="button" class="btn btn-danger">@ViewLocalizer["Cancel"]</button>
+                                                <button id="question-submit" disabled type="button" class="btn btn-success">@ViewLocalizer["Submit"]</button>
+                                            </div>
+                                        </div>
+
+                                                                            -->
+
+                                        <div class="" style="display:flex">
+                                            <div class="w-100">
+                                                <div class="modal-body question-body" style="max-height: 95vh;">
+                                                </div>
+                                            </div>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div>
+                                                <div style="padding-bottom: 15px; margin-top: 20px; text-align: center;">
+                                                    <h5 id="QuestionTitleModal" class="smartbuton-modal-title" style="color: orange;">@ViewLocalizer["Forced Questions"]</h5>
+                                                    <div class="">
+                                                        <button id="question-submit" disabled type="button" class="btn btn-success" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Submit"]</button>
+                                                        <button id="question-cancel" type="button" class="btn btn-danger" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Cancel"]</button>
+                                                    </div>
+                                                </div>
+                                                <div class="textmen" style="margin-top:0">
+                                                    <!-- Columna del 25% -->
+                                                    <!-- Contenido -->
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="modifiercustommodal" class="custommodal" style="display: none; width: 100%;height:100%; overflow-y: scroll;">
+                            <!-- Modifier modal -->
+                            <div class="" id="modifiermodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
+                                <div class="" role="document" style="height:100%;">
+                                    <div class="modal-content" style="height:100%;">
+                                        @*<div class="modal-header">
+                                        <h5 class="smartbuton-modal-title">@ViewLocalizer["Modifiers"]</h5>
+                                        <div class="">
+                                            <button id="modifier-submit" type="button" class="btn btn-success">@ViewLocalizer["Submit"]</button>
+                                            <button id="modifier-cancel" type="button" class="btn btn-danger">@ViewLocalizer["Cancel"]</button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body modifier-body">
+                                    </div>*@
+
+                                        <div class="" style="display:flex">
+                                            <div class="w-100">
+                                                <div class="modal-body modifier-body" style="max-height: 95vh;">
+                                                </div>
+                                            </div>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div>
+                                                <div style="padding-bottom: 15px; margin-top: 20px; text-align: center;">
+                                                    <h5 id="ModifierTitleModal" class="smartbuton-modal-title" style="color: orange;">@ViewLocalizer["Modifiers"]</h5>
+                                                    <div class="">
+                                                        <button id="modifier-submit" type="button" class="btn btn-success" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Submit"]</button>
+                                                        <button id="modifier-cancel" type="button" class="btn btn-danger" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Cancel"]</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="textmen" style="margin-top: 0px;">
+
+                                                    <!-- Columna del 25% -->
+                                                    <!-- Contenido -->
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="product-panel-main" class="product-panel-main-kiosk"></div>
+                        <div id="static-product-panel-main" class="static-product-panel-main"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-menu">
+@*             <button id="order-ordern" class="btn btn-menu-kiosk">Orden</button>
+            <button id="order-mesa-kiosk" class="btn btn-menu-kiosk">@Model.PrepareType.Name</button> *@
+            <button id="order-ordern" class="btn btn-modern">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 36 36"><path fill="#fff" d="M15 8h9v2h-9z" class="clr-i-outline clr-i-outline-path-1" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 12h9v2h-9z" class="clr-i-outline clr-i-outline-path-2" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 16h9v2h-9z" class="clr-i-outline clr-i-outline-path-3" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 20h9v2h-9z" class="clr-i-outline clr-i-outline-path-4" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 24h9v2h-9z" class="clr-i-outline clr-i-outline-path-5" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 8h2v2h-2z" class="clr-i-outline clr-i-outline-path-6" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 12h2v2h-2z" class="clr-i-outline clr-i-outline-path-7" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 16h2v2h-2z" class="clr-i-outline clr-i-outline-path-8" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 20h2v2h-2z" class="clr-i-outline clr-i-outline-path-9" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 24h2v2h-2z" class="clr-i-outline clr-i-outline-path-10" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M28 2H8a2 2 0 0 0-2 2v28a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2m0 30H8V4h20Z" class="clr-i-outline clr-i-outline-path-11" stroke-width="1" stroke="#fff" /><path fill="none" d="M0 0h36v36H0z" /></svg>
+                Order
+            </button>
+            <button id="order-mesa-kiosk" class="btn btn-modern">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24"><path fill="#fff" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm6-6H5v4h6zm2 0v4h6v-4zm-2-2V9H5v4zm2 0h6V9h-6zM5 7h14V5H5z" stroke-width="0.5" stroke="#fff" /></svg>
+                @Model.PrepareType.Name
+            </button>
+            <button id="order-tools" class="btn btn-modern">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24"><path fill="#fff" fill-rule="evenodd" d="M12.563 3.2h-1.126l-.645 2.578l-.647.2a6.3 6.3 0 0 0-1.091.452l-.599.317l-2.28-1.368l-.796.797l1.368 2.28l-.317.598a6.3 6.3 0 0 0-.453 1.091l-.199.647l-2.578.645v1.126l2.578.645l.2.647q.173.568.452 1.091l.317.599l-1.368 2.28l.797.796l2.28-1.368l.598.317q.523.278 1.091.453l.647.199l.645 2.578h1.126l.645-2.578l.647-.2a6.3 6.3 0 0 0 1.091-.452l.599-.317l2.28 1.368l.796-.797l-1.368-2.28l.317-.598q.278-.523.453-1.091l.199-.647l2.578-.645v-1.126l-2.578-.645l-.2-.647a6.3 6.3 0 0 0-.452-1.091l-.317-.599l1.368-2.28l-.797-.796l-2.28 1.368l-.598-.317a6.3 6.3 0 0 0-1.091-.453l-.647-.199zm2.945 2.17l1.833-1.1a1 1 0 0 1 1.221.15l1.018 1.018a1 1 0 0 1 .15 1.221l-1.1 1.833q.33.62.54 1.3l2.073.519a1 1 0 0 1 .757.97v1.438a1 1 0 0 1-.757.97l-2.073.519q-.21.68-.54 1.3l1.1 1.833a1 1 0 0 1-.15 1.221l-1.018 1.018a1 1 0 0 1-1.221.15l-1.833-1.1q-.62.33-1.3.54l-.519 2.073a1 1 0 0 1-.97.757h-1.438a1 1 0 0 1-.97-.757l-.519-2.073a7.5 7.5 0 0 1-1.3-.54l-1.833 1.1a1 1 0 0 1-1.221-.15L4.42 18.562a1 1 0 0 1-.15-1.221l1.1-1.833a7.5 7.5 0 0 1-.54-1.3l-2.073-.519A1 1 0 0 1 2 12.72v-1.438a1 1 0 0 1 .757-.97l2.073-.519q.21-.68.54-1.3L4.27 6.66a1 1 0 0 1 .15-1.221L5.438 4.42a1 1 0 0 1 1.221-.15l1.833 1.1q.62-.33 1.3-.54l.519-2.073A1 1 0 0 1 11.28 2h1.438a1 1 0 0 1 .97.757l.519 2.073q.68.21 1.3.54zM12 14.8a2.8 2.8 0 1 0 0-5.6a2.8 2.8 0 0 0 0 5.6m0 1.2a4 4 0 1 1 0-8a4 4 0 0 1 0 8" stroke-width="0.5" stroke="#fff"/></svg>
+                Settings
+            </button>
+            
+        </div>
+    </div>
+@* 
+    <div class="main-wrapper d-flex " style="background:black;>
+        <!-- Hecho -->
         <div class="details show">
+            <!-- Hecho -->
             <div class="top">
                 <a class="search-product" href="javascript:void(0);">
                     <img class="sales-logo" src="/vendor/img/logo-04.png" alt="">
@@ -154,8 +756,11 @@
                 </a>
                 <input type="hidden" id="divide-num" value="0" />
             </div>
-            <div class="content order-item-content">
+            <!-- Hecho -->
 
+
+            <!-- Hecho -->
+            <div class="content order-item-content">
                 <div class="order-table" style="height:initial">
                     <div id="order-item-table" class="table">
                         <div class="table-header">
@@ -193,7 +798,7 @@
                         <div class="sub-total"><span>@ViewLocalizer["Delivery"]:</span><span id="order-delivery-cost">$0.00</span></div>
                         <div class="sub-total"><span>@ViewLocalizer["Time"]:</span><span id="order-delivery-time"></span></div>
                     }
-                    <div class="total" id="order-total">00.00</div>
+                    <div class="total" id="order-total" style="color: #425dcf;">00.00</div>
                     <div class="justify-content-between d-flex" style="display:none !important"><span id="payment-status" class="pt-2" style="font-size: large">@Model.PaymentStatus</span><span class="total text-success" id="order-paid-total">@Model.PayAmount</span></div>
                 </div>
                 <div class="bottom-grid">
@@ -204,12 +809,20 @@
                 </div>
             </div>
             <span id="hambugur"> || </span>
+            <!-- Hecho -->
+
         </div>
+        <!-- Hecho -->
+
+
         <div id="group-panel-main" class="inner" style="display:none;">
         </div>
         <div id="subcategory-panel-main" class="inner" style="display:none;">
         </div>
+
         <div class="products w-100">
+            <!-- Hecho -->
+
             <div class="row top">
                 <div id="category-panel-main" class="col kiosk-category-panel" style="width: calc(100% - 230px);"></div>
                 <div class="row" style="width: 230px; padding-top:17px; padding-right:40px;">
@@ -221,7 +834,13 @@
                     </div>
                 </div>
             </div>
+            <!-- Hecho -->
+
+
             <div class="row" style="height:calc(100vh - 120px);">
+                
+                <!-- Hecho -->
+
                 <div class="" style="width: 110px; margin:10px; padding-top:50px;">
                     <input id="kiosk-qty" class="kiosk-qty" value="" type="text">
                     <button class="btn kiosk-qty-keyboard my-1" style="background:#9E1B32;">C</button>
@@ -236,6 +855,8 @@
                     <button class="btn kiosk-qty-keyboard my-1">9</button>
                     <button class="btn kiosk-qty-keyboard my-1">0</button>
                 </div>
+                <!-- Hecho -->
+
                 <div class="col" style="width: calc(100% - 100px); height:100%; position:inherit">
                     <div id="forcedquestioncustommodal" class="custommodal" style="display: none; width: 100%; height:100%; overflow-y: scroll;">
                         <!-- Forced question modal -->
@@ -285,7 +906,7 @@
                         <div class="" id="modifiermodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
                             <div class="" role="document" style="height:100%;">
                                 <div class="modal-content" style="height:100%;">
-                                    @*<div class="modal-header">
+                                    <!--<div class="modal-header">
                                         <h5 class="smartbuton-modal-title">@ViewLocalizer["Modifiers"]</h5>
                                         <div class="">
                                             <button id="modifier-submit" type="button" class="btn btn-success">@ViewLocalizer["Submit"]</button>
@@ -293,7 +914,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-body modifier-body">
-                                    </div>*@
+                                    </div>-->
 
                                     <div class="" style="display:flex">
                                         <div class="w-100">
@@ -329,7 +950,7 @@
             </div>
         </div>
 
-    </div>
+    </div> *@
 
     <!-- Permission Error -->
     <div class="modal fade" id="permissionerrormodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
@@ -606,7 +1227,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                    <button type="button" class="btn btn-modern btn-modern-small waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
                 </div>
             </div>
         </div>
@@ -3559,11 +4180,11 @@
                                             divisorDefault = "data-divisor='1'"
                                         }
                                         //html += `<div class="col-3 answer-item btn button4 ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}"  data-qty='1' ${divisorDefault}  data-smbid=""><span class="before-smb" style="color:lightgray"> </span>${a.product.name}<span class="after-smb" style="color:grey;"></span></div>`;
-                                        html += `<div class='product-item-kiosk' style="width:auto !important;">
-                                                          <div class="product-item-1 answer-item btn button4 ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='${a.qty}' ${divisorDefault} data-smbid=""  style="background-color:black !important; color:#FFFFFF">
+                                        html += `
+                                                          <div class="product-item-1 answer-item btn button4 product-item-kiosk ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='${a.qty}' ${divisorDefault} data-smbid=""  style="background-color:black !important; color:#FFFFFF">
                                                           <h5 class="product-card-title-noimg" style='color:#FFFFFF'><span class="before-smb" style="color:lightgray"> </span> ${a.product.name} <span class="after-smb" style="color:grey;"></span></h5>
                                                      </div>
-                                                </div>`;
+                                                `;
                                     }
 
                                 }
@@ -3577,11 +4198,11 @@
                                         var after = "after";
                                         if (!a.isAfterText) after = "before";
                                         //html += `<div class="col-2 smartbtn-item btn button5" data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" > ${a.button.name} <p style="color: lightgray">${after}</p></div>`;
-                                        html += `<div class='product-item-kiosk' style="width:auto !important;">
-                                                          <div class="product-item-1 btn button5 smartbtn-item " data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
+                                        html += `
+                                                          <div class="product-item-1 btn button5 smartbtn-item product-item-kiosk " data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
                                                           <h5 class="product-card-title-noimg" style='color:#FFFFFF'>${a.button.name} <p style="color: lightgray">${after}</p></h5>
                                                      </div>
-                                                </div>`;
+                                                `;
                                     }
                                 }
                                 html += `</div>`
@@ -3650,20 +4271,20 @@
                                         $(".modifier-body").append(html);
                                         if (a.product.photo) {
                                             html += `
-                                            <div class='product-item-kiosk' style="width:auto !important;">
-                                            <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='${a.qty}' ${divisorDefault} style="background-color:${a.product.backColor}; color:${a.product.textColor}">
+                                            
+                                            <div class="product-item-1 answer-item product-item-kiosk ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='${a.qty}' ${divisorDefault} style="background-color:${a.product.backColor}; color:${a.product.textColor}">
                                                 <img class="card-img-1" src="${a.product.photo}" alt="">
                                             <h5 class="product-title-1"  style='color:#FFFFFF'><span class="before-smb" style="color:lightgray"> </span> ${a.product.name} <span class="after-smb" style="color:grey;"></span></h5>
 
-                                        </div> </div> `
+                                         </div> `
                                         }
                                         else {
                                             html +=
-                                                `<div class='product-item-kiosk' style="width:auto !important;">
-                                                          <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}"  data-qty='${a.qty}' ${divisorDefault}  style="background-color:${a.product.backColor}; color:${a.product.textColor}">
+                                                `
+                                                          <div class="product-item-1 answer-item product-item-kiosk ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}"  data-qty='${a.qty}' ${divisorDefault}  style="background-color:${a.product.backColor}; color:${a.product.textColor}">
                                                           <h5 class="product-card-title-noimg" style='color:#FFFFFF'><span class="before-smb" style="color:lightgray"> </span> ${a.product.name} <span class="after-smb" style="color:grey;"></span></h5>
                                                      </div>
-                                                </div>`
+                                                `
                                         }
                                     }
 
@@ -3679,11 +4300,11 @@
                                         var after = "after";
                                         if (!a.isAfterText) after = "before";
                                         //html += `<div class="col-2 smartbtn-item btn button5" data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" > ${a.button.name} <p style="color: lightgray">${after}</p></div>`;
-                                        html += `<div class='product-item-kiosk' style="width:auto !important;">
-                                                          <div class="product-item-1 btn button5 smartbtn-item " data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
+                                        html += `
+                                                          <div class="product-item-1 btn button5 smartbtn-item product-item-kiosk" data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
                                                           <h5 class="product-card-title-noimg" style='color:#FFFFFF'>${a.button.name} <p style="color: lightgray">${after}</p></h5>
                                                      </div>
-                                                </div>`;
+                                                `;
                                     }
                                 }
 
@@ -4998,20 +5619,20 @@
                                             var divisorDefault = "";
 
                                             html += `
-                                                   <div class='product-item-kiosk' style="width:auto !important;">
-                                                    <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='1' ${divisorDefault}  style="background-color:${a.product.backColor}; color:${a.product.textColor}">
+                                                   
+                                                    <div class="product-item-1 answer-item product-item-kiosk ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='1' ${divisorDefault}  style="background-color:${a.product.backColor}; color:${a.product.textColor}">
                                                     <img class="card-img-1" src="${a.product.photo}" alt="">
                                                 <h5 class="product-title-1"  style='color:#FFFFFF'><span class="before-smb" style="color:lightgray"> </span> ${a.product.name} <span class="after-smb" style="color:grey;"></span></h5>
 
-                                            </div> </div>  `
+                                             </div>  `
                                         }
                                         else {
                                             html +=
-                                                `<div class='product-item-kiosk' style="width:auto !important;">
-                                                                  <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-qty='1' data-hasdivisor="${a.hasDivisor}" ${divisorDefault} style="background-color:${a.product.backColor}; color:${a.product.textColor}">
+                                                `
+                                                                  <div class="product-item-1 answer-item product-item-kiosk ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-qty='1' data-hasdivisor="${a.hasDivisor}" ${divisorDefault} style="background-color:${a.product.backColor}; color:${a.product.textColor}">
                                                               <h5 class="product-card-title-noimg" style='color:#FFFFFF'><span class="before-smb" style="color:lightgray"> </span> ${a.product.name} <span class="after-smb" style="color:grey;"></span></h5>
                                                          </div>
-                                                    </div>`
+                                                    `
                                         }
                                     }
 
@@ -5027,11 +5648,11 @@
                                         var after = "after";
                                         if (!a.isAfterText) after = "before";
                                         //html += `<div class="col-2 smartbtn-item btn button5" data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" > ${a.button.name} <p style="color: lightgray">${after}</p></div>`;
-                                        html += `<div class='product-item-kiosk' style="width:auto !important;">
-                                                          <div class="product-item-1 btn button5 smartbtn-item " data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
+                                        html += `
+                                                          <div class="product-item-1 btn button5 smartbtn-item product-item-kiosk" data-name="${a.button.name}" data-smartbtnid="${a.button.id}" data-after="${after}" style="background-color:#637381; color:#FFFFFF; height: initial;" > 
                                                           <h5 class="product-card-title-noimg" style='color:#FFFFFF'>${a.button.name} <p style="color: lightgray">${after}</p></h5>
                                                      </div>
-                                                </div>`;
+                                                `;
                                     }
                                 }
 
@@ -5193,8 +5814,8 @@
 
                     if (d.product.photo) {
                         var html =
-                            `<div class='product-item-kiosk'>
-                                            <div class="product-item-1 card product-item-original product" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="">
+                            `
+                                            <div class="product-item-1 card product-item-original product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="">
                                                 <img class="card-img-1" src="${d.product.photo}" alt="">
                                                 <div class="card-img-overlay">
                                                     <div class="product-title">${d.product.name}</div>
@@ -5202,18 +5823,18 @@
 
                                                 ${inventory_html}
                                             </div>
-                                            </div>
+                                            
                                             `
                         $("#static-product-panel-main").append(html);
                     }
                     else {
                         var html =
-                            `<div class='product-item-kiosk'>
-                                                <div class="product-item-1 product-item-original  product white-border" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="">
+                            `
+                                                <div class="product-item-1 product-item-original product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="">
                                                              <h5 class="product-card-title-noimg" style='color:#FFFFFF'>${d.product.name}</h5>
                                                      ${inventory_html}
                                             </div>
-                                            </div>
+                                            
                                             `
                         $("#static-product-panel-main").append(html);
                     }
@@ -5243,27 +5864,27 @@
                     if (d.product.photo) {
                         var html =
                             `
-                                    <div class="product-item-kiosk"">
-                                        <div class="product-item-1  product-item-original  product card" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                    
+                                        <div class="product-item-1  product-item-original  product card product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
                                                 <img class="card-img-1" src="${d.product.photo}" alt="">
                                                <div class="card-img-overlay">
                                                     <div class="product-title">${d.product.name}</div>
                                             </div>
                                             ${inventory_html}
                                         </div>
-                                        </div>
+                                        
                                         `
                         $("#product-panel-main").append(html);
                     }
                     else {
                         var html =
                             `
-                                         <div class="product-item-kiosk"">
-                                            <div class="product-item-1 product-item-original  product white-border" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}'  style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                         
+                                            <div class="product-item-1 product-item-original  product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}'  style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
                                                              <h5 class="product-card-title-noimg"   >${d.product.name}</h5>
                                                  ${inventory_html}
                                         </div>
-                                        </div>
+                                        
                                         `
                         $("#product-panel-main").append(html);
                     }
@@ -5278,7 +5899,7 @@
     function AdjustHeight() {
         var top = $(".order-table").position();
         var bottom = $(".order-summary").position();
-        $("#order-item-table").css("height", '' + (bottom.top - top.top - 90) + 'px');
+        //$("#order-item-table").css("height", '' + (bottom.top - top.top - 90) + 'px');
     }
 
     drag("#order-item-list");
@@ -5335,7 +5956,7 @@
                     for (var i = 0; i < data.items.length; i++) {
                         var d = data.items[i];
                         if (d.course != course) {
-                            html += `<div class="course-item" style='background-color:#555'><span class="">${d.course} </span><span class=""></span></div>`;
+                            html += `<div class="course-item" style='background-color:#425dcf;'><span class="">${d.course} </span><span class=""></span></div>`;
                             course = d.course;
                         }
                         html += GetItemHtml(d);
@@ -5349,7 +5970,7 @@
                     for (var i = 0; i < data.items.length; i++) {
                         var d = data.items[i];
                         if (d.course != course) {
-                            html += `<div class="course-item" style='background-color:#555'><span class="">${d.course} </span><span class=""></span></div>`;
+                            html += `<div class="course-item" style='background-color:#425dcf;'><span class="">${d.course} </span><span class=""></span></div>`;
                             course = d.course;
                         }
                         html += GetItemHtml(d);
@@ -5517,7 +6138,7 @@
                                 <div class="order-item tr" data-id="${d.id}" data-status="${d.status}"  data-promotion="${d.hasPromotion}">
                                     <div class="td text-start">${d.name}${servingSize}</div>
                                     <div class="td"><span class="fa ${status}"></span></div>
-                                    <div class="td">${d.qty.toFixed(2)}</div>
+                                    <div class="td">${d.qty}</div>
                                     <div class="td">${d.price.toFixed(2)}</div>
                                     <div class="td">${subtotal.toFixed(2)}</div>
 

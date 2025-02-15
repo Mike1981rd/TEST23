@@ -633,7 +633,7 @@ public class POSCore
 
         if (order != null)
         {
-            return order;   
+            return order;
         }
 
         return null;
@@ -1509,7 +1509,7 @@ public class POSCore
 
                 _printService.PrintPaymentSummary(stationId, model.OrderId, db, 0, 0, false);
 
-                return false;    
+                return false;
             }
             else if (order.Status == OrderStatus.Pending && order.PaymentStatus == PaymentStatus.Paid && order.Balance == 0)
             {
@@ -2619,7 +2619,7 @@ public class POSCore
         return true;
     }
 
-    public bool SendOrder(long orderId, int stationId, string db,DateTime? saveDate = null)
+    public bool SendOrder(long orderId, int stationId, string db, DateTime? saveDate = null)
     {
         var objSettingCore = new SettingsCore(_userService, _dbContext, _context);
 
@@ -2700,7 +2700,7 @@ public class POSCore
 
                 if (objStation.ImprimirPrecuentaDelivery)
                 {
-                    PrintOrderFunc(order.ID,stationId,db);
+                    PrintOrderFunc(order.ID, stationId, db);
                 }
             }
         }
@@ -2758,11 +2758,11 @@ public class POSCore
         _dbContext.SaveChanges();
     }
 
-    public bool PrintOrder(long OrderId, int stationId , string db, int DivideNum = 0)
+    public bool PrintOrder(long OrderId, int stationId, string db, int DivideNum = 0)
     {
         try
         {
-            PrintOrderFunc(OrderId, stationId ,db, DivideNum);
+            PrintOrderFunc(OrderId, stationId, db, DivideNum);
 
         }
         catch
@@ -3042,63 +3042,63 @@ public class POSCore
         _dbContext.SaveChanges();
         return 0;
     }
-    
+
     public Order Kiosk(Station station, string userName, int orderId = 0)
     {
-            Order order = null;
-            if (orderId > 0)
-            {
-                order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
-                
-                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
-                order.PrepareType = prepareType; //Kiosk
-                //HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
-            }
-            else
-            {
-                order = new Order();
+        Order order = null;
+        if (orderId > 0)
+        {
+            order = _dbContext.Orders.FirstOrDefault(s => s.ID == orderId);
 
+            var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+            order.PrepareType = prepareType; //Kiosk
+                                             //HttpContext.Session.SetInt32("CurrentOrderID", (int)orderId);
+        }
+        else
+        {
+            order = new Order();
+
+            {
+                var user = userName;
+                order.Station = station;
+                order.WaiterName = user;
+                order.OrderMode = OrderMode.Standard;
+                order.OrderType = OrderType.Delivery;
+                order.Status = OrderStatus.Temp;
+
+                if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
                 {
-                    var user = userName;
-                    order.Station = station;
-                    order.WaiterName = user;
-                    order.OrderMode = OrderMode.Standard;
-                    order.OrderType = OrderType.Delivery;
-                    order.Status = OrderStatus.Temp;
-
-                    if (station.PrepareTypeDefault.HasValue && station.PrepareTypeDefault > 0)
-                    {
-                        order.PrepareTypeID = station.PrepareTypeDefault.Value; 
-                    }
-                    else
-                    {
-                        order.PrepareTypeID = 4; //Kiosk
-                    }
-
-                    var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
-                    order.PrepareType = prepareType;
-
-                    var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
-                    order.ComprobantesID = voucher.ID;
-
-                    _dbContext.Orders.Add(order);
-
-                    var delivery = new Delivery();
-                    delivery.Order = order;
-                    delivery.Status = StatusEnum.Nuevo;
-                    delivery.StatusUpdated = DateTime.Now;
-                    delivery.DeliveryTime = DateTime.Now;
-
-                    _dbContext.Deliverys.Add(delivery);
-
-                    _dbContext.SaveChanges();
-
-                    //HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
+                    order.PrepareTypeID = station.PrepareTypeDefault.Value;
+                }
+                else
+                {
+                    order.PrepareTypeID = 4; //Kiosk
                 }
 
+                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                order.PrepareType = prepareType;
+
+                var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsPrimary);
+                order.ComprobantesID = voucher.ID;
+
+                _dbContext.Orders.Add(order);
+
+                var delivery = new Delivery();
+                delivery.Order = order;
+                delivery.Status = StatusEnum.Nuevo;
+                delivery.StatusUpdated = DateTime.Now;
+                delivery.DeliveryTime = DateTime.Now;
+
+                _dbContext.Deliverys.Add(delivery);
+
+                _dbContext.SaveChanges();
+
+                //HttpContext.Session.SetInt32("CurrentOrderID", (int)order.ID);
             }
 
-            return order;
+        }
+
+        return order;
     }
 
     public int UpdateCustomerName(long orderID, string clientName)
@@ -3324,19 +3324,6 @@ public class POSCore
             voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == customer.Voucher.ID);
         }
 
-        order1.GetTotalPrice(voucher);
-        _dbContext.SaveChanges();
-
-        UpdateOrderInfoModel response = new UpdateOrderInfoModel();
-
-        response.ComprobanteName = voucher.Name;
-        response.deliverycost = deliverycost;
-        response.deliverytime = deliverytime;
-        response.customerName = customer?.Name;
-        response.status = 0;
-
-        return response;
-    }
         order1.GetTotalPrice(voucher);
         _dbContext.SaveChanges();
 
