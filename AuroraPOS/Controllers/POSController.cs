@@ -50,6 +50,7 @@ using NPOI.HPSF;
 using NPOI.SS.Formula.PTG;
 using AuroraPOS.ModelsJWT;
 using PuppeteerSharp;
+using static AuroraPOS.Core.POSCore;
 
 namespace AuroraPOS.Controllers
 {
@@ -3531,6 +3532,7 @@ namespace AuroraPOS.Controllers
             return Json("");
 		}
 
+        //Pendiente - Se movió a POSCore, quitar y cambiar todas las funciones que depende de ella
         private void VoidItem(CancelItemModel model)
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
@@ -3595,64 +3597,68 @@ namespace AuroraPOS.Controllers
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var stationID = int.Parse(GetCookieValue("StationID"));
 
-            var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
-            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+            int status = objPOSCore.VoidOrderItem(model, stationID);
 
-            if (orderItem == null)
-                return Json(new { status = 1 });
+            return Json(new { status = status });
 
-            var orderId = orderItem.Order.ID;
-            var order = GetOrder(orderItem.Order.ID);
+            //var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
+            //orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+
+            //if (orderItem == null)
+            //    return Json(new { status = 1 });
+
+            //var orderId = orderItem.Order.ID;
+            //var order = GetOrder(orderItem.Order.ID);
            
-            var sameItems = new List<OrderItem>();
-            if (orderItem.Order.OrderMode == OrderMode.Seat)
-            {
-                sameItems = order.Items.Where(s=>s.Product == orderItem.Product && s.SeatNum == orderItem.SeatNum && !s.IsDeleted).ToList();
-            }
-            else
-            {
-                sameItems = order.Items.Where(s => s.Product == orderItem.Product && !s.IsDeleted).ToList();
-            }
-            bool HasPromotion = false;
-            foreach(var item in sameItems)
-            {
-                var promotion = item.Discounts.Where(s => s.ItemType == DiscountItemType.Promotion).ToList();
-                if (promotion.Any())
-                {
-                    HasPromotion = true;
-                    break;
-                }
-            }
-
-            //if (HasPromotion)
+            //var sameItems = new List<OrderItem>();
+            //if (orderItem.Order.OrderMode == OrderMode.Seat)
             //{
-            //    foreach(var item in sameItems)
-            //    {
-            //        VoidItem(new CancelItemModel()
-            //        {
-            //            ItemId = item.ID,
-            //            ReasonId = model.ReasonId
-            //        }); 
-            //    }                
+            //    sameItems = order.Items.Where(s=>s.Product == orderItem.Product && s.SeatNum == orderItem.SeatNum && !s.IsDeleted).ToList();
             //}
             //else
-            {
-                VoidItem(model);
-            }
+            //{
+            //    sameItems = order.Items.Where(s => s.Product == orderItem.Product && !s.IsDeleted).ToList();
+            //}
+            //bool HasPromotion = false;
+            //foreach(var item in sameItems)
+            //{
+            //    var promotion = item.Discounts.Where(s => s.ItemType == DiscountItemType.Promotion).ToList();
+            //    if (promotion.Any())
+            //    {
+            //        HasPromotion = true;
+            //        break;
+            //    }
+            //}
 
-            order = GetOrder(orderId);
+            ////if (HasPromotion)
+            ////{
+            ////    foreach(var item in sameItems)
+            ////    {
+            ////        VoidItem(new CancelItemModel()
+            ////        {
+            ////            ItemId = item.ID,
+            ////            ReasonId = model.ReasonId
+            ////        }); 
+            ////    }                
+            ////}
+            ////else
+            //{
+            //    VoidItem(model);
+            //}
+
+            //order = GetOrder(orderId);
             
-            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            //var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
 
-            order.GetTotalPrice(voucher);
-            if (order.TotalPrice == 0 && order.OrderMode == OrderMode.Divide)
-            {
-                order.OrderMode = OrderMode.Standard;
-            }
-            _dbContext.SaveChanges();
+            //order.GetTotalPrice(voucher);
+            //if (order.TotalPrice == 0 && order.OrderMode == OrderMode.Divide)
+            //{
+            //    order.OrderMode = OrderMode.Standard;
+            //}
+            //_dbContext.SaveChanges();
 
 
-            return Json(new {status = 0});
+            //return Json(new {status = 0});
         }
 
         [HttpPost]
@@ -3707,42 +3713,46 @@ namespace AuroraPOS.Controllers
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
             var stationID = int.Parse(GetCookieValue("StationID"));
 
-            var orderItem = _dbContext.OrderItems.Include(s => s.Questions).Include(s=>s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s=>s.Order).ThenInclude(s=>s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
-            var orderId = orderItem.Order.ID;
-            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
-            if (orderItem.Status == OrderItemStatus.Pending || orderItem.Status == OrderItemStatus.Printed)
-            {
-				orderItem.Qty = model.Qty;
-                orderItem.SubTotal = orderItem.Price * model.Qty;
-            }
-           
-            var ret = ApplyPromotion(orderItem, model.Qty, true);
-			if (ret)
-			{
-                var order = orderItem.Order;
-				var orderDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
-				foreach (var d in orderDiscounts)
-				{
-					order.Discounts.Remove(d);
-				}
+            int status = objPOSCore.ChangeQtyItem(model, stationID);
 
-				foreach (var item in order.Items)
-				{
-					var itemDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
-					foreach (var i in itemDiscounts)
-					{
-						item.Discounts.Remove(i);
-					}
-				}
-			}
-			_dbContext.SaveChanges();
+            return Json(new { status = status });
 
-            var xorder = GetOrder(orderId);
+            //         var orderItem = _dbContext.OrderItems.Include(s => s.Questions).Include(s=>s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s=>s.Order).ThenInclude(s=>s.Items).Include(s=>s.Order).ThenInclude(s=>s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
+            //         var orderId = orderItem.Order.ID;
+            //         orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+            //         if (orderItem.Status == OrderItemStatus.Pending || orderItem.Status == OrderItemStatus.Printed)
+            //         {
+            //	orderItem.Qty = model.Qty;
+            //             orderItem.SubTotal = orderItem.Price * model.Qty;
+            //         }
 
-            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
-            xorder.GetTotalPrice(voucher);
-            _dbContext.SaveChanges();
-            return Json(new { status = 0 });
+            //         var ret = ApplyPromotion(orderItem, model.Qty, true);
+            //if (ret)
+            //{
+            //             var order = orderItem.Order;
+            //	var orderDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
+            //	foreach (var d in orderDiscounts)
+            //	{
+            //		order.Discounts.Remove(d);
+            //	}
+
+            //	foreach (var item in order.Items)
+            //	{
+            //		var itemDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
+            //		foreach (var i in itemDiscounts)
+            //		{
+            //			item.Discounts.Remove(i);
+            //		}
+            //	}
+            //}
+            //_dbContext.SaveChanges();
+
+            //         var xorder = GetOrder(orderId);
+
+            //         var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
+            //         xorder.GetTotalPrice(voucher);
+            //         _dbContext.SaveChanges();
+            //         return Json(new { status = 0 });
         }
 
         [HttpPost]
@@ -8782,13 +8792,13 @@ namespace AuroraPOS.Controllers
 		public long ItemId { get; set; }
 	}
 
-    public class CancelItemModel
-	{
-		public long ItemId { get; set; }
-		public long ReasonId { get; set; }
-        public string Pin { get; set; }
-        public bool Consolidate { get; set; }
-    }
+ //   public class CancelItemModel <-- POSCORE
+	//{
+	//	public long ItemId { get; set; }
+	//	public long ReasonId { get; set; }
+ //       public string Pin { get; set; }
+ //       public bool Consolidate { get; set; }
+ //   }
 
     public class VoidOrderModel
     {
@@ -8817,11 +8827,11 @@ namespace AuroraPOS.Controllers
         public string Terms { get; set; }
     }
 
-    public class QtyChangeModel
-    {
-        public long ItemId { get; set; }
-        public int Qty { get; set; }
-    }
+    //public class QtyChangeModel <- en POSCore
+    //{
+    //    public long ItemId { get; set; }
+    //    public int Qty { get; set; }
+    //}
 
     public class HoldItemModel
 	{

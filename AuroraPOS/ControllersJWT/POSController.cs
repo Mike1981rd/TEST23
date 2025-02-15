@@ -19,6 +19,7 @@ using AuroraPOS.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using iText.Layout.Borders;
+using static AuroraPOS.Core.POSCore;
 
 
 namespace AuroraPOS.ControllersJWT;
@@ -1332,7 +1333,7 @@ public class POSController : Controller
                 data = data.Take(pageSize).ToList();
             }
 
-            //Mapear elementos para su env�o utilizando la clase CustomerData, creada a partir de la informaci�n que se extrae en la query de CustomerData
+            //Mapear elementos para su envÃ­o utilizando la clase CustomerData, creada a partir de la informaciÃ³n que se extrae en la query de CustomerData
             List<CustomerData> cData = new List<CustomerData>();
             foreach(var cd in data)
             {
@@ -1476,7 +1477,7 @@ public class POSController : Controller
             response.status = status;
             
             if (status == 1) 
-                response.Message = "Se intentó mover a la misma mesa";
+                response.Message = "Se intentÃ³ mover a la misma mesa";
             else 
                 response.Message = "Mesa movida correctamente";
 
@@ -1486,7 +1487,7 @@ public class POSController : Controller
         {
             response.Success = false;
             response.status = -1;
-            response.Message = "Ocurri� un error al realizar la operaci�n: " + e.Message;
+            response.Message = "OcurriÃ³ un error al realizar la operaciÃ³n: " + e.Message;
 
             return Json(response);
         }
@@ -1507,14 +1508,14 @@ public class POSController : Controller
             int status = objPOSCore.GiveOrder(request.orderId, request.userId, request.stationId, user);
             response.Success = true;
             response.status = status;
-            response.Message = "La solicitud se realiz� exitosamente.";
+            response.Message = "La solicitud se realizÃ³ exitosamente.";
             
             return Json(response);
         }
         catch (Exception e)
         {
             response.Success = false;
-            response.Message = "Ocurri� un error en la solicitud: " + e.Message;
+            response.Message = "OcurriÃ³ un error en la solicitud: " + e.Message;
 
             return Json(response);
         }
@@ -1533,7 +1534,7 @@ public class POSController : Controller
 
             response.Success = true;
             response.status = status;
-            response.Message = "La consulta se realiz� correctamente";
+            response.Message = "La consulta se realizÃ³ correctamente";
         }
         catch (Exception e)
         {
@@ -1920,6 +1921,81 @@ public class POSController : Controller
             response.status = -1;
 
             return response;
+        }
+    }
+
+    [HttpPost("ChangeQtyItem")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult ChangeQtyItem([FromBody] long ItemId, [FromBody] int Qty, [FromBody] int stationId)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        var stationID = stationId;
+
+        ChangeQtyItemResponse response = new ChangeQtyItemResponse();
+
+        QtyChangeModel model = new QtyChangeModel
+        {
+            ItemId = ItemId,
+            Qty = Qty
+        };
+
+        try
+        {
+            response.status = objPOSCore.ChangeQtyItem(model, stationID);
+            response.Success = true;
+            response.Message = "La cantidad del producto fue actualizada correctamente";
+
+            return Json(response);
+
+        } catch (Exception e)
+        {
+            response.status = -1;
+            response.Success = false;
+            response.Message = "Ocurrió un error al actualizar la cantidad del producto: " + e.Message;
+
+            return Json(response);
+        }
+    }
+
+    [HttpPost("VoidOrderItem")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult VoidOrderItem([FromBody] long ItemId, [FromBody] long ReasonId, [FromBody] string Pin, [FromBody] bool Consolidate, [FromBody] int stationId)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        var stationID = stationId;
+
+        CancelItemModel model = new CancelItemModel
+        {
+            ItemId = ItemId,
+            ReasonId = ReasonId,
+            Pin = Pin,
+            Consolidate = Consolidate
+        };
+
+        VoidOrderItemResponse response = new VoidOrderItemResponse();
+
+        try
+        {
+            int status = objPOSCore.VoidOrderItem(model, stationID);
+            
+            if(status == 0)
+                response.Message = "La operación se realizó correctamente";
+            
+            else
+                response.Message = "La orden no fue encontrada";
+
+            response.Success = true;
+            response.status = status;
+
+            return Json(response);
+
+        } catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error con la operación: " + e.Message;
+
+            return Json(response);
         }
     }
 }

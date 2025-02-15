@@ -3337,4 +3337,243 @@ public class POSCore
 
         return response;
     }
+        order1.GetTotalPrice(voucher);
+        _dbContext.SaveChanges();
+
+        UpdateOrderInfoModel response = new UpdateOrderInfoModel();
+
+        response.ComprobanteName = voucher.Name;
+        response.deliverycost = deliverycost;
+        response.deliverytime = deliverytime;
+        response.customerName = customer?.Name;
+        response.status = 0;
+
+        return response;
+    }
+
+    public int ChangeQtyItem(QtyChangeModel model, int stationID)
+    {
+
+        var orderItem = _dbContext.OrderItems.Include(s => s.Questions).Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Order).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
+        var orderId = orderItem.Order.ID;
+        orderItem.ForceDate = getCurrentWorkDate(stationID);
+        if (orderItem.Status == OrderItemStatus.Pending || orderItem.Status == OrderItemStatus.Printed)
+        {
+            orderItem.Qty = model.Qty;
+            orderItem.SubTotal = orderItem.Price * model.Qty;
+        }
+
+        var ret = ApplyPromotion(orderItem, model.Qty, true);
+        if (ret)
+        {
+            var order = orderItem.Order;
+            var orderDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
+            foreach (var d in orderDiscounts)
+            {
+                order.Discounts.Remove(d);
+            }
+
+            foreach (var item in order.Items)
+            {
+                var itemDiscounts = order.Discounts.Where(s => s.ItemType == DiscountItemType.Discount);
+                foreach (var i in itemDiscounts)
+                {
+                    item.Discounts.Remove(i);
+                }
+            }
+        }
+        _dbContext.SaveChanges();
+
+        var xorder = GetOrder(orderId);
+
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
+        xorder.GetTotalPrice(voucher);
+        _dbContext.SaveChanges();
+        return 0;
+    }
+
+    public int VoidOrderItem(CancelItemModel model, int StationID)
+    {
+        var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
+        orderItem.ForceDate = getCurrentWorkDate(StationID);
+
+        if (orderItem == null)
+            return 1;
+
+        var orderId = orderItem.Order.ID;
+        var order = GetOrder(orderItem.Order.ID);
+
+        var sameItems = new List<OrderItem>();
+        if (orderItem.Order.OrderMode == OrderMode.Seat)
+        {
+            sameItems = order.Items.Where(s => s.Product == orderItem.Product && s.SeatNum == orderItem.SeatNum && !s.IsDeleted).ToList();
+        }
+        else
+        {
+            sameItems = order.Items.Where(s => s.Product == orderItem.Product && !s.IsDeleted).ToList();
+        }
+        bool HasPromotion = false;
+        foreach (var item in sameItems)
+        {
+            var promotion = item.Discounts.Where(s => s.ItemType == DiscountItemType.Promotion).ToList();
+            if (promotion.Any())
+            {
+                HasPromotion = true;
+                break;
+            }
+        }
+
+        //if (HasPromotion)
+        //{
+        //    foreach(var item in sameItems)
+        //    {
+        //        VoidItem(new CancelItemModel()
+        //        {
+        //            ItemId = item.ID,
+        //            ReasonId = model.ReasonId
+        //        }); 
+        //    }                
+        //}
+        //else
+        {
+            VoidItem(model, StationID);
+        }
+
+        order = GetOrder(orderId);
+
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+
+        order.GetTotalPrice(voucher);
+        if (order.TotalPrice == 0 && order.OrderMode == OrderMode.Divide)
+        {
+            order.OrderMode = OrderMode.Standard;
+        }
+        _dbContext.SaveChanges();
+
+
+        return 0;
+    }
+
+    private void VoidItem(CancelItemModel model, int stationId)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        var stationID = stationId;
+
+        var orderItem = _dbContext.OrderItems.Include(s => s.Product).Include(s => s.Questions).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Order).Include(s => s.Order).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Seats).ThenInclude(s => s.Items).Include(s => s.Order).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == model.ItemId);
+        orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+
+        if (orderItem.Status == OrderItemStatus.Kitchen || orderItem.Status == OrderItemStatus.Printed)
+        {
+            var cancelReason = _dbContext.CancelReasons.FirstOrDefault(s => s.ID == model.ReasonId);
+            var cancelItem = new CanceledOrderItem()
+            {
+                ForceDate = objPOSCore.getCurrentWorkDate(stationID),
+                Item = orderItem,
+                Reason = cancelReason,
+                Product = orderItem.Product
+            };
+
+            if (cancelReason != null && !cancelReason.IsReduceInventory)
+            {
+                if (orderItem.Product.InventoryCountDownActive)
+                {
+                    orderItem.Product.InventoryCount += orderItem.Qty;
+
+                }
+                VoidAddProduct(orderItem.ID, orderItem.Product.ID, -orderItem.Qty, orderItem.ServingSizeID, stationID);
+                foreach (var q in orderItem.Questions)
+                {
+                    if (!q.IsActive) continue;
+                    var qitem = _dbContext.QuestionItems.Include(s => s.Answer).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == q.ID);
+                    VoidAddProduct(orderItem.ID, qitem.Answer.Product.ID, -orderItem.Qty * qitem.Qty, qitem.ServingSizeID, stationID);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(model.Pin))
+            {
+                var user = _dbContext.User.First(s => s.Pin == model.Pin);
+                cancelItem.ForceUpdatedBy = user.FullName;
+            }
+
+            _dbContext.CanceledItems.Add(cancelItem);
+            _dbContext.SaveChanges();
+        }
+
+        if (orderItem.Order.OrderMode == OrderMode.Seat)
+        {
+            var seat = orderItem.Order.Seats.FirstOrDefault(s => s.SeatNum == orderItem.SeatNum);
+            if (seat != null && seat.Items != null)
+                seat.Items.Remove(orderItem);
+        }
+
+        orderItem.IsDeleted = true;
+
+        _dbContext.SaveChanges();
+
+    }
+
+    private void VoidAddProduct(long itemId, long prodId, decimal qty, int servingSizeID, int stationId)
+    {
+        //var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+
+        var stationID = stationId; // HttpContext.Session.GetInt32("StationID");
+        var station = _dbContext.Stations.FirstOrDefault(s => s.ID == stationID);
+        var warehouses = _dbContext.Warehouses.ToList();
+        var stationWarehouse = _dbContext.StationWarehouses.Where(s => s.StationID == station.ID).ToList();
+
+        var product = _dbContext.Products.Include(s => s.RecipeItems.Where(s => s.ServingSizeID == servingSizeID)).FirstOrDefault(s => s.ID == prodId);
+        if (product == null) return;
+        try
+        {
+            foreach (var item in product.RecipeItems)
+            {
+                if (item.Type == ItemType.Article)
+                {
+                    var article = _dbContext.Articles.Include(s => s.Category).ThenInclude(s => s.Group).Include(s => s.Items).FirstOrDefault(s => s.ID == item.ItemID);
+                    var sw = stationWarehouse.FirstOrDefault(s => s.GroupID == article.Category.Group.ID);
+                    if (sw != null)
+                    {
+                        var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
+                        if (warehouse != null)
+                        {
+                            UpdateStockOfArticle(article, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId, stationID);
+                        }
+                    }
+                }
+                else if (item.Type == ItemType.Product)
+                {
+                    VoidAddProduct(itemId, item.ItemID, item.Qty, item.UnitNum, stationID);
+                }
+                else
+                {
+                    var subrecipe = _dbContext.SubRecipes.Include(s => s.Category).ThenInclude(s => s.Group).Include(s => s.Items).Include(s => s.ItemUnits).FirstOrDefault(s => s.ID == item.ItemID);
+                    var sw = stationWarehouse.FirstOrDefault(s => s.GroupID == subrecipe.Category.Group.ID);
+                    if (sw != null)
+                    {
+                        var warehouse = warehouses.FirstOrDefault(s => s.ID == sw.WarehouseID);
+                        if (warehouse != null)
+                        {
+                            UpdateStockOfSubRecipe(subrecipe, -item.Qty * qty, item.UnitNum, warehouse, StockChangeReason.Void, itemId, stationID);
+                        }
+                    }
+
+                }
+            }
+        }
+        catch { }
+    }
+
+    public class QtyChangeModel
+    {
+        public long ItemId { get; set; }
+        public int Qty { get; set; }
+    }
+
+    public class CancelItemModel
+    {
+        public long ItemId { get; set; }
+        public long ReasonId { get; set; }
+        public string Pin { get; set; }
+        public bool Consolidate { get; set; }
+    }
 }
