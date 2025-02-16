@@ -1926,17 +1926,17 @@ public class POSController : Controller
 
     [HttpPost("ChangeQtyItem")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult ChangeQtyItem([FromBody] long ItemId, [FromBody] int Qty, [FromBody] int stationId)
+    public JsonResult ChangeQtyItem([FromBody] ChangeQtyItemRequest rq)
     {
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-        var stationID = stationId;
+        var stationID = rq.stationId;
 
         ChangeQtyItemResponse response = new ChangeQtyItemResponse();
 
         QtyChangeModel model = new QtyChangeModel
         {
-            ItemId = ItemId,
-            Qty = Qty
+            ItemId = rq.ItemId,
+            Qty = rq.Qty
         };
 
         try
