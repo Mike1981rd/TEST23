@@ -1959,17 +1959,17 @@ public class POSController : Controller
 
     [HttpPost("VoidOrderItem")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult VoidOrderItem([FromBody] long ItemId, [FromBody] long ReasonId, [FromBody] string Pin, [FromBody] bool Consolidate, [FromBody] int stationId)
+    public JsonResult VoidOrderItem([FromBody] VoidOrderItemRequest rq)
     {
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-        var stationID = stationId;
+        var stationID = rq.stationId;
 
         CancelItemModel model = new CancelItemModel
         {
-            ItemId = ItemId,
-            ReasonId = ReasonId,
-            Pin = Pin,
-            Consolidate = Consolidate
+            ItemId = rq.ItemId,
+            ReasonId = rq.ReasonId,
+            Pin = rq.Pin,
+            Consolidate = rq.Consolidate
         };
 
         VoidOrderItemResponse response = new VoidOrderItemResponse();
