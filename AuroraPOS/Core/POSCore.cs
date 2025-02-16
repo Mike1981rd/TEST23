@@ -3550,6 +3550,90 @@ public class POSCore
         catch { }
     }
 
+    public Tuple<int, string> UpdateOrderInfoPayment(OrderInfoPaymentModel model)
+    {
+        var order = _dbContext.Orders.Include(s => s.Divides).FirstOrDefault(s => s.ID == model.OrderId);
+        var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == model.VoucherId);
+
+        int status = 0;
+
+        if (order.ComprobantesID != null && order.ComprobantesID > 0)
+        {
+            //var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == order.ComprobantesID);
+
+            if (voucher.IsRequireRNC)
+            {
+
+                if (order.CustomerId == null || order.CustomerId <= 0)
+                {
+                    status = 3;
+                }
+                else
+                {
+                    var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+
+                    if (string.IsNullOrEmpty(customer.RNC))
+                    {
+                        status = 3;
+                    }
+                }
+
+
+
+            }
+        }
+
+
+        if (model.DivideId > 0)
+        {
+            var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DivideId);
+            if (divide != null)
+            {
+                divide.ComprebanteId = model.VoucherId;
+                _dbContext.SaveChanges();
+
+                return new Tuple<int, string>(status, voucher.Name);
+            }
+        }
+        else
+        {
+            if (order.ComprobantesID != voucher.ID)
+            {
+                order.ComprobantesID = voucher.ID;
+                order.ComprobanteName = voucher.Name;
+                if (order.Status == OrderStatus.Paid)
+                {
+                    //    Debug.WriteLine("caso3");
+                    var length = 11 - voucher.Class.Length;
+
+                    var voucherNumber = voucher.Class + (voucher.Secuencia + 1).ToString().PadLeft(length, '0');
+                    voucher.Secuencia = voucher.Secuencia + 1;
+                    //if (string.IsNullOrEmpty(order.ComprobanteNumber))
+                    order.ComprobanteNumber = voucherNumber;
+                    var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == order.ID);
+                    foreach (var c in comprobantes)
+                    {
+                        c.IsActive = false;
+                    }
+
+                    _dbContext.OrderComprobantes.Add(new OrderComprobante()
+                    {
+                        OrderId = order.ID,
+                        VoucherId = voucher.ID,
+                        ComprobanteName = voucher.Name,
+                        ComprobanteNumber = voucherNumber
+                    });
+                    _dbContext.SaveChanges();
+
+                }
+
+                _dbContext.SaveChanges();
+            }
+        }
+
+        return new Tuple<int, string>(status, voucher.Name);
+    }
+
     public class QtyChangeModel
     {
         public long ItemId { get; set; }
@@ -3562,5 +3646,12 @@ public class POSCore
         public long ReasonId { get; set; }
         public string Pin { get; set; }
         public bool Consolidate { get; set; }
+    }
+
+    public class OrderInfoPaymentModel
+    {
+        public long OrderId { get; set; }
+        public int VoucherId { get; set; }
+        public int DivideId { get; set; }
     }
 }

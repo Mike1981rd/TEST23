@@ -1998,4 +1998,32 @@ public class POSController : Controller
             return Json(response);
         }
     }
+
+    [HttpPost("UpdateOrderInfoPayment")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult UpdateOrderInfoPayment([FromBody] OrderInfoPaymentModel model)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        UpdateOrderInfoPaymentResponse response = new UpdateOrderInfoPaymentResponse();
+        try
+        {
+            var res = objPOSCore.UpdateOrderInfoPayment(model);
+
+            response.Success = true;
+            response.status = res.Item1;
+            response.ComprobanteName = res.Item2;
+            response.Message = "La operación se realizó correctamente";
+
+            return Json(response);
+
+        } catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error con la operación: " + e.Message;
+
+            return Json(response);
+
+        }
+    }
 }

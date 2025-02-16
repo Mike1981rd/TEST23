@@ -4502,87 +4502,93 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult UpdateOrderInfoPayment([FromBody] OrderInfoPaymentModel model)
         {
-            var order = _dbContext.Orders.Include(s => s.Divides).FirstOrDefault(s => s.ID == model.OrderId);
-            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == model.VoucherId);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
 
-            int status = 0;
+            var response = objPOSCore.UpdateOrderInfoPayment(model);
 
-            if (order.ComprobantesID != null && order.ComprobantesID > 0)
-            {
-                //var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == order.ComprobantesID);
+            return Json(new { status = response.Item1, ComprobanteName = response.Item2 });
 
-                if (voucher.IsRequireRNC)
-                {
+            //var order = _dbContext.Orders.Include(s => s.Divides).FirstOrDefault(s => s.ID == model.OrderId);
+            //var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == model.VoucherId);
 
-                    if (order.CustomerId == null || order.CustomerId <= 0)
-                    {
-                        status = 3;
-                    }
-                    else {
-                        var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+            //int status = 0;
 
-                        if (string.IsNullOrEmpty(customer.RNC))
-                        {
-                            status = 3;
-                        }
-                    }
+            //if (order.ComprobantesID != null && order.ComprobantesID > 0)
+            //{
+            //    //var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.ID == order.ComprobantesID);
 
-                    
+            //    if (voucher.IsRequireRNC)
+            //    {
 
-                }
-            }
+            //        if (order.CustomerId == null || order.CustomerId <= 0)
+            //        {
+            //            status = 3;
+            //        }
+            //        else {
+            //            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+
+            //            if (string.IsNullOrEmpty(customer.RNC))
+            //            {
+            //                status = 3;
+            //            }
+            //        }
 
 
-            if (model.DivideId > 0)
-            {
-                var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DivideId);
-                if (divide != null)
-                {
-                    divide.ComprebanteId = model.VoucherId;
-                    _dbContext.SaveChanges();
 
-                    return Json(new { status = status, ComprobanteName = voucher.Name }); ;
-                }
-            }
-            else
-            {
-                if (order.ComprobantesID != voucher.ID)
-                {
-                    order.ComprobantesID = voucher.ID;
-                    order.ComprobanteName = voucher.Name;
-                    if (order.Status == OrderStatus.Paid)
-                    {
-                        //    Debug.WriteLine("caso3");
-                        var length = 11 - voucher.Class.Length;
+            //    }
+            //}
 
-                        var voucherNumber = voucher.Class + (voucher.Secuencia + 1).ToString().PadLeft(length, '0');
-                        voucher.Secuencia = voucher.Secuencia + 1;
-                        //if (string.IsNullOrEmpty(order.ComprobanteNumber))
-                        order.ComprobanteNumber = voucherNumber;
-                        var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == order.ID);
-                        foreach (var c in comprobantes)
-                        {
-                            c.IsActive = false;
-                        }
 
-                        _dbContext.OrderComprobantes.Add(new OrderComprobante()
-                        {
-                            OrderId = order.ID,
-                            VoucherId = voucher.ID,
-                            ComprobanteName = voucher.Name,
-                            ComprobanteNumber = voucherNumber
-                        });
-                        _dbContext.SaveChanges();
+            //if (model.DivideId > 0)
+            //{
+            //    var divide = order.Divides.FirstOrDefault(s => s.DividerNum == model.DivideId);
+            //    if (divide != null)
+            //    {
+            //        divide.ComprebanteId = model.VoucherId;
+            //        _dbContext.SaveChanges();
 
-                    }
+            //        return Json(new { status = status, ComprobanteName = voucher.Name }); ;
+            //    }
+            //}
+            //else
+            //{
+            //    if (order.ComprobantesID != voucher.ID)
+            //    {
+            //        order.ComprobantesID = voucher.ID;
+            //        order.ComprobanteName = voucher.Name;
+            //        if (order.Status == OrderStatus.Paid)
+            //        {
+            //            //    Debug.WriteLine("caso3");
+            //            var length = 11 - voucher.Class.Length;
 
-                    _dbContext.SaveChanges();
-                }
-            }
-           
-           
+            //            var voucherNumber = voucher.Class + (voucher.Secuencia + 1).ToString().PadLeft(length, '0');
+            //            voucher.Secuencia = voucher.Secuencia + 1;
+            //            //if (string.IsNullOrEmpty(order.ComprobanteNumber))
+            //            order.ComprobanteNumber = voucherNumber;
+            //            var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == order.ID);
+            //            foreach (var c in comprobantes)
+            //            {
+            //                c.IsActive = false;
+            //            }
 
-            return Json(new { status = status, ComprobanteName = voucher.Name }); ;
+            //            _dbContext.OrderComprobantes.Add(new OrderComprobante()
+            //            {
+            //                OrderId = order.ID,
+            //                VoucherId = voucher.ID,
+            //                ComprobanteName = voucher.Name,
+            //                ComprobanteNumber = voucherNumber
+            //            });
+            //            _dbContext.SaveChanges();
+
+            //        }
+
+            //        _dbContext.SaveChanges();
+            //    }
+            //}
+
+
+
+            //return Json(new { status = status, ComprobanteName = voucher.Name }); ;
         }
 
 
@@ -8740,12 +8746,12 @@ namespace AuroraPOS.Controllers
         public bool DontChangeVoucher { get; set; }
     }
 
-    public class OrderInfoPaymentModel
-    {
-        public long OrderId { get; set; }
-        public int VoucherId { get; set; }
-        public int DivideId { get; set; }
-    }
+    //public class OrderInfoPaymentModel
+    //{
+    //    public long OrderId { get; set; }
+    //    public int VoucherId { get; set; }
+    //    public int DivideId { get; set; }
+    //}
     public class AddItemModel
 	{
 		public long OrderId { get; set; }
