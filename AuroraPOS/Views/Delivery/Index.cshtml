@@ -7,24 +7,458 @@
     {
         filterbranch = (int)ViewBag.FilterBranch;
     }
+
 }
-<div class="row">
-    <div class="card delivery-card">
-        <div class="card-body">
-            <div class="row">
-                <div class="d-flex delivery-filter">
-                    <div class="form-group col-2 mx-3">
-                        <label>@ViewLocalizer["Fecha"] </label>
-                        <input id="delivery-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Now.ToString("dd-MM-yyyy")" data-format="DD-MM-YYYY">
-                    </div>
-                    <div class="form-group col-2 mx-3">
-                        <label>@ViewLocalizer["Sucursal"] </label>
 
 
-                        <input type="hidden" id="delivery-branch" value="@ViewBag.SucursalActual" />
-                        <div style="padding:6px">@ViewBag.SucursalActual</div>
+<style>
+    body {
+        --background-body-element: rgba(240,240,240,1);
+        --color-contrast: #292929;
+        --background-hover: rgba(5,5,5, 0.2);
+        --background-info-color-1: #ece8ff;
+        --background-info-color-2: #f1effd;
+    }
 
-                        @*<select id="delivery-branch" class="select ">
+    body[data-theme="dark"] {
+        --background-body-element: rgba(23,21,37,0.7);
+        --background-hover: rgba(200,200,200, 0.2);
+        --color-contrast: #c1c1c1;
+            --background-info-color-1: #232030;
+            --background-info-color-2: #2d2a39;
+    }
+    
+    .delivery-index-body {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-delivery {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
+        padding: 4px;
+    }
+
+    #go-pos {
+        all: unset;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        cursor: pointer;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 24px;
+    }
+
+    #go-pos:hover {
+        background: rgba(255,255,255,0.2) !important;
+    }
+
+    .delivery-card {
+        all: unset;
+        background: var(--background-body-element) !important;
+    }
+
+    .delivery-filter-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 6px;
+    }
+
+    .delivery-filter {
+        all: unset;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-radius: 30px;
+        background: var(--background-body-element) !important;
+        padding: 8px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        gap: 4px;
+    }
+    
+    .filter-delivery-button {
+        all: unset;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-radius: 24px;
+        padding: 8px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        gap: 4px;
+    }
+
+    .filter-delivery-button:hover {
+        background-color: rgba(255,255,255,0.7) !important;
+    }
+
+    .filter-delivery-button.active{
+        background-color: rgba(255,255,255,0.7) !important;
+        color: black;
+        font-weight: bold;
+    }
+
+    .filter-element-counter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        
+        background-color: rgba(255,255,255,0.3) !important;
+        border-radius: 30px;
+        font-weight: bold;
+        line-height: 1.1rem;
+        padding-right: 0.3rem;
+        padding-left: 0.3rem;
+    }
+
+    .filter-delivery-button.active > .filter-element-counter, .filter-delivery-button:hover > .filter-element-counter {
+        color: black;
+        background-color: rgba(255,255,255,0.7) !important;
+    }
+
+    .delivery-date-filter {
+        width: 100%;
+        border-radius: 24px;
+        height: 100%;
+        padding: 8px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        background-color: rgba(5,5,5,0.2);
+        border: solid 2px rgba(255,255,255,0.3) !important;
+        color: var(--color-contrast);
+    }
+
+    .delivery-list-container {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .delivery-element-card {
+		width: 100%;
+		padding: 8px;
+		border-radius: 4px;
+        background: rgba(66,93,207,0.4);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+    }
+
+    .delivery-element-card:hover {
+        background: rgba(66,93,207,0.5);
+    }
+
+    .delivery-element-card.selected {
+        background: rgba(66,93,207,0.5);
+        border: solid 2px var(--color-contrast);
+    }
+
+    .delivery-element-header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
+
+    .delivery-element-title {
+        display: flex;
+        font-weight: bold;
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .btn-nostyle {
+        all: unset;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        padding-bottom: 0px;
+        padding-left: 4px;
+        padding-right: 4px;
+        border-radius: 2px;
+    }
+
+    .btn-nostyle:hover {
+        background: var(--background-hover);
+    }
+
+    .delivery-element-status {
+        border-radius: 4px;
+        padding: 4px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        background: rgba(66,93,207,0.5);
+        font-weight: bold;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .delivery-element-footer {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        color: var(--color-contrast);
+    }
+
+    .delivery-full-body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .delivery-info-container {
+        width: 40%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--background-info-color-1);
+
+        border-radius: 4px;
+    }
+
+    #resultado {
+        display: flex;
+        width: 100%;
+    }
+
+    .delivery-index-and-filter {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .delivery-info-body {
+        width: 100%;
+        min-height: 100%;
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+    }
+
+    .delivery-info-header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .delivery-info-status {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        border: solid 1px var(--color-contrast);
+        gap: 4px;
+        border-left: 0;
+        border-right: 0;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding: 8px;
+    }
+
+    .delivery-info-items {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        padding: 8px;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .delivery-info-items-list {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        gap: 8px;
+        padding: 5px;
+        padding-right: 0px;
+        padding-top: 0px;
+    }
+
+    .delivery-info-item {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        align-content: space-between;
+        font-weight: bold;
+    }
+
+    .delivery-info-item-identifiers {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .delivery-info-item-qty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: rgba(255,255,255,0.3);
+        border-radius: 30px;
+        font-weight: bold;
+        line-height: 1rem;
+        padding: 0.15rem;
+        padding-right: 0.4rem;
+        padding-left: 0.4rem;
+    }
+
+    .delivery-info-item:hover > .delivery-info-item-identifiers > .delivery-info-item-qty {
+        background-color: rgba(255,255,255,0.4);
+    }
+
+    .delivery-info-options {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: var(--background-info-color-2);
+        padding: 8px;
+        border-radius: 0px 0px 4px 4px;
+    }
+
+    .delivery-info-options-buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+    }
+
+    .btn-extent {
+        width: 100%;
+        border-radius: 6px;
+        background: #425dcf;
+        border: none;
+        color: white;
+    }
+
+    .btn-extent:hover {
+        background: #638ec1;
+    }
+
+    .btn-extent-tr {
+        border: 1px solid var(--color-contrast);
+        color: var(--color-contrast);
+        border-color: var(--color-contrast) !important;
+        background: none;
+    }
+
+    #delivery-item-total {
+        font-weight: bold;
+        color: #425dcf;
+    }
+
+    #delivery-item-pagado {
+        font-weight: bold;
+        color: #eb8900;
+    }
+
+    .delivery-info-items-prices > .delivery-element-footer:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+/*     .set-carrier {
+        all: unset;
+    }
+
+    .delivered {
+        all: unset;
+    }
+
+    .closed {
+        all: unset;
+    } */
+</style>
+
+<div class="delivery-full-body">
+    <div class="header-delivery">
+        <button id="go-pos" class="btn button1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="#ffff" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z" stroke-width="0.5" stroke="#ffff" /></svg>            @ViewLocalizer["POS"]
+        </button>
+    </div>
+    <div class="delivery-index-and-filter">
+        <div class="delivery-index-body">
+
+            <div class="delivery-filter-container">
+                <div class="delivery-filter">
+                    <label style="font-weight: bold;">@ViewLocalizer["Sucursal"] </label>
+
+                    <input type="hidden" id="delivery-branch" value="@ViewBag.SucursalActual" />
+                    <div style="padding:6px">@ViewBag.SucursalActual</div>
+                </div>
+                <div class="delivery-filter">
+                    <button class="btn btn-deliver filter-delivery-button active">Todos <span class="filter-element-counter">@ViewBag.Todos</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="0">Nuevo <span class="filter-element-counter">@ViewBag.Nuevo</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="1">En Ruta <span class="filter-element-counter">@ViewBag.EnRuta</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="2">Entregado <span class="filter-element-counter">@ViewBag.Entregado</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="3">Cerrado <span class="filter-element-counter">@ViewBag.Cerrado</span></button>
+                </div>
+                <div class="delivery-filter">
+                    <input id="delivery-date" type="text" class="datetimepicker cal-icon delivery-date-filter" value="@DateTime.Now.ToString("dd-MM-yyyy")" data-format="DD-MM-YYYY">
+                </div>
+            </div>
+            @* 
+    <div class="row">
+        <div class="card delivery-card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="d-flex delivery-filter">
+                        <div class="form-group col-2 mx-3">
+                            <label>@ViewLocalizer["Fecha"] </label>
+                            <input id="delivery-date" type="text" class="datetimepicker cal-icon" value="@DateTime.Now.ToString("dd-MM-yyyy")" data-format="DD-MM-YYYY">
+                        </div>
+                        <div class="form-group col-2 mx-3">
+                            <label>@ViewLocalizer["Sucursal"] </label>
+
+
+
+
+                            <!--<select id="delivery-branch" class="select ">
                             <option value=0>Selecciona una sucursal</option>
                             @foreach (var b in branchs)
                             { 
@@ -36,37 +470,133 @@
                                 {
                                     <option value="@b.ID">@b.Name</option>
                                 }
-                               
+
                             }
-                        </select>*@
-                    </div>
-                    <div class="form-group col-6 mx-3 mt-3">
-                        <button class="btn btn-deliver button8 active">Todos</button>
-                        <button class="btn btn-deliver button8" data-value="0">Nuevo</button>
-                        <button class="btn btn-deliver button8" data-value="1">En Ruta</button>
-                        <button class="btn btn-deliver button8" data-value="2">Entregado</button>
-                        <button class="btn btn-deliver button8" data-value="3">Cerrado</button>
+                        </select>-->
+                        </div>
+                        <div class="form-group col-6 mx-3 mt-3">
+                            <button class="btn btn-deliver button8 active">Todos</button>
+                            <button class="btn btn-deliver button8" data-value="0">Nuevo</button>
+                            <button class="btn btn-deliver button8" data-value="1">En Ruta</button>
+                            <button class="btn btn-deliver button8" data-value="2">Entregado</button>
+                            <button class="btn btn-deliver button8" data-value="3">Cerrado</button>
+                        </div>
                     </div>
 
-                    <div class="col-2 mx-3">
-                        <button id="go-pos" class="btn button1">@ViewLocalizer["POS"]</button>
-                    </div>
                 </div>
-
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="card delivery-card" style="margin: 0px; padding: 0px; ">
-        <div class="card-body" style="margin: 0px;padding: 0px;">
+    </div> *@
 
             <div id="resultado">
             </div>
+            <div class="card delivery-card" style="margin: 0px; padding: 0px; ">
+                <div class="card-body" style="margin: 0px;padding: 0px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="delivery-info-container">
+            <div class="delivery-info-body">
+                <div class="delivery-info-header">
+                    <div class="delivery-element-title" id="delivery-id">
+                    </div>
+                    <div id="delivery-description">
+
+                    </div>
+                 
+                    <div style="display: flex; flex-direction: column; color:var(--color-contrast);">
+                        <div id="delivery-clientname">item.Orden.ClientName</div>
+                        <div id="delivery-zona">item.Zona</div>
+                        <div id="delivery-direccion">item.Direccion</div>
+                    </div>
+                </div>
+
+                <div class="delivery-info-status">
+                    <div class="delivery-element-footer">
+                        <div style="display: flex; flex-direction: row; justify-content: center; gap: 8px">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 48 48"><g fill="none" stroke="var(--color-contrast)" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="m20 33l6 2s15-3 17-3s2 2 0 4s-9 8-15 8s-10-3-14-3H4" /><path d="M4 29c2-2 6-5 10-5s13.5 4 15 6s-3 5-3 5M16 18v-8a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v16" /><path d="M25 8h10v9H25z" /></g></svg>
+                            </span>
+                            <span id="delivery-type">
+                                item.DeliveryType
+                            </span>
+                        </div>
+                        <div id="delivery-repartidor">
+                            Repartidor: N/A
+                        </div>
+                    </div>
+                    <div class="delivery-element-footer">
+                        <div class="delivery-element-status" id="delivery-status">
+                            Nuevo
+                        </div>
+                    </div>
+                </div>
+
+                <div class="delivery-info-items">
+                    <div class="delivery-info-items-list" id="delivery-info-items-list">
+                        <div class="delivery-info-item">
+                            <div class="delivery-info-item-identifiers">
+                                <span class="delivery-info-item-qty" id="delivery-item-qty">
+                                    1
+                                </span>
+                                <span id="delivery-item-name">
+                                    Name
+                                </span>
+                            </div>
+                            <div id="delivery-item-price">
+                                23.00
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="delivery-info-items-prices">
+                        <div class="delivery-element-footer">
+                            <div>
+                                Total:
+                            </div>
+                            <div id="delivery-item-total">
+                                20.00
+                            </div>
+                        </div>
+                        <div class="delivery-element-footer">
+                            <div >
+                                Pagado:
+                            </div>
+                            <div id="delivery-item-pagado">
+                                20.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="delivery-info-options">
+                <div class="delivery-info-options-buttons" id="delivery-info-options-buttons-entrega-print">
+@*                     <a class="btn btn-extent btn-extent-tr">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"><g fill="none"><path stroke="#fff" stroke-linecap="round" stroke-width="1.5" d="M9 10H6m13 4H5" /><circle cx="17" cy="10" r="1" fill="#fff" /><path stroke="#fff" stroke-linecap="round" stroke-width="1.5" d="M15 16.5H9m4 2.5H9m13-7c0 2.828 0 4.243-.879 5.121c-.641.642-1.567.815-3.121.862m-12 0c-1.553-.047-2.48-.22-3.121-.862C2 16.243 2 14.828 2 12s0-4.243.879-5.121C3.757 6 5.172 6 8 6h8c2.828 0 4.243 0 5.121.879c.3.3.498.662.628 1.121" /><path stroke="#fff" stroke-linecap="round" stroke-width="1.5" d="M17.983 6c-.047-1.553-.22-2.48-.862-3.121C16.243 2 14.828 2 12 2s-4.243 0-5.121.879C6.237 3.52 6.064 4.447 6.017 6M18 15v1c0 2.828 0 4.243-.879 5.121c-.641.642-1.567.815-3.121.862M6 15v1c0 2.828 0 4.243.879 5.121c.641.642 1.568.815 3.121.862" /></g></svg>
+                        Print
+                    </a> *@
+@*                     <a class="btn btn-extent btn-extent-tr">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.971L9 15.006z" stroke-width="0.5" stroke="#fff" /><path fill="#fff" d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2" stroke-width="0.5" stroke="#fff" /></svg>
+                        Editar
+                    </a> *@
+                </div>
+                <div class="delivery-info-options-buttons" id="delivery-info-options-button-pagar">
+                    <a class="btn btn-extent">Pagar</a>
+
+                </div>
+                <div class="delivery-info-options-buttons" id="delivery-info-options-button-void">
+                    @* <a class="btn btn-extent" style="background: red;">Void</a> *@
+
+                </div>
+            </div>
+
         </div>
     </div>
+
 </div>
+
 
 <!-- Carrier Modal -->
 <div class="modal fade" id="editcarrier" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
@@ -230,9 +760,217 @@
             type: "POST",
             data: data,
             success: function (data, textStatus, jqXHR) {
-
+                //console.log(data);
                 $("#resultado").html(data);
+                    $(".delivery-element-card").click(function () {
+                        $(".delivery-element-card").removeClass('selected');
+                        $(this).addClass('selected');
 
+                        $('.delivery-info-container').show();
+                        $.ajax({
+                            url: "/Delivery/GetDeliveryItem?Id=" + $(this).data("id"),
+                            type: "POST",
+                            success: function (response, textStatus, jqXHR) {
+                                $('#delivery-id').empty();
+                                $('#delivery-id').text('#' + response.orden.id);
+                                $('#delivery-description').text(response.descripcion);
+
+                                if(response.orden.clientName === null)
+                                    $('#delivery-clientname').text("Nombre de cliente no disponible");
+                                else
+                                    $('#delivery-clientname').text(response.orden.clientName);
+
+                                if(response.zona === null || response.zona === "")
+                                    $('#delivery-zona').text("Zona no disponible");
+                                else
+                                    $('#delivery-zona').text("Zona: " + response.zona);
+
+                                $('#delivery-direccion').text("Direccion: " + response.direccion);
+
+                                $('#delivery-type').text(response.deliveryType);
+
+                                if(response.status === 0)
+                                    $('#delivery-status').text("Nuevo");
+                                else if(response.status === 1)
+                                    $('#delivery-status').text("En ruta");
+                                else if(response.status === 2)
+                                    $('#delivery-status').text("Entregado");
+                                else if(response.status === 3)
+                                    $('#delivery-status').text("Cerrado");
+                                else
+                                    $('#delivery-status').text(response.status);
+
+                                $("#delivery-info-items-list").empty();
+                                response.orden.items.forEach(function(item) {
+
+                                    var newItem = `
+                                        <div class="delivery-info-item">
+                                            <div class="delivery-info-item-identifiers">
+                                                <span class="delivery-info-item-qty" id="delivery-item-qty">${item.qty}</span>
+                                                <span id="delivery-item-name">${item.name}</span>
+                                            </div>
+                                            <div id="delivery-item-price">
+                                                ${(item.subTotal + item.tax).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    `;
+
+                                    // Agregar el nuevo item al contenedor
+                                        $("#delivery-info-items-list").append(newItem);
+                                });
+
+                                $('#delivery-item-total').text(response.total.toFixed(2));
+                                $('#delivery-item-pagado').text(response.orden.payAmount.toFixed(2));
+
+                                $('#delivery-info-options-buttons-entrega-print').empty();
+
+                                if(response.orden.prepareType !== null && !response.orden.prepareType.sinChofer) {
+
+                                    if(response.status === 0)
+                                    {
+                                        var button = `
+                                            <a href="javascript:void(0);" class="set-carrier btn btn-extent btn-extent-tr" data-id="${response.deliveryId}" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 48 48">
+                                                        <g fill="none" stroke="var(--color-contrast)" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                                                        <path d="m20 33l6 2s15-3 17-3s2 2 0 4s-9 8-15 8s-10-3-14-3H4" />
+                                                        <path d="M4 29c2-2 6-5 10-5s13.5 4 15 6s-3 5-3 5M16 18v-8a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v16" />
+                                                        <path d="M25 8h10v9H25z" />
+                                                    </g>
+                                                </svg>
+                                                    Iniciar Envio
+                                            </a>
+                                        `;
+                                        $('#delivery-info-options-buttons-entrega-print').append(button);
+
+                                    } else if(response.status === 1) {
+                                        var button = `
+                                            <a href="javascript:void(0);" class="delivered btn btn-extent btn-extent-tr" data-id="${response.deliveryId}" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 48 48">
+                                                        <g fill="none" stroke="var(--color-contrast)" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                                                        <path d="m20 33l6 2s15-3 17-3s2 2 0 4s-9 8-15 8s-10-3-14-3H4" />
+                                                        <path d="M4 29c2-2 6-5 10-5s13.5 4 15 6s-3 5-3 5M16 18v-8a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v16" />
+                                                        <path d="M25 8h10v9H25z" />
+                                                    </g>
+                                                </svg>
+                                                        Entregado
+                                            </a>
+                                        `;
+                                        $('#delivery-info-options-buttons-entrega-print').append(button);
+                                    }
+                                    else if(response.status === 2){
+                                        var button = `
+                                            <a href="javascript:void(0);" class="closed btn btn-extent btn-extent-tr" data-id="${response.deliveryId}" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 48 48">
+                                                        <g fill="none" stroke="var(--color-contrast)" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                                                        <path d="m20 33l6 2s15-3 17-3s2 2 0 4s-9 8-15 8s-10-3-14-3H4" />
+                                                        <path d="M4 29c2-2 6-5 10-5s13.5 4 15 6s-3 5-3 5M16 18v-8a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v16" />
+                                                        <path d="M25 8h10v9H25z" />
+                                                    </g>
+                                                </svg>
+                                                            Cerrar
+                                            </a>
+                                        `;
+                                            $('#delivery-info-options-buttons-entrega-print').append(button);
+                                    };
+                                }
+
+                                var printButton = `
+                                        <button class="btn btn-extent btn-extent-tr btn-reordersubmit" data-id="${response.orden.id}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24">
+                                            <g fill="none">
+                                                    <path stroke="var(--color-contrast)" stroke-linecap="round" stroke-width="1.5" d="M9 10H6m13 4H5" />
+                                                    <circle cx="17" cy="10" r="1" fill="var(--color-contrast)" />
+                                                    <path stroke="var(--color-contrast)" stroke-linecap="round" stroke-width="1.5" d="M15 16.5H9m4 2.5H9m13-7c0 2.828 0 4.243-.879 5.121c-.641.642-1.567.815-3.121.862m-12 0c-1.553-.047-2.48-.22-3.121-.862C2 16.243 2 14.828 2 12s0-4.243.879-5.121C3.757 6 5.172 6 8 6h8c2.828 0 4.243 0 5.121.879c.3.3.498.662.628 1.121" />
+                                                    <path stroke="var(--color-contrast)" stroke-linecap="round" stroke-width="1.5" d="M17.983 6c-.047-1.553-.22-2.48-.862-3.121C16.243 2 14.828 2 12 2s-4.243 0-5.121.879C6.237 3.52 6.064 4.447 6.017 6M18 15v1c0 2.828 0 4.243-.879 5.121c-.641.642-1.567.815-3.121.862M6 15v1c0 2.828 0 4.243.879 5.121c.641.642 1.568.815 3.121.862" />
+                                            </g>
+                                        </svg>
+                                        Print
+                                    </button>
+                                `;
+
+                                $('#delivery-info-options-buttons-entrega-print').append(printButton);
+
+                                $('#delivery-info-options-button-void').empty();
+                                if (response.status !== 3 && response.status !== 4 && response.orden.paymentStatus !== 1) {
+
+                                    var voidButton = `
+                                            <button type="button" class="btn void-button btn-extent" style="background: #9e292b;" data-toggle="modal" data-target="#cancelitemmodal" data-id="${response.orden.id}">
+                                            Void
+                                        </button>
+
+                                    `
+                                    $('#delivery-info-options-button-void').append(voidButton);
+                                }
+
+                                $('#delivery-info-options-button-pagar').empty();
+                                //traduciendo lo que se hace en _DeliveryList con el boton de payment
+                                if (response.status !== 3 && response.status !== 4)
+                                {
+                                    var total = parseFloat(response.total);  // Valor de response.total
+                                    var payAmount = parseFloat(response.orden.payAmount);  // Valor de response.Orden.PayAmount
+
+                                    // Redondear los valores a 2 decimales con MidpointRounding.AwayFromZero
+                                    total = Math.round(total * 100) / 100;  // Redondear a 2 decimales
+                                    payAmount = Math.round(payAmount * 100) / 100;  // Redondear a 2 decimales
+
+                                    // Evaluar la condición y establecer el atributo disabled
+                                    var paymentButton;
+
+                                    if (total === payAmount || response.orden.conduceOrderId > 0) {
+                                        paymentButton = `
+                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.ID}" disabled>Pagar</button>
+                                        `
+                                        $(".paymentButton").prop("disabled", true);
+                                    } else {
+                                        paymentButton = `
+                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.ID}">Pagar</button>
+                                        `
+                                    }
+
+
+
+                                        $('#delivery-info-options-button-pagar').append(paymentButton);
+
+                                }
+
+                                if (response.status === 0) {
+                                    var total = parseFloat(response.total);  // Valor de response.total
+                                    var payAmount = parseFloat(response.orden.payAmount);  // Valor de response.Orden.PayAmount
+
+                                    // Redondear los valores a 2 decimales con MidpointRounding.AwayFromZero
+                                    total = Math.round(total * 100) / 100;  // Redondear a 2 decimales
+                                    payAmount = Math.round(payAmount * 100) / 100;  // Redondear a 2 decimales
+
+                                    // Evaluar la condición y establecer el atributo disabled
+                                    var btnEdit;
+
+                                    if (total === payAmount) {
+                                        btnEdit = `
+                                            <button type="button" class="btn btn-link edit-button btn-nostyle" data-toggle="modal" data-target="#editmodal" data-id="${response.deliveryId}" data-orderid="${response.orden.id}" style="display: none;">
+                                                <img src="/vendor/img/icons/edit.svg" alt="img">
+                                            </button>
+                                        `
+                                        $(".paymentButton").prop("disabled", true);
+                                    } else {
+                                        btnEdit = `
+                                            <button type="button" class="btn btn-link edit-button btn-nostyle" data-toggle="modal" data-target="#editmodal" data-id="${response.deliveryId}" data-orderid="${response.orden.id}" style="display: block;">
+                                                <img src="/vendor/img/icons/edit.svg" alt="img">
+                                            </button>
+                                        `
+                                    }
+
+                                    $('#delivery-id').append(btnEdit);
+
+                                }
+
+
+                                console.log(response);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+                            }
+                        });
+                    });
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
@@ -492,6 +1230,8 @@
     });
 
     $(document).ready(function () {
+        $('.delivery-info-container').hide();
+
         $("#go-pos").click(function () {
             window.location.replace("/POS/Station");
         })

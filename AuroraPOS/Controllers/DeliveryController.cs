@@ -64,7 +64,80 @@ namespace AuroraPOS.Controllers
                 ViewBag.SucursalActual = objEstacion.IDSucursal;
             }
 
+            //obtener la cantidad de leementos para cada filtro
+            DateTime dtFecha = DateTime.Today;
+
+            var deliveryDataQuery = _dbContext.Deliverys
+                .Where(d => d.CreatedDate >= new DateTime(dtFecha.Year, dtFecha.Month, dtFecha.Day)
+                && d.CreatedDate < (new DateTime(dtFecha.Year, dtFecha.Month, dtFecha.Day)).AddDays(1));
+
+            ViewBag.Todos = deliveryDataQuery.Count();
+            ViewBag.Nuevo = deliveryDataQuery.Where(d => d.Status == (StatusEnum)0).Count();
+            ViewBag.EnRuta = deliveryDataQuery.Where(d => d.Status == (StatusEnum)1).Count();
+            ViewBag.Entregado = deliveryDataQuery.Where(d => d.Status == (StatusEnum)2).Count();
+            ViewBag.Cerrado = deliveryDataQuery.Where(d => d.Status == (StatusEnum)3).Count();
+
             return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetDeliveryItem(long Id)
+        {
+            try
+            {
+
+                var objDelivery = _dbContext.Deliverys.Include(s => s.Order).ThenInclude(s => s.Station).Include(s => s.Order).Include(s => s.Order.PrepareType).Include(s => s.Order.Items.Where(s => !s.IsDeleted)).Include(s => s.Carrier).Include(s => s.Zone).Include(s => s.Customer).FirstOrDefault(d => d.ID == Id);
+
+                var objDeliveryAuxiliar = new DeliveryAuxiliar();
+
+                objDeliveryAuxiliar.DeliveryId = (long)objDelivery.ID;
+                objDeliveryAuxiliar.Creacion = (objDelivery.UpdatedDate > objDelivery.CreatedDate ? objDelivery.UpdatedDate : objDelivery.CreatedDate);
+                objDeliveryAuxiliar.Entrega = objDelivery.DeliveryTime;
+                objDeliveryAuxiliar.Orden = objDelivery.Order;
+                objDeliveryAuxiliar.Direccion = string.IsNullOrEmpty(objDelivery.Address1) && objDelivery.Zone == null ? "Para llevar" : objDelivery.Address1;
+
+                if (objDelivery.Order.PrepareType != null && objDelivery.Order.PrepareType.SinChofer)
+                {
+                    objDeliveryAuxiliar.Zona = (objDelivery.Zone != null ? objDelivery.Zone.Name : "");
+                }
+                else
+                {
+                    objDeliveryAuxiliar.Zona = (objDelivery.Zone != null ? objDelivery.Zone.Name + "($" + objDelivery.Zone.Cost.ToString() + ")" : "");
+                }
+
+
+                objDeliveryAuxiliar.Repartidor = (objDelivery.Carrier != null ? objDelivery.Carrier.Name : "");
+                objDeliveryAuxiliar.Status = objDelivery.Status;
+                if (objDelivery.Order.ConduceOrderId > 0 || objDelivery.Order.IsConduce)
+                {
+                    objDeliveryAuxiliar.Status = StatusEnum.Cerrado;
+                }
+                objDeliveryAuxiliar.Actualizacion = objDelivery.UpdatedDate;
+                objDeliveryAuxiliar.DeliveryType = objDelivery.Order.PrepareType != null ? objDelivery.Order.PrepareType.Name : "";
+
+
+                objDeliveryAuxiliar.Total = objDelivery.Order.TotalPrice /*+ (objDelivery.Zone!=null ? objDelivery.Zone.Cost : 0)*/;
+
+                foreach (var objOrderItem in objDeliveryAuxiliar.Orden.Items)
+                {
+
+                    if (!string.IsNullOrEmpty(objDeliveryAuxiliar.Descripcion))
+                    {
+                        objDeliveryAuxiliar.Descripcion = objDeliveryAuxiliar.Descripcion + ", ";
+                    }
+
+                    objDeliveryAuxiliar.Descripcion = objDeliveryAuxiliar.Descripcion + objOrderItem.Name;
+                }
+
+                return Json(objDeliveryAuxiliar);
+
+            }
+            catch (Exception ex)
+            {
+                var m = ex;
+            }
+
+            return Json(new { status = 1 });
         }
 
         public string GetCookieValue(string key)
