@@ -83,12 +83,690 @@
     <script src="~/vendor/js/jquery.mask.js"></script>
     <!-- Custom JS -->
     <script src="/vendor/js/script.js"></script>
+
+    <style>
+        p {
+            margin: 0;
+        }
+        .main-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000100;
+            overflow: hidden;
+        }
+
+        .checkout-header {
+            all: unset;
+            width: 100%;
+            height: 5%;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            background: #222e44;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-notes {
+            all: unset;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .header-notes > span {
+            all: unset;
+            font-weight: normal;
+            color: #FFC000 !important;
+        }
+
+        .checkout-body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        .checkout-order-sum {
+            height: 100%;
+            width: 100%;
+            background: #171525;
+            border-radius: 4px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .checkout-order-paymeth {
+            height: 100%;
+            width: 45%;
+            background: #171525;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .checkout-order-payment {
+            height: 100%;
+            width: 100%;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .checkout-elements-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-bottom: solid 1px #c1c1c1;
+            padding: 12px;
+            gap: 8px;
+        }
+
+        .checkout-elements-title {
+            font-weight: bold;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .checkout-elements-desc {
+            font-weight: lighter;
+            color: #c1c1c1;
+            font-size: 0.8rem;
+        }
+
+        .table-body {
+            background: none;
+        }
+        
+        .table-header {
+            border-bottom: solid 1px white;
+            /* background: #425dcf; */
+        }
+
+        .tr {
+            border-bottom: solid 1px white;
+            font-weight: bold;
+        }
+
+        .tr:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+/*         .item {
+            color: #425dcf;
+        } */
+
+        .checkout-total-list {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+            border-top: solid 1px #c1c1c1;
+        }
+
+        .total-list-element {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            color: #c1c1c1;
+        }
+
+        .total-list-element:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .currency-1, .currency-2 {
+            font-size: 10px;
+            color: #BF9000;
+        }
+
+        .checkout-total-elements {
+            font-weight: bold;
+            border-top: solid 1px #c1c1c1;
+        }
+
+        .checkout-total-elements > div:hover{
+            background: #71799a;
+        }
+
+        #order-total, #order-total-second {
+            color: #425dcf;
+        }
+
+        .checkout-order-table {
+            padding-bottom: 8px;
+        }
+
+        .checkout-paymethods-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+            gap: 8px;
+            overflow-y: scroll;
+        }
+
+        .payment-method-option {
+            all: unset;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            background: #1f2b41;
+            align-items: center;
+            padding: 8px;
+            gap: 8px;
+            border-radius: 4px;
+        }
+
+        .payment-method-option:hover {
+            background: #303f5a;
+            cursor: pointer;
+        }
+
+        .payment-method-option-image {
+            all: unset;
+            width: 20%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .payment-method-option-image > img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 2px;
+            object-fit: contain;
+        }
+
+        .payment-method-option-name {
+            width: 85%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .payment-item.active {
+            border: 0 !important;
+            background: #425dcf;
+        }
+
+        .checkout-col-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .checkout-card {
+            width: 100%;
+            display: flex;
+            background: #171525;
+            flex-direction: column;
+            border-radius: 4px;
+        }
+
+        .checkout-card-title {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .checkout-pay-input-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+        }
+
+        #btn_clear {
+            width: 20%;
+            display: flex;
+            flex-direction: row;
+            border-radius: 4px;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            background: #9E1B32;
+            font-size: initial;
+            cursor: pointer;
+        }
+
+        #pay-amount {
+            border-radius: 4px;
+        }
+
+        .checkout-card > .checkout-elements-header {
+            border: none;
+        }
+
+        .checkout-pay-qty-options {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 4px;
+            position: relative;
+        }
+
+        .calc-show {
+            position: absolute;
+            background: #171525;
+            border-radius: 4px;
+            transform: translate(-100%, -25%);
+            box-shadow: 5px 5px 5px rgba(5, 5, 5, 0.5);
+            width: 300px;
+        }
+
+        .btn-default-calc {
+            background: #343f54;
+        }
+
+        .checkout-pay-option {
+            all: unset;
+            background: #343f54;
+            padding: 4px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #c1c1c1;
+            width: 10%;
+            border-radius: 4px;
+        }
+        .btn-default-calc {
+            border-radius: 4px;
+            padding: 4px !important;
+            font-size: initial !important;
+        }
+        #pay-temp {
+            border-radius: 4px;
+            background: #343f54;
+            font-size: 30px !important;
+        }
+
+        .checkout-pay-option:hover {
+            background: #434e64;
+        }
+
+        .checkout-pay-option:active {
+            background: #425dcf;
+        }
+
+        .checkout-btn-action {
+            all: unset;
+            /* width: 100%; */
+            height: 100%;
+            padding: 12px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            font-weight: bold;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .checkout-btn-action:hover {
+            background: #211f35;
+        }
+
+        .checkout-btn-action:active {
+                background: #425dcf;
+        }
+
+        #pay-submit {
+            font-weight: bold;
+            font-size: initial;
+        }
+
+/*         .list-overflow {
+            overflow-y: scroll;
+            height: 20%;
+        } */
+
+        .subitems-discount {
+            overflow-y: scroll;
+            max-height: 50px;        
+        }
+
+        .checkout-keyboard-pad {
+            font-size: initial !important;
+            height: fit-content !important;        
+        }
+
+        .div-pago {
+            cursor: pointer;
+        }
+
+        .div-pago:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .title-icon {
+            display:flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+        }
+
+    </style>
 </head>
 <body data-theme="dark">
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-    <div class="main-wrapper row gx-3 text-white vh-100 p-3">
+    <div class="main-container">
+        <div class="checkout-header">
+            <span class="header-notes">Mesa: <span>@(Model.Order.Table != null ? Model.Order.Table.Name : ViewLocalizer["TO GO"]) </span>,</span>
+            <span class="header-notes">Mesero: <span>@Model.Order.WaiterName</span>,</span>
+            <span class="header-notes">@ViewLocalizer["Payment"]: <span>@modeTitle</span></span>
+        </div>
+        <div class="checkout-body">
+            <div class="checkout-order-sum">
+                <div class="checkout-elements-header">
+                    <div class="checkout-elements-title"><span>Order Summary</span><span>Orden #@Model.OrderId</span></div>
+                    <p class="checkout-elements-desc">Client: <span>@Model.ClientName</span></p>
+                </div>
+                <div class="checkout-order-table">
+                    @if (Model.Order.Tax != 0)
+                    {
+                        <div class="order-table">
+                            <div class="table h-100">
+                                <div class="table-header">
+                                    <div class="tr">
+                                        <div class="font-label td">@ViewLocalizer["Item"]</div>
+                                        <div class="font-label td"></div>
+                                        <div class="font-label td">Qty</div>
+                                        <div class="font-label td">@ViewLocalizer["Price"]</div>
+                                        <div class="font-label td">@ViewLocalizer["Amt"]</div>
+                                    </div>
+                                </div>
+                                <div id="order-item-list" class="table-body tbl-checkout-price">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="order-table">
+                            <div class="table h-100">
+                                <div class="table-header">
+                                    <div class="tr">
+                                        <div class="font-label td">@ViewLocalizer["CxC"]</div>
+                                        <div class="font-label td"></div>
+                                        <div class="font-label td">@ViewLocalizer["Amount"]</div>
+                                    </div>
+                                </div>
+                                <div id="order-item-list" class="table-body tbl-checkout-price">
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="checkout-total-list">
+                    <div>
+                        @if (Model.Order.Tax != 0)
+                        {
+                            <div class="total-list-element">
+                                <span>@ViewLocalizer["Subtotal"]:</span>
+                                <span id="order-subtotal" class="text-gold">00.00</span>
+                            </div>
+                            <div class="total-list-element">
+                                <span>@ViewLocalizer["Discount"]:</span>
+                                <span id="order-discount" class="text-gold">00.00</span>
+                            </div>
+                            @* <div class="d-flex justify-content-between my-1"><span>@ViewLocalizer["Tip"]:</span><span id="order-tip">00.00</span></div> *@
+                            <div class="total-list-element">
+                                <span>@ViewLocalizer["Tax"]:</span>
+                                <span id="order-tax" class="text-gold">0</span>
+                            </div>
+                            <div class="total-list-element">
+                                <span>@ViewLocalizer["Propina"]:</span>
+                                <span id="order-propina" class="text-gold">0</span>
+                            </div>
+                            @if (Model.Order.OrderType == OrderType.Delivery)
+                            {
+                                <div class="total-list-element">
+                                    <span>@ViewLocalizer["Delivery"]:</span>
+                                    <span id="order-delivery" class="text-gold">0</span>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="checkout-total-elements">
+
+                        <div class="d-flex justify-content-between mt-1">
+                            <span class="">Total<span class="currency-1"></span></span>
+                            <span class="" id="order-total">00.00</span>
+                        </div>
+                        @if (hasSecondCurrency)
+                        {
+                            <div class="d-flex justify-content-between mt-1">
+                                <span class="">Total<span class="currency-2"></span></span>
+                                <span class="" id="order-total-second">00.00</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="checkout-order-paymeth">
+                <div class="checkout-elements-header">
+                    <div class="checkout-elements-title">Formas de Pagos</div>
+                    <p class="checkout-elements-desc">Seleccione su forma de pago</p>
+                </div>
+                <div class="checkout-paymethods-container">
+                    @for (int i = 0; i < paymentMethods.Count; i++)
+                    {
+                        if (@paymentMethods[i].Name == "Efectivo")
+                        {
+                            <div class="product payment-item active payment-item-button payment-method-option" data-itemid='@paymentMethods[i].ID' data-itemtype='@paymentMethods[i].Name' data-tasa="@paymentMethods[i].Tasa">
+                                @if (!string.IsNullOrEmpty(paymentMethods[i].Image))
+                                {
+                                    <div class="payment-method-option-image">
+                                        <img @* class="card-img payment-item-img" *@ src="@paymentMethods[i].Image" alt="">
+                                    </div>
+                                }
+                                <div class="payment-method-option-name">
+                                    @paymentMethods[i].Name
+                                </div>
+
+                            </div>
+                        }
+                        else if (@paymentMethods[i].Name == "Dolares" || @paymentMethods[i].Name == "Euros")
+                        {
+                            <div class="product payment-item payment-item-button payment-method-option" data-itemid='@paymentMethods[i].ID' data-itemtype='@paymentMethods[i].Name' data-tasa="@paymentMethods[i].Tasa">
+                                @if (!string.IsNullOrEmpty(paymentMethods[i].Image))
+                                {
+                                    <div class="payment-method-option-image">
+                                        <img @* class="card-img payment-item-img" *@ src="@paymentMethods[i].Image" alt="">
+                                    </div>
+                                }
+                                <div class="payment-method-option-name">
+                                    @paymentMethods[i].Name
+                                </div>
+                            </div>
+                        }
+                    }
+                    <p style="font-weight: bold;">Tarjetas y otros</p>
+                    @for (int i = 0; i < paymentMethods.Count; i++)
+                    {
+                        if(@paymentMethods[i].Name != "Efectivo" && @paymentMethods[i].Name != "Dolares" && @paymentMethods[i].Name != "Euros")
+                        {
+                            <div class="product payment-item payment-item-button payment-method-option" data-itemid='@paymentMethods[i].ID' data-itemtype='@paymentMethods[i].Name' data-tasa="@paymentMethods[i].Tasa">
+                                @if (!string.IsNullOrEmpty(paymentMethods[i].Image))
+                                {
+                                    <div class="payment-method-option-image">
+                                        <img @* class="card-img payment-item-img" *@ src="@paymentMethods[i].Image" alt="">
+                                    </div>
+                                }
+                                <div class="payment-method-option-name">
+                                    @paymentMethods[i].Name
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="checkout-order-payment">
+                <div class="checkout-col-container">
+                    <div class="checkout-card">
+                        <div class="checkout-elements-header">
+                            <div class="checkout-elements-title"><span>Pago</span><span id="order-paid-total" class="text-green"></div>
+                            <div class="checkout-pay-input-container">
+                                <input id="pay-amount" class="checkout-keyboard-pad w-100 text-start px-3 py-1 border-0" aria-describedby="btn_clear" onkeypress="return onlyDecimalKey(event)" value="" type="text" readonly>
+                                <span class="" id="btn_clear">C</span>
+                            </div>
+                        </div>
+                        <div id="order-discount-items" class="table-body list-overflow">
+                        </div>
+                    </div>
+                    <div class="checkout-card">
+                        <div class="checkout-elements-header">
+                            <div class="checkout-elements-title"><span>Cantidad de pago</div>
+                            <div class="checkout-pay-qty-options">
+                                <button class="btn-easypay checkout-pay-option" data-value="Calc">@ViewLocalizer["Calc"]</button>
+                                <button class="btn-easypay checkout-pay-option" data-value="Exact">@ViewLocalizer["Exact"]</button>
+                                @foreach (var d in denominations)
+                                {
+                                    <button class="btn-easypay checkout-pay-option" data-value="@d.Amount">@d.Name</button>
+                                }
+@*                                 <div class="checkout-pay-option">
+
+                                </div> *@
+                            </div>
+                            <div class="calc-show p-3" style="display: none;">
+                                <div>
+                                    <div class="row py-3">
+                                        <div class="input-group my-2 mt-3">
+                                            <input id="pay-temp" class="checkout-keyboard-pad w-100 px-3 bg-default text-white text-start" style="border: none;" onkeypress="return onlyDecimalKey(event)" aria-describedby="btn_calc" onkeypress="return onlyDecimalKey(event)" value="" type="text" readonly>
+                                            <span class="input-group-text px-3 bg-blue text-white font-label-bold pay-keyboard" style="border: none;height:inherit;width:unset;" id="btn_calc">&#8592</span>
+                                        </div>
+                                    </div>
+                                    <div class="calc-board d-flex flex-wrap justify-content-between">
+                                        <button class="btn btn-default-calc pay-keyboard my-1">1</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">2</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">3</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">4</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">5</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">6</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">7</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">8</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">9</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">.</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1">0</button>
+                                        <button class="btn btn-default-calc pay-keyboard my-1 text-accent">C</button>
+                                    </div>
+
+                                    <div class="d-flex justify-content-around">
+                                        <button id="keyboard-ok" class="btn btn-default-calc mt-3 w-100 bg-green">Ok</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.Order.Tax != 0 && Model.Order.OrderMode != OrderMode.Conduce)
+                    {
+                    <div class="checkout-card">
+                        <div id="tip-submit" class="btn-tip checkout-btn-action">
+                            <div class="title-icon">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" color="#fff"><path d="M20 8a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0"/><path d="M14.831 4.923A3.502 3.502 0 0 0 8 6a3.5 3.5 0 0 0 5.169 3.077M4 13.5h2.395c.294 0 .584.066.847.194l2.042.988c.263.127.553.193.848.193h1.042c1.008 0 1.826.791 1.826 1.767c0 .04-.027.074-.066.085l-2.541.703a1.95 1.95 0 0 1-1.368-.124L6.842 16.25M13 16l4.593-1.411a1.985 1.985 0 0 1 2.204.753c.369.51.219 1.242-.319 1.552l-7.515 4.337a2 2 0 0 1-1.568.187L4 19.52"/></g></svg>
+</span>
+                                <p>@ViewLocalizer["TIP"]</p>
+                            </div>
+                            <p class="checkout-elements-desc">Agrega el valor como una propina</p>
+                        </div>
+                    </div>
+                    }
+                    <div class="checkout-card">
+                        <div id="refund-submit" class="btn-refund checkout-btn-action" style="display:none">
+                            <p>@ViewLocalizer["REFUND"]</p>
+                            <p class="checkout-elements-desc">Solicita un reembolso</p>
+                        </div>
+                    </div>
+                    <div class="checkout-card">
+                        <div id="change-comprobante" class="btn-comprebante checkout-btn-action" data-voucher="@Model.Order.ComprobantesID">
+                            <div class="checkout-elements-title">
+                                <span>
+                                    <div class="title-icon">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" d="M21.78 5.78a.75.75 0 0 0-1.06-1.06l-7.5 7.5a.75.75 0 1 0 1.06 1.06zm.167 1.248q.053.253.053.522v6.9A2.55 2.55 0 0 1 19.45 17H4.55A2.55 2.55 0 0 1 2 14.45v-6.9A2.55 2.55 0 0 1 4.55 5h14.475l-1.5 1.5H4.55c-.58 0-1.05.47-1.05 1.05v6.9c0 .58.47 1.05 1.05 1.05h14.9c.58 0 1.05-.47 1.05-1.05V8.475zM4.5 9.25a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1-.75-.75m0 3.5a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75"/></svg>
+                                        </span>
+                                        <span>
+                                    @ViewLocalizer["Comprobante"]:
+
+                                        </span>
+                                    </div>
+                                    </span>
+                                <span>@Model.ComprebanteName</span>
+                            </div>
+                            <p class="checkout-elements-desc">Comprobante seleccionado</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-col-container">
+                    <button id="pay-submit" class="btn btn-pay checkout-pay-option bg-green">@ViewLocalizer["PAGAR"]</button>
+
+                    <div class="checkout-card">
+
+                        <div class="checkout-elements-header">
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <span class=" text-white">Cambio</span>
+                                    <span id="pay-diff" class=" text-accent"></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class=" text-white">Balance : </span>
+                                    <span class="balance text-green" data-balance=""></span>
+                                </div>
+                            </div>
+
+                            <div class="checkout-pay-qty-options">
+                                <button id="pay-cancel" class="btn flex-fill btn-default-calc checkout-pay-option bg-red" @Html.Raw(ViewBag.Refund == null || !ViewBag.Refund ? "" : "disabled") @Html.Raw(Model.Order.PaymentStatus == PaymentStatus.Partly ? "disabled" : "")>@ViewLocalizer["Cancel"]</button>
+                                <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #425dcf;">@ViewLocalizer["Done"]</button>
+                                <button id="pay-exit" class="btn flex-fill btn-default-calc checkout-pay-option bg-black">@ViewLocalizer["Salvar"]</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@*     <div class="main-wrapper row gx-3 text-white vh-100 p-3">
         <div class="col-5">
             <div class="checkout-header d-flex justify-content-between mb-3">
                 <span class="header-notes">Mesa <span>@(Model.Order.Table != null ? Model.Order.Table.Name : ViewLocalizer["TO GO"]) </span></span>
@@ -158,7 +836,7 @@
                             <span>@ViewLocalizer["Discount"]:</span>
                             <span id="order-discount" class="text-gold">00.00</span>
                         </div>
-                        @* <div class="d-flex justify-content-between my-1"><span>@ViewLocalizer["Tip"]:</span><span id="order-tip">00.00</span></div> *@
+                        <!-- <div class="d-flex justify-content-between my-1"><span>@ViewLocalizer["Tip"]:</span><span id="order-tip">00.00</span></div>-->
                         <div class="d-flex justify-content-between my-1">
                             <span>@ViewLocalizer["Tax"]:</span>
                             <span id="order-tax" class="text-gold">0</span>
@@ -337,7 +1015,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
 
     <div class="modal fade" id="messagebox" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
@@ -1042,8 +1720,12 @@
                         if (data.status == 3) {
                             $("#messageboxcustomerrnc").modal("show");
                         }
+                        $("#change-comprobante").empty();
 
-                            $("#change-comprobante").text("Comprobante: " + data.comprobanteName);
+                        let content = `<div class="checkout-elements-title"><span>@ViewLocalizer["Comprobante"]:</span><span>${data.comprobanteName}</span></div>
+                            <p class="checkout-elements-desc">Comprobante seleccionado</p>`
+                        $("#change-comprobante").append(content);
+                            //$("#change-comprobante").text("Comprobante: " + data.comprobanteName);
                             $("#orderinfo").modal("hide");
 
 
@@ -1954,9 +2636,9 @@
                     html = `<div class="sub-items subitems-discount">`;
                     for (var k = 0; k < data.transactions.length; k++) {
                         var q = data.transactions[k];
-                        html += `<div class="px-3 py-2 pb-4 d-flex justify-content-between div-pago" data-id="${q.id}">
-                                        <label class="font-label text-white text-yellow">${q.method} ${q.note} </label>
-                                        <label class="font-label text-white text-yellow">${q.amount.toFixed(2)}</label>
+                        html += `<div class="px-8 d-flex justify-content-between div-pago" data-id="${q.id}" style="padding: 8px; padding-top: 0px; padding-bottom: 0px;">
+                                        <label class="text-yellow">${q.method} ${q.note} </label>
+                                        <label class="text-yellow">${q.amount.toFixed(2)}</label>
                                 </div>`;
                     }
                     html += `</div>`;
