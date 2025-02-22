@@ -109,13 +109,815 @@
             border-top-left-radius: 20px;
             z-index: 1;
         }
+
+        .main-page-sales {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            background: #000100;
+            gap: 4px;
+        }
+
+        .header-info {
+            width: 100%;
+            height: 8%;
+            background: #222d42;
+            display: flex;
+            padding: 4px;
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+        }
+
+        .main-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            padding-left: 4px;
+            padding-right: 4px;
+            overflow: hidden;
+        }
+
+        .footer-menu {
+            width: 100%;
+            height: 10%;
+            display: flex;
+            flex-direction: row;
+            background: #171525;
+            gap: 4px;
+        }
+
+        .cuenta-side-menu {
+            width: 40%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-radius: 4px;
+            background: #171525;
+        }
+
+        .elements-main-menu {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .user-info-container {
+            all: unset;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            height: auto;
+            background: #1f2b41;
+            gap: 4px;
+            background: #202b41;
+            padding: 2px;
+        }
+
+        .order-info-menu {
+            all: unset;
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 4px;
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .table-body {
+            all: unset;
+            overflow: hidden;
+            overflow-y: scroll;
+            background: none;
+            border-radius: 0;
+            background: #171525;
+        }
+
+        .order-table {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+            .order-table > .table {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: 100%;
+            }
+
+        .order-summary {
+            all: unset;
+            /* border-top: solid 1px #A0A0A0; */
+            padding: 4px;
+        }
+
+        .order-info-options {
+            width: 100%;
+            padding: 4px;
+        }
+
+        .bottom-grid {
+            all: unset;
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+        }
+
+
+        .btn-modern {
+            background-color: #171525 !important;
+            color: white;
+            width: 100%;
+            border-radius: 0px;
+        }
+
+        .btn-modern-small {
+            width: 130px;
+        }
+
+        #order-cancel, #order-save, #order-print, #order-pay {
+            background-color: #425dcf !important;
+        }
+
+            #order-cancel:hover, #order-save:hover, #order-print:hover, #order-pay:hover {
+                background-color: #434e64 !important;
+            }
+
+        #order-cancel {
+            background-color: #413d5a !important;
+            color: red;
+        }
+
+        #order-pay {
+            background-color: #00906a !important;
+        }
+
+        .btn-modern:hover {
+            background-color: #413d5a !important;
+            color: white;
+        }
+
+        .user-cuenta-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            justify-content: space-between;
+            background: #171525;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .kiosk-category-panel {
+            display: flex;
+            flex-direction: column;
+            width: 20%;
+            height: 100%;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background: #171525;
+            border-radius: 4px;
+        }
+
+        .category-item-container {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border-radius: 4px;
+        }
+
+        .category-item-kiosk {
+            background: none;
+            border: none;
+            border-bottom: solid 1px #A0A0A0;
+            border-radius: 0;
+        }
+
+        .active {
+            background: #425dcf !important;
+        }
+
+        .category-item-kiosk:hover {
+            background: #425dcf !important;
+            color: white;
+        }
+
+        .items-qty-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .qty-panel-container {
+            display: flex;
+            flex-direction: row;
+            background: #171525;
+            padding: 4px;
+            gap: 4px;
+            border-radius: 4px;
+        }
+
+        .kiosk-qty {
+            min-width: 15%;
+            padding: 0px;
+            border-radius: 4px;
+            margin-bottom: 0;
+            font-size: 16px !important;
+        }
+
+        .kiosk-qty-keyboard {
+            background: #202c42;
+            border: 0;
+            border-radius: 4px;
+            padding: 0;
+            font-size: 16px !important;
+            margin: 0;
+        }
+
+            .kiosk-qty-keyboard:hover {
+                background: #425dcf;
+                color: white;
+            }
+
+        .product-panels-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            gap: 8px;
+        }
+
+        .product-panel-main-kiosk {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: repeat(auto-fill, minmax(100px, auto)); /* Fila mínima de 20px */
+            height: 100%;
+            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            gap: 8px;
+        }
+
+        .static-product-panel-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(auto-fill, minmax(auto, auto)); /* Fila mínima de 20px */
+            height: 100%;
+            overflow: hidden;
+            overflow-y: scroll !important;
+            overflow-x: hidden;
+            gap: 8px;
+        }
+
+        .product-item-kiosk {
+            all: unset;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            /* border-radius: 4px; */
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: solid 4px #9E1B32;
+            background: #343f54 !important;
+            min-height: 100px;
+            position: relative;
+            overflow: hidden; /* Asegura que nada se desborde */
+        }
+
+            .product-item-kiosk > h5 {
+                margin: 0;
+                text-align: center;
+                padding: 8px;
+            }
+
+            .product-item-kiosk > img {
+                width: 100%; /* Hace que la imagen ocupe todo el ancho del div */
+                height: 100%; /* Hace que la imagen ocupe toda la altura del div */
+                object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+                object-position: center; /* Centra la imagen dentro del div */
+            }
+
+        .total {
+            color: #425dcf;
+            font-size: 20px !important;
+            font-weight: bold;
+        }
+        
+        .sub-total > span {
+            color: #c1c1c1;
+        }
+
+        .sub-total:hover {
+            background: #425dcf;
+        }
+
+        .product-item-kiosk > .card-img-overlay {
+            background: rgba(52,63,84,0.8) !important;
+            transition: all 0.1s ease-in;
+        }
+
+        .product-item-kiosk:hover > .card-img-overlay {
+            background: #434e64 !important;
+            border-radius: 0px;
+        }
+
+        .product-item-kiosk:hover {
+            background: #434e64 !important;
+            cursor: pointer;
+            border-bottom: solid 4px white !important;
+
+        }
+
+        .product-title {
+            text-align: center;
+        }
+
+        .card-img {
+            border-radius: 0px;
+        }
+
+        .order-item:hover {
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+
+        .order-item {
+            background: #222e44;
+        }
+
+        .btn-primary {
+            background-color: #425dcf !important;
+            border-color: #425dcf !important;
+        }
+
+        .btn-label-secondary {
+            background-color: #171525 !important;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .serving-size-item {
+            background: #343f54 !important;
+        }
+
+            .serving-size-item:hover {
+                background: #434e64 !important;
+                cursor: pointer;
+            }
+        .sales-order-persons {
+
+        }
+
+        .tr {
+            border-bottom: solid 4px #171525;
+        }
+
+        .user-info-option {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            flex-wrap: wrap;
+            font-weight: bold;
+            height: 90%;
+        }
+
+        .info-option {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            background: rgba(255,255,255,0.01);
+            flex-wrap: wrap;
+            height: 90%;
+            font-weight: bold;
+        }
+
+        .btn-nostyle {
+            all: unset;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            font-weight: bold;
+            height: fit-content;
+        }
+
+        .btn-nostyle:hover {
+            /* background-color: rgba(255,255,255,0.2) !important; */
+            border-bottom: 2px solid white;
+                        color: #425dcf !important;
+
+
+        }
+
+        .active {
+            color: #425dcf !important;
+            background-color: unset !important;
+            border-bottom: 2px solid white;
+        }
+
+        .primary-menu-tab {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            padding: 8px;
+            gap: 8px;
+            overflow: hidden;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #mode, #group-panel-main{
+            padding: 0px;
+            display: flex;
+            gap: 8px;
+            flex-direction: row;
+            align-items: center;
+
+        }
+
+        .secondary-menu-tab {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            padding: 8px;
+            padding-bottom: 0px;
+            background: #7a89a6;
+            gap: -5px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+
+        .button3 {
+            border-radius: 6px 6px 0px 0px;
+            min-width: 150px;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); /* Forma de trapecio */
+            background: #343f54;
+            border: none;
+            font-weight: bold;
+            padding: .2rem 1rem;
+            height: 100%;
+            transition: all ease-in 0.05s;
+        }
+
+        .btn.button3.active, .btn.button3:hover {
+            background: #000100 !important;
+            color: #425dcf !important;
+            /* border-top: 2px solid white; */
+            padding: .375rem 1rem;
+
+        }
+
+        .sub-category > div{
+            flex-direction: row;
+        }
+
+        .sub-category {
+            width: 100% !important;
+            overflow: hidden;
+            height: fit-content !important;
+        }
+
+        .main {
+            overflow: hidden;
+            width: 100% !important;
+            height: 100%;
+        }
+
+        .product-card-title {
+            padding: 0;
+            height: auto;
+        }
+
+        .products-footer {
+            display:flex;
+            width: 100%;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px;
+        }
+
+
+        .more-menu-container {
+            position: relative;
+            
+        }
+
+        .more-menu {
+            position: fixed;
+            background: #171525;
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            align-items: flex-start;
+            border-radius: 12px;
+            padding: 16px;
+            gap: 8px;
+            top: 0;
+            transform: translate(-100%,5%);
+            z-index: 2;
+        }
+
+        .button-icon-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+        }
     </style>
 </head>
 <body data-theme="dark">
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-    <div class="main-wrapper d-flex text-white">
+
+    <div class="main-page-sales">
+        <div class="main-content">
+            <div class="details show cuenta-side-menu">
+                <div class="top user-info-container">
+                    <div class="user-info-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
+
+                        @ViewLocalizer["Cliente"]: <span class="order-client">@Model.ClientName</span></div>
+                    <div class="user-info-option">@ViewLocalizer["Comprobante"]: <span class="order-comprobante">@Model.ComprobanteName</span></div>
+                    <div class="seat-add-div user-info-option">
+                        <div class="seat-add">
+                            <img src="/vendor/img/icons/plus1.svg" />
+                        </div>
+                    </div>
+                    <a class="sales-order-persons user-info-option" href="javascript:void(0);">
+                        <img id="order-person" class="sales-setting" src="/vendor/img/comensales.png" alt="" width=30% height=30%>
+                        <div id="div-person" class="user-info-option">
+                            @Model.Person
+                        </div>
+                    </a>
+
+
+                    <input type="hidden" id="divide-num" value="0" />
+                    <a class="search-product user-info-option" href="javascript:void(0);" style="width: 12%; height: auto;">
+                        <img class="sales-logo" src="/vendor/img/logo-04.png" alt="" >
+                    </a>
+                </div>
+                <div class="content order-item-content order-info-menu">            
+                    <div class="order-table" style="height:initial">
+                        <div id="order-item-table" class="table">
+                            <div class="table-header">
+                                <div class="tr">
+                                    <div class="td">@ViewLocalizer["Item"]</div>
+                                    <div class="td"></div>
+                                    <div class="td">@ViewLocalizer["Qty"]</div>
+                                    <div class="td">@ViewLocalizer["Price"]</div>
+                                    <div class="td">@ViewLocalizer["Amt"]</div>
+                                </div>
+                            </div>
+                            <div id="order-item-list" class="table-body" @* style="min-height:initial; max-height:initial; height: calc(100vh - 450px);" *@>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-summary">
+                        <div class="sub-total"><span>@ViewLocalizer["Subtotal"]:</span><span id="order-subtotal">00.00</span></div>
+                        <div class="sub-total"><span>@ViewLocalizer["Discount"]:</span><span id="order-discount">00.00</span></div>
+                        <div class="order-discount-items">
+                        </div>
+                        <div class="sub-total">
+                            <span>@ViewLocalizer["Tax"]:</span><span id="order-tax">0</span>
+                        </div>
+                        <div class="order-tax-items">
+                        </div>
+                        <div class="sub-total">
+                            <span>@ViewLocalizer["Propina"]:</span><span id="order-propina">0</span>
+                        </div>
+                        <div class="order-propina-items">
+                        </div>
+
+                        <div class="sub-total" style="display:none"><span>@ViewLocalizer["TIP"]:</span><span id="order-tip">0</span></div>
+                        @if (Model.OrderType == OrderType.Delivery)
+                        {
+                            <div class="sub-total"><span>@ViewLocalizer["Delivery"]:</span><span id="order-delivery-cost">$0.00</span></div>
+                            <div class="sub-total"><span>@ViewLocalizer["Time"]:</span><span id="order-delivery-time"></span></div>
+                        }
+                        <div class="total" id="order-total">00.00</div>
+                        <div class="justify-content-between d-flex" style="display:none !important"><span id="payment-status" class="pt-2" style="font-size: large">@Model.PaymentStatus</span><span class="total text-success" id="order-paid-total">@Model.PayAmount</span></div>
+                    </div>
+    
+                </div>
+                <div class="order-info-options">
+                    <div class="bottom-grid">
+                        <button id="order-cancel" class="btn btn-modern">@ViewLocalizer["Cancel"]</button>
+                        <button id="order-save" class="btn btn-modern">@ViewLocalizer["Send"]</button>
+                        <button id="order-print" class="btn btn-modern">@ViewLocalizer["Print"]</button>
+                        <button id="order-pay" class="btn btn-modern">@ViewLocalizer["Pagar"]</button>
+                    </div>
+                </div>
+                <span id="hambugur"> || </span>
+
+            </div>
+            <div class="products elements-main-menu">
+                <div class="primary-menu-tab">
+                    <div id="group-panel-main" @* class="inner" *@>
+                    </div>
+                    <div id="mode" @* class="inner py-2" *@>
+                            @if (Model.OrderType == OrderType.Delivery)
+                            {
+                                <button id="order-mesa" class="btn button2 " style="min-width: 150px;">
+                                    @if (Model.PrepareType != null)
+                                    {
+                                        @Model.PrepareType.Name
+                                    }
+                                    else
+                                    {
+                                        @ViewLocalizer["Mesa"]
+                                    }
+
+                                </button>
+                            }
+                        <button id="order-express" class="btn btn-nostyle">@ViewLocalizer["Express"]</button>
+                        <button id="order-mode" class="btn btn-nostyle">@ViewLocalizer[Model.OrderMode.ToString()]</button>
+                        <div class="more-menu-container">
+                            <a class="sales-setting-container" id="more-menu-open" href="javascript:void(0);">
+                                <svg id="order-tools" class="sales-setting" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="#fff" d="M12 16.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3" stroke-width="0.5" stroke="#fff"/></g></svg>
+                                @* <img id="order-tools" class="sales-setting" src="/vendor/img/settings.png" alt=""> *@
+
+                            </a>
+                            <div class="more-menu" id="more-menu" style="display: none;">
+                                <div class="button-icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
+                                    <button id="order-info" class="btn btn-nostyle">@ViewLocalizer["Client Info"]</button>
+                                </div>
+                                @if (discountType != "item" && @Model.OrderMode != OrderMode.Divide)
+                                {
+                                    <div class="button-icon-container">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z" stroke-width="0.5" stroke="#fff"/><path fill="#fff" d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z" stroke-width="0.5" stroke="#fff"/><circle cx="7.25" cy="4.25" r="1.25" fill="#fff" stroke-width="0.5" stroke="#fff"/></svg>
+                                        <button id="btn-order-discount" class="btn btn-nostyle">@ViewLocalizer["Discount"]</button>
+                                    </div>
+                                }
+                                <div class="button-icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 4c-4.411 0-8 3.589-8 8s3.589 8 8 8s8-3.589 8-8s-3.589-8-8-8m-5 8c0-.832.224-1.604.584-2.295l6.711 6.711A4.94 4.94 0 0 1 12 17c-2.757 0-5-2.243-5-5m9.416 2.295L9.705 7.584A4.94 4.94 0 0 1 12 7c2.757 0 5 2.243 5 5c0 .832-.224 1.604-.584 2.295" stroke-width="0.5" stroke="#fff"/></svg>
+                                    <button id="btn-order-void" class="btn btn-nostyle">@ViewLocalizer["Void"]</button>
+                                </div>
+                                @if (Model.Status != OrderStatus.Temp && Model.OrderType == OrderType.DiningRoom)
+                                {
+                                    <div class="button-icon-container">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 3h5v5M8 3H3v5" /><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3m12 6l6-6" /></g></svg>
+
+                                        <button id="order-split" class="btn btn-nostyle">@ViewLocalizer["Split"]</button>
+                                    </div>
+                                }
+                                <div class="button-icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="#fff"><path d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045"/><path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0"/></g></svg>
+                                    <button id="btn-change-visual-mode" class="btn btn-nostyle" onclick="changeVisualMode();">@ViewLocalizer["Visual Mode"]</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="grid categories">
+                    <div id="category-panel-main" class="secondary-menu-tab">
+                    </div>
+                </div>
+                <div class="sub-category">
+                    <div id="subcategory-panel-main" class="inner">
+                    </div>
+                </div>
+                <div class="products elements-main-menu">
+            <div class="product-content product-panels-container">
+                <div id="forcedquestioncustommodal" class="custommodal" style="display: none; width: 100%; overflow-y: scroll;">
+                    <!-- Forced question modal -->
+                    <div class="" id="forcedquestionmodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
+                        <div class="" role="document" style="border:none">
+                            <div class="modal-content" style="height: 100vh !important;">
+
+                                <!-- Modal-header
+
+                                <div class="modal-header" style="padding: 5px;">
+                                    <h5 class="smartbuton-modal-title">@ViewLocalizer["Forced Questions"]</h5>
+                                    <div class="">
+                                        <button id="question-cancel" type="button" class="btn btn-danger">@ViewLocalizer["Cancel"]</button>
+                                        <button id="question-submit" disabled type="button" class="btn btn-success">@ViewLocalizer["Submit"]</button>
+                                    </div>
+                                </div>
+
+                                    -->
+                                <div class="" style="display:flex">
+                                    <div class="w-100">
+                                        <div class="modal-body question-body" style="max-height: 95vh;">
+                                        </div>
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div>
+                                        <div style="padding-bottom: 15px; margin-top: 20px; text-align: center;">
+                                            <h5 id="QuestionTitleModal" class="smartbuton-modal-title" style="color: orange;">@ViewLocalizer["Forced Questions"]</h5>
+                                            <div class="">
+                                                <button id="question-submit" disabled type="button" class="btn btn-success" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Submit"]</button>
+                                                <button id="question-cancel" type="button" class="btn btn-danger" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Cancel"]</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="textmen" style="margin-top: 0px;">
+
+                                            <!-- Columna del 25% -->
+                                            <!-- Contenido -->
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modifiercustommodal" class="custommodal" style="display: none; width: 100%; overflow-y: scroll;">
+                    <!-- Modifier modal -->
+                    <div class="" id="modifiermodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
+                        <div class="" role="document">
+                            <div class="modal-content">
+
+                                <div class="" style="display:flex">
+                                    <div class="w-100">
+                                        <div class="modal-body modifier-body" style="max-height: 95vh;">
+                                        </div>
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div>
+                                        <div style="padding-bottom: 15px; margin-top: 20px; text-align: center;">
+                                            <h5 id="ModifierTitleModal" class="smartbuton-modal-title" style="color: orange;">@ViewLocalizer["Modifiers"]</h5>
+                                            <div class="">
+                                                <button id="modifier-submit" type="button" class="btn btn-success" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Submit"]</button>
+                                                <button id="modifier-cancel" type="button" class="btn btn-danger" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Cancel"]</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="textmen" style="margin-top: 0px;">
+
+                                            <!-- Columna del 25% -->
+                                            <!-- Contenido -->
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main">
+                    <div id="product-panel-main" class="product-panel-main-kiosk">
+                    </div>
+
+                </div>
+                <div class="products-footer">
+                    <div>
+                        @if (Model.Table != null)
+                        {
+                            <div class="info-option"><span>Mesa: </span><span> @Model.Table.Name</span></div>
+                        }
+                        else
+                        {
+                            if (Model.PrepareType != null)
+                            {
+                                <div class="info-option"><span>Mesa: </span> <span id="order-mesa-header"> @Model.PrepareType.Name</span></div>
+                            }
+                            else
+                            {
+                                <div class="info-option"><span>Mesa: </span><span id="order-mesa-header"> @ViewLocalizer["TO GO"]</span></div>
+                            }
+
+                        }
+                    </div >
+                    <div class="info-option" id="fecha-hora"></div>
+                    <div class="info-option">@ViewLocalizer["Waiter"]: <span class="order-waiter">@Model.WaiterName</span></div>
+                </div>        
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    @* <div class="main-wrapper d-flex text-white">
         <div class="details show">
             <div class="top">
                 <a class="search-product" href="javascript:void(0);">
@@ -282,7 +1084,7 @@
                     <div class="" id="modifiermodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="" style="border: none; border-bottom: 1px solid #353535; background-color: #1d1d1d; position: absolute; width: 100%; left: 0; height: 100%; top:0 ">
                         <div class="" role="document">
                             <div class="modal-content">
-                                @*<div class="modal-header">
+                                <div class="modal-header">
                                     <h5 class="smartbuton-modal-title">@viewlocalizer["modifiers"]</h5>
                                     <div class="">
                                         <button id="modifier-submit" type="button" class="btn btn-success">@viewlocalizer["submit"]</button>
@@ -290,7 +1092,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-body modifier-body">
-                                </div>*@
+                                </div>
 
                                 <div class="" style="display:flex">
                                     <div class="w-100">
@@ -334,7 +1136,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <!-- Permission Error -->
     <div class="modal fade" id="permissionerrormodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
@@ -1658,6 +2460,27 @@
 </body>
 </html>
 <script>
+    function mostrarFechaHora() {
+      const opciones = { 
+        year: '2-digit', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit'
+      };
+      
+      const fecha = new Date();
+      const fechaHora = fecha.toLocaleString('es-ES', opciones);
+      
+      const fechaHoraFormateada = fechaHora.replace(',', '').replace(' AM', '').replace(' PM', '');
+      
+      document.getElementById('fecha-hora').textContent = fechaHoraFormateada;
+    }
+
+    mostrarFechaHora();
+
+    setInterval(mostrarFechaHora, 60000);
+
     let code = "";
     let CurrentSeat = 1;
     let reading = false;
@@ -1803,6 +2626,8 @@
         LoadPrepareTypes();
         var defaultDeliveryValue = "Para llevar";
         setVisualMode();
+
+        let more_menu_on = false;
 
         $("#carga-datos-rnc").click(function () {
 
@@ -2175,7 +3000,26 @@
         });
 
         $("#order-tools").click(function () {
-            $("#ordermenuoptionmodal").modal("show");
+            if(more_menu_on) {
+                $('#more-menu').hide();
+                more_menu_on = false;
+            } else {
+                $('#more-menu').show();
+                more_menu_on = true;
+            }
+            
+            //$("#ordermenuoptionmodal").modal("show");
+        });
+
+        document.addEventListener("click", function(event) {
+            let menu = document.getElementById("order-tools");
+            if (!menu.contains(event.target)) {
+                console.log('a')
+                console.log(event.target)
+                $('#more-menu').hide();
+                more_menu_on = false;
+            }
+
         });
 
         $(".btn-keyboard").click(function () {
@@ -5104,7 +5948,7 @@
                     }
                     var html =
                         `
-                                <button class="group-item btn button1 ${active}" data-id='${d.id}' style='background-color:${d.backColor}; color: ${d.textColor}'>${d.name}</button>
+                                <button class="group-item btn btn-nostyle ${active}" data-id='${d.id}' style='background-color:${d.backColor}; color: ${d.textColor}'>${d.name}</button>
                             `
                     $("#group-panel-main").append(html);
 
@@ -5139,9 +5983,13 @@
                         LoadSubCategory(d.id);
                     }
 
+                    // var html =
+                    //     `
+                    //              <button class="category-item btn button3 ${active}" data-id='${d.id}' style='background-color:#C00000; color: ${d.textColor}'>${d.name}</button>
+                    //         `
                     var html =
                         `
-                                 <button class="category-item btn button3 ${active}" data-id='${d.id}' style='background-color:#C00000; color: ${d.textColor}'>${d.name}</button>
+                                 <button class="category-item btn button3 ${active}" data-id='${d.id}'>${d.name}</button>
                             `
                     $("#category-panel-main").append(html);
                 }
@@ -5172,7 +6020,7 @@
 
                     var html =
                         `
-                                <button class="subcategory-item btn button2 ${active}"  data-id='${d.id}'>${d.name}</button>
+                                <button class="subcategory-item btn btn-nostyle ${active}"  data-id='${d.id}'>${d.name}</button>
                             `
                     $("#subcategory-panel-main").append(html);
                 }
@@ -5202,7 +6050,7 @@
                     if (d.product.photo) {
                         var html =
                             `
-                                    <div class="product-item card product" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
                                             <img class="card-img" src="${d.product.photo}" alt="">
                                         <div class="card-img-overlay">
                                                 <div class="product-title">${d.product.name}</div>
@@ -5216,7 +6064,7 @@
                     else {
                         var html =
                             `
-                                        <div class="product-item card product" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                        <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
                                                  <h5 class="product-card-title">${d.product.name}</h5>
                                              ${inventory_html}
                                     </div>
@@ -5235,7 +6083,7 @@
     function AdjustHeight() {
         var top = $(".order-table").position();
         var bottom = $(".order-summary").position();
-        $("#order-item-table").css("height", '' + (bottom.top - top.top - 90) + 'px');
+        //$("#order-item-table").css("height", '' + (bottom.top - top.top - 90) + 'px');
 
     }
 
@@ -5260,12 +6108,12 @@
 
                 $(".seat-add-div").hide();
                 var itemCount = 0;
-                if (data.valor.order.orderMode == 1) {
+                if (data.order.orderMode == 1) {
 
                     var haveActiveSeat = false;
                     $(".seat-add-div").show();
-                    for (var i = 0; i < data.valor.seats.length; i++) {
-                        var seat = data.valor.seats[i];
+                    for (var i = 0; i < data.seats.length; i++) {
+                        var seat = data.seats[i];
                         var client = "";
                         if (seat.clientName && seat.clientName != "") client = " - " + seat.clientName;
 
@@ -5300,12 +6148,12 @@
                         })
                     }
                 }
-                else if (data.valor.order.orderMode == 0) {
+                else if (data.order.orderMode == 0) {
 
                     var html = ``;
                     var course = "";
-                    for (var i = 0; i < data.valor.items.length; i++) {
-                        var d = data.valor.items[i];
+                    for (var i = 0; i < data.items.length; i++) {
+                        var d = data.items[i];
                         if (d.course != course) {
                             html += `<div class="course-item" style='background-color:#555'><span class="">${d.course} </span><span class=""></span></div>`;
                             course = d.course;
@@ -5315,11 +6163,11 @@
                     }
                     $("#order-item-list").append(html);
                 }
-                else if (data.valor.order.orderMode == 2) {
+                else if (data.order.orderMode == 2) {
                     var html = ``;
                     var course = "";
-                    for (var i = 0; i < data.valor.items.length; i++) {
-                        var d = data.valor.items[i];
+                    for (var i = 0; i < data.items.length; i++) {
+                        var d = data.items[i];
                         if (d.course != course) {
                             html += `<div class="course-item" style='background-color:#555'><span class="">${d.course} </span><span class=""></span></div>`;
                             course = d.course;
@@ -5336,65 +6184,65 @@
                 else{
                     $("#order-save").prop("disabled", false);
                 }
-                var total = numberWithCommas(data.valor.order.totalPrice.toFixed(2))
+                var total = numberWithCommas(data.order.totalPrice.toFixed(2))
                 $("#order-total").text("$" + total);
-                $("#order-tax").text("$" + data.valor.order.tax.toFixed(2));
-                $("#order-tip").text("$" + data.valor.order.tip.toFixed(2));
-                if (data.valor.order.delivery) {
-                    $("#order-delivery-cost").text("$" + data.valor.order.delivery.toFixed(2));
+                $("#order-tax").text("$" + data.order.tax.toFixed(2));
+                $("#order-tip").text("$" + data.order.tip.toFixed(2));
+                if (data.order.delivery) {
+                    $("#order-delivery-cost").text("$" + data.order.delivery.toFixed(2));
                 } else {
                     $("#order-delivery-cost").text("$" + (0.0).toFixed(2));
                 }
 
                 $(".order-tax-items").empty();
-                if (data.valor.order.taxes && data.valor.order.taxes.length > 0) {
+                if (data.order.taxes && data.order.taxes.length > 0) {
                     html = `<div class="sub-items subitems-tax">`;
-                    for (var k = 0; k < data.valor.order.taxes.length; k++) {
-                        var q = data.valor.order.taxes[k];
+                    for (var k = 0; k < data.order.taxes.length; k++) {
+                        var q = data.order.taxes[k];
                         html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.description}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
                     }
                     html += `</div>`;
                     $(".order-tax-items").append(html);
                 }
-                $("#order-propina").text("$" + data.valor.order.propina.toFixed(2));
+                $("#order-propina").text("$" + data.order.propina.toFixed(2));
                 $(".order-propina-items").empty();
-                if (data.valor.order.propinas && data.valor.order.propinas.length > 0) {
+                if (data.order.propinas && data.order.propinas.length > 0) {
                     html = `<div class="sub-items subitems-propina">`;
-                    for (var k = 0; k < data.valor.order.propinas.length; k++) {
-                        var q = data.valor.order.propinas[k];
+                    for (var k = 0; k < data.order.propinas.length; k++) {
+                        var q = data.order.propinas[k];
                         html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.description}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
                     }
                     html += `</div>`;
                     $(".order-propina-items").append(html);
                 }
 
-                $("#order-subtotal").text("$" + data.valor.order.subTotal.toFixed(2));
-                $("#order-discount").text("$" + data.valor.order.discount.toFixed(2));
+                $("#order-subtotal").text("$" + data.order.subTotal.toFixed(2));
+                $("#order-discount").text("$" + data.order.discount.toFixed(2));
                 $(".order-discount-items").empty();
-                if (data.valor.order.discounts && data.valor.order.discounts.length > 0) {
+                if (data.order.discounts && data.order.discounts.length > 0) {
                     html = `<div class="sub-items subitems-discount">`;
-                    for (var k = 0; k < data.valor.order.discounts.length; k++) {
-                        var q = data.valor.order.discounts[k];
+                    for (var k = 0; k < data.order.discounts.length; k++) {
+                        var q = data.order.discounts[k];
                         html += `<div class="item px-3 d-flex justify-content-between"><span class="">${q.name}</span><span class="">$${q.amount.toFixed(2)}</span></div>`;
                     }
                     html += `</div>`;
                     $(".order-discount-items").append(html);
                 }
 
-                $("#order-paid-total").text(data.valor.order.payAmount);
-                if (data.valor.order.paymentStatus == 0) {
+                $("#order-paid-total").text(data.order.payAmount);
+                if (data.order.paymentStatus == 0) {
                     $("#payment-status").text("Not Paid");
                 }
-                else if (data.valor.order.paymentStatus == 1) {
+                else if (data.order.paymentStatus == 1) {
                     $("#payment-status").text("Partly Paid");
                 }
-                else if (data.valor.order.paymentStatus == 2) {
+                else if (data.order.paymentStatus == 2) {
                     $("#payment-status").text("Paid");
                 }
-                else if (data.valor.order.paymentStatus == 3) {
+                else if (data.order.paymentStatus == 3) {
                     $("#payment-status").text("Seat Paid");
                 }
-                else if (data.valor.order.paymentStatus == 4) {
+                else if (data.order.paymentStatus == 4) {
                     $("#payment-status").text("Divide Paid");
                 }
             },
