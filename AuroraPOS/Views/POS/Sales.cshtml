@@ -190,6 +190,7 @@
             border-radius: 4px;
             overflow: hidden;
             padding: 6px;
+            gap: 8px;
         }
 
         .table-body {
@@ -216,7 +217,9 @@
         .order-summary {
             all: unset;
             /* border-top: solid 1px #A0A0A0; */
-            padding: 4px;
+            padding: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
         }
 
         .order-info-options {
@@ -363,7 +366,7 @@
         .product-panel-main-kiosk {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-template-rows: repeat(auto-fill, minmax(100px, auto)); /* Fila mínima de 20px */
+            grid-template-rows: repeat(auto-fill, 120px); /* Fila mínima de 20px */
             height: 100%;
             overflow: hidden;
             overflow-y: auto;
@@ -380,6 +383,7 @@
             overflow-y: scroll !important;
             overflow-x: hidden;
             gap: 8px;
+            row-gap: 16px;
         }
 
         .product-item-kiosk {
@@ -395,7 +399,7 @@
             border-right: none !important;
             border-bottom: solid 4px #9E1B32;
             background: #343f54 !important;
-            min-height: 100px;
+            min-height: 120px;
             position: relative;
             overflow: hidden; /* Asegura que nada se desborde */
         }
@@ -669,7 +673,7 @@
                         </div>
                     </div>
                     <a class="sales-order-persons user-info-option" href="javascript:void(0);">
-                        <img id="order-person" class="sales-setting" src="/vendor/img/comensales.png" alt="" width=30% height=30%>
+                        <img id="order-person" class="sales-setting" src="/vendor/img/comensales.png" alt="" width=35 height=35>
                         <div id="div-person" class="user-info-option">
                             @Model.Person
                         </div>
@@ -677,8 +681,8 @@
 
 
                     <input type="hidden" id="divide-num" value="0" />
-                    <a class="search-product user-info-option" href="javascript:void(0);" style="width: 12%; height: auto;">
-                        <img class="sales-logo" src="/vendor/img/logo-04.png" alt="" >
+                    <a class="search-product user-info-option" href="javascript:void(0);" >
+                        <img class="sales-logo" src="/vendor/img/logo-04.png" alt="" width=45 height=35 >
                     </a>
                 </div>
                 <div class="content order-item-content order-info-menu">            

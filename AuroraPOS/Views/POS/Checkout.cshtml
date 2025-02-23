@@ -369,12 +369,17 @@
         }
 
         .checkout-pay-qty-options {
-            width: 100%;
+/*             width: 100%;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
             gap: 4px;
-            position: relative;
+            position: relative; */
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: repeat(auto-fill, 30px); /* Fila mínima de 20px */
+            height: 100%;
+            gap: 16px;
         }
 
         .calc-show {
@@ -400,7 +405,8 @@
             align-items: center;
             font-weight: bold;
             color: #c1c1c1;
-            width: 10%;
+            width: 100%;
+            height: 100%;
             border-radius: 4px;
         }
         .btn-default-calc {

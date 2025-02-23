@@ -3664,36 +3664,43 @@ namespace AuroraPOS.Controllers
         [HttpPost]
         public JsonResult VoidOrder([FromBody] VoidOrderModel model)
         {
-            var order = GetOrder(model.OrderId);
-            var items = order.Items.Select(s => s.ID).ToList();
-            foreach(var item in items)
-            {
-                VoidItem(new CancelItemModel() { ItemId = item, ReasonId = model.ReasonId });
-            }
-            order.Status = OrderStatus.Void;
-            if (order.OrderType == OrderType.Delivery)
-            {
-                var delivery = _dbContext.Deliverys.FirstOrDefault(s => s.Order == order);
-                if (delivery != null)
-                {
-                    delivery.Status = StatusEnum.Cancelado;
-                }
-            }
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
-            if (!string.IsNullOrEmpty(model.Pin)) {
-                var user = _dbContext.User.First(s => s.Pin == model.Pin);
-                order.ForceUpdatedBy = user.FullName;
-            }            
+            int status = objPOSCore.VoidOrder(model, stationID);
 
-            var kitchenOrder = _dbContext.KitchenOrder.Where(s => s.OrderID == order.ID);
-            foreach(var o in kitchenOrder)
-            {
-                o.Status = KitchenOrderStatus.Void;
-            }
+            return Json(new { status = status });
 
-            _dbContext.SaveChanges();
+            //var order = GetOrder(model.OrderId);
+            //var items = order.Items.Select(s => s.ID).ToList();
+            //foreach(var item in items)
+            //{
+            //    VoidItem(new CancelItemModel() { ItemId = item, ReasonId = model.ReasonId });
+            //}
+            //order.Status = OrderStatus.Void;
+            //if (order.OrderType == OrderType.Delivery)
+            //{
+            //    var delivery = _dbContext.Deliverys.FirstOrDefault(s => s.Order == order);
+            //    if (delivery != null)
+            //    {
+            //        delivery.Status = StatusEnum.Cancelado;
+            //    }
+            //}
 
-            return Json(new { status = 0 });
+            //if (!string.IsNullOrEmpty(model.Pin)) {
+            //    var user = _dbContext.User.First(s => s.Pin == model.Pin);
+            //    order.ForceUpdatedBy = user.FullName;
+            //}            
+
+            //var kitchenOrder = _dbContext.KitchenOrder.Where(s => s.OrderID == order.ID);
+            //foreach(var o in kitchenOrder)
+            //{
+            //    o.Status = KitchenOrderStatus.Void;
+            //}
+
+            //_dbContext.SaveChanges();
+
+            //return Json(new { status = 0 });
         }
 
         [HttpPost]
@@ -4726,60 +4733,73 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult AddDiscount([FromBody]DiscountModel model)
 		{
-            
-			if (model.Type == "Order")
-			{
-                if (model.DivideId > 0) return Json(new { status = 1 });
-                var order = _dbContext.Orders.Include(s=>s.Taxes).Include(s => s.Propinas).Include(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s=>s.Discounts).FirstOrDefault(s => s.ID == model.TargetId);
-				var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
-                var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
-                var isPromotion = order.CheckPromotion();
-				if (!isPromotion && order.Discounts.Count < 1)
-				{
-                    
-                    bool itemDiscount = false;
-                    foreach(var item in order.Items)
-                    {
-                        var discounts = item.Discounts;
-                        if (discounts != null && discounts.Count > 0)
-                            itemDiscount = true;
-                    }
-                    if (!itemDiscount)
-                    {
-						order.AddDiscount(discount, model.DivideId);
-						order.GetTotalPrice(voucher);
-						_dbContext.SaveChanges();
-						return Json(new { status = 0, type = "order" });
-					}
-				}
-            }
-			else if (model.Type == "OrderItem")
-			{
-                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-                var stationID = int.Parse(GetCookieValue("StationID"));
 
-                var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.TargetId);
-                orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
-                var isPromotion = orderItem.Order.CheckPromotion();
-                var isOrderDiscount = orderItem.Order.Discounts != null && orderItem.Order.Discounts.Count > 0;
-                var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
-                var exist = orderItem.Discounts.FirstOrDefault(s => s.ItemID == model.DiscountId);
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = int.Parse(GetCookieValue("StationID"));
 
-				if (!isOrderDiscount && !isPromotion && exist == null)
-				{
-                    orderItem.AddDiscount(discount);
+            var res = objPOSCore.AddDiscount(model, stationID);
 
-                    var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s=>s.Items).ThenInclude(s=>s.Questions).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderItem.Order.ID);
-                    _dbContext.SaveChanges();
-                   var  voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
-                    order.GetTotalPrice(voucher);
-                    _dbContext.SaveChanges();
-					return Json(new { status = 0, type = "item" });
-				}
+            if(res.Item1 == 0)
+            {
+                return Json(new { status = res.Item1, type = res.Item2 });
             }
 
-			return Json(new { status = 1});
-		}
+            return Json(new { status = res.Item1 });
+
+
+            //if (model.Type == "Order")
+            //{
+            //             if (model.DivideId > 0) return Json(new { status = 1 });
+            //             var order = _dbContext.Orders.Include(s=>s.Taxes).Include(s => s.Propinas).Include(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s=>s.Discounts).FirstOrDefault(s => s.ID == model.TargetId);
+            //	var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
+            //             var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            //             var isPromotion = order.CheckPromotion();
+            //	if (!isPromotion && order.Discounts.Count < 1)
+            //	{
+
+            //                 bool itemDiscount = false;
+            //                 foreach(var item in order.Items)
+            //                 {
+            //                     var discounts = item.Discounts;
+            //                     if (discounts != null && discounts.Count > 0)
+            //                         itemDiscount = true;
+            //                 }
+            //                 if (!itemDiscount)
+            //                 {
+            //			order.AddDiscount(discount, model.DivideId);
+            //			order.GetTotalPrice(voucher);
+            //			_dbContext.SaveChanges();
+            //			return Json(new { status = 0, type = "order" });
+            //		}
+            //	}
+            //         }
+            //else if (model.Type == "OrderItem")
+            //{
+            //             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            //             var stationID = int.Parse(GetCookieValue("StationID"));
+
+            //             var orderItem = _dbContext.OrderItems.Include(s=>s.Order).ThenInclude(s=>s.Items).ThenInclude(s=>s.Discounts).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s=>s.Discounts).FirstOrDefault(s=>s.ID == model.TargetId);
+            //             orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+            //             var isPromotion = orderItem.Order.CheckPromotion();
+            //             var isOrderDiscount = orderItem.Order.Discounts != null && orderItem.Order.Discounts.Count > 0;
+            //             var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
+            //             var exist = orderItem.Discounts.FirstOrDefault(s => s.ItemID == model.DiscountId);
+
+            //	if (!isOrderDiscount && !isPromotion && exist == null)
+            //	{
+            //                 orderItem.AddDiscount(discount);
+
+            //                 var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s=>s.Items).ThenInclude(s=>s.Questions).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderItem.Order.ID);
+            //                 _dbContext.SaveChanges();
+            //                var  voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
+            //                 order.GetTotalPrice(voucher);
+            //                 _dbContext.SaveChanges();
+            //		return Json(new { status = 0, type = "item" });
+            //	}
+            //         }
+
+            //return Json(new { status = 1});
+        }
 
         [HttpPost]
         public JsonResult CombineSeat([FromBody] CombineSeatModel model)
