@@ -2026,4 +2026,59 @@ public class POSController : Controller
 
         }
     }
+
+    [HttpPost("AddDiscount")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult AddDiscount([FromBody] AddDiscountRequest req)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        AddDiscountResponse response = new AddDiscountResponse();
+
+        try
+        {
+            var res = objPOSCore.AddDiscount(req.discountModel, req.stationId);
+
+            response.Success = true;
+            response.status = res.Item1;
+            response.type = res.Item2;
+            response.Message = "La operación se realizó correctamente";
+
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error con la operación: " + e.Message;
+
+            return Json(response);
+        }
+    }
+
+    [HttpPost("VoidOrder")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public JsonResult VoidOrder([FromBody] VoidOrderRequest request)
+    {
+        var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+        VoidOrderResponse response = new VoidOrderResponse();
+
+        try
+        {
+            int status = objPOSCore.VoidOrder(request.orderModel, request.stationId);
+            response.Success = true;
+            response.status = status;
+            response.Message = "La operación se realizó correctamente";
+
+            return Json(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.status = -1;
+            response.Message = "Ocurrió un error con la operación: " + e.Message;
+
+            return Json(response);
+        }
+    }
+
 }

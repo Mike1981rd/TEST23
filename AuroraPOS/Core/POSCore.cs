@@ -3634,6 +3634,104 @@ public class POSCore
         return new Tuple<int, string>(status, voucher.Name);
     }
 
+    public Tuple<int, string> AddDiscount(DiscountModel model, int stationId)
+    {
+        if (model.Type == "Order")
+        {
+            if (model.DivideId > 0) return new Tuple<int, string>(1, "");
+
+            var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).Include(s => s.Discounts).FirstOrDefault(s => s.ID == model.TargetId);
+            var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
+            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            var isPromotion = order.CheckPromotion();
+            if (!isPromotion && order.Discounts.Count < 1)
+            {
+
+                bool itemDiscount = false;
+                foreach (var item in order.Items)
+                {
+                    var discounts = item.Discounts;
+                    if (discounts != null && discounts.Count > 0)
+                        itemDiscount = true;
+                }
+                if (!itemDiscount)
+                {
+                    order.AddDiscount(discount, model.DivideId);
+                    order.GetTotalPrice(voucher);
+                    _dbContext.SaveChanges();
+                    //return Json(new { status = 0, type = "order" });
+                    return new Tuple<int, string>(0, "order");
+                }
+            }
+        }
+        else if (model.Type == "OrderItem")
+        {
+            var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            var stationID = stationId;
+
+            var orderItem = _dbContext.OrderItems.Include(s => s.Order).ThenInclude(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Order).ThenInclude(s => s.Discounts).Include(s => s.Discounts).FirstOrDefault(s => s.ID == model.TargetId);
+            orderItem.ForceDate = objPOSCore.getCurrentWorkDate(stationID);
+            var isPromotion = orderItem.Order.CheckPromotion();
+            var isOrderDiscount = orderItem.Order.Discounts != null && orderItem.Order.Discounts.Count > 0;
+            var discount = _dbContext.Discounts.FirstOrDefault(s => s.ID == model.DiscountId);
+            var exist = orderItem.Discounts.FirstOrDefault(s => s.ItemID == model.DiscountId);
+
+            if (!isOrderDiscount && !isPromotion && exist == null)
+            {
+                orderItem.AddDiscount(discount);
+
+                var order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items).ThenInclude(s => s.Questions).Include(s => s.Items).ThenInclude(s => s.Discounts).Include(s => s.Items).ThenInclude(s => s.Taxes).Include(s => s.Items).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderItem.Order.ID);
+                _dbContext.SaveChanges();
+                var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == orderItem.Order.ComprobantesID);
+                order.GetTotalPrice(voucher);
+                _dbContext.SaveChanges();
+                //return Json(new { status = 0, type = "item" });
+                return new Tuple<int, string>(0, "item");
+
+            }
+        }
+
+        //return Json(new { status = 1 });
+        return new Tuple<int, string>(1, "");
+
+    }
+
+    public int VoidOrder(VoidOrderModel model, int stationID)
+    {
+        var order = GetOrder(model.OrderId);
+        var items = order.Items.Select(s => s.ID).ToList();
+        foreach (var item in items)
+        {
+            VoidItem(new CancelItemModel() { ItemId = item, ReasonId = model.ReasonId }, stationID);
+        }
+        order.Status = OrderStatus.Void;
+        if (order.OrderType == OrderType.Delivery)
+        {
+            var delivery = _dbContext.Deliverys.FirstOrDefault(s => s.Order == order);
+            if (delivery != null)
+            {
+                delivery.Status = StatusEnum.Cancelado;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(model.Pin))
+        {
+            var user = _dbContext.User.First(s => s.Pin == model.Pin);
+            order.ForceUpdatedBy = user.FullName;
+        }
+
+        var kitchenOrder = _dbContext.KitchenOrder.Where(s => s.OrderID == order.ID);
+        foreach (var o in kitchenOrder)
+        {
+            o.Status = KitchenOrderStatus.Void;
+        }
+
+        _dbContext.SaveChanges();
+
+        return 0;
+    }
+
+
     public class QtyChangeModel
     {
         public long ItemId { get; set; }
