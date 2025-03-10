@@ -208,11 +208,32 @@
             overflow: hidden;
         }
 
+        .order-table > .table {
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        /* webkit no-scrollbar */
+        .order-table > .table::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+                scrollbar-width: none;
+        }
+
+        .order-table > .table::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .order-table > .table::-webkit-scrollbar-thumb {
+            background: transparent;
+        }
+
+        /* firefox no-scrollbar */
             .order-table > .table {
-                overflow-x: hidden;
-                overflow-y: auto;
-                height: 100%;
-            }
+            scrollbar-width: none;
+            scrollbar-color: transparent transparent;
+        }
 
         .order-summary {
             all: unset;
@@ -399,7 +420,7 @@
 
         /* firefox no-scrollbar */
         .product-panel-main-kiosk {
-            scrollbar-width: thin;
+            scrollbar-width: none;
             scrollbar-color: transparent transparent;
         }
 
@@ -569,11 +590,13 @@
             /* background-color: rgba(255,255,255,0.2) !important; */
             border-bottom: 4px solid white;
             /* color: #425dcf !important; */
-            color: #b93038 !important;
+            /* color: #b93038 !important; */
+            color: #b38337 !important;
         }
 
         .active {
-            color: #b93038 !important;
+            /* color: #b93038 !important; */
+            color: #b38337 !important;
             background-color: unset !important;
             border-bottom: 4px solid white;
             padding-left: 4px;
@@ -626,6 +649,7 @@
         .secondary-menu-tab::-webkit-scrollbar {
             width: 0px;
             height: 0px;
+                scrollbar-width: none;
         }
 
         .secondary-menu-tab::-webkit-scrollbar-track {
@@ -638,7 +662,7 @@
 
         /* firefox no-scrollbar */
         .secondary-menu-tab {
-            scrollbar-width: thin;
+            scrollbar-width: none;
             scrollbar-color: transparent transparent;
         }
 
