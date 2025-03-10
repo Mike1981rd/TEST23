@@ -112,16 +112,65 @@
             color: #fff; /* Asegúrate que el texto en los selects también sea blanco */
             background-color: #333; /* Opcional: Cambia el fondo de los inputs/selects en modo oscuro */
         }
-
+        /* Mantén los estilos para el modo claro */
         .input-white {
-            background-color: white !important; 
+            background-color: white !important;
             color: black !important;
             border: solid 1px gray;
         }
 
-        .input-white::placeholder {
+            .input-white::placeholder {
                 color: gray !important;
+            }
+
+        /* Aplica los estilos en modo oscuro */
+        .dark-style .input-white {
+            background-color: #222 !important; /* Color de fondo oscuro */
+            color: white !important; /* Texto blanco */
+            border: solid 1px #666; /* Borde más oscuro */
         }
+
+            .dark-style .input-white::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important; /* Placeholder más visible en oscuro */
+            }
+
+        /* Asegura que otros elementos también sean blancos en modo oscuro */
+        .dark-style .form-label,
+        .dark-style .form-control,
+        .dark-style .form-addons,
+        .dark-style .icon-black,
+        .dark-style h4,
+        .dark-style p,
+        .dark-style label,
+        .dark-style span {
+            color: #fff !important;
+        }
+
+        /* Ajusta el color de los botones o iconos */
+        .dark-style .input-group-text {
+            color: white !important;
+            background-color: #444 !important;
+        }
+
+        /* Ajustar estilos cuando el navegador autocompleta */
+        .dark-style input:-webkit-autofill {
+            background-color: #222 !important; /* Asegura que tenga un fondo oscuro */
+            color: white !important; /* Texto blanco */
+            -webkit-text-fill-color: white !important; /* Para Safari y Chrome */
+            border: 1px solid #666 !important;
+        }
+
+        /* Asegurar que el texto sea blanco en autofill en otros navegadores */
+        .dark-style input:-moz-autofill {
+            background-color: #222 !important;
+            color: white !important;
+        }
+
+        .dark-style input:-ms-autofill {
+            background-color: #222 !important;
+            color: white !important;
+        }
+
     </style>
 </head>
 <body class="account-page">
