@@ -63,22 +63,23 @@ public class TicketPrinter
                 if (g == null) throw new ArgumentNullException(nameof(g), "El objeto Graphics no puede ser nulo.");
                 if (image == null) throw new ArgumentNullException(nameof(image), "La imagen no puede ser nula.");
 
-                // Calcular el nuevo ancho de la imagen como el 50% del ancho de la página
-                float newWidth = pageWidth * 0.5f;
+                //  Definir el nuevo ancho como el 50% del ancho de la página
+                float newWidth = pageWidth * 0.35f;
 
-                // Calcular la altura proporcional para mantener las proporciones originales
-                float newHeight = (image.Height / image.Width) * newWidth;
+                //  Evitar división por cero y calcular la altura proporcional
+                float aspectRatio = (image.Width > 0) ? (float)image.Height / image.Width : 1;
+                float newHeight = newWidth * aspectRatio;
 
-                // Calcular la posición X para centrar la imagen
+                //  Calcular la posición X para centrar la imagen
                 float xPos = (pageWidth - newWidth) / 2;
 
-                // Dibujar la imagen centrada y redimensionada en la posición X y Y proporcionada
+                //  Dibujar la imagen centrada y redimensionada
                 g.DrawImage(image, xPos, yPos, newWidth, newHeight);
 
-                // Actualizar la posición Y después de imprimir la imagen
+                //  Actualizar `yPos` internamente
                 yPos += newHeight + lineSpacing;
             },
-            Height = (pageWidth * 0.5f * image.Height / image.Width) + lineSpacing  // La altura proporcional de la imagen más el espaciado
+            Height = (pageWidth * 0.5f * ((image.Width > 0) ? (float)image.Height / image.Width : 1)) + lineSpacing
         });
     }
 
