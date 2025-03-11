@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
+using static System.Net.WebRequestMethods;
 
 namespace Printer.Services
 {
@@ -38,8 +39,8 @@ namespace Printer.Services
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
-            _apiUrl = configuration["PrinterSettings:ApiUrl"];
-            _getPendingPrintJobsEndpoint = configuration["PrinterSettings:GetPendingPrintJobsEndpoint"];
+            _apiUrl = "https://875a-189-176-106-110.ngrok-free.app/api/Printer"; // configuration["PrinterSettings:ApiUrl"];
+            _getPendingPrintJobsEndpoint = "GetPendingPrintJobs"; // configuration["PrinterSettings:GetPendingPrintJobsEndpoint"];
             _updatePrintJobStatusEndpoint = configuration["PrinterSettings:UpdatePrintJobStatusEndpoint"];
         }
 
@@ -54,7 +55,7 @@ namespace Printer.Services
                 StartTrayIcon();
 
                 // Configurar el Timer para ejecutar el método cada 2 segundos
-                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 2000); // Intervalo en milisegundos
+                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 20000); // Intervalo en milisegundos
             }
             catch (Exception ex)
             {
@@ -95,7 +96,7 @@ namespace Printer.Services
                 string projectDirectory = AppDomain.CurrentDomain.BaseDirectory; // Directorio base del servicio
                 string iconsExePath = Path.Combine(projectDirectory, "Resources", "Icons.exe");
 
-                if (File.Exists(iconsExePath))
+                if (System.IO.File.Exists(iconsExePath))
                 {
                     Process.Start(new ProcessStartInfo
                     {
@@ -132,15 +133,17 @@ namespace Printer.Services
             {
                 // Solicitar trabajos pendientes desde el servidor.
                 var client = _httpClientFactory.CreateClient();
-                var url = $"{_apiUrl}{_getPendingPrintJobsEndpoint}";
+                var url = $"{_apiUrl}/{_getPendingPrintJobsEndpoint}";                
+                _logger.LogWarning(url);
                 var response = await client.GetAsync(url);
+                
 
                 // Asegúrate de que la respuesta fue exitosa.
                 if (response.IsSuccessStatusCode)
                 {
                     var respuesta = await response.Content.ReadFromJsonAsync<ResponsePrintingsModel>();
 
-                    if (respuesta?.cantidad > 0 || respuesta?.lista.Count > 0)
+                    if (respuesta?.cantidad > 0 || respuesta?.lista != null)
                     {
                         foreach (var objImpresion in respuesta.lista)
                         {
