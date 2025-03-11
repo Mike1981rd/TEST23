@@ -12,13 +12,13 @@
     using Microsoft.EntityFrameworkCore;
     using AuroraPOS.ModelsCentral;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace AuroraPOS.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class PrinterController : ControllerBase
+    public class PrinterController : Controller
     {
         private readonly PrinterService _printerService;
         private AppDbContext _dbContext;
@@ -70,7 +70,8 @@ namespace AuroraPOS.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetPendingPrintJobs")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPendingPrintJobs()
         {
             // Obtiene la lista de trabajos pendientes desde la base de datos
@@ -306,6 +307,7 @@ namespace AuroraPOS.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> updatePrintJobStatus([FromBody] long Id)
         {
             var pendingJob = await _dbContext.PrinterTasks.FirstOrDefaultAsync(s => s.ID == Id);
