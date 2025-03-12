@@ -11,16 +11,16 @@
 	background-color:#5A8DEE;
 }
 .toast-success { 
-	background-color:#39DA8A;
+	background-color:#39DA8A !important;
 }
 .toast-error { 
-	background-color:#FF5B5C;
+	background-color:#FF5B5C  !important;
 }
 .toast-info { 
-	background-color:#00CFDD;
+	background-color:#00CFDD  !important;
 }
 .toast-warning {
-	background-color:#FDAC41;
+	background-color:#FDAC41  !important;
 } 
 .toast-title {
 	font-weight: bold;
