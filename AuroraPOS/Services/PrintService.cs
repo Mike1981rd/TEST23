@@ -238,169 +238,210 @@ namespace AuroraPOS.Services
 
         public void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items, string empresa)
         {
-            if (!Directory.Exists("temp1"))
-                Directory.CreateDirectory("temp1");
-            var preference = _dbContext.Preferences.First();
-            var order = _dbContext.Orders.Include(s => s.Station).ThenInclude(s => s.Printers).Include(s => s.Area).Include(s => s.Table).Include(s => s.Taxes).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == OrderID);
-            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);//cliente
-            var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel).Include(s => s.Printers).ThenInclude(s => s.Printer).FirstOrDefault(s => s.ID == stationId);
-            var printerItems = GetPrintersOfItems(items);
+            var order = _dbContext.Orders
+                .Include(s => s.Station).ThenInclude(s => s.Printers)
+                .Include(s => s.Area)
+                .Include(s => s.Table)
+                .Include(s => s.Taxes)
+                .Include(s => s.Discounts)
+                .Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions)
+                .Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts)
+                .Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes)
+                .Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product)
+                .FirstOrDefault(s => s.ID == OrderID);
 
-            foreach (var printerItem in printerItems)
+            var station = _dbContext.Stations
+                .Include(s => s.Printers).ThenInclude(s => s.PrinterChannel)
+                .Include(s => s.Printers).ThenInclude(s => s.Printer)
+                .FirstOrDefault(s => s.ID == stationId);
+
+            var defaultPrinter = station?.Printers?.FirstOrDefault(s => s.PrinterChannel.IsDefault);
+
+            if (defaultPrinter != null && defaultPrinter.Printer != null)
             {
-                DataSet ds = new DataSet("general");
-                ds.Tables.Add("general");
-                ds.Tables[0].Columns.Add("f_nombre");
-                ds.Tables[0].Columns.Add("f_Qty");
-                ds.Tables[0].Columns.Add("f_opciones");
-                var pitems = printerItem.Value.OrderBy(s => s.CourseID);
-                long course = 0;
-                foreach (var item in pitems)
+                // 🚀 **Generar un nuevo job de impresión en la base de datos**
+                var objPrint = new PrinterTasks
                 {
-                    Debug.WriteLine(item.Name);
-                    Debug.WriteLine(item.Qty);
+                    ObjectID = OrderID,
+                    Status = (int)PrinterTasksStatus.Pendiente,
+                    Type = (int)PrinterTasksType.TicketCocina, // Tipo de impresión para cocina
+                    PhysicalName = defaultPrinter.Printer.PhysicalName,
+                    StationId = stationId,
+                    SucursalId = station.IDSucursal
+                };
 
-                    if (course != item.CourseID)
-                    {
-                        DataRow dr1 = ds.Tables[0].NewRow();
-                        //dr1["f_nombre"] = " - " + item.Course;
-                        dr1["f_nombre"] = (char)10 + "       *** " + item.Course.ToUpper() + " *** " + (char)10;
+                _dbContext.PrinterTasks.Add(objPrint);
+                _dbContext.SaveChanges(); // Guardar el job en la BD
 
-
-                        ds.Tables[0].Rows.Add(dr1);
-                        course = item.CourseID;
-                    }
-
-                    var name = item.Product?.Printer;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        name = item.Name;
-                    }
-                    var servingSize = "";
-                    if (!  string.IsNullOrEmpty(item.ServingSizeName)) 
-                    {
-                        servingSize = $"({item.ServingSizeName})";
-                    }
-
-                    DataRow dr = ds.Tables[0].NewRow();
-                    dr["f_nombre"] = name + servingSize;
-                    dr["f_Qty"] = item.Qty;
-                    string srtOption = string.Empty;
-                    DivisorType divisor = 0;
-                    var questions = item.Questions.OrderBy(s => s.Divisor).ToList();
-                    foreach (var q in questions)
-                    {                        
-                        if (q.Divisor != divisor)
-                        {
-                            if (q.Divisor == DivisorType.Whole)
-                            {
-                                srtOption +=  "Completa :" + (char)10;
-                            }
-                            else if (q.Divisor == DivisorType.FirstHalf) {
-                                srtOption += "1 Mitad :" + (char)10;
-                            }
-                            else if (q.Divisor == DivisorType.SecondHalf)
-                            {
-                                srtOption += "2 Mitad :" + (char)10;
-                            }
-                                        
-                            divisor = q.Divisor;
-                        }
-
-                        var strOption = "";
-                        if (q.IsPreSelect)
-                        {
-                            if (!q.IsActive)
-                            {
-                                srtOption += q.Description + (char)10;
-                            }
-                        }
-                        else
-                        {
-                            srtOption += q.Description + (char)10;
-                            if (!string.IsNullOrEmpty(q.SubDescription))
-                            {
-                                strOption += " *" + q.SubDescription + (char)10;
-                            }
-                        }                                               
-                    }
-                    if (srtOption.Length > 0)
-                    {
-                        dr["f_opciones"] = srtOption.Substring(0, srtOption.Length - 1);
-                    }
-                    ds.Tables[0].Rows.Add(dr);
-
-                    if (!string.IsNullOrEmpty(item.Note))
-                    {
-                        DataRow dr1 = ds.Tables[0].NewRow();
-                        dr1["f_nombre"] = " NOTE:" + item.Note;
-
-                        ds.Tables[0].Rows.Add(dr1);
-                    }
-                }
-
-                var printer = printerItem.Key;
-                var realprinter = station.Printers.FirstOrDefault(s => s.PrinterChannel == printer);
-                if (realprinter == null || realprinter.Printer == null) continue;
-                try
-                {
-                    Console.WriteLine("Creadno documento");
-/*
-                    FastReport.Report Report1 = new FastReport.Report();
-                    Report1.Load(GetReporte(2, 1));
-                    Report1.RegisterData(ds, "general");
-                    Report1.GetDataSource("general").Enabled = true;
-
-                    FastReport.DataBand data1 = (FastReport.DataBand)Report1.FindObject("Data1");
-                    data1.DataSource = Report1.GetDataSource("general");
-                    Report1.SetParameterValue("titulo", printer.Name);
-                    Report1.SetParameterValue("empresa", preference.Name);
-                    Report1.SetParameterValue("order", order.ID.ToString());
-                    string tableName = order.Table != null ? order.Table.Name : "";
-                    Report1.SetParameterValue("table", tableName);
-                    Report1.SetParameterValue("person", order.Person.ToString());
-                    Report1.SetParameterValue("camarero", order.WaiterName);
-                    
-                    if (customer != null)
-                    {
-                        Report1.SetParameterValue("customerRNC", customer.RNC);
-                        Report1.SetParameterValue("customername", customer.Name);
-                        Report1.SetParameterValue("customerAddress", customer.Address1);
-                    }
-
-                    if (order.OrderType != OrderType.Delivery)
-                    {
-                        Report1.SetParameterValue("oder_type", order.OrderType.ToString());
-                    }
-                    else
-                    {
-                        var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
-                        if (prepareType != null) {
-                            Report1.SetParameterValue("oder_type", prepareType.Name);
-                        }
-                        else {
-                            Report1.SetParameterValue("oder_type", "Para llevar");
-                        }                        
-                    }
-                    var stream = new MemoryStream();
-                    Report1.Prepare();
-                    string nombre = "H" + GetHashCode().ToString() + "T" + DateTime.Now.Ticks + "Comanda.fpx";
-                    //Console.WriteLine((Path.Combine(ruta, nombre)));
-                    //Report1.SavePrepared(Path.Combine(ruta, nombre));
-                    Report1.SavePrepared(stream);
-                    //Report1.Save(stream);
-
-                    GuardaImpresion(nombre, ".fpx", stream.ToArray(), realprinter.Printer.PhysicalName, stationId.ToString(), 1, 1, station.IDSucursal, false);
-                    
-                    */
-                }
-                catch (Exception c)
-                {
-                    Console.WriteLine(c.Message);
-                }
             }
-
         }
+
+
+        //public void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items, string empresa)
+        //{
+        //    if (!Directory.Exists("temp1"))
+        //        Directory.CreateDirectory("temp1");
+        //    var preference = _dbContext.Preferences.First();
+        //    var order = _dbContext.Orders.Include(s => s.Station).ThenInclude(s => s.Printers).Include(s => s.Area).Include(s => s.Table).Include(s => s.Taxes).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == OrderID);
+        //    var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);//cliente
+        //    var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel).Include(s => s.Printers).ThenInclude(s => s.Printer).FirstOrDefault(s => s.ID == stationId);
+        //    var printerItems = GetPrintersOfItems(items);
+
+        //    foreach (var printerItem in printerItems)
+        //    {
+        //        DataSet ds = new DataSet("general");
+        //        ds.Tables.Add("general");
+        //        ds.Tables[0].Columns.Add("f_nombre");
+        //        ds.Tables[0].Columns.Add("f_Qty");
+        //        ds.Tables[0].Columns.Add("f_opciones");
+        //        var pitems = printerItem.Value.OrderBy(s => s.CourseID);
+        //        long course = 0;
+        //        foreach (var item in pitems)
+        //        {
+        //            Debug.WriteLine(item.Name);
+        //            Debug.WriteLine(item.Qty);
+
+        //            if (course != item.CourseID)
+        //            {
+        //                DataRow dr1 = ds.Tables[0].NewRow();
+        //dr1["f_nombre"] = " - " + item.Course;
+        //        dr1["f_nombre"] = (char)10 + "       *** " + item.Course.ToUpper() + " *** " + (char)10;
+
+
+        //        ds.Tables[0].Rows.Add(dr1);
+        //        course = item.CourseID;
+        //    }
+
+        //    var name = item.Product?.Printer;
+        //    if (string.IsNullOrEmpty(name))
+        //    {
+        //        name = item.Name;
+        //    }
+        //    var servingSize = "";
+        //    if (!  string.IsNullOrEmpty(item.ServingSizeName)) 
+        //    {
+        //        servingSize = $"({item.ServingSizeName})";
+        //    }
+
+        //    DataRow dr = ds.Tables[0].NewRow();
+        //    dr["f_nombre"] = name + servingSize;
+        //    dr["f_Qty"] = item.Qty;
+        //    string srtOption = string.Empty;
+        //    DivisorType divisor = 0;
+        //    var questions = item.Questions.OrderBy(s => s.Divisor).ToList();
+        //    foreach (var q in questions)
+        //    {                        
+        //        if (q.Divisor != divisor)
+        //        {
+        //            if (q.Divisor == DivisorType.Whole)
+        //            {
+        //                srtOption +=  "Completa :" + (char)10;
+        //            }
+        //            else if (q.Divisor == DivisorType.FirstHalf) {
+        //                srtOption += "1 Mitad :" + (char)10;
+        //            }
+        //            else if (q.Divisor == DivisorType.SecondHalf)
+        //            {
+        //                srtOption += "2 Mitad :" + (char)10;
+        //            }
+
+        //            divisor = q.Divisor;
+        //        }
+
+        //        var strOption = "";
+        //        if (q.IsPreSelect)
+        //        {
+        //            if (!q.IsActive)
+        //            {
+        //                srtOption += q.Description + (char)10;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            srtOption += q.Description + (char)10;
+        //            if (!string.IsNullOrEmpty(q.SubDescription))
+        //            {
+        //                strOption += " *" + q.SubDescription + (char)10;
+        //            }
+        //        }                                               
+        //    }
+        //    if (srtOption.Length > 0)
+        //    {
+        //        dr["f_opciones"] = srtOption.Substring(0, srtOption.Length - 1);
+        //    }
+        //    ds.Tables[0].Rows.Add(dr);
+
+        //    if (!string.IsNullOrEmpty(item.Note))
+        //    {
+        //        DataRow dr1 = ds.Tables[0].NewRow();
+        //        dr1["f_nombre"] = " NOTE:" + item.Note;
+
+        //        ds.Tables[0].Rows.Add(dr1);
+        //    }
+        //}
+
+        //var printer = printerItem.Key;
+        //var realprinter = station.Printers.FirstOrDefault(s => s.PrinterChannel == printer);
+        //if (realprinter == null || realprinter.Printer == null) continue;
+        //try
+        //{
+        //    Console.WriteLine("Creadno documento");
+        /*
+                            FastReport.Report Report1 = new FastReport.Report();
+                            Report1.Load(GetReporte(2, 1));
+                            Report1.RegisterData(ds, "general");
+                            Report1.GetDataSource("general").Enabled = true;
+
+                            FastReport.DataBand data1 = (FastReport.DataBand)Report1.FindObject("Data1");
+                            data1.DataSource = Report1.GetDataSource("general");
+                            Report1.SetParameterValue("titulo", printer.Name);
+                            Report1.SetParameterValue("empresa", preference.Name);
+                            Report1.SetParameterValue("order", order.ID.ToString());
+                            string tableName = order.Table != null ? order.Table.Name : "";
+                            Report1.SetParameterValue("table", tableName);
+                            Report1.SetParameterValue("person", order.Person.ToString());
+                            Report1.SetParameterValue("camarero", order.WaiterName);
+
+                            if (customer != null)
+                            {
+                                Report1.SetParameterValue("customerRNC", customer.RNC);
+                                Report1.SetParameterValue("customername", customer.Name);
+                                Report1.SetParameterValue("customerAddress", customer.Address1);
+                            }
+
+                            if (order.OrderType != OrderType.Delivery)
+                            {
+                                Report1.SetParameterValue("oder_type", order.OrderType.ToString());
+                            }
+                            else
+                            {
+                                var prepareType = _dbContext.PrepareTypes.FirstOrDefault(s => s.ID == order.PrepareTypeID);
+                                if (prepareType != null) {
+                                    Report1.SetParameterValue("oder_type", prepareType.Name);
+                                }
+                                else {
+                                    Report1.SetParameterValue("oder_type", "Para llevar");
+                                }                        
+                            }
+                            var stream = new MemoryStream();
+                            Report1.Prepare();
+                            string nombre = "H" + GetHashCode().ToString() + "T" + DateTime.Now.Ticks + "Comanda.fpx";
+                            //Console.WriteLine((Path.Combine(ruta, nombre)));
+                            //Report1.SavePrepared(Path.Combine(ruta, nombre));
+                            Report1.SavePrepared(stream);
+                            //Report1.Save(stream);
+
+                            GuardaImpresion(nombre, ".fpx", stream.ToArray(), realprinter.Printer.PhysicalName, stationId.ToString(), 1, 1, station.IDSucursal, false);
+
+                            */
+        //        }
+        //        catch (Exception c)
+        //        {
+        //            Console.WriteLine(c.Message);
+        //        }
+        //    }
+
+        //}
 
         public void PrintKitchenOrderItems(long kitchenId, long OrderID, List<OrderItem> items, string empresa)
         {
