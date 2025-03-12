@@ -267,9 +267,20 @@ $(document).ready(function($){
 
 	// Select 2
 	if ($('.select').length > 0) {
+		/*var $this = $(this);
 		$('.select').select2({
 			minimumResultsForSearch: -1,
-			width: '100%'
+			width: '100%',
+			dropdownParent: $this.parent()
+		});*/
+
+		$('.select').each(function () {
+			var $this = $(this);
+			$this.wrap('<div class="position-relative"></div>').select2({
+				minimumResultsForSearch: -1,
+				width: '100%',
+				dropdownParent: $this.parent()
+			});
 		});
 	}
 
