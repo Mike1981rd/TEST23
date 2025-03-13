@@ -33,7 +33,7 @@
 
         <div class="row">
                 <!-- First column-->
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-12">
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -346,7 +346,48 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="card-body row pt-3">
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 1</label>
+                                    <input class="product-price1 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 2</label>
+                                    <input class="product-price2 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 3</label>
+                                    <input class="product-price3 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 4</label>
+                                    <input class="product-price4 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 5</label>
+                                    <input class="product-price5 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 6</label>
+                                    <input class="product-price6 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 7</label>
+                                    <input class="product-price7 form-control" type="text">
+                                </div>
+                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Price"] 8</label>
+                                    <input class="product-price8 form-control" type="text">
+                                </div>
+                                <div class="col-lg-2 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
+                                    <input class="product-cost form-control" readonly type="text">
+                                </div>
+                                <div class="col-lg-2 col-sm-3 col-3 form-group">
+                                    <label class="form-label">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
+                                    <input class="product-cost-barcode form-control" readonly type="text">
+                                </div>
+                            </div>
 
                             <!-- /Navigation -->
                             <!-- /Options-->
@@ -354,78 +395,17 @@
                     </div>
                 </div>
                 <!-- /Inventory -->
-            <!-- /Second column -->
-            <!-- Second column -->
-            <div class="col-12 col-lg-4">
-                <!-- Pricing Card -->
+        </div>
+    <div class="row"> 
+                <!-- Organize Card -->
+            <div class="col-12 col-lg-12">
                 <div class="card mb-6">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Precios</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Base Price -->
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Price"] 1</label>
-                            <input type="text" class="form-control product-price1" id="product-price1">
-                        </div>
-                        <!-- Discounted Price -->
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 2</label>
-                            <input type="text" class="form-control" id="product-price2">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 3</label>
-                            <input type="text" class="form-control" id="product-price3">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 4</label>
-                            <input type="text" class="form-control" id="product-price4">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 5</label>
-                            <input type="text" class="form-control" id="product-price5">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 6</label>
-                            <input type="text" class="form-control" id="product-price6">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 7</label>
-                            <input type="text" class="form-control" id="product-price7">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 8</label>
-                            <input type="text" class="form-control" id="product-price8">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
-                            <input type="text" class="form-control" id="product-cost" readonly>
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
-                            <input type="text" class="form-control" id="product-cost-barcode" readonly>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- /Pricing Card -->
-@*                 <div class="card mb-6">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Recipe</h5>
-                    </div>
-                    <div class="card-body">
-                    </div>
-                </div> *@
-            </div>
-            </div>
-            <!-- Organize Card -->
-            <div class="card mb-6 col-lg-8">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Organize</h5>
                 </div>
                 <div class="card-body">
                     <!-- Vendor -->
-                     <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div class="mb-6 col ecommerce-select2-dropdown">
                             <div id="has-serving-size" class="row pt-3" >
 
@@ -441,7 +421,7 @@
                                 </div>
                             </div>
                         </div>
-                         </div>
+                    </div>
                    
                     <!-- Category -->
                     <div class="d-flex justify-content-between align-items-center">
@@ -459,18 +439,18 @@
                                     </div>
                                     <table class="table reordertable">
                                         <thead class="table-light">
-                                            <tr>
-                                                <td>
-                                                    @ViewLocalizer["Name"]
-                                                </td>
-                                                <td>
-                                                    @ViewLocalizer["Type"]
-                                                </td>
-                                                <td>
-                                                    @ViewLocalizer["Action"]
-                                                </td>
-                                                <td>
-                                                </td>
+                                        <tr>
+                                        <td>
+                                            @ViewLocalizer["Name"]
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Type"]
+                                        </td>
+                                        <td>
+                                            @ViewLocalizer["Action"]
+                                        </td>
+                                        <td>
+                                        </td>
                                         </thead>
                                         <tbody id="product-questions">
                                         </tbody>
@@ -496,19 +476,19 @@
                             </div>
                             <table class="table reordertable">
                                 <thead class="table-light">
-                                    <tr>
-                                        <td>
-                                            @ViewLocalizer["Name"]
-                                        </td>
-                                        <td>
-                                            @ViewLocalizer["Type"]
-                                        </td>
-                                        <td>
-                                            @ViewLocalizer["Number"]
-                                        </td>
-                                        <td>
-                                            @ViewLocalizer["Action"]
-                                        </td>
+                                <tr>
+                                <td>
+                                    @ViewLocalizer["Name"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Type"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Number"]
+                                </td>
+                                <td>
+                                    @ViewLocalizer["Action"]
+                                </td>
                                 </thead>
                                 <tbody id="accounting-list">
                                 </tbody>
@@ -516,6 +496,7 @@
                         </div>
                     </div>
                 </div>
+                </div>    
             </div>
             <!-- /Organize Card -->
         </div>

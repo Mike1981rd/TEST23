@@ -110,7 +110,7 @@ namespace AuroraPOS.Controllers
                     var voucher = _dbContext.Vouchers.Include(s => s.Taxes)
                         .FirstOrDefault(s => s.ID == order.ComprobantesID);
                     var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
-                    order.GetTotalPrice(voucher, objPending.DivideNum.Value, objPending.SeatNum.Value);
+                    order.GetTotalPrice(voucher, objPending.DivideNum!=null ? objPending.DivideNum.Value : 0, objPending.SeatNum!=null ? objPending.SeatNum.Value : 0);
                     var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel)
                         .Include(s => s.Printers).ThenInclude(s => s.Printer)
                         .FirstOrDefault(s => s.ID == objPending.StationId);
