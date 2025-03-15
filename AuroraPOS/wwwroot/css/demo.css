@@ -22,6 +22,20 @@
   height: 24px;
 }
 
+
+.cal-icon {
+    background-image: url(../img/icons/calendars.svg);
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+}
+
+.calc-no {
+    background: #F8F8F8;
+    border: 0 !important;
+}
+
+
+
 .app-brand-logo.demo svg {
   width: 35px;
   height: 24px;

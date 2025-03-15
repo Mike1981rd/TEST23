@@ -101,161 +101,140 @@
                         </table>
                 </div>
             </div>
-			<div class="modal fade" id="adduser" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
+			<div class="modal fade" id="adduser" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog modal-lg modal-simple modal-edit-user" role="document">
 					<div class="modal-content">
 						<div class="modal-body">
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							<div class="text-center mb-6">
+
+							<!-- Título -->
+							<div class="text-center mb-4">
 								<h4 class="mb-2">@ViewLocalizer["Add/Edit User"]</h4>
 							</div>
+
 							<div class="row">
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Full Name"]<span class="manitory">*</span></label>
-										<input id="user-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-									</div>
+								<!-- Full Name -->
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Full Name"]<span class="manitory">*</span></label>
+									<input id="user-name" type="text" class="form-control" required>
 								</div>
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Username"]<span class="manitory">*</span></label>
-										<input id="user-username" type="text" class="form-control" aria-describedby="basic-addon1" required>
-									</div>
-								</div>
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<div>
-											<label style="float: left;">@ViewLocalizer["Password"]<span class="manitory">*</span></label>
-											<div style="float: right">
-												<input type="checkbox" onclick="verPassword()" style="width: 17px;height: 17px;">Ver Password
-											</div>
 
-										</div>
+								<!-- Username -->
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Username"]<span class="manitory">*</span></label>
+									<input id="user-username" type="text" class="form-control" required>
+								</div>
+
+								<!-- Password y Pin en una fila -->
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Password"]<span class="manitory">*</span></label>
+									<div class="input-group">
 										<input id="user-password" type="password" class="form-control" max="6" required>
+										<button class="btn btn-outline-secondary" type="button" onclick="verPassword()">👁️</button>
+									</div>
+								</div>
 
-									</div>
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Pin"]<span class="manitory">*</span></label>
+									<input id="user-pin" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" max="4" required>
 								</div>
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Pin"]<span class="manitory">*</span></label>
-										<input id="user-pin" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" max="4" required>
-									</div>
-								</div>
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
-										<input id="user-phone" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-6 col-sm-6 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
-										<input id="user-email" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-8 col-sm-8 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Address"]<span class="manitory">*</span></label>
-										<input id="user-address" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-4 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["City"]</label>
-										<input id="user-city" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-4 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["State"]</label>
-										<input id="user-state" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-4 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Zip Code"]</label>
-										<input id="user-zipcode" type="text" class="form-control" required>
-									</div>
-								</div>
-								<div class="col-lg-4 col-sm-4 col-12">
-									<div class="form-group mb-0">
-										<label>@ViewLocalizer["Status"]</label>
-										<select id="user-status" class="select">
-											<option value="1"> @ViewLocalizer["Active"]</option>
-											<option value="0"> @ViewLocalizer["InActive"]</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-lg-6 col-sm-4 col-12">
-									<div class="form-group">
-										<label>@ViewLocalizer["Roles"]</label>
-										<div class="row">
-											<select id="user-roles" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
-												@foreach (var r in roles)
-												{
-													<option value="@r.ID">@r.RoleName</option>
-												}
 
-											</select>
-
-										</div>
-									</div>
+								<!-- Teléfono y Email -->
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Phone"]<span class="manitory">*</span></label>
+									<input id="user-phone" type="text" class="form-control" required>
 								</div>
-								<div class="col-lg-6 col-sm-4 col-12" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
-									<div class="form-group">
-										<label>@ViewLocalizer["Companies"]</label>
-										<div class="row">
-											<select id="user-companies" class="form-control tagging select" multiple="multiple" tabindex="-1" aria-hidden="true">
-												<option value="">Choose company</option>
-												@foreach (var r in companies)
-												{
-													<option value="@r.Id">@r.Name</option>
-												}
 
-											</select>
-
-										</div>
-									</div>
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Email"]<span class="manitory">*</span></label>
+									<input id="user-email" type="text" class="form-control" required>
 								</div>
-								<br />
-								<div class="row mt-4">
-									@* ----- Control para subir archivos ----- *@
 
-									<div class="card mb-6">
-										<div class="card-header d-flex justify-content-between align-items-center">
-											<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
-											<div href="javascript:void(0);" class="fw-medium">
-												<div class="del-unit text-danger">
-													<a class="del-photo " href="javascript:void(0);">
-														@ViewLocalizer["Limpiar"]
-													</a>
-												</div>
-											</div>
-										</div>
-										<div class="card-body text-center justify-content-center align-items-center">
-											<div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
-												<input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
-												<div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
-													<img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
-													<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
-													<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
-													<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
-												</div>
-											</div>
-										</div>
-									</div>
+								<!-- Dirección y Ciudad -->
+								<div class="col-md-8 mb-3">
+									<label>@ViewLocalizer["Address"]<span class="manitory">*</span></label>
+									<input id="user-address" type="text" class="form-control" required>
+								</div>
 
+								<div class="col-md-4 mb-3">
+									<label>@ViewLocalizer["City"]</label>
+									<input id="user-city" type="text" class="form-control" required>
+								</div>
+
+								<!-- Estado, Zip y Status -->
+								<div class="col-md-4 mb-3">
+									<label>@ViewLocalizer["State"]</label>
+									<input id="user-state" type="text" class="form-control" required>
+								</div>
+
+								<div class="col-md-4 mb-3">
+									<label>@ViewLocalizer["Zip Code"]</label>
+									<input id="user-zipcode" type="text" class="form-control" required>
+								</div>
+
+								<div class="col-md-4 mb-3">
+									<label>@ViewLocalizer["Status"]</label>
+									<select id="user-status" class="form-control">
+										<option value="1">@ViewLocalizer["Active"]</option>
+										<option value="0">@ViewLocalizer["Inactive"]</option>
+									</select>
+								</div>
+
+								<!-- Roles y Empresas -->
+								<div class="col-md-6 mb-3">
+									<label>@ViewLocalizer["Roles"]</label>
+									<select id="user-roles" class="form-control select" multiple>
+										@foreach (var r in roles)
+										{
+											<option value="@r.ID">@r.RoleName</option>
+										}
+									</select>
+								</div>
+
+								<div class="col-md-6 mb-3" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
+									<label>@ViewLocalizer["Companies"]</label>
+									<select id="user-companies" class="form-control tagging select" multiple>
+										<option value="">Choose company</option>
+										@foreach (var r in companies)
+										{
+											<option value="@r.Id">@r.Name</option>
+										}
+									</select>
 								</div>
 							</div>
+
+							<!-- Sección de Foto -->
+							<div class="card mb-4">
+								<div class="card-header d-flex justify-content-between align-items-center">
+									<h5 class="mb-0">@ViewLocalizer["Photo"]</h5>
+									<div class="del-unit text-danger">
+										<a class="del-photo" href="javascript:void(0);">@ViewLocalizer["Clear"]</a>
+									</div>
+								</div>
+								<div class="card-body text-center">
+									<div class="dropzone needsclick p-0 dz-clickable image-upload">
+										<input id="imgInpProduct" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 150px;position: absolute;z-index: 9;cursor: pointer;">
+										<div class="image-uploads" style="text-align: center;width: 100%;padding: 20px 0;">
+											<img id="productimg" class='imgzoom' style="max-height: 100px; min-height: 100px;" />
+											<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+											<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["or"]</p>
+											<span class="note needsclick btn btn-sm btn-label-primary" id="btnBrowse">@ViewLocalizer["Browse File"]</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Botones de Acción -->
 							<div class="col-12 text-center">
-									<button id="edit-user" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
-							<button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+								<button id="edit-user" type="button" class="btn btn-primary me-3">@ViewLocalizer["Submit"]</button>
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+							</div>
+
 						</div>
-						</div>
-						
 					</div>
 				</div>
 			</div>
+
 
             
         </div>
