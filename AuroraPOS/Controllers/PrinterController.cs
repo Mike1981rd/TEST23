@@ -306,6 +306,38 @@ namespace AuroraPOS.Controllers
             return Ok(objResult);
         }
 
+
+        [HttpGet("GetPreference")]
+        [AllowAnonymous]
+        public IActionResult GetPreference()
+        {
+            var preference = _dbContext.Preferences.FirstOrDefault();
+
+            if (preference == null)
+            {
+                return NotFound(new { message = "No se encontró la configuración de la empresa." });
+            }
+
+            return Ok(new
+            {
+                Name = preference.Name,
+                Company = preference.Company,
+                Logo = preference.Logo,
+                RNC = preference.RNC,
+                Email = preference.Email,
+                Phone = preference.Phone,
+                Address1 = preference.Address1,
+                Address2 = preference.Address2,
+                City = preference.City,
+                State = preference.State,
+                PostalCode = preference.PostalCode,
+                Country = preference.Country,
+                Currency = preference.Currency,
+                SecondCurrency = preference.SecondCurrency,
+                Tasa = preference.Tasa
+            });
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> updatePrintJobStatus([FromBody] long Id)

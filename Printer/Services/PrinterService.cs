@@ -18,6 +18,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
 using static System.Net.WebRequestMethods;
+using System.Security.Policy;
 
 namespace Printer.Services
 {
@@ -35,7 +36,7 @@ namespace Printer.Services
         private readonly string _updatePrintJobStatusEndpoint;
         private NotifyIcon _notifyIcon;
         private readonly SemaphoreSlim _semaphore = new(1, 1); // Permite solo una ejecución concurrente
-
+        private PreferenceModel _preferenceCache;
 
         public PrinterService(ILogger<PrinterService> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
@@ -133,6 +134,60 @@ namespace Printer.Services
                 _logger.LogError(ex, "Error al iniciar la aplicación de bandeja del sistema.");
             }
         }
+
+        private async Task<PreferenceModel> GetPreferenceData()
+        {
+            try
+            {
+                if (_preferenceCache != null)
+                {
+                    _logger.LogInformation(" Usando configuración de Preference desde caché.");
+                    return _preferenceCache;
+                }
+
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{_apiUrl}/GetPreference";
+                _logger.LogInformation($" Consultando: {url}");
+
+                var response = await client.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($" Error en la petición: {response.StatusCode}");
+                    return null;
+                }
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($" Respuesta cruda de la API: {jsonResponse}");
+
+                if (jsonResponse.Trim().StartsWith("<"))
+                {
+                    _logger.LogError(" La API devolvió HTML en lugar de JSON.");
+                    return null;
+                }
+
+                // Deserializar JSON y guardar en caché
+                _preferenceCache = JsonSerializer.Deserialize<PreferenceModel>(jsonResponse);
+
+                // 🔥 Verificar si los datos están completos
+                if (_preferenceCache == null)
+                {
+                    _logger.LogError(" La API devolvió una respuesta vacía.");
+                    return null;
+                }
+                _logger.LogInformation($" PreferenceModel Deserializado: Name={_preferenceCache.Name}, Company={_preferenceCache.Company}, Logo={(_preferenceCache.Logo != null ? "Sí tiene logo" : "No tiene logo")}");
+
+                return _preferenceCache;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, " Error al obtener la configuración de Preference.");
+                return null;
+            }
+        }
+
+
+
 
 
         private async Task ConsultaImpresionEImprime(object state)
@@ -238,24 +293,51 @@ namespace Printer.Services
         {
             try
             {
+                //TicketPrinter ticketPrinter = new TicketPrinter();
+                var preference = await GetPreferenceData();
+
+                if (preference == null)
+                {
+                    _logger.LogError("No se pudo obtener la información de Preference.");
+                    return;
+                }
+
                 TicketPrinter ticketPrinter = new TicketPrinter();
 
-                // Agregar logotipo
-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                string resourcesDirectory = Path.Combine(Directory.GetParent(baseDirectory).FullName, "Resources");
-                string logoPath = Path.Combine(resourcesDirectory, "logo.png");
-                Image logo = Image.FromFile(logoPath);
-                ticketPrinter.AddImage(logo);
+                // 🔥 Convertir Base64 a Imagen
+                if (!string.IsNullOrEmpty(preference.Logo))
+                {
+                    try
+                    {
+                        byte[] imageBytes = Convert.FromBase64String(preference.Logo.Split(',')[1]); // Removemos el prefijo "data:image/png;base64,"
+                        using (MemoryStream ms = new MemoryStream(imageBytes))
+                        {
+                            Image logo = Image.FromStream(ms);
+                            ticketPrinter.AddImage(logo);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error al procesar el logo en Base64: {ex.Message}");
+                    }
+                }
+
+
+                //// Agregar logotipo
+                //string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                //string resourcesDirectory = Path.Combine(Directory.GetParent(baseDirectory).FullName, "Resources");
+                //string logoPath = Path.Combine(resourcesDirectory, "logo.png");
+                //Image logo = Image.FromFile(logoPath);
+                //ticketPrinter.AddImage(logo);
 
                 // 🔥 **Diseño según tipo de impresión**
                 if (type == 0)
                 {
                     ticketPrinter.AddLine("ORDEN", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine(order.empresa + "," + order.empresa1, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine("Av. Dr Columna #29", new Font("Arial", 8), TextAlign.Center);
-                    ticketPrinter.AddLine("Bonao, Monseñor Nouel, R.D.", new Font("Arial", 8), TextAlign.Center);
-                    ticketPrinter.AddLine("Tel. 809-525-5302", new Font("Arial", 8), TextAlign.Center);
-                    ticketPrinter.AddLine("RNC: 131-87064-3", new Font("Arial", 8), TextAlign.Center);
+                    ticketPrinter.AddLine(preference.Name + "," + preference.Company, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(preference.Address1, new Font("Arial", 8), TextAlign.Center);
+                    ticketPrinter.AddLine("Tel." + preference.Phone, new Font("Arial", 8), TextAlign.Center);
+                    ticketPrinter.AddLine("RNC:" + preference.RNC, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
 
                     ticketPrinter.AddLine("CONSUMIDOR FINAL", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
@@ -273,10 +355,10 @@ namespace Printer.Services
                                              new Font("Arial", 8, FontStyle.Bold),
                                              new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
 
-                    ticketPrinter.AddColumns(new[] { "Camarero:", order.camarero, "", "" },
-                                             new[] { 50f, 90f, 50f, 90f },
-                                             new Font("Arial", 8, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
+                    ticketPrinter.AddColumns(new[] { "Camarero:", order.camarero },
+                        new[] { 80f, 150f },  // Aumento el espacio para el nombre del camarero
+                        new Font("Arial", 8, FontStyle.Bold),
+                        new[] { TextAlign.Left, TextAlign.Left });
 
                     ticketPrinter.AddEmptyLine();
 
