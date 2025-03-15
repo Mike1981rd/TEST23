@@ -366,12 +366,26 @@ namespace AuroraPOS.Controllers
 				int skip = start != null ? Convert.ToInt32(start) : 0;
 				int recordsTotal = 0;
 				var all = Request.Form["columns[0][search][value]"].FirstOrDefault();
-				// Getting all Customer data  
-				var customerData = (from s in _dbContext.Customers
+                var statusValue = Request.Form["columns[1][search][value]"].FirstOrDefault();
+                var rncValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
+
+                // Getting all Customer data  
+                var customerData = (from s in _dbContext.Customers
 									select s);
 
-				//Sorting
-				if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDirection))
+                if (!string.IsNullOrEmpty(statusValue))
+                {
+                    var status = int.Parse(statusValue);
+                    customerData = customerData.Where(m => m.IsActive == (status == 1));
+                }
+
+                if (!string.IsNullOrEmpty(rncValue))
+                {
+                    customerData = customerData.Where(m => m.RNC.Contains(rncValue));
+                }
+
+                //Sorting
+                if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDirection))
 				{
 					try
                     {
