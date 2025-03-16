@@ -10,28 +10,28 @@
 }
 <div class="content-wrapper">
 
-        <!-- Content -->
-        
-          <div class="container-xxl flex-grow-1 container-p-y">
-            
-            
-<div class="app-ecommerce">
+    <!-- Content -->
 
-  <!-- Add Product -->
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+    <div class="container-xxl flex-grow-1 container-p-y">
 
-    <div class="d-flex flex-column justify-content-center">
-      <h4 class="mb-1">@ViewLocalizer["Create Product"]</h4>
-      <p class="mb-0">@ViewLocalizer["Add/Update Product"]</p>
-    </div>
-    <div class="d-flex align-content-center flex-wrap gap-4">
+
+        <div class="app-ecommerce">
+
+            <!-- Add Product -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+                <div class="d-flex flex-column justify-content-center">
+                    <h4 class="mb-1">@ViewLocalizer["Create Product"]</h4>
+                    <p class="mb-0">@ViewLocalizer["Add/Update Product"]</p>
+                </div>
+                <div class="d-flex align-content-center flex-wrap gap-4">
                     <a id="submit-product" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</a>
                     <a id="cancel" href="/Menu/ProductList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Cancel"]</a>
-    </div>
+                </div>
 
-  </div>
+            </div>
 
-        <div class="row">
+            <div class="row">
                 <!-- First column-->
                 <div class="col-12 col-lg-8">
                     <!-- Product Information -->
@@ -74,7 +74,7 @@
 
                                         </select>
                                         <button id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
-                                           <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
                                         </button>
                                     </div>
 
@@ -84,11 +84,11 @@
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
                                     <div class="d-flex">
-                                        <select id="product-subcategory" class="select form-select" >
+                                        <select id="product-subcategory" class="select form-select">
                                         </select>
                                         <a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light ms-2" style="width: 60px">
-                                                <img src="/vendor/img/icons/plus1.svg" alt="img">
-                                            </a>
+                                            <img src="/vendor/img/icons/plus1.svg" alt="img">
+                                        </a>
                                     </div>
 
                                 </div>
@@ -354,69 +354,69 @@
                     </div>
                 </div>
                 <!-- /Inventory -->
-            <!-- /Second column -->
-            <!-- Second column -->
-            <div class="col-12 col-lg-4">
-                <!-- Pricing Card -->
-                <div class="card mb-6">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Precios</h5>
+                <!-- /Second column -->
+                <!-- Second column -->
+                <div class="col-12 col-lg-4">
+                    <!-- Pricing Card -->
+                    <div class="card mb-6">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Precios</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Base Price -->
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Price"] 1</label>
+                                <input type="text" class="form-control product-price1" id="product-price1">
+                            </div>
+                            <!-- Discounted Price -->
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 2</label>
+                                <input type="text" class="form-control" id="product-price2">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 3</label>
+                                <input type="text" class="form-control" id="product-price3">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 4</label>
+                                <input type="text" class="form-control" id="product-price4">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 5</label>
+                                <input type="text" class="form-control" id="product-price5">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 6</label>
+                                <input type="text" class="form-control" id="product-price6">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 7</label>
+                                <input type="text" class="form-control" id="product-price7">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 8</label>
+                                <input type="text" class="form-control" id="product-price8">
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
+                                <input type="text" class="form-control" id="product-cost" readonly>
+                            </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
+                                <input type="text" class="form-control" id="product-cost-barcode" readonly>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <!-- Base Price -->
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Price"] 1</label>
-                            <input type="text" class="form-control product-price1" id="product-price1">
-                        </div>
-                        <!-- Discounted Price -->
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 2</label>
-                            <input type="text" class="form-control" id="product-price2">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 3</label>
-                            <input type="text" class="form-control" id="product-price3">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 4</label>
-                            <input type="text" class="form-control" id="product-price4">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 5</label>
-                            <input type="text" class="form-control" id="product-price5">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 6</label>
-                            <input type="text" class="form-control" id="product-price6">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 7</label>
-                            <input type="text" class="form-control" id="product-price7">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 8</label>
-                            <input type="text" class="form-control" id="product-price8">
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
-                            <input type="text" class="form-control" id="product-cost" readonly>
-                        </div>
-                        <div class="mb-6">
-                            <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
-                            <input type="text" class="form-control" id="product-cost-barcode" readonly>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- /Pricing Card -->
-@*                 <div class="card mb-6">
+                    <!-- /Pricing Card -->
+                    @*                 <div class="card mb-6">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Recipe</h5>
                     </div>
                     <div class="card-body">
                     </div>
                 </div> *@
-            </div>
+                </div>
             </div>
             <!-- Organize Card -->
             <div class="card mb-6 col-lg-8">
@@ -425,14 +425,14 @@
                 </div>
                 <div class="card-body">
                     <!-- Vendor -->
-                     <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div class="mb-6 col ecommerce-select2-dropdown">
-                            <div id="has-serving-size" class="row pt-3" >
+                            <div id="has-serving-size" class="row pt-3">
 
                                 <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
                                     <h6 class="text-left"> @ViewLocalizer["Serving Sizes"]</h6>
                                     <div class="add-unit">
-                                        <a  href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2 add-serving-size">
+                                        <a href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2 add-serving-size">
                                             <img src="/vendor/img/icons/plus1.svg" alt="img">
                                         </a>
                                     </div>
@@ -441,8 +441,8 @@
                                 </div>
                             </div>
                         </div>
-                         </div>
-                   
+                    </div>
+
                     <!-- Category -->
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="mb-6 col ecommerce-select2-dropdown">
@@ -521,14 +521,13 @@
         </div>
         <!-- /Second column -->
     </div>
-        </div>   
+</div>
 
   </div>
   </div>
   </div>
 
-          <!-- / Content -->
-
+<!-- / Content -->
 <!-- Category Modal -->
 @{
     @await Component.InvokeAsync("AddCategory", new { })
@@ -543,7 +542,7 @@
 <div class="modal fade" id="listservingsize" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
     <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-@*             <div class="modal-header">
+            @*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Serving Size List"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -587,7 +586,7 @@
 <div class="modal fade" id="addservingsize" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
     <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-@*             <div class="modal-header">
+            @*             <div class="modal-header">
                 <h5 class="servingsize-modal-title">@ViewLocalizer["Add/Edit Serving Size"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -635,7 +634,7 @@
 <div class="modal fade" id="printlabelmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
     <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-@*             <div class="modal-header">
+            @*             <div class="modal-header">
                 <h5 class="servingsize-modal-title">@ViewLocalizer["Print Label Options"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -702,7 +701,7 @@
 <div class="modal fade" id="listsubrecipe" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
     <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-@*             <div class="modal-header">
+            @*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Sub Recipe List"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -744,7 +743,7 @@
 <div class="modal fade" id="servingsizemodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
     <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
-@*             <div class="modal-header">
+            @*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Select Serving Size"]</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -767,7 +766,7 @@
             </div>
         </div>
     </div>
-</div>          
+</div>
 
 @{
     @await Component.InvokeAsync("Accounting", new { })
@@ -995,14 +994,14 @@
                         }
                         if (!data.barcode) {
                             $("#print-label").text("Generate Barcode");
-                        } 
+                        }
                         else {
                             $("#print-label").data("barcode", data.barcode)
                             $("#print-label").text("Print Label");
                         }
-                       
+
                         SelectCategory(data.category);
-                        
+
                         if (data.photo) {
                             $("#productimg").attr("src", data.photo);
                             $("#productimg").data("color", data.photo);
@@ -1333,7 +1332,7 @@
                 `
                                             $(".serving-size-container").append(html);
                                             UpdateItems(id);
-                                            
+
                                         }
 
                                     }
@@ -1343,7 +1342,7 @@
                                 }
                             });
 
-                           
+
                         }
                         else {
 
@@ -1492,7 +1491,7 @@
                                                     `;
                                                     $("#item-list-0").append(html);
                                                     UpdateItems(0);
-                                                    
+
                                                 }
                                             }
                                         },
@@ -1857,12 +1856,12 @@
     }
 
 
-    
+
 
     $("body").on("click", ".accordion-button", function () {
         GetProductQuestionData();
     });
-    
+
     $("body").on("click", "a.delete-item", function () {
         var id = $(this).closest(".product-item-container").data("id");
         $(this).closest("tr").remove();
@@ -1936,7 +1935,7 @@
         if (price2){
             allSubTotal += price2;
         }
-        
+
 
         container.find(".po-total").text("$ " + allSubTotal.toFixed(4));
         container.find(".po-total").data("cost", allSubTotal);
@@ -1982,7 +1981,7 @@
             var total_div = container.find(".total-order");
             UpdateSuggestedPrice(total_div);
         }
-        
+
     }
 
     //category
@@ -2176,8 +2175,8 @@
             container.find(".po-price1").data("price", val);
             container.find(".po-price1").text("$ " + val);
             UpdateItems(id)
-           
-            
+
+
         }
     });
     $("#product-name").change(function () {
@@ -2559,10 +2558,10 @@
             $(".question-info").show();
             $(this).html("Show Recipe Info");
 
-            
+
 
             GetProductQuestionData();
-            
+
         }else{
             $(".recipe-info").show();
             $(".question-info").hide();
@@ -2570,7 +2569,7 @@
         }
     })
 
-    
+
     function GetProductQuestionData(){
         $("#question-items-info tbody").empty();
         var strproductos="";
@@ -2616,19 +2615,19 @@
                                                             <td>
                                                                 <label>1</lable> `
 
-                        html2 += `	
+                        html2 += `
                                                                 </div>
                                                             </td>
-                                                            
+
                                                                 <td><label class="item-subtotal">${(Math.round(data1.productCost * 100) / 100).toFixed(2)}</lable></td>
-                                                           
+
                                                         </tr>
                                                             `;
 
                         total = total + data1.productCost;
                         $("#question-items-info tbody").append(html2);
                         UpdateItems(id);
-                        
+
                         //Buscamos la fila en la receta para ocultarla
 
                         $($(".purchase-item")[0]).find("tr").each(function(){
@@ -2639,9 +2638,9 @@
                                     $(this).closest("tr").hide();
                                 }
                             }
-                            
+
                         });
-                        
+
                         /*$($(".purchase-item")[0]).find("td:first-child").each(function(){
                             if (data1.name.replace(/\s/g, '') == $(this).html().replace(/\s/g, '')){
                                 $(this).closest("tr").hide();
@@ -2674,7 +2673,7 @@
 
     function UpdateSuggestedPrice(total_div){
         var perc = parseInt(total_div.find(".price-suggest-percent").val());
-        
+
         var total = parseFloat(total_div.find(".po-total").data("cost"));
 
         if (!perc) return;
@@ -2762,7 +2761,7 @@
 
     $("#printer-capital").click(function () {
         var name = $("#product-printername").val();
-               
+
         if (name == name.toLowerCase()) {
             $("#product-printername").val(name.toUpperCase())
         }

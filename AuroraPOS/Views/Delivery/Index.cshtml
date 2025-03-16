@@ -10,7 +10,7 @@
 
 }
 
-
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/dark-hive/jquery-ui.css">
 <style>
     .switch-wrapper #dark-mode-toggle .light-mode.active, .switch-wrapper #dark-mode-toggle .dark-mode.active {
         background-color: #425dcf !important;
@@ -772,6 +772,7 @@
 
 
 <script>
+
     $(".btn-deliver").click(function () {
         $(".btn-deliver").removeClass("active");
         $(this).addClass("active");
@@ -794,6 +795,12 @@
 
 
     });
+
+    $("#delivery-date").change(function () {
+        GetData();
+    })
+
+    
 
     function GetData() {
 
@@ -970,12 +977,12 @@
 
                                     if (total === payAmount || response.orden.conduceOrderId > 0) {
                                         paymentButton = `
-                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.ID}" disabled>Pagar</button>
+                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.id}" disabled>Pagar</button>
                                         `
                                         $(".paymentButton").prop("disabled", true);
                                     } else {
                                         paymentButton = `
-                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.ID}">Pagar</button>
+                                            <button class="paymentButton btn btn-extent" data-order-id="${response.orden.id}">Pagar</button>
                                         `
                                     }
 
@@ -1282,6 +1289,11 @@
     });
 
     $(document).ready(function () {
+
+        $("#delivery-date").datepicker({
+            dateFormat: "dd-mm-yy"
+        });
+
         //$('.delivery-info-container').hide();
         $('#delivery-info-opts').hide();
 

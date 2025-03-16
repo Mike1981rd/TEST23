@@ -4,6 +4,11 @@
 @{
     Layout = null;
 }
+
+@{
+	var store = (Preference)ViewBag.Store;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,6 +164,7 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            gap: 2px;
         }
 
         .company-text {
@@ -176,6 +182,10 @@
             top: 50%;
             transform: translate(-150%, -50%);
         }
+
+        .circle-img {
+            border-radius: 100%;
+        }
     </style>
 </head>
 <body class="account-page" style="background-color:#000;">
@@ -189,12 +199,15 @@
         <div class="login-page-container">
             <div class="side-content">
                 <div class="time-content">
-                    <p class="time-text" id="text-time"8:00</p>
+                    <p class="time-text" id="text-time">8:00</p>
                     <p class="date-text" id="text-date">Day, Month #th</p>
+                    <div class="title-content" style="height: fit-content; gap: 8px;">
+                        <img class="logo-panel circle-img" src="@store.Logo" width="20px" height="20px" />
+                        <h1 class="company-text">@store.Company</h1>
+                    </div>
                 </div>
                 <div class="title-content">
                     <img class="logo-panel " src="~/vendor/img/logo-circle-04.png" width="20px" height="20px"/>
-
                     <h1 class="company-text">Aurora</h1>
                 </div>
             </div>
@@ -315,13 +328,20 @@
 
             const date = new Date();
             const options = {
-                weekday: 'short',
+                weekday: 'long',
                 month: 'long',
                 day: 'numeric'
             };
 
-            const formattedDate = date.toLocaleDateString('en-US', options);
-            $("#text-date").text((_, c) => formattedDate);
+            const formattedDate = date.toLocaleDateString('es-MX', options);
+            $("#text-date").text(formattedDate);
+
+            const dateElements = document.querySelectorAll('#text-date');
+            if (dateElements.length > 1) {
+                for (let i = 1; i < dateElements.length; i++) {
+                    dateElements[i].remove();
+                }
+            }
         })
 
         $("body").on("keydown", function (e) {

@@ -80,15 +80,15 @@ namespace AuroraPOS.Controllers
         {
 
             int getStation=0; //= int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-
             if (GetCookieValue("StationID") != null) {
                 getStation = int.Parse(GetCookieValue("StationID"));
             }
 
             if (Station > 0)
             {
+                var store = _dbContext.Preferences.FirstOrDefault();
+                ViewBag.Store = store;
                 ViewBag.Station = Station;
-
             }
             else
             {

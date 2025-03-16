@@ -87,36 +87,6 @@
 
                             <div class="row mb-6">
                                 <div class="col">
-                                    <label class="form-label">@ViewLocalizer["Maximum"]</label>
-                                    <input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="row mb-6">
-                                <div class="col">
-                                    <label class="form-label" for="ecommerce-product-barcotaggingde">
-                                        @ViewLocalizer["Unit"]</label>
-                                    <select id="max-unit" class="select form-control">
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mb-6">
-                                <div class="col">
-                                    <label>&nbsp;</label>
-                                    <div class="form-group mt-1">
-                                        <button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col">
-                                    <label class="form-label">@ViewLocalizer["Existencia de seguridad(%)"]</label>
-                                    <input id="article-saftystock" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Barcode"]</label>
                                     <div class="d-flex">
                                         <input id="subrecipe-barcode" type="text" class="form-control me-2">
@@ -165,6 +135,35 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-6">
+                                                <div class="col">
+                                                    <label class="form-label">@ViewLocalizer["Minimum"]</label>
+                                                    <input id="article-min" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">@ViewLocalizer["Maximum"]</label>
+                                                    <input id="article-max" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
+                                                </div>
+
+                                                <div class="col">
+                                                    <label class="form-label" for="ecommerce-product-barcotaggingde">
+                                                        @ViewLocalizer["Unit"]
+                                                    </label>
+                                                    <select id="max-unit" class="select form-control">
+                                                    </select>
+                                                </div>
+
+                                                <div class="col">
+                                                    <label>&nbsp;</label>
+                                                    <div class="form-group mt-1">
+                                                        <button id="calculate-minmax" class="btn btn-primary ">Calcular</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">@ViewLocalizer["Existencia de seguridad(%)"]</label>
+                                                    <input id="article-saftystock" onkeypress="return onlyDecimalKey(event)" type="text" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row mb-6">
