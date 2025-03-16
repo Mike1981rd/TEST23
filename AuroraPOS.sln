@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printer", "Printer\Printer.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Icons", "Icons\Icons.csproj", "{95366B75-DB6F-404E-AEC3-BA58C307A9AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintJobService", "PrintJobService\PrintJobService.csproj", "{1072C4F0-DEDA-4114-A688-3A51E1A92BC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintJobTrayApp", "PrintJobTrayApp\PrintJobTrayApp.csproj", "{93D269CE-162E-46A4-80C2-64B103732599}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95366B75-DB6F-404E-AEC3-BA58C307A9AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1072C4F0-DEDA-4114-A688-3A51E1A92BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1072C4F0-DEDA-4114-A688-3A51E1A92BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1072C4F0-DEDA-4114-A688-3A51E1A92BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1072C4F0-DEDA-4114-A688-3A51E1A92BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93D269CE-162E-46A4-80C2-64B103732599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93D269CE-162E-46A4-80C2-64B103732599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93D269CE-162E-46A4-80C2-64B103732599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93D269CE-162E-46A4-80C2-64B103732599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

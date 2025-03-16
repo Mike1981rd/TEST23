@@ -77,8 +77,8 @@
                 </div>
                 <div class="row mt-6">
                     <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="">
-                            <a id="add-article-modal" href="javascript:void(0);" class="btn btn-submit me-2 p-2">@ViewLocalizer["Add Article or Sub Recipe"] </a>
+                        <div class=" mt-2">
+                        <a id="add-article-modal" href="javascript:void(0);" class="btn btn btn-primary waves-effect waves-light">@ViewLocalizer["Add Article or Sub Recipe"] </a>
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12 search-set">
@@ -142,7 +142,7 @@
                 {
                     <a id="move-report" href="javascript:void(0);" class="btn btn-default btn-info bg-lightgreen">@ViewLocalizer["Report"]</a>
                 }
-                <a id="move-return" href="/Inventory/MoveArticleList" class="btn btn-default btn-cancel me-2">@ViewLocalizer["Return"]</a>
+                <a id="move-return" href="/Inventory/MoveArticleList" class="btn btn-label-secondary ms-auto waves-effect">@ViewLocalizer["Return"]</a>
             </div>
             </div>
     </div>
@@ -158,7 +158,7 @@
 
 <!-- Article Modal -->
 <div class="modal fade" id="listarticle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-simple" role="document">
+    <div class="modal-dialog modal-lg modal-simple w-100" style="max-width: 60vw;" role="document">
         <div class="modal-content">
 @*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Warehouse Stock List"]</h5>
@@ -168,17 +168,17 @@
             </div> *@
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="text-center mb-6">
-                    <h4 class="mb-2">
+                <div class="text-center mb-3">
+                    <h3 class="mb-2">
                         @ViewLocalizer["Warehouse Stock List"]
-                    </h4>
+                    </h3>
                 </div>
                 <div class="row">
-                    <h4>@ViewLocalizer["Warehouse"] : <span id="selected-warehouse"></span></h4>
+                    <h3>@ViewLocalizer["Warehouse"] : <span id="selected-warehouse"></span></h3>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card-datatable table-responsive w-100" style="max-height:400px;">
+                        <div class="card-datatable table-responsive w-100" style="max-height:500px;">
                             <table id="article-list" class="table">
                                 <thead class="table-light">
                                     <tr>
@@ -206,7 +206,7 @@
 
 
 <div class="modal fade" id="updateitemmodal1" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-simple" style="max-width:900px" role="document">
+    <div class="modal-dialog modal-lg modal-simple" style="max-width:90vw" role="document">
         <div class="modal-content">
 @*             <div class="modal-header">
                 <div class="w-100 text-center">

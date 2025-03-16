@@ -173,7 +173,7 @@
             justify-content: space-between;
             border-bottom: solid 1px #c1c1c1;
             padding: 12px;
-            gap: 8px;
+            gap: 20px;
         }
 
         .checkout-elements-title {
@@ -319,7 +319,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             overflow: hidden;
         }
 
@@ -398,7 +398,7 @@
         .checkout-pay-option {
             all: unset;
             background: #343f54;
-            padding: 4px;
+            padding: 10px;
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -759,7 +759,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <span class=" text-white">Balance : </span>
-                                    <span class="balance text-green" data-balance=""></span>
+                                    <span class="balance text-green" data-balance="" style="font-size:20px"></span>
                                 </div>
                             </div>
 
@@ -1475,7 +1475,7 @@
                     }
                
                     $(".balance").data("balance", total);
-                    $(".balance").text("$" + total);
+                       $(".balance").text("$" + total.toLocaleString("en-US", { minimumFractionDigits: 2 }));
 
 
                 },

@@ -164,16 +164,16 @@ namespace AuroraPOS.Controllers
 			var order = new Order();
 			if (station == null)
 			{
-				return RedirectToAction("Login");
+				return RedirectToAction("/POS/Login");
 			}
 
             if (station.SalesMode == SalesMode.Barcode)
             {
-                return RedirectToAction("Barcode");
+                return RedirectToAction("/POS/Barcode");
             }
             else if (station.SalesMode == SalesMode.Kiosk)
             {
-                return RedirectToAction("Kiosk");
+                return Redirect("/POS/Kiosk");
             }
 
             ViewBag.StationName = HttpContext.Session.GetString("StationName");

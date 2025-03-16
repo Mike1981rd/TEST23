@@ -389,14 +389,12 @@
        .product-panel-main-kiosk {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(auto-fill, minmax(100px, auto)); /* Fila mínima de 20px */
+            grid-template-rows: repeat(auto-fill, minmax(150px, auto)); /* Fila mínima de 20px */
             height: 100%;
             overflow: hidden;
             overflow-y: scroll;
             overflow-x: hidden;
-
-            gap: 8px;
-
+            gap: 10px;
             border-bottom: solid 1px rgba(255,255,255,0.4);
        }
 
@@ -408,7 +406,7 @@
             overflow: hidden;
             overflow-y: scroll !important;
             overflow-x: hidden;
-            gap: 8px;
+            gap: 9px;
        }
 
        .product-item-kiosk {
@@ -422,7 +420,7 @@
            border: none;
            border-bottom: solid 4px #9E1B32;
            background: #343f54;
-           min-height: 100px;
+           min-height: 130px;
            position: relative;
            overflow: hidden; /* Asegura que nada se desborde */
        }
@@ -440,7 +438,7 @@
 
         .total {
             color: #425dcf;
-            font-size: 16px !important;
+            font-size: 25px !important;
             font-weight: bold;
         }
 
@@ -2630,6 +2628,10 @@
     $(document).ready(function () {
 
 
+        if ($("#static-product-panel-main").children().length === 0) {
+        $("#static-product-panel-main").hide(); // Oculta la sección si está vacía
+        $("#product-panel-main").css("height", "100%"); // Expande el panel de productos
+    }
 
         LoadStaticProduct();
         //SelectCustomer();

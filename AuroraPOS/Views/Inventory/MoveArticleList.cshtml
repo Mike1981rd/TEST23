@@ -6,28 +6,28 @@
 	<div class="card">
 		<div class="card-header">
 			<h5 class="card-title">@ViewLocalizer["Move Article List"]</h5>
-			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+			<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0 mr-5">
 				<div class="col-md-2 mt-7">
 					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
 				<div class="col-md-2">
 					<label class="form-label">@ViewLocalizer["Order Date From"] </label>
-					<input id="move_filter_datefrom" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
+					<input id="move_filter_datefrom" type="text" class="form-control datetimepicker" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
 					<label class="form-label">@ViewLocalizer["Order Date To"] </label>
-					<input id="move_filter_dateto" type="text" class="form-control datetimepicker cal-icon" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
+					<input id="move_filter_dateto" type="text" class="form-control datetimepicker" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
 					<labe class="form-label"l>@ViewLocalizer["Source Warehouse"] </labe>
-					<select id="move-warehousefrom" class="select">
+					<select id="move-warehousefrom" class="form-select">
 						<option>Choose Supplier</option>
 						<option>Supplier</option>
 					</select>
 				</div>
 				<div class="col-md-2">
-					<label class="form-label">@ViewLocalizer["Target Warehouse"] </label>
-					<select id="move-warehouseto" class="select">
+					<label class="form-label"> </label>
+					<select id="move-warehouseto" class="form-select text-capitalize">
 						<option>Choose Supplier</option>
 						<option>Supplier</option>
 					</select>
@@ -41,8 +41,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="card-body">
-			<div class="card-datatable table-responsive">
+		<div class="card-body" >
+			<div class="">
 				<table id="move-list" class="table">
 					<thead class="table-light">
 						<tr>
@@ -164,7 +164,7 @@
 		"processing": true, // for show progress bar
 		"serverSide": true, // for process server side
 		dom:
-			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-start"' +
+			'<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row "' +
 			'<"me-5 ms-n4 pe-5 mb-n6 mb-md-0">' +
 			'<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"lB>>' +
 			'>t' +
@@ -275,7 +275,7 @@
 		buttons: [
 			{
 				extend: 'collection',
-				className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light',
+				className: 'btn btn-label-secondary dropdown-toggle me-4 waves-effect waves-light ',
 				text: '<i class="ti ti-upload me-1 ti-xs"></i>Export',
 				buttons: [
 					{
@@ -386,7 +386,7 @@
 				]
 			},
 			{
-				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Move Article"]</span>',
+				text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs pl-5"></i><span class="d-none d-sm-inline-block">@ViewLocalizer["Add Move Article"]</span>',
 				className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
 				action: function () {
 					window.location.href = "/Inventory/AddMoveArticle";
@@ -394,8 +394,7 @@
 			}
 		]
 	});
-	$('.dataTables_length').addClass('mx-n2');
-	$('.dt-buttons').addClass('d-flex flex-wrap mb-6 mb-sm-0');
+
 
 	function LoadWarehouse() {
 

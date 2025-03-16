@@ -12,13 +12,13 @@
     using Microsoft.EntityFrameworkCore;
     using AuroraPOS.ModelsCentral;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace AuroraPOS.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class PrinterController : ControllerBase
+    public class PrinterController : Controller
     {
         private readonly PrinterService _printerService;
         private AppDbContext _dbContext;
@@ -70,7 +70,8 @@ namespace AuroraPOS.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetPendingPrintJobs")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPendingPrintJobs()
         {
             // Obtiene la lista de trabajos pendientes desde la base de datos
@@ -109,7 +110,7 @@ namespace AuroraPOS.Controllers
                     var voucher = _dbContext.Vouchers.Include(s => s.Taxes)
                         .FirstOrDefault(s => s.ID == order.ComprobantesID);
                     var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
-                    order.GetTotalPrice(voucher, objPending.DivideNum.Value, objPending.SeatNum.Value);
+                    order.GetTotalPrice(voucher, objPending.DivideNum!=null ? objPending.DivideNum.Value : 0, objPending.SeatNum!=null ? objPending.SeatNum.Value : 0);
                     var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel)
                         .Include(s => s.Printers).ThenInclude(s => s.Printer)
                         .FirstOrDefault(s => s.ID == objPending.StationId);
@@ -305,7 +306,40 @@ namespace AuroraPOS.Controllers
             return Ok(objResult);
         }
 
+
+        [HttpGet("GetPreference")]
+        [AllowAnonymous]
+        public IActionResult GetPreference()
+        {
+            var preference = _dbContext.Preferences.FirstOrDefault();
+
+            if (preference == null)
+            {
+                return NotFound(new { message = "No se encontró la configuración de la empresa." });
+            }
+
+            return Ok(new
+            {
+                Name = preference.Name,
+                Company = preference.Company,
+                Logo = preference.Logo,
+                RNC = preference.RNC,
+                Email = preference.Email,
+                Phone = preference.Phone,
+                Address1 = preference.Address1,
+                Address2 = preference.Address2,
+                City = preference.City,
+                State = preference.State,
+                PostalCode = preference.PostalCode,
+                Country = preference.Country,
+                Currency = preference.Currency,
+                SecondCurrency = preference.SecondCurrency,
+                Tasa = preference.Tasa
+            });
+        }
+
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> updatePrintJobStatus([FromBody] long Id)
         {
             var pendingJob = await _dbContext.PrinterTasks.FirstOrDefaultAsync(s => s.ID == Id);

@@ -834,16 +834,16 @@ public class POSController : Controller
     {
         var checkoutResponse = new CheckoutResponse();
         var LogError = new System.Text.StringBuilder();
+        var model = new CheckOutViewModel();
 
         LogError.Append("OrderId: ").Append(chkrequest.OrderId).Append(" Seat: ").Append(chkrequest.Seat).Append(" DividerId: ").Append(chkrequest.DividerId);
 
-        ViewBag.Refund = chkrequest.Refund;
+        model.Refund = chkrequest.Refund;
 
         try
         {
             LogError.AppendLine().Append("--------").AppendLine().Append("L1 ");
-
-            var model = new CheckOutViewModel();
+            
             var order = _dbContext.Orders.Include(s => s.Divides).Include(s => s.Table).FirstOrDefault(s => s.ID == chkrequest.OrderId);
 
             LogError.AppendLine().Append("--------").AppendLine().Append("L2 ");
@@ -894,7 +894,7 @@ public class POSController : Controller
             LogError.AppendLine().Append("--------").AppendLine().Append("L4 ");
 
             var denominations = _dbContext.Denominations.OrderBy(s => s.DisplayOrder).ToList();
-            ViewBag.Denominations = denominations;
+            model.Denominations = denominations;
 
             var paymentMethods = _dbContext.PaymentMethods.Where(s => s.IsActive).OrderBy(s => s.DisplayOrder).ToList();
             if (chkrequest.Seat > 0 || chkrequest.DividerId > 0)
@@ -923,11 +923,11 @@ public class POSController : Controller
                 }
             }
 
-            ViewBag.PaymentMethods = paymentMethods;
+            model.PaymentMethods = paymentMethods;
 
             LogError.AppendLine().Append("--------").AppendLine().Append("L5 ");
 
-            ViewData["StationID"] = chkrequest.StationId;
+            model.StationId = chkrequest.StationId;
 
             LogError.AppendLine().Append("--------").AppendLine().Append("L6 ");
             // Obtener los IDs de los elementos seleccionados
@@ -936,14 +936,14 @@ public class POSController : Controller
             // Obtener las transacciones de la base de datos que coincidan con los IDs seleccionados
             var selectedTransactions = _dbContext.OrderTransactions.Where(t => selectedIds.Contains(t.ID)).ToList();
 
-            ViewBag.SelectedItems = selectedTransactions;
+            model.SelectedItems = selectedTransactions;
 
             var store = _dbContext.Preferences.FirstOrDefault();
 
-            ViewBag.HasSecondCurrency = false;
+            model.HasSecondCurrency = false;
             if (!string.IsNullOrEmpty(store.SecondCurrency))
             {
-                ViewBag.HasSecondCurrency = true;
+                model.HasSecondCurrency = true;
             }
 
             checkoutResponse.Success = true;
@@ -1926,17 +1926,17 @@ public class POSController : Controller
 
     [HttpPost("ChangeQtyItem")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult ChangeQtyItem([FromBody] long ItemId, [FromBody] int Qty, [FromBody] int stationId)
+    public JsonResult ChangeQtyItem([FromBody] ChangeQtyItemRequest rq)
     {
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-        var stationID = stationId;
+        var stationID = rq.stationId;
 
         ChangeQtyItemResponse response = new ChangeQtyItemResponse();
 
         QtyChangeModel model = new QtyChangeModel
         {
-            ItemId = ItemId,
-            Qty = Qty
+            ItemId = rq.ItemId,
+            Qty = rq.Qty
         };
 
         try
@@ -1959,17 +1959,17 @@ public class POSController : Controller
 
     [HttpPost("VoidOrderItem")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult VoidOrderItem([FromBody] long ItemId, [FromBody] long ReasonId, [FromBody] string Pin, [FromBody] bool Consolidate, [FromBody] int stationId)
+    public JsonResult VoidOrderItem([FromBody] VoidOrderItemRequest rq)
     {
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-        var stationID = stationId;
+        var stationID = rq.stationId;
 
         CancelItemModel model = new CancelItemModel
         {
-            ItemId = ItemId,
-            ReasonId = ReasonId,
-            Pin = Pin,
-            Consolidate = Consolidate
+            ItemId = rq.ItemId,
+            ReasonId = rq.ReasonId,
+            Pin = rq.Pin,
+            Consolidate = rq.Consolidate
         };
 
         VoidOrderItemResponse response = new VoidOrderItemResponse();

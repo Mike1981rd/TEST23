@@ -191,6 +191,7 @@
             overflow: hidden;
             padding: 6px;
             gap: 8px;
+            font-weight:lighter;
         }
 
         .table-body {
@@ -728,24 +729,32 @@
 
         .more-menu-container {
             position: relative;
-            
+              color:black;
         }
 
         .more-menu {
             position: fixed;
             /* background: #171525; */
-            background: #333333;
+            background: white;
+            color:black;
             display: flex;
             flex-direction: column;
             justify-content: left;
             align-items: flex-start;
             border-radius: 12px;
-            padding: 16px;
-            gap: 8px;
+            padding: 20px;
+            gap: 12px;
             top: 0;
             transform: translate(-100%,5%);
             z-index: 2;
+            width: 200px;
+            min-height: 250px
         }
+
+        .button-icon-container svg path {
+            fill: black !important; 
+        }
+
 
         .button-icon-container {
             display: flex;
@@ -764,6 +773,64 @@
             flex-direction: column;
 
         }
+
+        #select-customer-trigger {
+            cursor: pointer;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Espacio entre el logo y la lupa */
+        }
+
+        .small-logo {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-menu {
+            width: 100%;
+            height: 50px; /* Asegura un alto uniforme */
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px; /* Bordes redondeados uniformes */
+            border: none;
+        }
+
+        .btn-menu-primary {
+            background-color: #343f54; /* Color oscuro para mantener coherencia */
+            color: white;
+        }
+
+        .btn-menu-red {
+            background-color: darkred;
+            color: white;
+        }
+
+        .btn-menu-green {
+            background-color: forestgreen;
+            color: white;
+        }
+
+        .btn-menu-blue {
+            background-color: midnightblue;
+            color: white;
+        }
+
+        .btn-menu-gold {
+            background-color: #B8860B; /* Color dorado para el botón especial */
+            color: white;
+        }
+
+        #category-panel-main {
+            display: flex; /* Mantiene los elementos en línea */
+            overflow-x: auto; /* Activa el desplazamiento horizontal */
+            white-space: nowrap; /* Evita que los elementos se envuelvan */
+            scrollbar-width: thin; /* Opcional: controla el tamaño del scrollbar en Firefox */
+            scrollbar-color: #c1c1c1 transparent; /* Opcional: color del scrollbar */
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -775,7 +842,7 @@
         <div class="main-content">
             <div class="details show cuenta-side-menu">
                 <div class="top user-info-container">
-                    <div class="user-info-option">
+                    <div class="user-info-option" id="select-customer-trigger">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
 
                         @ViewLocalizer["Cliente"]: <span class="order-client">@Model.ClientName</span></div>
@@ -794,10 +861,16 @@
 
 
                     <input type="hidden" id="divide-num" value="0" />
-                    <a class="search-product user-info-option" href="javascript:void(0);" >
-                        @* <img class="sales-logo" src="/vendor/img/logo-04.png" alt="" width=45 height=35 > *@
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#fff" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" stroke-width="0.5" stroke="#fff" /></svg>
+                    <a class="search-product user-info-option" href="javascript:void(0);">
+                        <div class="search-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                                <path fill="#fff" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" stroke-width="0.5" stroke="#fff" />
+                            </svg>
+
+                            <img class="small-logo" src="/vendor/img/logo-circle-04.png" alt="Logo" width="35" height="35">
+                        </div>
                     </a>
+
                 </div>
                 <div class="content order-item-content order-info-menu">            
                     <div class="order-table" style="height:initial">
@@ -820,14 +893,14 @@
                         <div class="sub-total"><span>@ViewLocalizer["Discount"]:</span><span id="order-discount">00.00</span></div>
                         <div class="order-discount-items">
                         </div>
-                        <div class="sub-total">
+                      @*   <div class="sub-total">
                             <span>@ViewLocalizer["Tax"]:</span><span id="order-tax">0</span>
-                        </div>
+                        </div> *@
                         <div class="order-tax-items">
                         </div>
-                        <div class="sub-total">
+                        @* <div class="sub-total">
                             <span>@ViewLocalizer["Propina"]:</span><span id="order-propina">0</span>
-                        </div>
+                        </div> *@
                         <div class="order-propina-items">
                         </div>
 
@@ -950,7 +1023,7 @@
                                         <div style="padding-bottom: 15px; margin-top: 20px; text-align: center;">
                                             <h5 id="QuestionTitleModal" class="smartbuton-modal-title" style="color: orange;">@ViewLocalizer["Forced Questions"]</h5>
                                             <div class="">
-                                                <button id="question-submit" disabled type="button" class="btn btn-success" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Submit"]</button>
+                                                <button id="question-submit" disabled type="button" class="btn " style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px; background-color:#DAA520">@ViewLocalizer["Submit"]</button>
                                                 <button id="question-cancel" type="button" class="btn btn-danger" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 15px;">@ViewLocalizer["Cancel"]</button>
                                             </div>
                                         </div>
@@ -1549,22 +1622,25 @@
 					    </h4>
 				    </div>
                     <div class="row">
-                        <div class="col-3 p-2"><button id="btn-void" class="btn-menu btn " style="background-color:darkred; color:white;  border-radius: 10px">@ViewLocalizer["Void"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-hold" class="btn-menu btn btn-primary " style=" border-radius: 10px">@ViewLocalizer["Hold"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-seperate" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Separate"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-void" class="btn-menu btn-menu-red">@ViewLocalizer["Void"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-hold" class="btn-menu btn-menu-primary">@ViewLocalizer["Hold"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-seperate" class="btn-menu btn-menu-primary">@ViewLocalizer["Separate"]</button></div>
+
                         @if (discountType != "order")
                         {
-                            <div class="col-3 p-2"><button id="btn-discountitem" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Discount"]</button></div>
-                        }                       
-                        <div class="col-3 p-2"><button id="btn-qty" class="btn-menu btn " style="background-color:forestgreen;  color:white;  border-radius: 10px">@ViewLocalizer["Quantity"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-movetable" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Move to Another Table"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-moveseat" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Move to Another Seat"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-inventory" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Inventory Count Down"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-modifier" class="btn-menu btn " style="background-color:midnightblue;  color:white;  border-radius: 10px">@ViewLocalizer["Modificar"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-reorder" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Reorder"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-fire" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Fire"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-note" class="btn-menu btn btn-primary" style=" border-radius: 10px">@ViewLocalizer["Course and note"]</button></div>
+                            <div class="col-3 p-2"><button id="btn-discountitem" class="btn-menu btn-menu-primary">@ViewLocalizer["Discount"]</button></div>
+                        }
+
+                        <div class="col-3 p-2"><button id="btn-qty" class="btn-menu btn-menu-green">@ViewLocalizer["Quantity"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-movetable" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Table"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-moveseat" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Seat"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-inventory" class="btn-menu btn-menu-primary">@ViewLocalizer["Inventory Count Down"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-modifier" class="btn-menu btn-menu-blue">@ViewLocalizer["Modificar"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-reorder" class="btn-menu btn-menu-primary">@ViewLocalizer["Reorder"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-fire" class="btn-menu btn-menu-primary">@ViewLocalizer["Fire"]</button></div>
+                        <div class="col-3 p-2"><button id="btn-note" class="btn-menu btn-menu-primary">@ViewLocalizer["Course and note"]</button></div>
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" style=" border-radius: 10px">@ViewLocalizer["Cancel"]</button>
@@ -2570,6 +2646,31 @@
         </div>
     </div>
 
+
+    <div id="customer-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@ViewLocalizer["Seleccionar Cliente"]</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">@ViewLocalizer["Nombre de Cliente"]</label>
+                    <select id="customer-select2" class="form-control">
+                        <option value="" selected>@ViewLocalizer["Choose customer"]</option>
+                        <!-- Aquí se llenarán los clientes con AJAX -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@ViewLocalizer["Cancelar"]</button>
+                    <button type="button" id="confirm-customer" class="btn btn-primary">@ViewLocalizer["Confirmar"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Product List -->
     @{
              @await Component.InvokeAsync("ProductList", new { })
@@ -2746,6 +2847,91 @@
         setVisualMode();
 
         let more_menu_on = false;
+        var chooseCustomerText = "@ViewLocalizer["Choose customer"]";
+
+         $("#select-customer-trigger").click(function () {
+        $("#customer-modal").modal("show");
+    });
+
+    $("#customer-select").change(function () {
+        var clientName = $("#customer-select2 option:selected").text();
+        var customerId = $("#customer-select2").val();
+
+        if (customerId) {
+            $(".order-client").text(clientName);
+            $("#customer-modal").modal("hide");
+        }
+    });
+
+    // Cargar clientes solo cuando se abre el modal
+       $("#customer-modal").on("shown.bs.modal", function () {
+           console.log("Modal abierto. Cargando clientes...");
+
+           $.ajax({
+               url: "/Setting/GetActiveCustomers",
+               type: "POST",
+               success: function (data) {
+                   console.log("Clientes recibidos:", data);
+
+                   var $select = $("#customer-select2");
+                   $select.empty().append("<option value='' selected>" + chooseCustomerText + "</option>");
+
+                   if (Array.isArray(data) && data.length > 0) {
+                       data.forEach(function (customer) {
+                           if (customer.id && customer.name) {
+                               $select.append(
+                                   "<option value='" + customer.id + "'>" + customer.name + "</option>"
+                               );
+                           }
+                       });
+                   } else {
+                       console.warn("No se encontraron clientes.");
+                   }
+
+                   // Asegurar que Select2 se reinitialize si se está usando
+                   if ($.fn.select2) {
+                       $select.select2({
+                           dropdownParent: $("#customer-modal")
+                       });
+                   }
+               },
+               error: function () {
+                   toastr.error("Error cargando clientes");
+               }
+           });
+       });
+
+           $("#confirm-customer").click(function () {
+        var clientName = $("#customer-select2 option:selected").text();
+        var customerId = $("#customer-select2").val();
+
+        if (!customerId) {
+          
+            return;
+        }
+
+        var data = {
+            OrderId: @Model.ID,
+            ClientName: clientName,
+            CustomerId: customerId
+        };
+
+        $.ajax({
+            url: "/POS/UpdateOrderInfo",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (response) {
+                $(".order-client").text(response.customerName);
+                $("#customer-modal").modal("hide");
+                LoadOrderItems();
+            },
+            error: function () {
+               
+            }
+        });
+    });
 
         $("#carga-datos-rnc").click(function () {
 
@@ -4409,6 +4595,7 @@
                                                 }
 
                                                 if (a.product.photo) {
+                                                    console.log(a.product.backColor);
                                                     html += `
                                             <div class='product-item-kiosk' style="width:auto !important;">
                                             <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}" data-qty='${a.qty}' ${divisorDefault} style="background-color:${a.product.backColor}; color:${a.product.textColor}">
@@ -4418,6 +4605,7 @@
                                         </div> </div> `
                                                 }
                                                 else {
+                                                     print(a.product.backColor);
                                                     html +=
                                                         `<div class='product-item-kiosk' style="width:auto !important;">
                                                           <div class="product-item-1 answer-item ${active}" data-answerid="${a.id}" data-hasqty="${a.hasQty}" data-hasdivisor="${a.hasDivisor}"  data-qty='${a.qty}' ${divisorDefault}  style="background-color:${a.product.backColor}; color:${a.product.textColor}">
@@ -6169,7 +6357,7 @@
                         var html =
                             `
                                 <div class="product-item-container">
-                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
+                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
                                             <img class="card-img" src="${d.product.photo}" alt="">
                                         ${inventory_html}
                                     </div>
@@ -6182,7 +6370,7 @@
                         var html =
                             `
                                 <div class="product-item-container">
-                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
+                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
                                             <h5 class="product-card-title">${d.product.name}</h5>
                                              ${inventory_html}
                                     </div>

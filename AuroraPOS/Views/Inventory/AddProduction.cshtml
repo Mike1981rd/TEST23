@@ -146,7 +146,7 @@
 
                 </div>
                 <br />
-                <div class="col-lg-12">
+                <div class="col-lg-12" style="display: flex; flex-direction: row; align-content: end;">
                     @if (productionStatus == ProductionStatus.Pending)
                     {
                         <a id="production-submit" href="javascript:void(0);" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Save"]</a>
@@ -165,7 +165,7 @@
                         <a id="production-complete" href="javascript:void(0);" class="btn btn-default btn-success bg-lightgreen">@ViewLocalizer["Complete"]</a>
                     }
 
-                    <a id="production-return" href="/Inventory/ProductionList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Return"]</a>
+                    <a id="production-return" href="/Inventory/ProductionList" class="btn btn-label-secondary waves-effect ms-auto ">@ViewLocalizer["Return"]</a>
                 </div>
             </div>
         </div>

@@ -5304,8 +5304,9 @@ textarea.form-control-lg {
 
 .toast-container {
   --bs-toast-zindex: 1095;
-  position: absolute;
-  z-index: var(--bs-toast-zindex);
+  position: fixed;
+  z-index: 999999;
+  margin-top: 90px;
   width: max-content;
   max-width: 100%;
   pointer-events: none;

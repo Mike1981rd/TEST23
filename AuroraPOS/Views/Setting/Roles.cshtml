@@ -59,7 +59,7 @@
                                     <span class="badge badge-primary">@role.Priority</span>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-end">
-                                    <a href="/Setting/AddRole?roleId=${role.id}" class="btn btn-primary me-3 waves-effect waves-light mb-2 role-edit-modal">Edit Role</a>
+                                    <a href="/Setting/AddRole?roleId=@role.ID" class="btn btn-primary me-3 waves-effect waves-light mb-2 role-edit-modal">Edit Role</a>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                     <div class="row h-100">
                         <div class="col-sm-8" style="display: flex; align-items: center; justify-content: left;">
                             <div class="card-body text-sm-left text-left">
-                                <button data-bs-target="#addRoleModal" data-bs-toggle="modal" class="btn btn-primary me-3 waves-effect waves-light mb-2">Add New Role</button>
+                                <a href="/Setting/AddRole?roleId" class="btn btn-primary me-3 waves-effect waves-light mb-2 role-edit-modal">Add New</a>
                                 <p class="mb-0"> Add new role, <br> if it doesn't exist.</p>
                             </div>
                         </div>
