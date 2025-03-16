@@ -56,6 +56,15 @@
                     </div>
                     <div class="col-lg-2 col-sm-6 col-12">
                         <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Date"]</label>
+                            <div style="display: flex; flex-direction: row; align-items: center; gap: 4px;">
+                                <input id="move-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.MoveDate" class="datetimepicker form-control" data-format="DD-MM-YYYY">
+                                <div class="addonset">
+                                    <img src="/vendor/img/icons/calendars.svg" alt="img" width="20">
+                                </div>
+                            </div>
+                        </div>
+@*                         <div class="form-group">
                         <label class="form-label">@ViewLocalizer["Date"] </label>
                             <div class="col input-groupicon">
                             <input id="move-date" type="text" placeholder="DD-MM-YYYY" value="@ViewBag.MoveDate" class="datetimepicker form-control" data-format="DD-MM-YYYY">
@@ -63,20 +72,24 @@
                                     <img src="/vendor/img/icons/calendars.svg" alt="img">
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-6">
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class=" mt-2">
                         <a id="add-article-modal" href="javascript:void(0);" class="btn btn btn-primary waves-effect waves-light">@ViewLocalizer["Add Article or Sub Recipe"] </a>
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12 search-set">
-                        <div class="col search-input" style="">
+                        <div class="search-input" style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+                            <div class="dataTables_filter"><label> <input id="filter-barcode" type="search" class="barcode-scanner form-control form-control-sm" placeholder="@ViewLocalizer["Scanning"]" ..."></label></div>
+                            <a class="btn btn-searchset"><img src="/vendor/img/icons/scanners.svg" alt="img"></a>
+                        </div>
+@*                         <div class="col search-input" style="">
                             <a class="btn btn-searchset"><img src="/vendor/img/icons/scanners.svg" alt="img"></a>
                             <div class="dataTables_filter"><label> <input id="filter-barcode" type="search" class="barcode-scanner form-control form-control-sm" placeholder="@ViewLocalizer["Scanning"]..." ></label></div>
-                        </div>
+                        </div> *@
                     </div>
             
                 </div>

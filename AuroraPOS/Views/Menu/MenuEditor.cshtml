@@ -151,33 +151,44 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-12">
                         <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+                            <div class="row mb-3">
+                                <div class="d-flex justify-content-between search-id-group" style="gap: 10px; align-items:center">
+                                    <div class="col-lg-9 col-sm-6 col-6">
                                         <select id="editor-menu" class="select ">
                                             <option value="">@ViewLocalizer["Choose menu"]</option>
 
                                         </select>
-                                        <div class="ml-5">
-                                            <a id="add-menu-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
-                                        </div>
+                                    </div>
+                                    <div class="add-icon" style="height: 100%;">
+                                        <a id="add-menu-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="height: 100%; margin: 0;"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
+                                    </div>
+                                    <div class="edit-icon" style="height: 100%;">
+                                        <a id="edit-menu-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="height: 100%; margin: 0; color: white;">
+                                            <img src="/vendor/img/icons/edit.svg" alt="img">
+                                        </a>
+                                    </div>
+                                    <div class="del-icon" style="height: 100%;">
+                                        <a id="del-menu-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="height: 100%; margin: 0;">
+                                            <img src="/vendor/img/icons/minus.svg" alt="img">
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-sm-2 col-2 ps-0">
-                                    <div class="d-flex">
+@*                                 <div class="col-lg-3 col-sm-2 col-2 ps-0">
+                                    <div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
                                         <div class="edit-icon  px-1">
-                                            <a id="edit-menu-modal" href="javascript:void(0);">
+                                            <a id="edit-menu-modal" class="btn btn-primary waves-effect waves-light" href="javascript:void(0);">
                                                 <img src="/vendor/img/icons/edit.svg" alt="img">
                                             </a>
                                         </div>
                                         <div class="del-icon  px-1">
-                                            <a id="del-menu-modal" href="javascript:void(0);">
+                                            <a id="del-menu-modal" class="btn btn-primary waves-effect waves-light" href="javascript:void(0);">
                                                 <img src="/vendor/img/icons/minus.svg" alt="img">
                                             </a>
                                         </div>
+
                                     </div>
 
-                                </div>
+                                </div> *@
 
                             </div>
                         </div>
@@ -347,7 +358,7 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -356,7 +367,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
+                    <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div id="group-bcolor" class="col-lg-4 text-start w-100">
                                 <input id="group-backcolor" type="text" class="form-control" value=" /">
@@ -365,7 +376,7 @@
 
                     </div>
                     <div class="col-lg-6 px-3">
-                        <div class="form-group px-3">
+                        <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div id="group-tcolor" class="col-lg-4 text-start w-100">
                                 <input id="group-textcolor" type="text" class="form-control">
@@ -402,7 +413,7 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -411,7 +422,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
+                    <div class="form-group ">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="category-bcolor" class="backcolor">
@@ -422,7 +433,7 @@
 
                     </div>
                     <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
+                    <div class="form-group ">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="category-tcolor" class="textcolor">
@@ -503,7 +514,7 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-sm-12 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -512,7 +523,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
+                    <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="subcategory-bcolor" class="backcolor ">
@@ -523,7 +534,7 @@
 
                     </div>
                     <div class="col-lg-6 px-3">
-                    <div class="form-group px-3">
+                    <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="subcategory-tcolor" class="textcolor ">
@@ -562,15 +573,19 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="table-top">
-                        <div class="search-set">
+                    <div class="table-top mb-6">
+                        <div class="search-set d-flex w-100">
                             <div class="search-path">
-                                <a class="btn btn-filter product_search" id="filter_search">
+                                <a class="btn btn-filter" id="filter_search" style="margin: 1px; padding: 1px;">
                                     <img src="/vendor/img/icons/filter.svg" alt="img">
-                                    <span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+                                    <span id="img_close_span"></span>
                                 </a>
                             </div>
-                            <div class="search-input">
+@*                             <div class="search-input">
+                                <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+                                <div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..." style="font-size:16px;"></label></div>
+                            </div> *@
+                            <div class="search-input" style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
                                 <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
                                 <div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..." style="font-size:16px;"></label></div>
                             </div>
@@ -618,6 +633,26 @@
 </div>
 
 <script>
+
+    $(document).ready(() => {
+        var filterVisible = true;
+
+        $("#filter_search").click(function () {
+            $("#filter_inputs").toggle();
+
+            if (filterVisible) {
+                $(this).removeClass("setclose");
+                $("#img_close").remove();
+            } else {
+                $(this).addClass("setclose");
+                $(this).find("#img_close").attr("src", "/vendor/img/icons/closes.svg");
+                var img = "<img src='/vendor/img/icons/closes.svg' alt='img' id='img_close'>";
+                $("#img_close_span").append(img);
+            }
+
+            filterVisible = !filterVisible;
+        });
+    })
     
     $(function () {
         $("#product-panel-main").sortable();
@@ -795,8 +830,8 @@
             success: function (data, textStatus, jqXHR) {
                 $("#filter-productcategory").empty();
                 $("#filter-productcategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-                for (var i = 0; i < data.length; i++) {
-                    var d = data[i];
+                for (var i = 0; i < data.valor.length; i++) {
+                    var d = data.valor[i];
                     $("#filter-productcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
                 }
                 $("#filter-productcategory").select2({
