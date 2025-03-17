@@ -13,6 +13,12 @@
 
 }
 
+<style>
+	.select2-container--open {
+		z-index: 9999 !important;
+	}
+</style>
+
 <div class="content-wrapper">
 
     <!-- Content -->
@@ -66,26 +72,27 @@
 									<textarea id="article-description" class="form-control"></textarea>
 								</div>
 							</div>
-							<div class="row mb-6">
-								<div class="col-6">
+							<div class="d-flex justify-content-between mb-6">
+								<div class="">
 									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Category"]</label>
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-category" class="select form-control ">
+									<div class="d-flex search-id-group" style="gap: 10px;">
+										<select id="article-category" class="select form-control " >
 											<option value="">@ViewLocalizer["Choose category"]</option>
 											@foreach (var c in categories)
 											{
 												<option value="@c.ID">@c.Name</option>
 											}
 										</select>
-										<div class="ml-5">
+										<div class="add-icon">
 											<a id="add-category-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"> <img src="/vendor/img/icons/plus1.svg" alt="img"></a>
 										</div>
 									</div>
 								</div>
-								<div class="col-6">
+								<div class="">
 									<label class="form-label" for="ecommerce-product-sku">@ViewLocalizer["Sub Category"]</label>
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-subcategory" class="select form-control">
+									<div class="d-flex search-id-group" style="gap: 10px">
+										<select id="article-subcategory" class="select form-control " style="width: 100%">
+											<option value="">@ViewLocalizer["Choose sub category"]</option>
 										</select>
 										<div class="add-icon">
 											<a id="add-subcategory-modal" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">
@@ -94,14 +101,12 @@
 										</div>
 									</div>
 								</div>
-							</div>
 
-							<div class="row mb-6">
-								<div class="col">
+								<div class="">
 									<label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Brand"]</label>
 
-									<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
-										<select id="article-brand" class="select form-control ">
+									<div class="d-flex search-id-group" style="gap: 10px">
+										<select id="article-brand" class="select form-control " style="width: 100%">
 											<option>Choose Brand</option>
 											@foreach (var b in brands)
 											{
@@ -152,7 +157,7 @@
 															<label class="form-label" style="margin: 0;" for="ecommerce-product-barcode">@ViewLocalizer["Units"] </label>
 
 															<div class="add-icon">
-																<a id="unit-plus" href="javascript:void(0);" class="add-new-unit btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+																<a id="unit-plus" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
 																	<img src="/vendor/img/icons/plus1.svg" alt="img">
 																</a>
 															</div>
@@ -276,7 +281,6 @@
 							<!-- /Media -->
 
 							<div class="row mb-6">
-								<h5 class="card-title mb-0">Características</h5>
 								<div class="col-6">
 									<form class="form-repeater">
 										<div data-repeater-list="group-a">
@@ -602,19 +606,19 @@
 					</h4>
 				</div>
 				<div class="row">
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
 							<input id="product-name" type="text" class="form-control">
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Printer Name"]</label>
 							<input id="product-printername" type="text" class="form-control">
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Category"]</label>
 							<select id="product-category" class="select form-select">
@@ -626,19 +630,19 @@
 							</select>
 						</div>
 					</div>
-					<div class="col-lg-3 col-sm-6 col-12">
+					<div class="col-lg-3 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Barcode"]</label>
-							<input id="product-barcode" type="text">
+							<input id="product-barcode" type="text" class="form-control">
 						</div>
 					</div>
-					<div class="col-lg-3 col-sm-6 col-12">
+					<div class="col-lg-3 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Price"]</label>
-							<input id="product-price" type="text">
+							<input id="product-price" type="text" class="form-control">
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Printer Channels"]</label>
 							<select id="product-printerChannels" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
@@ -649,7 +653,7 @@
 							</select>
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Taxes"]</label>
 							<select id="product-taxes" class="form-control tagging select" multiple tabindex="-1" aria-hidden="true">
@@ -695,7 +699,21 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-lg-12 justify-content-center">
+						<div class="col-lg-12 float-md-right">
+							<div class="total-order" style="display: flex; justify-content: center; align-items: center;">
+								<table style="border-collapse: collapse; width: 30%;">
+									<tr>
+										<td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+											<h5 style="margin: 0;">@ViewLocalizer["Total"]</h5>
+										</td>
+										<td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+											<p id="po-total" style="margin: 0;">$ 0.00</p>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+@* 						<div class="col-lg-12 justify-content-center">
 							<div class="total-order">
 								<ul>
 									<li class="total">
@@ -704,7 +722,7 @@
 									</li>
 								</ul>
 							</div>
-						</div>
+						</div> *@
 					</div>
 				</div>
 			</div>
@@ -842,7 +860,7 @@
 
 <!-- Unit Modal -->
 <div class="modal fade" id="editunit" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-simple" role="document">
+	<div class="modal-dialog modal-lg modal-simple" role="document">
 		<div class="modal-content">
 @* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Add/Edit Unit"]</h5>
@@ -1779,6 +1797,8 @@
 
 	//category
 	function SelectCategory(category) {
+				$("#article-category").select2();
+
 		$.ajax({
 			url: "/Menu/GetAllActiveCategoryList",
 			type: "POST",
