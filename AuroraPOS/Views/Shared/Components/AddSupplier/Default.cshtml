@@ -1,6 +1,6 @@
 ﻿
 <div class="modal fade" id="listsupplier" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-simple" role="document">
 		<div class="modal-content">
 @* 			<div class="modal-header">
 				<h5 class="group-modal-title">@ViewLocalizer["Supplier List"]</h5>
@@ -36,7 +36,7 @@
 						</div>
 					</div> *@
 					<div class="col-12">
-						<div class="card-datatable table-responsive w-100" style="max-height:400px;">
+						<div class="card-datatable table-responsive w-100" @* style="max-height:400px;" *@>
 							<table id="supplier-list" class="table">
 								<thead class="table-light">
 									<tr>
@@ -78,7 +78,7 @@
 					</h4>
 				</div>
 				<div class="row">
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Supplier Name"]<span class="manitory">*</span></label>
 							<div class="input-group">
@@ -87,71 +87,82 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-sm-6 col-12">
+					<div class="col-lg-6 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["RNC"]<span class="manitory">*</span></label>
 							<input id="supplier-rnc" type="text" class="form-control" aria-describedby="basic-addon1" required>
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label>@ViewLocalizer["Phone"]</label>
 							<input id="supplier-phone" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Email"]</label>
 							<input id="supplier-email" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label>@ViewLocalizer["Country"]</label>
 							<input id="supplier-country" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["City"]</label>
 							<input id="supplier-city" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-8 col-12">
+					<div class="col-lg-8 col-12 mb-6">
 						<div class="form-group">
-							<label class="form-label">@ViewLocalizer["Address"]</label>
+							<label class="form-label">@ViewLocalizer["Address"]s</label>
 							<input id="supplier-address" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12 pt-3">
-						<div class="form-group row">
+					<div class="col-lg-4 col-sm-6 col-12 pt-3 mb-6">
+						<div class="form-check">
+							<input id="supplier-tax" class="form-check-input" type="checkbox">
+							<label class="form-check-label" for="defaultCheck1">
+								@ViewLocalizer["Tax Included"]
+							</label>
+						</div>
+@* 						<div class="form-group row">
 							<input id="supplier-tax" type="checkbox" class="col-sm-4 col-4">
 							<label class="form-label col-sm-8 col-8">@ViewLocalizer["Tax Included"]  </label>
-
-						</div>
+						</div> *@
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12 pt-3">
-						<div class="form-group row">
+					<div class="col-lg-6 col-sm-6 col-12 pt-3 mb-6">
+						<div class="form-check">
+							<input id="supplier-formula" class="form-check-input" type="checkbox">
+							<label class="form-check-label" for="defaultCheck1">
+								@ViewLocalizer["Supplier Formula"]
+							</label>
+						</div>
+@* 						<div class="form-group row">
 							<input id="supplier-formula" type="checkbox" class="col-sm-4 col-4">
 							<label class="col-sm-8 col-8 form-label">@ViewLocalizer["Supplier Formula"]  </label>
-						</div>
+						</div> *@
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12 pt-3">
-					</div>
+@* 					<div class="col-lg-4 col-sm-6 col-12 pt-3">
+					</div> *@
 
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Seller"]</label>
 							<input id="supplier-seller" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group">
 							<label class="form-label">@ViewLocalizer["Cell Phone"]</label>
 							<input id="supplier-cellphone" type="text" class="form-control" aria-describedby="basic-addon1">
 						</div>
 					</div>
-					<div class="col-lg-4 col-sm-6 col-12">
+					<div class="col-lg-4 col-sm-6 col-12 mb-6">
 						<div class="form-group mb-0">
 							<label class="form-label">@ViewLocalizer["Status"]</label>
 							<select id="supplier-status" class="select form-select">
@@ -160,7 +171,33 @@
 							</select>
 						</div>
 					</div>
-					<div class="col-lg-12 px-3">
+
+					<!-- Media -->
+					<div class="col-12 mb-6">
+						<div class="d-flex justify-content-between align-items-center mb-6">
+							<h5 class="mb-0 card-title">@ViewLocalizer["Photo"]</h5>
+							<div href="javascript:void(0);" class="fw-medium">
+								<div class="del-unit text-danger">
+									<a class="del-photo " href="javascript:void(0);">
+										<img src="/vendor/img/icons/minus.svg" alt="img">
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="text-center justify-content-center align-items-center">
+							<div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+								<input id="avatarimgInp" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+								<div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+									<img id="avatarimg" class='imgzoom supplier-avatar' style="max-height: 100px; min-height: 100px;" src="~/vendor/img/profiles/avatar-15.jpg" alt="img" />
+									<p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+									<p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+									<span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /Media -->
+@* 					<div class="col-lg-12 px-3">
 						<div class="form-group px-3">
 							<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
 								<h6 class="text-left pr-5">@ViewLocalizer["Avatar"]</h6>
@@ -184,18 +221,30 @@
 							</div>
 
 						</div>
-					</div>
+					</div> *@
 				</div>
 				<div class="row pt-3">
 					<div class="col-lg-12 col-sm-12 col-12">
-						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+
+						<div class="col mb-6">
+							<div class="d-flex justify-content-left search-id-group" style="gap: 10px; align-items:center">
+								<label class="form-label" style="margin: 0;" >@ViewLocalizer["Accounting"]</label>
+								<div class="add-icon">
+									<a href="javascript:void(0);" data-other="2" class="add-accounting-item btn btn-primary waves-effect waves-light" style="padding: 0; margin: 0;">
+										<img src="/vendor/img/icons/plus1.svg" alt="img">
+									</a>
+								</div>
+							</div>
+						</div>
+
+@* 						<div class="d-flex  align-items-center pb-4" style="gap: 5px;">
 							<h6 class="text-left"> @ViewLocalizer["Accounting"]</h6>
 							<div class="add-unit">
 								<a class="add-accounting-item" data-other="2" href="javascript:void(0);">
 									<img src="/vendor/img/icons/plus1.svg" alt="img">
 								</a>
 							</div>
-						</div>
+						</div> *@
 						<div class="card-datatable table-responsive">
 							<table class="table reordertable">
 								<thead class="table-light">
