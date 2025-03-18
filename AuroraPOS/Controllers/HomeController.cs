@@ -37,14 +37,15 @@ namespace AuroraPOS.Controllers
 			{
                 var user = _dbContext.User.ToList();
             }
-			catch {
+            catch {
                 await HttpContext.SignOutAsync();
                 return RedirectToAction("Login", "Account");
             }
 
             ViewBag.TopProducts = GetFirstTopSaleProducts();
             ViewBag.Branchs = _dbContext.t_sucursal.ToList();
-			return View();
+
+            return View();
 		}
 
 		private List<TopSaleProductModel> GetFirstTopSaleProducts()
@@ -97,6 +98,19 @@ namespace AuroraPOS.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
+
+		[HttpPost]
+		public JsonResult GetProfileInfo()
+		{
+            var userName = User.Identity.GetUserName();
+            var logUser = _dbContext.User.FirstOrDefault(u => u.Username == userName);
+            UserBasicInfo userLog = new UserBasicInfo();
+            userLog.FullName = logUser.FullName;
+            userLog.ProfileImage = logUser.ProfileImage;
+            userLog.Role = User.Identity.GetRole();
+
+			return Json(userLog);
+        }
 
 		[HttpPost]
 		public JsonResult GetSalesTotal(string from, string to)
