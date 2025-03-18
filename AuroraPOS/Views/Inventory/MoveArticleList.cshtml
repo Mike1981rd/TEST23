@@ -1,4 +1,9 @@
 ﻿<!-- Content -->
+<style>
+	.select2 {
+		margin-top: 6px;
+	}
+</style>
 
 <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -11,15 +16,15 @@
 					<input id="filter-searchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
 				</div>
 				<div class="col-md-2">
-					<label class="form-label">@ViewLocalizer["Order Date From"] </label>
+					<label class="form-label mb-2">@ViewLocalizer["Order Date From"] </label>
 					<input id="move_filter_datefrom" type="text" class="form-control datetimepicker" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
-					<label class="form-label">@ViewLocalizer["Order Date To"] </label>
+					<label class="form-label mb-2">@ViewLocalizer["Order Date To"] </label>
 					<input id="move_filter_dateto" type="text" class="form-control datetimepicker" placeholder="@ViewLocalizer["Choose Date"]" data-format="DD-MM-YYYY">
 				</div>
 				<div class="col-md-2">
-					<labe class="form-label"l>@ViewLocalizer["Source Warehouse"] </labe>
+					<labe class="form-label mb-2">@ViewLocalizer["Source Warehouse"] </labe>
 					<select id="move-warehousefrom" class="form-select">
 						<option>Choose Supplier</option>
 						<option>Supplier</option>

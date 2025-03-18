@@ -232,7 +232,7 @@
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="col-lg-8 col-sm-6 col-12">
+                    <div class="col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -240,7 +240,7 @@
                             </div>
                         </div>
                     </div>
-                   <div class="col-lg-4 col-sm-6 col-12">
+                   <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Seat Count"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -248,7 +248,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Width"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -256,7 +256,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Height"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -265,7 +265,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Position X"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -273,7 +273,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Position Y"]<span class="manitory">*</span></label>
                             <div class="input-group">
@@ -282,7 +282,7 @@
                         </div>
                     </div>
                    
-                    <div class="col-lg-4  col-sm-6 col-12">
+                    <div class="col-lg-3  col-sm-6 col-12 mb-6">
                         <label class="form-label">@ViewLocalizer["Shape"]</label>
                         <div class="input-group">
                             <select id="obj-shape" class="select">
@@ -292,7 +292,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Corner Radius"]</label>
                             <div class="input-group">
@@ -300,7 +300,7 @@
                             </div>
                         </div>
                     </div>
-                     <div class="col-lg-4  col-sm-6 col-12">
+                    <div class="col-lg-3  col-sm-6 col-12 mb-6">
                         <label class="form-label">@ViewLocalizer["Type"]</label>
                         <div class="input-group">
                             <select id="obj-type" class="select">
@@ -310,9 +310,9 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3  col-sm-6 col-12">
-                        <div class="form-group px-3">
-                            <label class="form-label">	@ViewLocalizer["Background Color"]<input class="m-2" type="checkbox" checked id="has-bg" /></label>
+                    <div class="col-lg-3  col-sm-6 col-12 mb-6">
+                        <div class="form-group">
+                            <label class="form-label">	@ViewLocalizer["Background Color"]<input style="margin-left: 4px;" type="checkbox" checked id="has-bg" /></label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="object-bcolor" class="backcolor">
                                     <input id="object-backcolor" type="color" class="form-control me-2">
@@ -320,8 +320,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3  col-sm-6 col-12">
-                        <div class="form-group px-3">
+                    <div class="col-lg-3  col-sm-6 col-12 mb-6">
+                        <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
                                 <div id="object-tcolor" class="backcolor ">
@@ -330,37 +330,63 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-sm-12 col-12">
-                        <div class="form-group px-3">
-                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                            <h6 class="text-left pr-5">@ViewLocalizer["Image"]</h6>
-                            <div class="add-unit text-danger">
-                                <a class="add-obj-photo " href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus.svg" alt="img">
-                                </a>
-                            </div>
-                            <div  class="del-unit text-danger">
-                                <a  class="del-obj-photo "  href="javascript:void(0);" >
-                                    <img src="/vendor/img/icons/minus.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                   
-                        <div class="row">
-                            <div class="col-sm-4 col-4">
-                                <img id="areaobjimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                            </div>
-                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                                <input id="imgInpObjArea" type="file" name="Files" accept="image/*">
-                                <div class="image-uploads">
-                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+
+                    <!-- Media -->
+                    <div class="col-12 mb-6">
+                        <div class="d-flex justify-content-between align-items-center mb-6">
+                            <h5 class="mb-0 card-title">@ViewLocalizer["Image"]</h5>
+                            <div href="javascript:void(0);" class="fw-medium">
+                                <div class="del-unit text-danger">
+                                    <a class="del-obj-photo " href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/minus.svg" alt="img">
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-                </div>
+                        <div class="text-center justify-content-center align-items-center">
+                            <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                <input id="imgInpObjArea" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                    <img id="areaobjimg" class='imgzoom supplier-avatar' style="max-height: 100px; min-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image" />
+                                    <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                    <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                    <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!-- /Media -->
+
+@*                     <div class="col-lg-12 col-sm-12 col-12">
+                        <div class="form-group px-3">
+                            <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
+                                <h6 class="text-left pr-5">@ViewLocalizer["Image"]</h6>
+                                <div class="add-unit text-danger">
+                                    <a class="add-obj-photo " href="javascript:void(0);">
+                                        <img src="/vendor/img/icons/plus.svg" alt="img">
+                                    </a>
+                                </div>
+                                <div  class="del-unit text-danger">
+                                    <a  class="del-obj-photo "  href="javascript:void(0);" >
+                                        <img src="/vendor/img/icons/minus.svg" alt="img">
+                                    </a>
+                                </div>
+                            </div>
+                   
+                            <div class="row">
+                                <div class="col-sm-4 col-4">
+                                    <img id="areaobjimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                                </div>
+                                <div class="col-sm-8 col-8 image-upload" style="height: 100%">
+                                    <input id="imgInpObjArea" type="file" name="Files" accept="image/*">
+                                    <div class="image-uploads">
+                                        <img src="~/vendor/img/icons/upload.svg" alt="img">
+                                        <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
                 </div>
             </div>
             <div class="modal-footer">

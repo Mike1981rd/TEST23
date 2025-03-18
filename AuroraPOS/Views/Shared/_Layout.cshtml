@@ -1196,7 +1196,7 @@
                     href="javascript:void(0);"
                     data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="~/img/avatars/1.png" alt class="rounded-circle" />
+                        <img id="avatar-user" src="/user_img.jpg" alt="Profile Image" class="rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -1205,12 +1205,12 @@
                         <div class="d-flex align-items-center">
                           <div class="flex-shrink-0 me-2">
                             <div class="avatar avatar-online">
-                                                        <img src="~/img/avatars/1.png" alt class="rounded-circle" />
+                                <img id="avatar-user-dropdown" src="/user_img.jpg" alt="Profile Image" class="rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <h6 class="mb-0">John Doe</h6>
-                            <small class="text-muted">Admin</small>
+                            <h6 id="user-info-fullname" class="mb-0">Full User Name</h6>
+                            <small id="user-info-role" class="text-muted">User Role</small>
                           </div>
                         </div>
                       </a>
@@ -1314,5 +1314,31 @@
 <!-- Page JS -->
 <script src="/js/forms-pickers.js"></script>
    
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Home/GetProfileInfo",
+            type: "POST",
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                if (data) {
+                    if(data.profileImage !== null && data.profileImage !== "") {
+                        $('#avatar-user').attr('src', data.profileImage);
+                        $('#avatar-user-dropdown').attr('src', data.profileImage);
+                    }
+                    $('#user-info-fullname').text(data.fullName);
+                    $('#user-info-role').text(data.role);
+                }
+                else {
+                    toastr.error("No se pudo recuperar la información del usuario", {})
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    })
+</script>
 </body>              
 </html>

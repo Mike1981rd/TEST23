@@ -28,4 +28,12 @@ namespace AuroraPOS.Models
 		public virtual ICollection<Role> Roles { get; set; }        
 
     }
+
+	public class UserBasicInfo
+	{
+        public string FullName { get; set; } = "";
+        public string? ProfileImage { get; set; } = "";
+        public string Role { get; set; } = "";
+
+    }
 }
