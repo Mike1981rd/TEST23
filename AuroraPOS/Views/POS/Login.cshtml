@@ -371,7 +371,7 @@
             if (pin.length < 4) return;
             var username = '@ViewBag.Station';
             if (username) {
-                //localStorage.setItem("StationID", @ViewBag.Station);
+                localStorage.setItem("StationID", @ViewBag.Station);
             }
             else {
                 username = '@ViewBag.Station' //localStorage.getItem("StationID");
@@ -397,7 +397,7 @@
                                 if (data == null) {
                                     document.location.replace("/POS/WorkDay");
                                 } else {
-                                    document.location.replace("/POS/Station");
+                                  document.location.replace("/POS/Station?station=" + encodeURIComponent(username));
                                 }
 				            },
 				            error: function (jqXHR, textStatus, errorThrown) {

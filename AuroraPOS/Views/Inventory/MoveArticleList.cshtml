@@ -3,6 +3,27 @@
 	.select2 {
 		margin-top: 6px;
 	}
+
+	/* Corrección para mostrar las flechas correctamente en el datetimepicker */
+	.bootstrap-datetimepicker-widget .fa-chevron-left:before {
+		content: "\f104"; /* Unicode para la flecha izquierda en FontAwesome */
+		font-family: "Font Awesome 6 Free";
+		font-weight: 900;
+	}
+
+	.bootstrap-datetimepicker-widget .fa-chevron-right:before {
+		content: "\f105"; /* Unicode para la flecha derecha en FontAwesome */
+		font-family: "Font Awesome 6 Free";
+		font-weight: 900;
+		top: 55%;
+	}
+
+	/* Asegura que las flechas sean visibles */
+	.datepicker .next,
+	.datepicker .prev {
+		color: #6d6b77 !important; /* Color visible para las flechas */
+	}
+
 </style>
 
 <div class="container-xxl flex-grow-1 container-p-y">
