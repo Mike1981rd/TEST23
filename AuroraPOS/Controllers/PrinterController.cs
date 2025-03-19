@@ -337,12 +337,17 @@ namespace AuroraPOS.Controllers
                 Tasa = preference.Tasa
             });
         }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> updatePrintJobStatus([FromBody] long Id)
+        
+        public class Data
         {
-            var pendingJob = await _dbContext.PrinterTasks.FirstOrDefaultAsync(s => s.ID == Id);
+            public long Id {get; set;}
+        }
+
+        [HttpPost("updatePrintJobStatus")]
+        [AllowAnonymous]
+        public async Task<IActionResult> updatePrintJobStatus([FromBody] Data data)
+        {
+            var pendingJob = await _dbContext.PrinterTasks.FirstOrDefaultAsync(s => s.ID == data.Id);
 
             if (pendingJob == null)
             {
