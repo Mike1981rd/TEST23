@@ -1359,121 +1359,122 @@ namespace AuroraPOS.Controllers
             //         return Json(new { status = 0 });
         }
 
+        //TO-DO: Simplificar
         [HttpPost]
 		public JsonResult GetOrderItems(long orderId, int dividerId = 0)
 		{
-            var response = new GetOrderItemResponse();
             try
             {
-                var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-                var orderItems = objPOSCore.GetOrderItems(orderId, dividerId);
-
-                
-                
-                if (orderItems != null)
+                var order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+                var lstSmart = _dbContext.SmartButtons.Select(m => m.Name).ToList().Distinct();
+                if (order.OrderMode == OrderMode.Seat)
                 {
-                    response.Valor = orderItems;
-                    response.Success = true;
-                    
-                    //return Json(response);
-                    
-                    return Json(new { status = 0, items = orderItems.Items.OrderBy(s=>s.CourseID).ToList(), orderItems.Order });
+                    order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
+
+                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
+                    if (order.Items != null && order.Items.Any())
+                    {
+                        foreach (var objItem in order.Items)
+                        {
+                            objItem.Product.Photo = null;
+
+                            foreach (var objQuestion in objItem.Questions)
+                            {
+                                if (lstSmart.Any(objQuestion.Description.Contains))
+                                {
+                                    objQuestion.showDesc = true;
+                                }
+                            }
+                        }
+                    }
+
+                    return Json(new { status = 0, order.Seats, order });
                 }
-                //return Json(null);
-                return Json(new { status = 1 });
-            }
-            catch (Exception ex)
-            {
-                response.Error = ex.Message;
-                response.Success = false;
-                //return Json(response);
-                return Json(new { status = 1 });
-            }
+                else if (order.OrderMode == OrderMode.Divide && dividerId > 0)
+                {
+                    order = _dbContext.Orders.Include(s => s.Divides).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
+
+                    var items = order.Items.Where(s => s.DividerNum == dividerId).ToList();
+                    var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+                    order.GetTotalPrice(voucher, dividerId);
+
+                    var clientName = "";
+                    try
+                    {
+                        var divide = order.Divides.FirstOrDefault(s => s.DividerNum == dividerId);
+                        if (divide != null)
+                        {
+                            clientName = divide.ClientName;
+                        }
 
 
+                    }
+                    catch { }
+
+                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
+                    if (order.Items != null && order.Items.Any())
+                    {
+                        foreach (var objItem in order.Items)
+                        {
+                            objItem.Product.Photo = null;
+                        }
+                    }
+
+                    return Json(new { status = 0, items, order, client = clientName });
+                }
+                else
+                {
+                    //Quitamos las imagenes del objeto para hacer mas rapido el pos
+                    if (order.Items != null && order.Items.Any())
+                    {
+                        foreach (var objItem in order.Items)
+                        {
+                            objItem.Product.Photo = null;
+
+                            foreach (var objQuestion in objItem.Questions)
+                            {
+                                if (lstSmart.Any(objQuestion.Description.Contains))
+                                {
+                                    objQuestion.showDesc = true;
+                                }
+                            }
+                        }
+                    }
+
+
+                    return Json(new { status = 0, items = order.Items.OrderBy(s => s.CourseID).ToList(), order });
+                }
+            }
+            catch { }
+            return Json(new { status = 1 });
+
+            //var response = new GetOrderItemResponse();
             //try
             //{
-            //             var order = _dbContext.Orders.Include(s=>s.Discounts).Include(s=>s.Taxes).Include(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s => s.Divisor)).Include(s=>s.Items.Where(s => !s.IsDeleted)).ThenInclude(s=>s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
-            //             var lstSmart = _dbContext.SmartButtons.Select(m=>m.Name).ToList().Distinct();
-            //             if (order.OrderMode == OrderMode.Seat)
-            //             {
-            //                 order = _dbContext.Orders.Include(s => s.Discounts).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Seats.Where(s=>!s.IsPaid)).ThenInclude(s => s.Items.Where(s=>!s.IsDeleted)).ThenInclude(s=>s.Questions.OrderBy(s=>s.Divisor)).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Seats.Where(s => !s.IsPaid)).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).FirstOrDefault(o => o.ID == orderId);
-
-            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
-            //                 if (order.Items != null && order.Items.Any())
-            //                 {
-            //                     foreach (var objItem in order.Items)
-            //                     {
-            //                         objItem.Product.Photo = null;
-
-            //                         foreach (var objQuestion in objItem.Questions)
-            //                         {
-            //                             if (lstSmart.Any(objQuestion.Description.Contains))
-            //                             {
-            //                                 objQuestion.showDesc = true;
-            //                             }
-            //                         }
-            //                     }
-            //                 }
-
-            //                 return Json(new { status = 0, order.Seats, order } );
-            //             }
-            //             else if (order.OrderMode == OrderMode.Divide && dividerId > 0)
-            //             {
-            //                 order = _dbContext.Orders.Include(s=>s.Divides).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions.OrderBy(s => s.Divisor)).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).FirstOrDefault(s => s.ID == orderId);
-
-            //                 var items = order.Items.Where(s => s.DividerNum == dividerId).ToList();
-            //                 var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
-            //                 order.GetTotalPrice(voucher, dividerId);
-
-            //                 var clientName = "";
-            //                 try
-            //                 {
-            //                     var divide = order.Divides.FirstOrDefault(s => s.DividerNum == dividerId);
-            //                     if (divide != null)
-            //                     {
-            //                         clientName = divide.ClientName;
-            //                     }
+            //    var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
+            //    var orderItems = objPOSCore.GetOrderItems(orderId, dividerId);
 
 
-            //                 }
-            //                 catch { }
 
-            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
-            //                 if (order.Items != null && order.Items.Any())
-            //                 {
-            //                     foreach (var objItem in order.Items)
-            //                     {
-            //                         objItem.Product.Photo = null;
-            //                     }
-            //                 }
+            //    if (orderItems != null)
+            //    {
+            //        response.Valor = orderItems;
+            //        response.Success = true;
 
-            //                 return Json(new { status = 0, items, order, client = clientName });
-            //             }
-            //             else
-            //             {
-            //                 //Quitamos las imagenes del objeto para hacer mas rapido el pos
-            //                 if(order.Items!= null && order.Items.Any()) {
-            //                     foreach (var objItem in order.Items)
-            //                     {
-            //                         objItem.Product.Photo = null;
+            //        //return Json(response);
 
-            //                         foreach (var objQuestion in objItem.Questions)
-            //                         {
-            //                             if (lstSmart.Any(objQuestion.Description.Contains))
-            //                             {
-            //                                 objQuestion.showDesc = true;
-            //                             }
-            //                         }
-            //                     }
-            //                 }
-
-
-            //                 return Json(new { status = 0, items = order.Items.OrderBy(s=>s.CourseID).ToList(), order });
-            //             }
-            //         }
-            //catch { }
-            //return Json(new { status = 1 });
+            //        return Json(new { status = 0, items = orderItems.Items.OrderBy(s=>s.CourseID).ToList(), orderItems.Order });
+            //    }
+            //    //return Json(null);
+            //    return Json(new { status = 1 });
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.Error = ex.Message;
+            //    response.Success = false;
+            //    //return Json(response);
+            //    return Json(new { status = 1 });
+            //}
         }
 
         [HttpPost]
