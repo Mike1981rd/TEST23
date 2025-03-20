@@ -198,7 +198,7 @@
                                             <div class="row mb-6">
                                                 <div class="col">
                                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Background Color"]</label>
-                                                    <input type="color" class="form-control me-2" id="product-bcolor" value="#1d1d1d" placeholder="Background color">
+                                                    <input type="color" class="form-control me-2" id="product-bcolor"  placeholder="Background color">
 
 
                                                 </div>
@@ -206,7 +206,7 @@
                                             <div class="row mb-6">
                                                 <div class="col">
                                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Text Color"]</label>
-                                                    <input type="color" class="form-control me-2" id="product-textcolor" value="#1d1d1d" placeholder="Background color">
+                                                    <input type="color" class="form-control me-2" id="product-textcolor"  placeholder="Background color">
 
 
                                                 </div>
@@ -399,67 +399,7 @@
                 <!-- /Inventory -->
                 <!-- /Second column -->
                 <!-- Second column -->
-                <div class="col-12 col-lg-4">
-                    <!-- Pricing Card -->
-                    <div class="card mb-6">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Precios</h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Base Price -->
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-price">@ViewLocalizer["Price"] 1</label>
-                                <input type="text" class="form-control product-price1" id="product-price1">
-                            </div>
-                            <!-- Discounted Price -->
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 2</label>
-                                <input type="text" class="form-control" id="product-price2">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 3</label>
-                                <input type="text" class="form-control" id="product-price3">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 4</label>
-                                <input type="text" class="form-control" id="product-price4">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 5</label>
-                                <input type="text" class="form-control" id="product-price5">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 6</label>
-                                <input type="text" class="form-control" id="product-price6">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 7</label>
-                                <input type="text" class="form-control" id="product-price7">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Price"] 8</label>
-                                <input type="text" class="form-control" id="product-price8">
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
-                                <input type="text" class="form-control" id="product-cost" readonly>
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label" for="ecommerce-product-discount-price">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
-                                <input type="text" class="form-control" id="product-cost-barcode" readonly>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- /Pricing Card -->
-                    @*                 <div class="card mb-6">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Recipe</h5>
-                    </div>
-                    <div class="card-body">
-                    </div>
-                </div> *@
-                </div>
+                
             </div>
             <!-- Organize Card -->
             <div class="card mb-6 col-lg-8">
@@ -851,10 +791,12 @@
         var printername = $("#product-printername").val();
         var photo = $("#productimg").data("color");
         var cost = parseFloatCorrect($("#no-serving-size").find(".po-total").data("cost"));
-        var backcolor = $("#product-backcolor").val();
-        var textcolor = $("#product-textcolor").val();
+            var backcolor = $("#product-bcolor").val() || "#1d1d1d";
+    var textcolor = $("#product-textcolor").val() || "#ffffff";
         var barcode = $("#product-barcode").val();
-        var servingsize = $("#product-serving-size").val()
+        var servingsize = $("#product-serving-size").val();
+            console.log("BackColor seleccionado:", backcolor);
+            console.log("TextColor seleccionado:", textcolor);
         var recipes = [];
         $(".article-item").each(function (i, e) {
             var qty = parseFloatCorrect($(this).find(".item-qty").val());
@@ -972,7 +914,7 @@
             success: function (data, textStatus, jqXHR) {
                 if (data.status == 0) {
                     SaveAccountItems(2, data.id, function () {
-                        window.location.replace("/Menu/ProductList")
+                       window.location.replace("/Menu/ProductList")
                     })
                 }
                 else if (data.status == 2) {
@@ -1019,19 +961,18 @@
         });
 
         $(".reordertable tbody").sortable();
-        $('#product-bcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#product-backcolor").off("keyup");
 
-        $('#product-tcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#product-textcolor").off("keyup");
+        // Detectar cambios en el color de fondo
+    $("#product-bcolor").on("input change", function () {
+        $(this).attr("value", this.value); // Asegurar que el valor se actualiza
+        console.log("Nuevo color de fondo:", this.value);
+    });
+
+    // Detectar cambios en el color del texto
+    $("#product-textcolor").on("input change", function () {
+        $(this).attr("value", this.value); // Asegurar que el valor se actualiza
+        console.log("Nuevo color de texto:", this.value);
+    });
 
 
         if (@ViewBag.ProductID != 0) {
@@ -1082,8 +1023,15 @@
                         $("#product-printerChannels").val(pchannels).change();
                         $("#product-course").val(data.courseID).change();
                         $("#prod").find("button").css("background-color", data.backColor);
-                        $("#product-backcolor").val(data.backColor).change();
-                        $("#product-textcolor").val(data.textColor).change();
+                        var defaultBackColor = "#1d1d1d";
+                        var defaultTextColor = "#ffffff";
+
+                        var backColor = data.backColor ? data.backColor : defaultBackColor;
+                        var textColor = data.textColor ? data.textColor : defaultTextColor;
+
+                        $("#prod").find("button").css("background-color", backColor);
+                        $("#product-bcolor").val(backColor).change();
+                        $("#product-textcolor").val(textColor).change();
 
                         if (data.isActive) {
                             $("#product-status").val("1").change();

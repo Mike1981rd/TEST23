@@ -881,7 +881,7 @@
                                 <path fill="#fff" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" stroke-width="0.5" stroke="#fff" />
                             </svg>
 
-                            <img class="small-logo" src="/vendor/img/logo-circle-04.png" alt="Logo" width="35" height="35">
+                            @* <img class="small-logo" src="/vendor/img/logo-circle-04.png" alt="Logo" width="35" height="35"> *@
                         </div>
                     </a>
 
@@ -6297,6 +6297,7 @@
 
                 for (var i = 0; i < data.length; i++) {
                     var d = data[i];
+                    console.log(d);
                     var active = "";
                     if (i == 0) {
                         active = "active";
@@ -6304,14 +6305,16 @@
                         LoadSubCategory(d.id);
                     }
 
-                    // var html =
-                    //     `
-                    //              <button class="category-item btn button3 ${active}" data-id='${d.id}' style='background-color:#C00000; color: ${d.textColor}'>${d.name}</button>
-                    //         `
-                    var html =
-                        `
-                                 <button class="category-item btn button3 ${active}" data-id='${d.id}'>${d.name}</button>
-                            `
+                    var backColor = d.backColor ? d.backColor : "#C00000"; // Color por defecto si no viene de la BD
+            var textColor = d.textColor ? d.textColor : "#ffffff"; // Color de texto por defecto
+
+            var html = `
+                <button class="category-item btn button3 ${active}"
+                    data-id='${d.id}'
+                    style="background-color: ${backColor}; color: ${textColor};">
+                    ${d.name}
+                </button>
+            `;
                     $("#category-panel-main").append(html);
                 }
             },
