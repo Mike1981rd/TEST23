@@ -16,6 +16,7 @@ using WebEssentials.AspNetCore.Pwa;
 using Microsoft.AspNetCore.SignalR;
 using AuroraPOS.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,15 +72,14 @@ builder.Services.AddTransient<IUploadService, UploadService>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddProgressiveWebApp(new PwaOptions
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+/*builder.Services.AddProgressiveWebApp(new PwaOptions
 {
 	RegisterServiceWorker = true,
 	RegisterWebmanifest = false,  // (Manually register in Layout file)
 	Strategy = ServiceWorkerStrategy.NetworkFirst,
 	OfflineRoute = "Offline.html"
-});
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+});*/
 
 builder.Services.AddSession(options =>
 {
