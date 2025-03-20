@@ -490,6 +490,32 @@
             overflow: auto;
         }
 
+        .pay-keyboard {
+            width: 85px !important;
+            height: 85px;
+            font-size: 25px !important;
+            font-weight: bold;
+        }
+
+        #keyboard-ok {
+            padding: 10px !important;
+        }
+
+        body[data-theme="dark"] .modal-content {
+            background: #171525;
+
+        }
+
+        .select-voucher {
+            background: #1f2b41;
+            border-radius: 4px;
+            border: none !important;
+        }
+
+        .btn.button2.active {
+            background: #425dcf !important ;
+        }
+
     </style>
 </head>
 <body data-theme="dark">
@@ -1371,8 +1397,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button id="info-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
-                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                    <button id="info-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light" style="background: #425dcf !important; border: none !important;" data-bs-dismiss="modal">@ViewLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-label-secondary waves-effect bg-red" style="color: white;" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
                 </div>
             </div>
         </div>
