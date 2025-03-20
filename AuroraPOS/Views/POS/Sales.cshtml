@@ -845,6 +845,93 @@
         .order-client {
             margin-left: 4px;
         }
+
+        .divide-modal-header {
+            background: black !important;
+
+        }
+
+        .divide-main-panel {
+            background: black !important;
+        }
+
+        .divide-account {
+            background: #292f38 !important;
+            border: none !important;
+            border-radius: 4px;
+        }
+
+        .divide-account-header {
+            background: #3f434d;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: left;
+            font-weight: bold;
+            padding: 1rem !important;
+        }
+
+        .divide-item {
+            background: none;
+        }
+
+        .divide-item-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .divide-item-qty {
+            background: #3c414b;
+            padding: 2px;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 2px;
+        }
+
+        .divide-account-add {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            background: none !important;
+            border: dashed 1px white !important;
+        }
+
+        .divide-body {
+            overflow: auto;
+        }
+
+        .divide-account-add > .divide-body {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .divide-item-add {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .divide-item-add > img {
+            width: 12%;
+            margin: 0px !important;
+        }
+
+        .divide-item-add > span {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -1851,19 +1938,19 @@
     <div class="modal fade" id="dividemodal" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
         <div class="modal-dialog modal-lg modal-dialog-centered divide" role="document">
             <div class="modal-content">
-                <div class="modal-header " style="justify-content: space-around !important;">
-                    <div class="d-flex">
-                        <button id="divide-combine" type="button" class="btn btn-secondary btndivide">@ViewLocalizer["Combine All"]</button>
-                        <button id="divide-seatsplit" type="button" class="btn btn-secondary btndivide">@ViewLocalizer["Split By Seat"]</button>
-                        <button id="divide-selectedproduct" type="button" class="btn btn-secondary btndivide">@ViewLocalizer["Divide Selected"]</button>
-                        <button id="divide-splitwhole" type="button" class="btn btn-secondary btndivide">@ViewLocalizer["Divide Whole"]</button>
+                <div class="modal-header divide-modal-header" style="justify-content: space-between !important; padding: 1rem;">
+                    <div class="" style="display: flex; flex-direction: row; gap: 16px;">
+                        <button id="divide-combine" type="button" class="btn btn-secondary btndivide btn-nostyle">@ViewLocalizer["Combine All"]</button>
+                        <button id="divide-seatsplit" type="button" class="btn btn-secondary btndivide btn-nostyle">@ViewLocalizer["Split By Seat"]</button>
+                        <button id="divide-selectedproduct" type="button" class="btn btn-secondary btndivide btn-nostyle">@ViewLocalizer["Divide Selected"]</button>
+                        <button id="divide-splitwhole" type="button" class="btn btn-secondary btndivide btn-nostyle">@ViewLocalizer["Divide Whole"]</button>
                     </div>
                     <div>
-                        <button id="divide-print" type="button" class="btn btn-success btndivide">@ViewLocalizer["Print All"]</button>
+                        <button id="divide-print" type="button" class="btn btn-modern" style="padding: .375rem .75rem;">@ViewLocalizer["Print All"]</button>
                     </div>
-                    <div>
-                        <button id="divide-save" type="button" class="btn btn-success btndivide">@ViewLocalizer["Save"]</button>
-                        <button id="divide-cancel" type="button" class="btn btn-cancel btndivide">@ViewLocalizer["Cancel"]</button>
+                    <div style="display: flex; flex-direction: row; gap: 16px;">
+                        <button id="divide-save" type="button" class="btn btn-modern" style="padding: .375rem .75rem; background: #b38337 !important;">@ViewLocalizer["Save"]</button>
+                        <button id="divide-cancel" type="button" class="btn btn-modern" style="padding: .375rem .75rem; background: #944a4a !important;">@ViewLocalizer["Cancel"]</button>
                     </div>
                 </div>
                 <div class="divide-main-panel modal-body" style="display:-webkit-box;">
@@ -1892,7 +1979,8 @@
                     <div class="divide-account card m-2">
                         <div class="divide-body" style="height:100%;">
                             <div class="divide-item-add">
-                                <img src="/vendor/img/icons/plus1.svg" />
+                                <img src="/vendor/img/icons/plus1.svg" width="10" />
+                                <span>Nueva cuenta</span>
                             </div>
                         </div>
                         <div class="divide-account-footer p-1">
@@ -3206,10 +3294,12 @@
                                 if (item.seatNum > 0) seat = item.seatNum;
 
                                 html += `<div class="divide-item" data-itemid="${item.id}" data-promotion="${item.hasPromotion}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
-                                                        <div class="row">
-                                                           <span class="col-2">#${seat}</span>
-                                                           <span class="col-7">${item.name}</span>
-                                                           <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
+                                                        <div class="divide-item-info">
+                                                            <div>
+                                                                <span class="">#${seat}</span>
+                                                                <span class="">${item.name}</span>
+                                                            </div>
+                                                           <span class="divide-item-qty">${item.qty.toFixed(2)}</span>
                                                        </div><div class="item-modifiers">`
                                 // questions
                                 if (item.questions && item.questions.length > 0) {
@@ -3278,14 +3368,14 @@
                             }
                             if (i == 0) {
                                 html += `</div><div class="divide-account-footer p-1">
-                                            <button type="button" class="btn divide-print">@ViewLocalizer["Print"]</button>
+                                            <button type="button" class="btn divide-print btn-modern" style="padding: .375rem .75rem; border: none; width: auto;">@ViewLocalizer["Print"]</button>
                                     </div>`
 
                             }
                             else {
                                 html += `</div><div class="divide-account-footer p-1">
-                                                <button type="button" class="btn divide-remove">@ViewLocalizer["Delete"]</button>
-                                                <button type="button" class="btn divide-print">@ViewLocalizer["Print"]</button>
+                                                <button type="button" class="btn divide-remove btn-modern" style="padding: .375rem .75rem; background: #944a4a !important;">@ViewLocalizer["Delete"]</button>
+                                                <button type="button" class="btn divide-print btn-modern" style="padding: .375rem .75rem; border: none; width: auto;">@ViewLocalizer["Print"]</button>
                                         </div>`
                             }
 
@@ -3294,8 +3384,9 @@
                         }
                         var htmladd = `<div class="divide-account-add card m-2" >
                                                 <div class="divide-body" style = "height:50vh;" >
-                                                    <div class="divide-item-add" >
+                                                    <div class="divide-item-add" width="10">
                                                         <img src="/vendor/img/icons/plus1.svg" />
+                                                        <span>Nueva cuenta</span>
                                                     </div>
                                                 </div>
                                             </div>`;
@@ -3519,18 +3610,19 @@
 
             var accounts = $(".divide-account").length + 1;
             var html = `<div class="divide-account card m-2" data-divideid=${accounts}>
-                                                    <div class="divide-account-header p-1">Cuanta  #${accounts}</div>
-                                                    <div class="divide-body"></div><div class="divide-account-footer p-1">
-                                        <button type="button" class="btn divide-remove">@ViewLocalizer["Delete"]</button>
-                                        <button type="button" class="btn divide-print">@ViewLocalizer["Print"]</button>
+                                                    <div class="divide-account-header">Cuenta  #${accounts}</div>
+                                                    <div class="divide-body"></div><div class="divide-account-footer p-1" style="display:flex; flex-direction: row; justify-content: center; align-items: center; gap: 8px;">
+                                        <button type="button" class="btn divide-remove btn-modern" style="padding: .375rem .75rem; background: #944a4a !important; border: none; width: 100%;">@ViewLocalizer["Delete"]</button>
+                                        <button type="button" class="btn divide-print btn-modern" style="padding: .375rem .75rem; border: none; width: 100%;">@ViewLocalizer["Print"]</button>
                                 </div></div>`;
 
             $(".divide-main-panel").append(html);
 
             var htmladd = `<div class="divide-account-add card m-2" >
                                                         <div class="divide-body" style = "height:50vh;" >
-                                                            <div class="divide-item-add" >
+                                                            <div class="divide-item-add" width="10">
                                                                 <img src="/vendor/img/icons/plus1.svg" />
+                                                                <span>Nueva cuenta</span>
                                                             </div>
                                                         </div>
                                                     </div>`;
@@ -3662,8 +3754,9 @@
                             }
                             var htmladd = `<div class="divide-account-add card m-2" >
                                                     <div class="divide-body" style = "height:50vh;" >
-                                                        <div class="divide-item-add" >
+                                                        <div class="divide-item-add" width="10">
                                                             <img src="/vendor/img/icons/plus1.svg" />
+                                                            <span>Nueva cuenta</span>
                                                         </div>
                                                     </div>
                                                 </div>`;
@@ -3705,8 +3798,9 @@
                 if (removed) {
                     var htmladd = `<div class="divide-account-add card m-2" >
                                                         <div class="divide-body" style = "height:50vh;" >
-                                                            <div class="divide-item-add" >
+                                                            <div class="divide-item-add" width="10">
                                                                 <img src="/vendor/img/icons/plus1.svg" />
+                                                                <span>Nueva cuenta</span>
                                                             </div>
                                                         </div>
                                                     </div>`;
@@ -3882,8 +3976,9 @@
                         }
                         var htmladd = `<div class="divide-account-add card m-2" >
                                                     <div class="divide-body" style = "height:50vh;" >
-                                                        <div class="divide-item-add" >
+                                                        <div class="divide-item-add" width="10">
                                                             <img src="/vendor/img/icons/plus1.svg" />
+                                                            <span>Nueva cuenta</span>
                                                         </div>
                                                     </div>
                                                 </div>`;
@@ -5868,8 +5963,9 @@
                     }
                     var htmladd = `<div class="divide-account-add card m-2" >
                                                         <div class="divide-body" style = "height:50vh;" >
-                                                            <div class="divide-item-add" >
+                                                            <div class="divide-item-add" width="10">
                                                                 <img src="/vendor/img/icons/plus1.svg" />
+                                                                <span>Nueva cuenta</span>
                                                             </div>
                                                         </div>
                                                     </div>`;

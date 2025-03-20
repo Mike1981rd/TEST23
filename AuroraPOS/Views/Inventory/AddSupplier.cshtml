@@ -41,19 +41,36 @@
                             <input type="hidden" asp-for="ID" />
                             <input type="hidden" asp-for="Avatar" />
                             <div class="row">
-                                <div class="mb-4 col-md-6 fv-plugins-icon-container">
+                                <div class="mb-4" style="display: flex; flex-direction: column; width: 100% !important">
+                                    <label for="lastName" class="form-label">@ViewLocalizer["RNC"]</label>
+                                    <div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: 100%">
+                                        <input id="supplier-rnc" type="text" class="form-control" aria-describedby="basic-addon1" asp-for="RNC" required>
+                                        <span asp-validation-for="RNC" class="text-danger"></span>
+                                        <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                                        <a id="carga-datos-rnc" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">Validar</a>
+                                    </div>
+                                    <div class="divloading mt-2" style="display: none">
+                                        <div class="spinner-border text-primary " role="status" style="width: 15px; height: 15px">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        Validando...
+                                    </div>
+                                    <label id="label-rnc-validado" class="form-label mt-1" style="color: green" hidden>El RNC es valido!<span class="manitory"></span></label>
+                                    <label id="label-rnc-novalidado" class="form-label mt-1" style="color: red" hidden>El RNC no pudo ser validado!<span class="manitory"></span></label>
+                                </div>
+                                <div class="mb-4 col-12 fv-plugins-icon-container">
                                     <label for="firstName" class="form-label">
                                         @ViewLocalizer["Supplier Name"]</label>
-                                    <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required>
+                                    <input type="text" id="supplier-name" class="form-control" aria-describedby="basic-addon1" asp-for="Name" required>
                                     <span asp-validation-for="Name" class="text-danger"></span>
                                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                                 </div>
-                                <div class="mb-4 col-md-6 fv-plugins-icon-container">
+@*                                 <div class="mb-4 col-md-6 fv-plugins-icon-container">
                                     <label for="lastName" class="form-label">@ViewLocalizer["RNC"]</label>
                                     <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="RNC" required>
                                     <span asp-validation-for="RNC" class="text-danger"></span>
                                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
-                                </div>
+                                </div> *@
                                 <div class="mb-4 col-md-6">
                                     <label for="email" class="form-label">@ViewLocalizer["Phone"]</label>
                                     <input type="text" class="form-control" aria-describedby="basic-addon1" asp-for="PhoneNumber">
@@ -202,6 +219,58 @@
 <!-- /add -->
 <script>
 	$(document).ready(function(){
+
+        $("#carga-datos-rnc").click(function () {
+
+            const rnc = $('#supplier-rnc').val();
+
+            $('#label-rnc-validado').prop('hidden', true);
+            $('#label-rnc-novalidado').prop('hidden', true);
+            $('.divloading').show();
+
+            $.ajax({
+                url: "/Setting/ObtenerDatosDGII",
+                type: "POST",
+                dataType: "json",
+                data: { RNC: rnc },
+                success: function (response) {
+                    $('.divloading').hide();
+
+                    if (response) {
+                        if(response.isValid === true) {
+                            $('#supplier-name').val(response.compania);
+
+                            toastr.success("El RNC es valido!", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', false);
+                            $('#label-rnc-novalidado').prop('hidden', true);
+                        } else {
+                            $('#supplier-name').val("");
+
+                            toastr.error("El RNC no es valido", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                        }
+                    } else {
+                            $('#supplier-name').val("");
+
+                            toastr.error("Ocurrió un error inesperado", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                            $('#label-rnc-validado').prop('hidden', true);
+                            $('#label-rnc-novalidado').prop('hidden', false);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('.divloading').hide();
+                    $('#supplier-name').val("");
+
+                    //console.error("Error en la petición AJAX:", error);
+                    toastr.error("Error en la petición AJAX" + error, { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2000 });
+                    $('#label-rnc-validado').prop('hidden', true);
+                    $('#label-rnc-novalidado').prop('hidden', false);
+                }
+            });
+
+        });
+
 		
 		$("#avatarimg").on( "mouseenter", function() {
 			var popupContent = document.createElement("div");
