@@ -80,6 +80,25 @@ namespace AuroraPOS.Controllers
             return View();
         }
 
+        [HttpGet]
+        public JsonResult GetFilterCounters(string fecha)
+        {
+            //DateTime dtFecha = DateTime.Today;
+            DateTime dtFecha = DateTime.ParseExact(fecha, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+            var deliveryDataQuery = _dbContext.Deliverys
+                .Where(d => d.CreatedDate >= new DateTime(dtFecha.Year, dtFecha.Month, dtFecha.Day)
+                && d.CreatedDate < (new DateTime(dtFecha.Year, dtFecha.Month, dtFecha.Day)).AddDays(1));
+
+            var todos = deliveryDataQuery.Count();
+            var nuevo = deliveryDataQuery.Where(d => d.Status == (StatusEnum)0).Count();
+            var enRuta = deliveryDataQuery.Where(d => d.Status == (StatusEnum)1).Count();
+            var entregado = deliveryDataQuery.Where(d => d.Status == (StatusEnum)2).Count();
+            var cerrado = deliveryDataQuery.Where(d => d.Status == (StatusEnum)3).Count();
+
+            return Json(new { todos, nuevo, enRuta, entregado, cerrado });
+        }
+
         [HttpPost]
         public JsonResult GetDeliveryItem(long Id)
         {

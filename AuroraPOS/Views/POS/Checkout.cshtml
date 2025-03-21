@@ -172,8 +172,8 @@
             flex-direction: column;
             justify-content: space-between;
             border-bottom: solid 1px #c1c1c1;
-            padding: 12px;
-            gap: 20px;
+            padding: 6px;
+            gap: 6px;
         }
 
         .checkout-elements-title {
@@ -320,7 +320,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             overflow: hidden;
         }
 
@@ -378,9 +378,20 @@
             position: relative; */
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-template-rows: repeat(auto-fill, 30px); /* Fila mínima de 20px */
+            /* grid-template-rows: repeat(auto-fill, 28px); /* Fila mínima de 20px */
             height: 100%;
-            gap: 30px;
+            gap: 15px 30px;
+            padding-right: 12px;
+        }
+
+        .checkout-pay-options-buttons {
+            all: unset;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
         }
 
         .calc-show {
@@ -790,7 +801,7 @@
                                 </div>
                             </div>
 
-                            <div class="checkout-pay-qty-options">
+                            <div class="checkout-pay-qty-options checkout-pay-options-buttons">
                                 <button id="pay-cancel" class="btn flex-fill btn-default-calc checkout-pay-option bg-red" @Html.Raw(ViewBag.Refund == null || !ViewBag.Refund ? "" : "disabled") @Html.Raw(Model.Order.PaymentStatus == PaymentStatus.Partly ? "disabled" : "")>@ViewLocalizer["Cancel"]</button>
                                 <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #425dcf;">@ViewLocalizer["Done"]</button>
                                 <button id="pay-exit" class="btn flex-fill btn-default-calc checkout-pay-option bg-black">@ViewLocalizer["Salvar"]</button>
