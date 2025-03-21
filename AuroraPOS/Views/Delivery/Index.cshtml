@@ -453,6 +453,24 @@
         background: rgba(255,255,255,0.1);
     }
 
+    body[data-theme="dark"] .modal-content {
+        background-color: var(--background-info-color-1);
+    }
+
+    .button2 {
+        background: #9e292b;
+        border-radius: 4px;
+        border: none !important;
+    }
+
+    .btn.button2.active {
+        background: #425dcf !important;
+    }
+
+    .btn-primary {
+        background: #425dcf !important;
+        border: none !important;
+    }
 /*     .set-carrier {
         all: unset;
     }
@@ -483,11 +501,11 @@
                     <div style="padding:6px">@ViewBag.SucursalActual</div>
                 </div>
                 <div class="delivery-filter">
-                    <button class="btn btn-deliver filter-delivery-button active">Todos <span class="filter-element-counter">@ViewBag.Todos</span></button>
-                    <button class="btn btn-deliver filter-delivery-button" data-value="0">Nuevo <span class="filter-element-counter">@ViewBag.Nuevo</span></button>
-                    <button class="btn btn-deliver filter-delivery-button" data-value="1">En Ruta <span class="filter-element-counter">@ViewBag.EnRuta</span></button>
-                    <button class="btn btn-deliver filter-delivery-button" data-value="2">Entregado <span class="filter-element-counter">@ViewBag.Entregado</span></button>
-                    <button class="btn btn-deliver filter-delivery-button" data-value="3">Cerrado <span class="filter-element-counter">@ViewBag.Cerrado</span></button>
+                    <button class="btn btn-deliver filter-delivery-button active">Todos <span class="filter-element-counter" id="todos-counter">@ViewBag.Todos</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="0">Nuevo <span class="filter-element-counter" id="nuevo-counter">@ViewBag.Nuevo</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="1">En Ruta <span class="filter-element-counter" id="enruta-counter">@ViewBag.EnRuta</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="2">Entregado <span class="filter-element-counter" id="entregado-counter">@ViewBag.Entregado</span></button>
+                    <button class="btn btn-deliver filter-delivery-button" data-value="3">Cerrado <span class="filter-element-counter" id="cerrado-counter">@ViewBag.Cerrado</span></button>
                 </div>
                 <div class="delivery-filter">
                     <input id="delivery-date" type="text" class="datetimepicker cal-icon delivery-date-filter" value="@DateTime.Now.ToString("dd-MM-yyyy")" data-format="DD-MM-YYYY">
@@ -694,7 +712,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Repartidor"]<span class="manitory">*</span></label>
-                            <div id="delivery-carrier" class="d-flx">
+                            <div id="delivery-carrier" class="d-flex">
                                 
                             </div>
                         </div>
@@ -703,7 +721,7 @@
             </div>
             <div class="modal-footer">
                 <button id="edit-carrier" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Asignar"]</button>
-                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancelar"]</button>
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.2);color: white;">@ViewLocalizer["Cancelar"]</button>
             </div>
         </div>
     </div>
@@ -739,7 +757,7 @@
             </div>
             <div class="modal-footer">
                 <button id="void-submit" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>
-                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+                    <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.2);color: white;">@ViewLocalizer["Cancel"]</button>
             </div>
         </div>
     </div>
@@ -789,6 +807,23 @@
         $("#order-id").val(orderId);
     });
 
+    function updateFiltersCounters() {
+        $.ajax({
+            url: "/Delivery/GetFilterCounters?fecha=" + $("#delivery-date").val(),
+            type: "GET",
+            success: function (res, textStatus, jqXHR) {
+                $("#todos-counter").text(res.todos);
+                $("#nuevo-counter").text(res.nuevo);
+                $("#enruta-counter").text(res.enRuta);
+                $("#entregado-counter").text(res.entregado);
+                $("#cerrado-counter").text(res.cerrado);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+            }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function (event) {
 
         GetData();
@@ -823,6 +858,7 @@
             data: data,
             success: function (data, textStatus, jqXHR) {
                 //console.log(data);
+                updateFiltersCounters();
                 $("#resultado").html(data);
                     $(".delivery-element-card").click(function () {
                         $(".delivery-element-card").removeClass('selected');
@@ -1027,7 +1063,6 @@
 
                                 }
 
-
                                 console.log(response);
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
@@ -1058,8 +1093,8 @@
         });
 
         $(".set-carrier").unbind("click");
-        $(".set-carrier").click(function () {
-
+        $("body").on("click", ".set-carrier", function () {
+            console.log("aaaaad");
             $.ajax({
                 url: "/Delivery/GetDelivery?Id=" + $(this).data("id"),
                 type: "POST",
@@ -1081,6 +1116,7 @@
                             $(".select-carrier").removeClass("active");
                             $("#delivery-carrier").val("id", 0);
                         }
+                        updateFiltersCounters();
 
                     }
                 },
@@ -1125,6 +1161,8 @@
                     else {
                         toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
                     }
+                    updateFiltersCounters();
+
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
@@ -1134,7 +1172,7 @@
         });
 
         $(".delivered").unbind("click");
-        $(".delivered").click(function () {
+        $("body").on("click", ".delivered", function () {
 
             $.ajax({
                 url: "/Delivery/MarkAsDelivered?Id=" + $(this).data("id"),
@@ -1152,6 +1190,7 @@
 
 
                     }
+
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
@@ -1161,7 +1200,7 @@
         });
 
         $(".closed").unbind("click");
-        $(".closed").click(function () {
+            $("body").on("click", ".closed", function () {
 
             $.ajax({
                 url: "/Delivery/MarkAsClosed?Id=" + $(this).data("id"),
