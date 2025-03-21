@@ -801,7 +801,7 @@
 
         .btn-menu {
             width: 100%;
-            height: 50px; /* Asegura un alto uniforme */
+            height: 60px; /* Asegura un alto uniforme */
             font-size: 16px;
             font-weight: bold;
             text-align: center;
@@ -1619,7 +1619,7 @@
                             @ViewLocalizer["Order Tools"]
 					    </h4>
 				    </div>
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-3 p-2"><button id="order-info" class="btn-menu btn btn-primary">@ViewLocalizer["Client Info"]</button></div>
                         @if (discountType != "item" && @Model.OrderMode != OrderMode.Divide)
                         {
@@ -1724,23 +1724,23 @@
 					    </h4>
 				    </div>
                     <div class="row">
-                        <div class="col-3 p-2"><button id="btn-void" class="btn-menu btn-menu-red">@ViewLocalizer["Void"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-hold" class="btn-menu btn-menu-primary">@ViewLocalizer["Hold"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-seperate" class="btn-menu btn-menu-primary">@ViewLocalizer["Separate"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-void" class="btn-menu btn-menu-red">@ViewLocalizer["Void"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-hold" class="btn-menu btn-menu-primary">@ViewLocalizer["Hold"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-seperate" class="btn-menu btn-menu-primary">@ViewLocalizer["Separate"]</button></div>
 
                         @if (discountType != "order")
                         {
-                            <div class="col-3 p-2"><button id="btn-discountitem" class="btn-menu btn-menu-primary">@ViewLocalizer["Discount"]</button></div>
+                            <div class="col-4 p-2"><button id="btn-discountitem" class="btn-menu btn-menu-primary">@ViewLocalizer["Discount"]</button></div>
                         }
 
-                        <div class="col-3 p-2"><button id="btn-qty" class="btn-menu btn-menu-green">@ViewLocalizer["Quantity"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-movetable" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Table"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-moveseat" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Seat"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-inventory" class="btn-menu btn-menu-primary">@ViewLocalizer["Inventory Count Down"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-modifier" class="btn-menu btn-menu-blue">@ViewLocalizer["Modificar"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-reorder" class="btn-menu btn-menu-primary">@ViewLocalizer["Reorder"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-fire" class="btn-menu btn-menu-primary">@ViewLocalizer["Fire"]</button></div>
-                        <div class="col-3 p-2"><button id="btn-note" class="btn-menu btn-menu-primary">@ViewLocalizer["Course and note"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-qty" class="btn-menu btn-menu-green">@ViewLocalizer["Quantity"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-movetable" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Table"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-moveseat" class="btn-menu btn-menu-primary">@ViewLocalizer["Move to Another Seat"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-inventory" class="btn-menu btn-menu-primary">@ViewLocalizer["Inventory Count Down"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-modifier" class="btn-menu btn-menu-blue">@ViewLocalizer["Modificar"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-reorder" class="btn-menu btn-menu-primary">@ViewLocalizer["Reorder"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-fire" class="btn-menu btn-menu-primary">@ViewLocalizer["Fire"]</button></div>
+                        <div class="col-4 p-2"><button id="btn-note" class="btn-menu btn-menu-primary">@ViewLocalizer["Course and note"]</button></div>
                     </div>
 
                 </div>

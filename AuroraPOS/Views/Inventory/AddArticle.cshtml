@@ -35,20 +35,7 @@
                     <h4 class="mb-1">@ViewLocalizer["Create Article"]</h4>
                     <p class="mb-0">@ViewLocalizer["Add/Update Article"]</p>
                 </div>
-                <div class="d-flex align-content-center flex-wrap gap-4">
-					<a id="submit2" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Submit"]</a>
-					@if (ViewBag.ArticleID > 0)
-					{
-						<input type="number" hidden class="form-control" id="article-id" placeholder="Article ID" value="@ViewBag.ArticleID" data-articleid="@ViewBag.ArticleID">
-						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Product"]</a>
-					}
-					else
-					{
-						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2 hidden">@ViewLocalizer["Add Product"]</a>
-					}
-
-					<a id="cancel" href="/Inventory/ArticleList" class="btn btn-label-secondary waves-effect   me-2">@ViewLocalizer["Complete"]</a>
-                </div>
+                
 
             </div>
 
@@ -582,7 +569,22 @@
 						<div class="card-body">
 					</div>
 				</div> *@
+				<div class="d-flex align-items-center justify-content-end gap-4">
+					<a id="submit2" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Submit"]</a>
 
+					@if (ViewBag.ArticleID > 0)
+					{
+						<input type="number" hidden class="form-control" id="article-id" placeholder="Article ID" value="@ViewBag.ArticleID" data-articleid="@ViewBag.ArticleID">
+						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Product"]</a>
+					}
+					else
+					{
+						<a id="submit3" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light me-2 hidden">@ViewLocalizer["Add Product"]</a>
+					}
+
+					<a id="cancel" href="/Inventory/ArticleList" class="btn btn-label-secondary waves-effect me-2">@ViewLocalizer["Complete"]</a>
+				</div>
+				<br />	
 			</div>
         </div>
     </div>       
@@ -687,7 +689,7 @@
 										<th>Type</th>
 										<th>Brand</th>
 										<th style="max-width:100px;">  QTY  </th>
-										<th>Unit	</th>
+										<th style="min-width:120px;">Unit	</th>
 										<th>Price($)	</th>
 										<th>Sub Total($)</th>
 										<th></th>
@@ -986,6 +988,10 @@
 <!-- Supplier Modal -->
 @{
 	@await Component.InvokeAsync("AddSupplier", new { })
+}
+@{
+    var chooseCategoryText = ViewLocalizer["Choose category"];
+	var errorText = ViewLocalizer["There was an error in processing the request."];
 }
 
 
@@ -1290,7 +1296,7 @@
 									</td>
 									<td>
 										<div class="remove-btn">
-											<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+											<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg" width="16" height="16"></a>
 										</div>
 
 									</td>
@@ -1454,9 +1460,64 @@
 		// subcategory
 		//SelectSubCategory();
 
-		$("#add-subcategory-modal").click(function () {
-			$("#listsubcategory").modal("show");
+	$("#add-subcategory-modal").click(function () {
+		const selectedCategory = $("#article-category").val();
+		console.log("🔹 ID de categoría seleccionado:", selectedCategory);
+
+		// Mostrar el modal primero
+		$("#listsubcategory").modal("show");
+
+		// Luego cargar las categorías en el modal
+		$.ajax({
+			url: "/Menu/GetAllActiveCategoryList",
+			type: "POST",
+			success: function (response, textStatus, jqXHR) {
+				console.log("📌 Respuesta de la API:", response);
+
+				if (!response.success || !Array.isArray(response.valor)) {
+					console.error(" La respuesta no contiene un array válido:", response);
+					return;
+				}
+
+				const categories = response.valor;
+				const $subcategorySelect = $("#subcategory-category");
+
+				// Limpiar el select antes de agregar opciones
+				$subcategorySelect.empty();
+				$subcategorySelect.append("<option value='' selected>Elegir la categoría</option>");
+
+				categories.forEach(category => {
+					$subcategorySelect.append(`<option value="${category.id}">${category.name}</option>`);
+				});
+
+				console.log("📌 Contenido del select después de agregar opciones:", $subcategorySelect.html());
+
+				// Aplicar select2 si es necesario
+				if ($subcategorySelect.hasClass("select2-hidden-accessible")) {
+					$subcategorySelect.select2("destroy");
+				}
+				$subcategorySelect.select2();
+
+				// Asignar la categoría seleccionada después de que las opciones estén disponibles
+				setTimeout(() => {
+					$subcategorySelect.val(selectedCategory).trigger("change");
+					console.log(" Valor asignado correctamente:", $subcategorySelect.val());
+
+					// Deshabilitar el select después de asignar el valor
+					$subcategorySelect.prop("disabled", true);
+				}, 300); // Pequeño delay para asegurar la asignación correcta
+			},
+			error: function () {
+				console.error(" Error al cargar las categorías");
+			}
 		});
+	});
+
+
+
+
+
+
 
 		$("#article-category").change(function () {
 			SelectSubCategory();
@@ -2064,7 +2125,7 @@
 						</td>
 						<td>
 							<div class="remove-btn">
-								<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg"></a>
+								<a href="javascript:void(0);" class="remove-unit"><img src="/vendor/img/icons/delete.svg" alt="svg" width="16" height="16"></a>
 							</div>
 						</td>
 					</tr>
@@ -2192,7 +2253,7 @@
 										<td><input class="item-price1 form-control form-control-sm" placeholder="0" value="" readonly type="text" /></td>
 											<td><label class="item-subtotal"></lable></td>
 										<td>
-											<a class="delete-item"><img width='65' src="/vendor/img/icons/delete.svg" alt="svg"></a>
+											<a class="delete-item"><img width='65' src="/vendor/img/icons/delete.svg" alt="svg" width="20" height="20" ></a>
 										</td>
 									</tr>
 										`;

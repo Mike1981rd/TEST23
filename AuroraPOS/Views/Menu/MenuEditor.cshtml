@@ -369,8 +369,8 @@
                     <div class="col-lg-6 px-3">
                     <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
-                            <div id="group-bcolor" class="col-lg-4 text-start w-100">
-                                <input id="group-backcolor" type="text" class="form-control" value=" /">
+                            <div  class="col-lg-4 text-start w-100">
+                                <input id="group-backcolor" type="color" class="form-control" >
                             </div>
                     </div>
 
@@ -378,8 +378,8 @@
                     <div class="col-lg-6 px-3">
                         <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
-                            <div id="group-tcolor" class="col-lg-4 text-start w-100">
-                                <input id="group-textcolor" type="text" class="form-control">
+                            <div  class="col-lg-4 text-start w-100">
+                                <input id="group-textcolor" type="color" class="form-control" >
                             </div>
                         </div>
                     </div>
@@ -425,9 +425,7 @@
                     <div class="form-group ">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div class="col-lg-4 text-start w-100">
-                                <div id="category-bcolor" class="backcolor">
-                                    <input id="category-backcolor" type="text" class="form-control">
-                                </div>
+                                <input id="category-backcolor" type="color" class="form-control">
                             </div>
                     </div>
 
@@ -436,9 +434,7 @@
                     <div class="form-group ">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
-                                <div id="category-tcolor" class="textcolor">
-                                    <input id="category-textcolor" type="text" class="form-control">
-                                </div>
+                                <input id="category-textcolor" type="color" class="form-control">
                             </div>
                     
                     </div>
@@ -526,9 +522,7 @@
                     <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Background Color"]</label>
                             <div class="col-lg-4 text-start w-100">
-                                <div id="subcategory-bcolor" class="backcolor ">
-                                    <input id="subcategory-backcolor" type="text" class="form-control">
-                                </div>
+                                <input id="subcategory-backcolor" type="color" class="form-control">
                             </div>
                     </div>
 
@@ -537,9 +531,7 @@
                     <div class="form-group">
                             <label class="form-label">	@ViewLocalizer["Text Color"]</label>
                             <div class="col-lg-4 text-start w-100">
-                                <div id="subcategory-tcolor" class="textcolor ">
-                                    <input id="subcategory-textcolor" type="text" class="form-control">
-                                </div>
+                                <input id="subcategory-textcolor" type="color" class="form-control">
                             </div>
                     
                     </div>
@@ -557,7 +549,7 @@
 
 <!-- List Product-->
 <div class="modal fade" id="listproduct" data-bs-backdrop="static" role="dialog" aria-hidden="true" data-id="">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
+    <div class="modal-dialog modal-lg modal-simple" role="document">
         <div class="modal-content">
 @*             <div class="modal-header">
                 <h5 class="product-modal-title">@ViewLocalizer["Products List"]</h5>
@@ -568,45 +560,35 @@
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="text-center mb-6">
-                    <h4 class="product-modal-title mb-2">
+                    <h4 class="mb-2">
                         @ViewLocalizer["Products List"]
                     </h4>
                 </div>
                 <div class="row">
-                    <div class="table-top mb-6">
-                        <div class="search-set d-flex w-100">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search" style="margin: 1px; padding: 1px;">
-                                    <img src="/vendor/img/icons/filter.svg" alt="img">
-                                    <span id="img_close_span"></span>
-                                </a>
-                            </div>
-@*                             <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-                                <div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..." style="font-size:16px;"></label></div>
-                            </div> *@
-                            <div class="search-input" style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
-                                <a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-                                <div class="dataTables_filter"><label> <input id="filter-productsearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]" ..." style="font-size:16px;"></label></div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group category-body">
-                                        <label class="form-label">@ViewLocalizer["Category"] </label>
-                                        <select id="filter-productcategory" class="select">
-                                        </select>
-                                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center justify-content-between gap-3">
+                                <!-- Categoría -->
+                                <div class="form-group category-body mb-3">
+                                    <label class="">@ViewLocalizer["Category"]</label>
+                                    <select id="filter-productcategory" class="form-select text-capitalize">
+                                    </select>
                                 </div>
-                               
+
+                                <!-- Campo de Búsqueda -->
+                                <div class="input-group" style="max-width: 300px;">
+                                    <span class="input-group-text bg-primary text-white">
+                                        <img src="/vendor/img/icons/search-white.svg" alt="img" style="width: 18px;">
+                                    </span>
+                                    <input id="filter-productsearchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]">
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    
+                    <!-- /Filter -->
+                   
                     <div class="card-datatable table-responsive w-100" style="max-height:400px;">
                         <table id="product-list" class="table" style="position:relative;">
                             <thead class="table-light" style="position: sticky; top: 0; z-index:2;">
@@ -634,7 +616,27 @@
 
 <script>
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const defaultColors = {
+            "group-backcolor": "#1d1d1d",
+            "group-textcolor": "#ffffff",
+            "category-backcolor": "#1d1d1d",
+            "category-textcolor": "#ffffff",
+            "subcategory-backcolor": "#1d1d1d",
+            "subcategory-textcolor": "#ffffff"
+        };
+
+        for (const id in defaultColors) {
+            const input = document.getElementById(id);
+            if (input && (!input.value || input.value === "undefined")) {
+                input.value = defaultColors[id];
+            }
+        }
+    });
+
+
     $(document).ready(() => {
+
         var filterVisible = true;
 
         $("#filter_search").click(function () {
@@ -659,47 +661,6 @@
         $("#category-panel-main").sortable();
         $("#subcategory-panel-main").sortable();
 
-        $('#group-bcolor').colorpicker({
-            popover: false,
-            format:'hex',
-            inline: true
-        });
-        $("#group-backcolor").off("keyup");
-
-        $('#group-tcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline:true
-        });
-        $("#group-textcolor").off("keyup");
-
-        $('#category-bcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#category-backcolor").off("keyup");
-
-        $('#category-tcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#category-textcolor").off("keyup");
-
-        $('#subcategory-bcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#subcategory-backcolor").off("keyup");
-
-        $('#subcategory-tcolor').colorpicker({
-            popover: false,
-            format: 'hex',
-            inline: true
-        });
-        $("#subcategory-textcolor").off("keyup");
         ReloadMenu();
 
 
@@ -1005,10 +966,7 @@
     
     $(".add-group-modal").click(function(){
         $("#group-name").val("");
-        $("#group-backcolor").val("");
-        $("#group-backcolordiv").css("background-color", "");
-        $("#group-textcolor").val("");
-        $("#group-textcolordiv").css("background-color", "");
+
         $("#editgroup").data("id", 0);
 
         $("#editgroup").modal("show");
@@ -1118,18 +1076,16 @@
         });
     }
 
-    $("body").on("click", ".group-edit", function(){
+    $("body").on("click", ".group-edit", function () {
         var div = $(this).closest(".group-item");
 
         $("#group-name").val(div.data("name"));
-        $("#group-backcolor").val( div.data("bcolor"));
-        $("#group-backcolor").change();
-        $("#group-textcolor").val(div.data("tcolor"));
-        $("#group-textcolor").change();
-        $("#editgroup").data("id", div.data("id"));
 
-        $("#editgroup").modal("show");
+    $("#editgroup").data("id", div.data("id"));
+
+    $("#editgroup").modal("show");
     });
+
 
    
     $("body").on("click", ".group-remove", function(){
@@ -1161,6 +1117,7 @@
     });
 
     $("#edit-group").click(function(){
+        console.log("dsa");
         var option = $("#editor-menu option:selected");
         if (!option || !option.data("id")) {
             return;
@@ -1170,21 +1127,23 @@
         var name = $("#group-name").val();
         if (!name || name == "") {
             toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
-            return;
-        }
+             return;
+          }
 
-        var id = parseInt($("#editgroup").data("id"));
-        var back = $("#group-backcolor").val();
-        var text = $("#group-textcolor").val();
-        var groups = $(".group-item").length;
+          var id = parseInt($("#editgroup").data("id"));
+          var backcolor = $("#group-backcolor").val() || "#1d1d1d";
+          var textcolor = $("#group-textcolor").val() || "#ffffff";
+
+            var groups = $(".group-item").length;
 
         var data = {
             ID: id,
             Name: name,
-            BackColor: back,
-            TextColor: text,
+            BackColor: backcolor,
+            TextColor: textcolor,
             Order: groups
         }
+        console.log(data);
 
           $.ajax({
             url: "/Menu/EditMenuGroup?menuId=" + menuId,
@@ -1211,11 +1170,7 @@
         if (!selectedGroupId) return;
 
         $("#category-name").val("");
-        $("#category-backcolor").val("");
-        $("#category-backcolor").change();
-        $("#category-textcolor").val("").change();
         $("#editcategory").data("id", 0);
-
         $("#editcategory").modal("show");
     });
 
@@ -1313,10 +1268,6 @@
         var div = $(this).closest(".category-item");
 
         $("#category-name").val(div.data("name"));
-        $("#category-backcolor").val(div.data("bcolor")).change();
-        $("#category-textcolor").val(div.data("tcolor")).change();
-        $("#category-backcolordiv").css("background-color", div.data("bcolor"));
-        $("#category-textcolordiv").css("background-color", div.data("tcolor"));
         $("#editcategory").data("id", div.data("id"));
 
         $("#editcategory").modal("show");
@@ -1356,8 +1307,8 @@
         }
 
         var id = parseInt($("#editcategory").data("id"));
-        var back = $("#category-backcolor").val();
-        var text = $("#category-textcolor").val();
+        var back = $("#category-backcolor").val() || "#1d1d1d";
+        var text = $("#category-textcolor").val() || "#ffffff";
         var categories = $(".category-item").length;
 
         var data = {
@@ -1392,8 +1343,6 @@
         if (!selectedCategoryId || selectedCategoryId == "") return;
 
         $("#subcategory-name").val("");
-        $("#subcategory-backcolor").val("").change();
-        $("#subcategory-textcolor").val("").change();
         $("#editsubcategory").data("id", 0);
 
         $("#editsubcategory").modal("show");
@@ -1493,10 +1442,6 @@
         var div = $(this).closest(".subcategory-item");
 
         $("#subcategory-name").val(div.data("name"));
-        $("#subcategory-backcolor").val(div.data("bcolor")).change();
-        $("#subcategory-textcolor").val(div.data("tcolor")).change();
-        $("#subcategory-backcolordiv").css("background-color", div.data("bcolor"));
-        $("#subcategory-textcolordiv").css("background-color", div.data("tcolor"));
         $("#editsubcategory").data("id", div.data("id"));
 
         $("#editsubcategory").modal("show");
@@ -1535,8 +1480,8 @@
         }
 
         var id = parseInt($("#editsubcategory").data("id"));
-        var back = $("#subcategory-backcolor").val();
-        var text = $("#subcategory-textcolor").val();
+        var back = $("#subcategory-backcolor").val() || "#1d1d1d";
+        var text = $("#subcategory-textcolor").val() || "#ffffff";
         var categories = $(".subcategory-item").length;
 
         var data = {

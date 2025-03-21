@@ -106,7 +106,13 @@
 </div>
 
 <script>
-	
+		setTimeout(() => {
+		const selectedCategory = localStorage.getItem("SelectedCategory");
+		if ($("#subcategory-category").length > 0 && selectedCategory) {
+			$("#subcategory-category").val(selectedCategory).trigger("change");
+		}
+	}, 100);
+
 	$("#add-subcategory").click(function () {
 		$("#subcategory-name").val("");
 		$("#subcategory-note").val("");
