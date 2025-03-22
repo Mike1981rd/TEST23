@@ -22,4 +22,5 @@ public enum PrinterTasksType
 {
     TicketOrden = 0,
     TicketCocina = 1,
+    TicketPaymentSummary = 2,
 }

@@ -893,18 +893,18 @@ namespace AuroraPOS.Services
 
             var preference = _dbContext.Preferences.First();
             var order = _dbContext.Orders.Include(s => s.Table).Include(s => s.Taxes).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).FirstOrDefault(o => o.ID == OrderID);
-            var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
+            /*var voucher = _dbContext.Vouchers.Include(s => s.Taxes).FirstOrDefault(s => s.ID == order.ComprobantesID);
             order.GetTotalPrice(voucher);
             var items = order.Items.Where(s => !s.IsDeleted).ToList();
             var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order).ToList();
 
             SeatItem seat = null;
-            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);
+            var customer = _dbContext.Customers.FirstOrDefault(s => s.ID == order.CustomerId);*/
 
             var station = _dbContext.Stations.Include(s => s.Printers).ThenInclude(s => s.PrinterChannel).Include(s => s.Printers).ThenInclude(s => s.Printer).FirstOrDefault(s => s.ID == stationId);
             var defaultPrinter = station.Printers.FirstOrDefault(s => s.PrinterChannel.IsDefault);
 
-            DataSet ds = new DataSet("general");
+            /*DataSet ds = new DataSet("general");
             ds.Tables.Add("general");
             ds.Tables[0].Columns.Add("f_nombre");
             ds.Tables[0].Columns.Add("f_Qty");
@@ -973,7 +973,7 @@ namespace AuroraPOS.Services
                 }
                 ds.Tables[0].Rows.Add(dr);
 
-            }
+            }*/
 
 
             if (defaultPrinter != null && defaultPrinter.Printer != null)
@@ -983,6 +983,20 @@ namespace AuroraPOS.Services
                 {
                     try
                     {
+                        
+                        //INICIA: Manda a imprimir, nuevo metodo
+                        var objPrint = new PrinterTasks();
+                        objPrint.ObjectID = OrderID;
+                        objPrint.Status = (int)PrinterTasksStatus.Pendiente;
+                        objPrint.Type = (int)PrinterTasksType.TicketPaymentSummary;
+                        objPrint.PhysicalName = defaultPrinter.Printer.PhysicalName;
+                        objPrint.StationId = stationId;
+                        objPrint.SucursalId = station.IDSucursal;
+                        objPrint.DivideNum = DividerNum;
+                        objPrint.SeatNum = SeatNum;
+                        _dbContext.PrinterTasks.Add(objPrint);
+                        _dbContext.SaveChanges();
+                        //TERMINA: Manda a imprimir, nuevo metodo
 
                         #region imprimiendo Sumary
                         
