@@ -187,6 +187,7 @@
             height: 100%;
             flex-direction: column;
             justify-content: space-between;
+            align-items: center;
             border-radius: 4px;
             overflow: hidden;
             padding: 6px;
@@ -242,6 +243,7 @@
             padding: 8px;
             background: rgba(255,255,255,0.08);
             border-radius: 4px;
+            width: 70%;
         }
 
         .order-info-options {
@@ -397,6 +399,7 @@
             grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-template-rows: auto;
             height: 100%;
+            width: 100%;
             overflow: hidden;
             overflow-x: hidden;
             gap: 8px 16px;
@@ -620,10 +623,10 @@
         }
 
         .primary-menu-tab {
-            width: 100%;
+            /* width: 100%; */
             display: flex;
-            flex-direction: row;
-            padding: 8px;
+            flex-direction: column;
+            padding: 16px;
             gap: 8px;
             overflow: hidden;
             justify-content: space-between;
@@ -634,7 +637,7 @@
             padding: 0px;
             display: flex;
             gap: 3rem;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
         }
 
@@ -651,7 +654,7 @@
             padding: 8px;
             padding-bottom: 0px;
             /* background: #7a89a6; */
-            background: #e9f3f2;
+            /* background: #e9f3f2; */
             gap: -5px;
             overflow: hidden;
 
@@ -692,7 +695,7 @@
             border: none;
             font-weight: bold;
             padding: .4rem 8rem;
-            height: 100%;
+            /* height: 100%; */
             transition: all ease-in 0.05s;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             font-size: 20px;
@@ -701,7 +704,7 @@
         }
 
         .btn.button3.active, .btn.button3:hover {
-            background: #000100 !important;
+            background: none !important;
             /* color: #425dcf !important; */
             /* border-top: 2px solid white; */
             padding: .6rem 8rem;
@@ -723,6 +726,8 @@
             overflow: hidden;
             width: 100% !important;
             height: 100%;
+            display: flex;
+            flex-direction: row;
         }
 
         .product-card-title {
@@ -937,6 +942,12 @@
         .divide-item-add > span {
             font-weight: bold;
         }
+
+        .categories {
+            display: flex;
+            flex-direction: row;
+
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -949,8 +960,9 @@
             <div class="details show cuenta-side-menu">
                 <div class="top user-info-container">
                     <div class="user-info-option" id="select-customer-trigger">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
-                        @ViewLocalizer["Cliente"]: <span class="order-client">@Model.ClientName</span>
+                        @* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg> *@
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256"><path fill="#fff" d="M172 120a44 44 0 1 1-44-44a44.05 44.05 0 0 1 44 44m60 8A104 104 0 1 1 128 24a104.11 104.11 0 0 1 104 104m-16 0a88.09 88.09 0 0 0-91.47-87.93C77.43 41.89 39.87 81.12 40 128.25a87.65 87.65 0 0 0 22.24 58.16A79.7 79.7 0 0 1 84 165.1a4 4 0 0 1 4.83.32a59.83 59.83 0 0 0 78.28 0a4 4 0 0 1 4.83-.32a79.7 79.7 0 0 1 21.79 21.31A87.62 87.62 0 0 0 216 128"/></svg>
+                        @* @ViewLocalizer["Cliente"]:  *@<span class="order-client">@Model.ClientName</span>
                     </div>
                     @* <div class="user-info-option">@ViewLocalizer["Comprobante"]: <span class="order-comprobante">@Model.ComprobanteName</span></div> *@
                     <div class="seat-add-div user-info-option">
@@ -974,20 +986,20 @@
                     } 
                     else {
                         <a class="sales-order-persons user-info-option" href="javascript:void(0);">
-                            <img id="order-person" class="sales-setting" src="/vendor/img/comensales.png" alt="" width=35 height=35 style="margin-right: 4px;">
-                            <div id="div-person" class="">
+                            <div id="div-person" class="" style="color: white;">
                                 @Model.Person
                             </div>
+                            <img id="order-person" class="sales-setting" src="/img/icons/icon-restaurant.png" alt="" width=35 height=35 style="margin-right: 4px;">
                         </a>
-                        <a class="search-product user-info-option" href="javascript:void(0);">
+@*                         <a class="search-product user-info-option" href="javascript:void(0);">
                             <div class="search-container">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                                     <path fill="#fff" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" stroke-width="0.5" stroke="#fff" />
                                 </svg>
 
-                                @* <img class="small-logo" src="/vendor/img/logo-circle-04.png" alt="Logo" width="35" height="35"> *@
+                                <img class="small-logo" src="/vendor/img/logo-circle-04.png" alt="Logo" width="35" height="35">
                             </div>
-                        </a>
+                        </a> *@
                     }
 
 @*                     <a class="sales-order-persons user-info-option" href="javascript:void(0);">
@@ -1006,10 +1018,18 @@
 
                         </div>
                     </a> *@
+                    <a class="user-info-option" id="order-mode" href="javascript:void(0);" style="color: white;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#fff" d="M17.012 10.192H6.994l-.352 2.731h10.735zM4.827 19.02l1.187-8.827H2.77l1.56-5.385h15.36l1.576 5.384h-3.275l1.181 8.827h-.98l-.695-5.096H6.502l-.694 5.096z" /></svg>
+                        @ViewLocalizer[Model.OrderMode.ToString()]
+                    </a>
+
+                    <a class="user-info-option" id="order-express" href="javascript:void(0);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 36 36"><path fill="#fff" d="M17.71 32a2 2 0 0 1-.86-.2A1.77 1.77 0 0 1 16 30v-6.7L5.17 31.58a1.94 1.94 0 0 1-2.06.22A2 2 0 0 1 2 30V6a2 2 0 0 1 1.11-1.8a1.93 1.93 0 0 1 2.06.22L16 12.69V6a1.77 1.77 0 0 1 .85-1.79a1.93 1.93 0 0 1 2.06.22l15.32 12a2 2 0 0 1 0 3.15l-15.32 12a2 2 0 0 1-1.2.42" class="clr-i-solid clr-i-solid-path-1"/><path fill="none" d="M0 0h36v36H0z"/></svg>
+                    </a>
 
                 </div>
                 <div class="content order-item-content order-info-menu">            
-                    <div class="order-table" style="height:initial">
+                    <div class="order-table" style="height:initial;width: 100%;">
                         <div id="order-item-table" class="table">
                             <div class="table-header">
                                 <div class="tr">
@@ -1059,72 +1079,55 @@
                         <button id="order-pay" class="btn btn-modern">@ViewLocalizer["Pagar"]</button>
                     </div>
                 </div>
+                <div class="order-info-options" style="height: 10%;">
+                    <div class="bottom-grid">
+
+                    </div>
+                </div>
                 <span id="hambugur"> || </span>
 
             </div>
             <div class="products elements-main-menu">
-                <div class="primary-menu-tab">
-                    <div id="group-panel-main" @* class="inner" *@>
-                    </div>
-                    <div id="mode" @* class="inner py-2" *@>
-@*                             @if (Model.OrderType == OrderType.Delivery)
-                            {
-                                <button id="order-mesa" class="btn button2 " style="min-width: 150px;">
-                                    @if (Model.PrepareType != null)
-                                    {
-                                        @Model.PrepareType.Name
-                                    }
-                                    else
-                                    {
-                                        @ViewLocalizer["Mesa"]
-                                    }
-
-                                </button>
-                            } *@
-                        <button id="order-express" class="btn btn-nostyle">@ViewLocalizer["Express"]</button>
-                        <button id="order-mode" class="btn btn-nostyle">@ViewLocalizer[Model.OrderMode.ToString()]</button>
-                        <div class="more-menu-container">
-                            <a class="sales-setting-container" id="more-menu-open" href="javascript:void(0);">
-                                <svg id="order-tools" class="sales-setting" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="#fff" d="M12 16.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3" stroke-width="0.5" stroke="#fff"/></g></svg>
-                                @* <img id="order-tools" class="sales-setting" src="/vendor/img/settings.png" alt=""> *@
-
-                            </a>
-                            <div class="more-menu" id="more-menu" style="display: none;">
-                                <div class="button-icon-container">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
-                                    <button id="order-info" class="btn btn-nostyle">@ViewLocalizer["Client Info"]</button>
-                                </div>
-                                @if (discountType != "item" && @Model.OrderMode != OrderMode.Divide)
-                                {
-                                    <div class="button-icon-container">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z" stroke-width="0.5" stroke="#fff"/><path fill="#fff" d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z" stroke-width="0.5" stroke="#fff"/><circle cx="7.25" cy="4.25" r="1.25" fill="#fff" stroke-width="0.5" stroke="#fff"/></svg>
-                                        <button id="btn-order-discount" class="btn btn-nostyle">@ViewLocalizer["Discount"]</button>
-                                    </div>
-                                }
-                                <div class="button-icon-container">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 4c-4.411 0-8 3.589-8 8s3.589 8 8 8s8-3.589 8-8s-3.589-8-8-8m-5 8c0-.832.224-1.604.584-2.295l6.711 6.711A4.94 4.94 0 0 1 12 17c-2.757 0-5-2.243-5-5m9.416 2.295L9.705 7.584A4.94 4.94 0 0 1 12 7c2.757 0 5 2.243 5 5c0 .832-.224 1.604-.584 2.295" stroke-width="0.5" stroke="#fff"/></svg>
-                                    <button id="btn-order-void" class="btn btn-nostyle">@ViewLocalizer["Void"]</button>
-                                </div>
-                                @if (Model.Status != OrderStatus.Temp && Model.OrderType == OrderType.DiningRoom)
-                                {
-                                    <div class="button-icon-container">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 3h5v5M8 3H3v5" /><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3m12 6l6-6" /></g></svg>
-
-                                        <button id="order-split" class="btn btn-nostyle">@ViewLocalizer["Split"]</button>
-                                    </div>
-                                }
-                                <div class="button-icon-container">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="#fff"><path d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045"/><path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0"/></g></svg>
-                                    <button id="btn-change-visual-mode" class="btn btn-nostyle" onclick="changeVisualMode();">@ViewLocalizer["Visual Mode"]</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
                 <div class="grid categories">
                     <div id="category-panel-main" class="secondary-menu-tab">
                     </div>
+                    <div class="more-menu-container">
+                        <a class="sales-setting-container" id="more-menu-open" href="javascript:void(0);">
+                            <svg id="order-tools" class="sales-setting" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="#fff" d="M12 16.5a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3m0-6a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1 0-3" stroke-width="0.5" stroke="#fff" /></g></svg>
+                            @* <img id="order-tools" class="sales-setting" src="/vendor/img/settings.png" alt=""> *@
+
+                        </a>
+                        <div class="more-menu" id="more-menu" style="display: none;">
+                            <div class="button-icon-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
+                                <button id="order-info" class="btn btn-nostyle">@ViewLocalizer["Client Info"]</button>
+                            </div>
+                            @if (discountType != "item" && @Model.OrderMode != OrderMode.Divide)
+                            {
+                                <div class="button-icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z" stroke-width="0.5" stroke="#fff" /><path fill="#fff" d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z" stroke-width="0.5" stroke="#fff" /><circle cx="7.25" cy="4.25" r="1.25" fill="#fff" stroke-width="0.5" stroke="#fff" /></svg>
+                                    <button id="btn-order-discount" class="btn btn-nostyle">@ViewLocalizer["Discount"]</button>
+                                </div>
+                            }
+                            <div class="button-icon-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 4c-4.411 0-8 3.589-8 8s3.589 8 8 8s8-3.589 8-8s-3.589-8-8-8m-5 8c0-.832.224-1.604.584-2.295l6.711 6.711A4.94 4.94 0 0 1 12 17c-2.757 0-5-2.243-5-5m9.416 2.295L9.705 7.584A4.94 4.94 0 0 1 12 7c2.757 0 5 2.243 5 5c0 .832-.224 1.604-.584 2.295" stroke-width="0.5" stroke="#fff" /></svg>
+                                <button id="btn-order-void" class="btn btn-nostyle">@ViewLocalizer["Void"]</button>
+                            </div>
+                            @if (Model.Status != OrderStatus.Temp && Model.OrderType == OrderType.DiningRoom)
+                            {
+                                <div class="button-icon-container">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 3h5v5M8 3H3v5" /><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3m12 6l6-6" /></g></svg>
+
+                                    <button id="order-split" class="btn btn-nostyle">@ViewLocalizer["Split"]</button>
+                                </div>
+                            }
+                            <div class="button-icon-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="#fff"><path d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" /><path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" /></g></svg>
+                                <button id="btn-change-visual-mode" class="btn btn-nostyle" onclick="changeVisualMode();">@ViewLocalizer["Visual Mode"]</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="sub-category">
                     <div id="subcategory-panel-main" class="inner">
@@ -1214,7 +1217,29 @@
                 <div class="main">
                     <div id="product-panel-main" class="product-panel-main-kiosk">
                     </div>
+                                    <div class="primary-menu-tab">
+                    <div id="group-panel-main" @* class="inner" *@>
+                    </div>
+                    <div id="mode" @* class="inner py-2" *@>
+                                    @*                             @if (Model.OrderType == OrderType.Delivery)
+                            {
+                                <button id="order-mesa" class="btn button2 " style="min-width: 150px;">
+                                    @if (Model.PrepareType != null)
+                                    {
+                                        @Model.PrepareType.Name
+                                    }
+                                    else
+                                    {
+                                        @ViewLocalizer["Mesa"]
+                                    }
 
+                                </button>
+                            } *@
+                        @* <button id="order-express" class="btn btn-nostyle">@ViewLocalizer["Express"]</button>
+                        <button id="order-mode" class="btn btn-nostyle">@ViewLocalizer[Model.OrderMode.ToString()]</button> *@
+
+                    </div>
+                </div>
                 </div>
                 <div class="products-footer">
                     <div>
@@ -6426,6 +6451,15 @@
                 $("#subcategory-panel-main").data("selected", "");
                 $("#product-panel-main").empty();
 
+                var colors = [
+                    "#74a990",
+                    "#375f8f",
+                    "#990f00",
+                    "#7a488a"
+                ];
+
+                let colorsIndicator = 0;
+
                 for (var i = 0; i < data.length; i++) {
                     var d = data[i];
                     console.log(d);
@@ -6436,16 +6470,26 @@
                         LoadSubCategory(d.id);
                     }
 
-                    var backColor = d.backColor ? d.backColor : "#C00000"; // Color por defecto si no viene de la BD
-            var textColor = d.textColor ? d.textColor : "#ffffff"; // Color de texto por defecto
+                    // var backColor = d.backColor ? d.backColor : "#C00000"; // Color por defecto si no viene de la BD
+                    let backColor;
+                    if(d.backColor !== "#000000") {
+                        backColor = d.backColor;
+                    } else {
+                        backColor = colors[colorsIndicator];
+                        colorsIndicator++;
+                        if(colorsIndicator >= colors.length)
+                            colorsIndicator = 0;
+                    }
 
-            var html = `
-                <button class="category-item btn button3 ${active}"
-                    data-id='${d.id}'
-                    style="background-color: ${backColor}; color: ${textColor};">
-                    ${d.name}
-                </button>
-            `;
+                    var textColor = d.textColor ? d.textColor : "#ffffff"; // Color de texto por defecto
+
+                    var html = `
+                        <button class="category-item btn button3 ${active}"
+                            data-id='${d.id}'
+                            style="background-color: ${backColor} !important; color: ${textColor};">
+                            ${d.name}
+                        </button>
+                    `;
                     $("#category-panel-main").append(html);
                 }
             },
@@ -6502,11 +6546,17 @@
                         inventory_html = `<div class="inventory-qty"><span>${d.product.inventoryCount}</span></div>`;
                     }
 
+                    let backColor = d.product.backColor;
+
+                    if(d.product.backColor === '#000000') {
+                        backColor = '#262729';
+                    }
+
                     if (d.product.photo) {
                         var html =
                             `
                                 <div class="product-item-container">
-                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${backColor}; color:${d.product.textColor}">
                                             <img class="card-img" src="${d.product.photo}" alt="">
                                         ${inventory_html}
                                     </div>
@@ -6519,7 +6569,7 @@
                         var html =
                             `
                                 <div class="product-item-container">
-                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
+                                    <div class="product-item card product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${backColor}; color:${d.product.textColor}">
                                             <h5 class="product-card-title">${d.product.name}</h5>
                                              ${inventory_html}
                                     </div>
