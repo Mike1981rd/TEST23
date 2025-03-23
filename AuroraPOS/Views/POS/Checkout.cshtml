@@ -136,7 +136,7 @@
         .checkout-order-sum {
             height: 100%;
             width: 100%;
-            background: #171525;
+            /*background: #171525;*/
             border-radius: 4px;
 
             display: flex;
@@ -147,7 +147,7 @@
         .checkout-order-paymeth {
             height: 100%;
             width: 45%;
-            background: #171525;
+            /*background: #171525;*/
             border-radius: 4px;
             display: flex;
             flex-direction: column;
@@ -632,7 +632,7 @@
             <div class="checkout-order-paymeth">
                 <div class="checkout-elements-header">
                     <div class="checkout-elements-title">Formas de Pagos</div>
-                    <p class="checkout-elements-desc">Seleccione su forma de pago</p>
+                    <p class="checkout-elements-desc" style="min-height: 24px">Seleccione su forma de pago</p>
                 </div>
                 <div class="checkout-paymethods-container">
                     @for (int i = 0; i < paymentMethods.Count; i++)
@@ -803,7 +803,7 @@
 
                             <div class="checkout-pay-qty-options checkout-pay-options-buttons">
                                 <button id="pay-cancel" class="btn flex-fill btn-default-calc checkout-pay-option bg-red" @Html.Raw(ViewBag.Refund == null || !ViewBag.Refund ? "" : "disabled") @Html.Raw(Model.Order.PaymentStatus == PaymentStatus.Partly ? "disabled" : "")>@ViewLocalizer["Cancel"]</button>
-                                <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #425dcf;">@ViewLocalizer["Done"]</button>
+                                <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #ff9f43c4;">@ViewLocalizer["Done"]</button>
                                 <button id="pay-exit" class="btn flex-fill btn-default-calc checkout-pay-option bg-black">@ViewLocalizer["Salvar"]</button>
                             </div>
                         </div>
