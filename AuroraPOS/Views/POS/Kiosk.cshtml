@@ -145,7 +145,7 @@
             flex-direction: row;
             justify-content: left;
             align-items: center;
-            gap: 16px;
+            gap: 2px;
         }
 
         .main-content {
@@ -166,6 +166,8 @@
 
             display: flex;
             flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
             background: #171525;
             gap: 4px;
         }
@@ -192,18 +194,37 @@
         }
 
        .user-info-container {
-           all: unset;
-           display: flex;
-           flex-direction: row;
-           align-items: center;
-           justify-content: space-between;
-           height: auto;
-           background: #1f2b41;
-           border-radius: 10px;
-           padding: 8px;
-
-           margin: 8px;
+            all: unset;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            height: auto;
+            width: 40%;
+            gap: 4px;
+            /* background: #202b41; */
+            /* background: rgba(255,255,255,0.2); */
+            padding: 4px;
        }
+
+        .user-info-option {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+            align-items: center;
+            padding: 4px;
+            flex-wrap: wrap;
+            font-weight: bold;
+            height: 90%;
+            background: rgba(255,255,255,0.2);
+            min-height: 55px;
+        }
+
+        .user-info-option:hover {
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+        }
 
        .order-info-menu {
            all: unset;
@@ -389,12 +410,13 @@
        .product-panel-main-kiosk {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(auto-fill, minmax(150px, auto)); /* Fila mínima de 20px */
+            grid-template-rows: auto;
+            /* grid-template-rows: repeat(auto-fill, minmax(150px, auto)); /* Fila mínima de 20px */ */
             height: 100%;
             overflow: hidden;
             overflow-y: scroll;
             overflow-x: hidden;
-            gap: 10px;
+            gap: 8px 16px;
             border-bottom: solid 1px rgba(255,255,255,0.4);
        }
 
@@ -417,7 +439,7 @@
             align-items: center;
             width: 100%;
             height: 150px; /* Altura fija para todos */
-            border-radius: 4px;
+            /* border-radius: 4px; */
             border: none;
             border-bottom: solid 4px #9E1B32;
             background: #343f54;
@@ -429,7 +451,8 @@
             .product-item-kiosk > h5 {
                 margin: 0;
                 text-align: center;
-                font-size: 1rem;
+                font-size: 20px;
+                font-weight: bold;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -440,6 +463,11 @@
                 height: 100%; /* Hace que la imagen ocupe toda la altura del div */
                 object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
                 object-position: center; /* Centra la imagen dentro del div */
+        }
+
+        .product-item-container {
+            display: flex;
+            flex-direction: column;
         }
 
         .total {
@@ -464,10 +492,14 @@
         .product-item-kiosk:hover {
             background: #434e64;
             cursor: pointer;
+            border-bottom: solid 4px white !important;
         }
 
         .product-title {
             text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 18px;
         }
 
         .order-item:hover {
@@ -507,6 +539,22 @@
         #client-option {
             cursor: pointer;
         }
+
+        .info-option {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            background: rgba(255,255,255,0.01);
+            flex-wrap: wrap;
+            height: 90%;
+            font-weight: bold;
+        }
+
+        .info-option > span, user-info-option > span {
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -516,11 +564,25 @@
 
     <div class="main-page-kiosk">
         <div class="header-info">
-            <div class="element-icon" style="width: 38%;" id="client-option">
+            <div class="user-info-container">
+                <div class="user-info-option" id="client-option">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256"><path fill="#fff" d="M172 120a44 44 0 1 1-44-44a44.05 44.05 0 0 1 44 44m60 8A104 104 0 1 1 128 24a104.11 104.11 0 0 1 104 104m-16 0a88.09 88.09 0 0 0-91.47-87.93C77.43 41.89 39.87 81.12 40 128.25a87.65 87.65 0 0 0 22.24 58.16A79.7 79.7 0 0 1 84 165.1a4 4 0 0 1 4.83.32a59.83 59.83 0 0 0 78.28 0a4 4 0 0 1 4.83-.32a79.7 79.7 0 0 1 21.79 21.31A87.62 87.62 0 0 0 216 128"/></svg>
+                </div>
+                <div class="user-info-option" id="order-ordern">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 36 36"><path fill="#fff" d="M15 8h9v2h-9z" class="clr-i-outline clr-i-outline-path-1" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 12h9v2h-9z" class="clr-i-outline clr-i-outline-path-2" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 16h9v2h-9z" class="clr-i-outline clr-i-outline-path-3" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 20h9v2h-9z" class="clr-i-outline clr-i-outline-path-4" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 24h9v2h-9z" class="clr-i-outline clr-i-outline-path-5" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 8h2v2h-2z" class="clr-i-outline clr-i-outline-path-6" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 12h2v2h-2z" class="clr-i-outline clr-i-outline-path-7" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 16h2v2h-2z" class="clr-i-outline clr-i-outline-path-8" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 20h2v2h-2z" class="clr-i-outline clr-i-outline-path-9" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 24h2v2h-2z" class="clr-i-outline clr-i-outline-path-10" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M28 2H8a2 2 0 0 0-2 2v28a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2m0 30H8V4h20Z" class="clr-i-outline clr-i-outline-path-11" stroke-width="1" stroke="#fff" /><path fill="none" d="M0 0h36v36H0z" /></svg>
+                </div>
+                <div class="user-info-option" id="order-mesa-kiosk">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24"><path fill="#fff" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm6-6H5v4h6zm2 0v4h6v-4zm-2-2V9H5v4zm2 0h6V9h-6zM5 7h14V5H5z" stroke-width="0.5" stroke="#fff" /></svg>
+                </div>
+                <div class="user-info-option" id="order-tools">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24"><path fill="#fff" fill-rule="evenodd" d="M12.563 3.2h-1.126l-.645 2.578l-.647.2a6.3 6.3 0 0 0-1.091.452l-.599.317l-2.28-1.368l-.796.797l1.368 2.28l-.317.598a6.3 6.3 0 0 0-.453 1.091l-.199.647l-2.578.645v1.126l2.578.645l.2.647q.173.568.452 1.091l.317.599l-1.368 2.28l.797.796l2.28-1.368l.598.317q.523.278 1.091.453l.647.199l.645 2.578h1.126l.645-2.578l.647-.2a6.3 6.3 0 0 0 1.091-.452l.599-.317l2.28 1.368l.796-.797l-1.368-2.28l.317-.598q.278-.523.453-1.091l.199-.647l2.578-.645v-1.126l-2.578-.645l-.2-.647a6.3 6.3 0 0 0-.452-1.091l-.317-.599l1.368-2.28l-.797-.796l-2.28 1.368l-.598-.317a6.3 6.3 0 0 0-1.091-.453l-.647-.199zm2.945 2.17l1.833-1.1a1 1 0 0 1 1.221.15l1.018 1.018a1 1 0 0 1 .15 1.221l-1.1 1.833q.33.62.54 1.3l2.073.519a1 1 0 0 1 .757.97v1.438a1 1 0 0 1-.757.97l-2.073.519q-.21.68-.54 1.3l1.1 1.833a1 1 0 0 1-.15 1.221l-1.018 1.018a1 1 0 0 1-1.221.15l-1.833-1.1q-.62.33-1.3.54l-.519 2.073a1 1 0 0 1-.97.757h-1.438a1 1 0 0 1-.97-.757l-.519-2.073a7.5 7.5 0 0 1-1.3-.54l-1.833 1.1a1 1 0 0 1-1.221-.15L4.42 18.562a1 1 0 0 1-.15-1.221l1.1-1.833a7.5 7.5 0 0 1-.54-1.3l-2.073-.519A1 1 0 0 1 2 12.72v-1.438a1 1 0 0 1 .757-.97l2.073-.519q.21-.68.54-1.3L4.27 6.66a1 1 0 0 1 .15-1.221L5.438 4.42a1 1 0 0 1 1.221-.15l1.833 1.1q.62-.33 1.3-.54l.519-2.073A1 1 0 0 1 11.28 2h1.438a1 1 0 0 1 .97.757l.519 2.073q.68.21 1.3.54zM12 14.8a2.8 2.8 0 1 0 0-5.6a2.8 2.8 0 0 0 0 5.6m0 1.2a4 4 0 1 1 0-8a4 4 0 0 1 0 8" stroke-width="0.5" stroke="#fff"/></svg>
+                </div>
+            </div>
+@*             <div class="element-icon" style="width: 38%;" id="client-option">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
 
                 <span>Customers</span>
-            </div>
+            </div> *@
             
             <div class="qty-panel-container">
                 <input id="kiosk-qty" class="kiosk-qty" value="" type="text">
@@ -541,7 +603,7 @@
             <div class="details show cuenta-side-menu">
                 <div class="user-cuenta-container">
                     @* Datos de usuario *@
-                    <div class="top user-info-container">
+@*                     <div class="top user-info-container">
                         <div class="">
                                 @if (Model.Table != null)
                                 {
@@ -566,11 +628,11 @@
                         <a class="search-product" href="javascript:void(0);" style="width: 20%; max-width: 20%;">
                             <img class="sales-logo" src="/vendor/img/logo-04.png" alt="">
                         </a>
-                            @*                     <a class="" href="javascript:void(0);" style="width: 20%;">
+                            comentado                     <a class="" href="javascript:void(0);" style="width: 20%;">
                             <img id="order-tools" class="sales-setting" src="/vendor/img/settings.png" alt="">
-                        </a> *@
+                        </a> 
                         <input type="hidden" id="divide-num" value="0" />
-                    </div>
+                    </div> *@
                         @* /Datos de usuario *@
 
                         @* Datos de usuario *@
@@ -734,10 +796,30 @@
                 </div>
             </div>
         </div>
-        <div class="footer-menu">
+        <div class="top footer-menu">
+
+            @if (Model.Table != null)
+            {
+                <div class="info-option"><span id="order-mesa-header">@Model.Table.Name</span></div>
+            }
+            else
+            {
+                if (Model.PrepareType != null)
+                {
+                    <div class="info-option"><span id="order-mesa-header">@Model.PrepareType.Name</span></div>
+                }
+                else
+                {
+                    <div class="info-option"><span id="order-mesa-header">@ViewLocalizer["TO GO"]</span></div>
+                }
+            }
+            <div class="info-option">@ViewLocalizer["Waiter"]: <span class="order-waiter">@Model.WaiterName</span></div>
+            <div class="info-option">@ViewLocalizer["Cliente"]: <span class="order-client">@Model.ClientName</span></div>
+            <div class="info-option">@ViewLocalizer["Comprobante"]: <span class="order-comprobante">@Model.ComprobanteName</span></div>
+            <div class="info-option" id="lbl-fecha"></div>
 @*             <button id="order-ordern" class="btn btn-menu-kiosk">Orden</button>
             <button id="order-mesa-kiosk" class="btn btn-menu-kiosk">@Model.PrepareType.Name</button> *@
-            <button id="order-ordern" class="btn btn-modern">
+@*             <button id="order-ordern" class="btn btn-modern">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 36 36"><path fill="#fff" d="M15 8h9v2h-9z" class="clr-i-outline clr-i-outline-path-1" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 12h9v2h-9z" class="clr-i-outline clr-i-outline-path-2" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 16h9v2h-9z" class="clr-i-outline clr-i-outline-path-3" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 20h9v2h-9z" class="clr-i-outline clr-i-outline-path-4" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M15 24h9v2h-9z" class="clr-i-outline clr-i-outline-path-5" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 8h2v2h-2z" class="clr-i-outline clr-i-outline-path-6" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 12h2v2h-2z" class="clr-i-outline clr-i-outline-path-7" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 16h2v2h-2z" class="clr-i-outline clr-i-outline-path-8" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 20h2v2h-2z" class="clr-i-outline clr-i-outline-path-9" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M11 24h2v2h-2z" class="clr-i-outline clr-i-outline-path-10" stroke-width="1" stroke="#fff" /><path fill="#fff" d="M28 2H8a2 2 0 0 0-2 2v28a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2m0 30H8V4h20Z" class="clr-i-outline clr-i-outline-path-11" stroke-width="1" stroke="#fff" /><path fill="none" d="M0 0h36v36H0z" /></svg>
                 Order
             </button>
@@ -748,7 +830,7 @@
             <button id="order-tools" class="btn btn-modern">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24"><path fill="#fff" fill-rule="evenodd" d="M12.563 3.2h-1.126l-.645 2.578l-.647.2a6.3 6.3 0 0 0-1.091.452l-.599.317l-2.28-1.368l-.796.797l1.368 2.28l-.317.598a6.3 6.3 0 0 0-.453 1.091l-.199.647l-2.578.645v1.126l2.578.645l.2.647q.173.568.452 1.091l.317.599l-1.368 2.28l.797.796l2.28-1.368l.598.317q.523.278 1.091.453l.647.199l.645 2.578h1.126l.645-2.578l.647-.2a6.3 6.3 0 0 0 1.091-.452l.599-.317l2.28 1.368l.796-.797l-1.368-2.28l.317-.598q.278-.523.453-1.091l.199-.647l2.578-.645v-1.126l-2.578-.645l-.2-.647a6.3 6.3 0 0 0-.452-1.091l-.317-.599l1.368-2.28l-.797-.796l-2.28 1.368l-.598-.317a6.3 6.3 0 0 0-1.091-.453l-.647-.199zm2.945 2.17l1.833-1.1a1 1 0 0 1 1.221.15l1.018 1.018a1 1 0 0 1 .15 1.221l-1.1 1.833q.33.62.54 1.3l2.073.519a1 1 0 0 1 .757.97v1.438a1 1 0 0 1-.757.97l-2.073.519q-.21.68-.54 1.3l1.1 1.833a1 1 0 0 1-.15 1.221l-1.018 1.018a1 1 0 0 1-1.221.15l-1.833-1.1q-.62.33-1.3.54l-.519 2.073a1 1 0 0 1-.97.757h-1.438a1 1 0 0 1-.97-.757l-.519-2.073a7.5 7.5 0 0 1-1.3-.54l-1.833 1.1a1 1 0 0 1-1.221-.15L4.42 18.562a1 1 0 0 1-.15-1.221l1.1-1.833a7.5 7.5 0 0 1-.54-1.3l-2.073-.519A1 1 0 0 1 2 12.72v-1.438a1 1 0 0 1 .757-.97l2.073-.519q.21-.68.54-1.3L4.27 6.66a1 1 0 0 1 .15-1.221L5.438 4.42a1 1 0 0 1 1.221-.15l1.833 1.1q.62-.33 1.3-.54l.519-2.073A1 1 0 0 1 11.28 2h1.438a1 1 0 0 1 .97.757l.519 2.073q.68.21 1.3.54zM12 14.8a2.8 2.8 0 1 0 0-5.6a2.8 2.8 0 0 0 0 5.6m0 1.2a4 4 0 1 1 0-8a4 4 0 0 1 0 8" stroke-width="0.5" stroke="#fff"/></svg>
                 Settings
-            </button>
+            </button> *@
             
         </div>
     </div>
@@ -5902,30 +5984,38 @@
                         inventory_html = `<div class="inventory-qty"><span>${d.product.inventoryCount}</span></div>`;
                     }
 
+                    let backColor;
+
+                    if(d.product.backColor === '#000000') {
+                        backColor = '#343f54';
+                    }
+
                     if (d.product.photo) {
                         var html =
                             `
-                                    
-                                        <div class="product-item-1  product-item-original  product card product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${d.product.backColor}; color:${d.product.textColor}">
-                                                <img class="card-img-1" src="${d.product.photo}" alt="">
-                                               <div class="card-img-overlay">
-                                                    <div class="product-title">${d.product.name}</div>
-                                            </div>
+                                <div class="product-item-container">
+                                        <div class="product-item-1  product-item-original  product card product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}' style="background-color:${backColor}; color:${d.product.textColor}">
+                                            <img class="card-img-1" src="${d.product.photo}" alt="">
                                             ${inventory_html}
                                         </div>
-                                        
+                                        <div class="product-title">${d.product.name}</div>
+                                </div>
                                         `
                         $("#product-panel-main").append(html);
                     }
                     else {
                         var html =
                             `
+                                <div class="product-item-container">
                                          
-                                            <div class="product-item-1 product-item-original  product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}'  style="border-bottom: solid 4px ${d.product.backColor}; color:${d.product.textColor}">
+                                            <div class="product-item-1 product-item-original  product product-item-kiosk" data-invactive="${d.product.inventoryCountDownActive}" data-inv="${d.product.inventoryCount}"  data-id='${d.id}' data-productid='${d.product.id}'  style="border-bottom: solid 4px ${backColor}; color:${d.product.textColor}">
                                                              <h5 class="product-card-title-noimg"   >${d.product.name}</h5>
                                                  ${inventory_html}
                                         </div>
-                                        
+                                    <div class="product-title"> </div>
+
+                                </div>
+
                                         `
                         $("#product-panel-main").append(html);
                     }

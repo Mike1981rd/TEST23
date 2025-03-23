@@ -1109,6 +1109,14 @@
 	var selectedCustomerName = "";
 	var selectedCustomerName2 = "";
 
+	
+	var format2Number = function (num) {
+		const options = {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		};
+		return Number(parseFloatCorrect(num).toFixed(2)).toLocaleString('en', options);
+	};
 
 	function formatDate(date) {
 		// Obtener el día, mes y año
