@@ -331,32 +331,39 @@
 		});		
 	}
 
-	function LoadCategory()
-	{
+	function LoadCategory() {
 		$.ajax({
 			url: "/Menu/GetAllActiveCategoryList",
-            type: "POST",
-            success: function (data, textStatus, jqXHR) {
+			type: "POST",
+			success: function (data) {
+				console.log("Categorías recibidas:", data);
+
+				const categories = data.valor; // ✅ aquí está el array
+
 				$("#filter-category").empty();
-				$("#filter-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-				for(var i =0; i < data.length; i++)
-				{
-					var d = data[i];
-					$("#filter-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
+				$("#filter-category").append('<option value="" selected>' + '@ViewLocalizer["Choose category"]' + '</option>');
+
+				for (let i = 0; i < categories.length; i++) {
+					const d = categories[i];
+					$("#filter-category").append(`<option value="${d.id}">${d.name}</option>`);
 				}
+
+				// Inicializa select2 después de llenar las opciones
 				$("#filter-category").select2();
-					
-				var brand = getCookie("productCategory");
-				if (brand && brand !== "")
-				{
-					$("#filter-category").val(brand).change();
+
+				// Establece el valor si hay uno guardado en cookie
+				const brand = getCookie("productCategory");
+				if (brand && brand !== "") {
+					$("#filter-category").val(brand).trigger("change");
 				}
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
-            }
-        });
+			},
+			error: function () {
+				toastr.error('@ViewLocalizer["There was an error in processing the request."]');
+			}
+		});
 	}
+
+
 
 	function FilterProduct() {
 		var searchText = $("#filter-searchtext").val();

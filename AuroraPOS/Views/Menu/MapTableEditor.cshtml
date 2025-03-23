@@ -134,76 +134,82 @@
                         @ViewLocalizer["Add/Edit Area"]
                     </h4>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12 col-sm-12 col-12">
+                <div class="row g-3">
+
+                    <!-- Nombre -->
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Name"]<span class="manitory">*</span></label>
-                            <div class="input-group">
-                                <input id="area-name" type="text" class="form-control" aria-describedby="basic-addon1" required>
-                            </div>
+                            <input id="area-name" type="text" class="form-control" required>
                         </div>
                     </div>
-                  
-                    
-                    <div class="col-lg-4 col-sm-6 col-12">
+
+                    <!-- Width -->
+                    <div class="col-md-4 col-sm-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Width"]<span class="manitory">*</span></label>
-                            <div class="input-group">
-                                <input id="area-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
-                            </div>
+                            <input id="area-width" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" required>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+
+                    <!-- Height -->
+                    <div class="col-md-4 col-sm-6">
                         <div class="form-group">
                             <label class="form-label">@ViewLocalizer["Height"]<span class="manitory">*</span></label>
-                            <div class="input-group">
-                                <input id="area-height" type="text" class="form-control"  onkeypress="return onlyDecimalKey(event)" aria-describedby="basic-addon1" required>
-                            </div>
+                            <input id="area-height" type="text" class="form-control" onkeypress="return onlyDecimalKey(event)" required>
                         </div>
                     </div>
-                    <div class="col-lg-4  col-sm-6 col-12">
-                        <div class="form-group px-3">
-                            <label class="form-label">	@ViewLocalizer["Background Color"]</label>
-                            <div class="col-lg-4 text-start w-100">
-                                <div id="area-bcolor" class="backcolor">
-                                    <input id="area-backcolor" type="color" class="form-control me-2">
-                                    <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Background Color"]</label>
-                                </div>
-                            </div>
+
+                    <!-- Color -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">@ViewLocalizer["Background Color"]</label>
+                            <input id="area-backcolor" type="color" class="form-control" value="#ffffff">
                         </div>
                     </div>
-                    <div class="col-lg-12 col-sm-12 col-12">
-                        <div class="form-group px-3">
-                        <div class="d-flex  align-items-center pb-4" style="gap: 5px;">
-                            <h6 class="text-left pr-5">@ViewLocalizer["Background"]</h6>
-                            <div class="add-unit text-danger">
-                                <a class="add-photo " href="javascript:void(0);">
-                                    <img src="/vendor/img/icons/plus.svg" alt="img">
-                                </a>
-                            </div>
-                            <div  class="del-unit text-danger">
-                                <a  class="del-photo "  href="javascript:void(0);" >
-                                    <img src="/vendor/img/icons/minus.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                   
-                        <div class="row">
-                            <div class="col-sm-4 col-4">
-                                <img id="areaimg" class="" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
-                            </div>
-                            <div class="col-sm-8 col-8 image-upload" style="height: 100%">
-                                <input id="imgInpArea" type="file" name="Files" accept="image/*">
-                                <div class="image-uploads">
-                                    <img src="~/vendor/img/icons/upload.svg" alt="img">
-                                    <h4>@ViewLocalizer["Drag and drop a file to upload"]</h4>
-                                </div>
-                            </div>
+
+                    <!-- Imagen -->
+                    <div class="col-12">
+                        <div class="d-flex align-items-center mb-3 gap-2">
+                            <h6 class="mb-0">@ViewLocalizer["Background"]</h6>
+
+                            <a class="add-photo text-success" href="javascript:void(0);">
+                                <img src="/vendor/img/icons/plus.svg" alt="Agregar">
+                            </a>
+                            <a class="del-photo text-danger" href="javascript:void(0);">
+                                <img src="/vendor/img/icons/minus.svg" alt="Eliminar">
+                            </a>
                         </div>
 
-                </div>
+                        <div class="row">
+                            <div class="text-center justify-content-center align-items-center">
+                                <div class="dropzone needsclick p-0 dz-clickable image-upload" id="dropzone-basic">
+                                    <input id="imgInpArea" type="file" name="Files" accept="image/*" style="width: 100%;opacity: 0;height: 350px;position: relative;z-index: 9;cursor: pointer;">
+                                    <div class="needsclick image-uploads" style="text-align: center;width: 100%;padding: 20px 0;border-radius: 5px;position: absolute;top: 0;margin: 3rem 0 3rem;">
+                                        <img id="areaobjimg" class='imgzoom supplier-avatar' style="max-height: 100px; min-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image" />
+                                        <p class="h4 needsclick pt-3 mb-2">@ViewLocalizer["Drag and drop a file to upload"]</p>
+                                        <p class="h6 text-muted d-block fw-normal mb-2">@ViewLocalizer["o"]</p>
+                                        <span class="note needsclick btn btn-sm btn-label-primary waves-effect" id="btnBrowse">@ViewLocalizer["Buscar archivo"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                           @*  <div class="col-md-4 col-12 mb-3">
+                                <img id="areaimg" class="img-fluid" style="max-height: 100px;" src="/vendor/img/product/noimage.png" alt="No image">
+                            </div>
+                            <div class="col-md-8 col-12">
+                                <div class="image-upload position-relative p-3 border rounded text-center" style="min-height: 100px;">
+                                    <input id="imgInpArea" type="file" name="Files" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="top:0; left:0;">
+                                    <div class="image-uploads">
+                                        <img src="/vendor/img/icons/upload.svg" alt="img" class="mb-2">
+                                        <h6 class="mb-0">@ViewLocalizer["Drag and drop a file to upload"]</h6>
+                                    </div>
+                                </div>
+                            </div> *@
+                        </div>
                     </div>
+
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button id="edit-area" type="button" class="btn btn-primary me-3 waves-effect waves-light">@ViewLocalizer["Submit"]</button>

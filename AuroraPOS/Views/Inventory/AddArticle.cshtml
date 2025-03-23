@@ -1944,10 +1944,13 @@
 
 		if (exist) true;
 
+		// Verificar si es el primero
+	var isFirst = $(".article-supplier tr").length === 0;
+
 		var checked = "";
-		if (supplier.id == primary) {
-			checked = "checked";
-		}
+		if (supplier.id == primary || isFirst) {
+		checked = "checked";
+	}
 
 		var element = `
 				<tr data-supplierid="${supplier.id}">

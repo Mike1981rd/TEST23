@@ -10879,9 +10879,9 @@ body[data-theme=dark] .dash-widget .dash-widgetcontent h5 {
     border-radius: 15px;
 }
 .product-item-1 {
-    border: 1px solid #FFF;
-    border-radius: 20px;
-    background-color: #990f02;
+    border: 0px solid #FFF;
+    border-radius: 0px;
+ /*   background-color: #990f02;*/
     height: 100%;
     width: 100%;
     overflow: hidden;
