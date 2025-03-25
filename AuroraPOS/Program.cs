@@ -39,7 +39,11 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddDbContext<DbAlfaCentralContext>();
 
 //AUTH Cookie
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+	options.ExpireTimeSpan = TimeSpan.FromDays(1);
+	options.Cookie.MaxAge = TimeSpan.FromDays(1);
+});
 
 
 //AUTH JSON WEB TOKEN
