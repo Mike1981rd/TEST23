@@ -113,6 +113,10 @@
 		}
 	}, 100);
 
+	$(document).ready(function() {
+    $("#subcategory-category").select2();
+});
+
 	$("#add-subcategory").click(function () {
 		$("#subcategory-name").val("");
 		$("#subcategory-note").val("");
@@ -128,14 +132,14 @@
 			success: function (data, textStatus, jqXHR) {
 				$("#subcategory-category").empty();
 				$("#subcategory-category").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
+				for (var i = 0; i < data.valor.length; i++) {
+					var d = data.valor[i];
 					$("#subcategory-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#subcategory-category").select2();
 				var category = $("#article-category").val();
 				$("#subcategory-category").val(category).change();
-				$("#subcategory-category").prop("disabled", true);
+				$("#subcategory-category").prop("disabled", false);
 				$("#editsubcategory").modal("show");
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -156,13 +160,13 @@
 			success: function (data, textStatus, jqXHR) {
 				$("#subcategory-category").empty();
 				$("#subcategory-category").append("<option value='' selected>Choose category</option>")
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
+				for (var i = 0; i < data.valor.length; i++) {
+					var d = data.valor[i];
 					$("#subcategory-category").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#subcategory-category").select2();
 				$("#subcategory-category").val("" + subcategory.categoryID).change();
-				$("#subcategory-category").prop("disabled", true);
+				$("#subcategory-category").prop("disabled", false);
 				$("#editsubcategory").modal("show");
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
