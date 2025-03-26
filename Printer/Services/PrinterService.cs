@@ -64,8 +64,8 @@ namespace Printer.Services
                 //await StartTrayApplication();
                 StartTrayIcon();
 
-                // Configurar el Timer para ejecutar el método cada 2 segundos
-                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 20000); // Intervalo en milisegundos
+                // Configurar el Timer para ejecutar el método cada 1.5 segundos
+                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 15000); // Intervalo en milisegundos
             }
             catch (Exception ex)
             {
@@ -220,14 +220,9 @@ namespace Printer.Services
                             var order = objImpresion.printJobOrder;
 
                             // 🔥 Detectar tipo de impresión
-                            if (objImpresion.type == 0)
-                            {
-                                await PrintToPrinter(objImpresion.physicalName, order, 0);
-                            }
-                            else if (objImpresion.type == 1)
-                            {
-                                await PrintToPrinter(objImpresion.physicalName, order, 1);
-                            }
+                          
+
+                            await PrintToPrinter(objImpresion.physicalName, order, objImpresion.type);
 
                             // Actualizar estado de impresión a "Impreso"
                             var body = new StringContent(
@@ -332,7 +327,7 @@ namespace Printer.Services
                 //ticketPrinter.AddImage(logo);
 
                 // 🔥 **Diseño según tipo de impresión**
-                if (type == 0)
+                if (type == 0 || type == 2)
                 {
                     ticketPrinter.AddLine("ORDEN", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine(preference.Name + "," + preference.Company, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
@@ -494,10 +489,21 @@ namespace Printer.Services
                 ticketPrinter.AddEmptyLine();
                 ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
                 ticketPrinter.AddEmptyLine();
+                ticketPrinter.AddLine("--------------------------------------------------------");
                 ticketPrinter.AddEmptyLine();
 
+
                 // Imprimir
+
                 ticketPrinter.Print(printerName);
+
+                //cortar papel
+                string GS = Convert.ToString((char)29);
+                string ESC = Convert.ToString((char)27);
+                string COMMAND = "";
+                COMMAND = ESC + "@";
+                COMMAND += GS + "V" + (char)48;
+                RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
             }
             catch (Exception ex)
             {
