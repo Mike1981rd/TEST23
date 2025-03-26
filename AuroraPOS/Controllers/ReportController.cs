@@ -298,6 +298,12 @@ namespace AuroraPOS.Controllers
                     worksheet.Cells["I" + iFila.ToString()].Value = "Metodo";
                     worksheet.Cells["I" + iFila.ToString()].Style.Font.Bold = true;
                     SetBorder(worksheet.Cells["I" + iFila.ToString()]);
+                    worksheet.Cells["J" + iFila.ToString()].Value = "Client";
+                    worksheet.Cells["J" + iFila.ToString()].Style.Font.Bold = true;
+                    SetBorder(worksheet.Cells["J" + iFila.ToString()]);
+                    worksheet.Cells["K" + iFila.ToString()].Value = "RNC";
+                    worksheet.Cells["K" + iFila.ToString()].Style.Font.Bold = true;
+                    SetBorder(worksheet.Cells["K" + iFila.ToString()]);
                     iFila = iFila + 1;
 
 
@@ -312,6 +318,8 @@ namespace AuroraPOS.Controllers
                         worksheet.Cells["G" + iFila.ToString()].Value = objFila.Tip;                        
                         worksheet.Cells["H" + iFila.ToString()].Value = objFila.Amount;
                         worksheet.Cells["I" + iFila.ToString()].Value = objFila.PaymentMethod;
+                        worksheet.Cells["J" + iFila.ToString()].Value = objFila.ClientName;
+                        worksheet.Cells["K" + iFila.ToString()].Value = objFila.ClientRNC;
                         worksheet.Cells["B" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
                         worksheet.Cells["C" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
                         worksheet.Cells["D" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
@@ -340,6 +348,10 @@ namespace AuroraPOS.Controllers
                     SetBorder(worksheet.Cells["H" + iFila.ToString()]);
                     worksheet.Cells["I" + iFila.ToString()].Value = "";
                     SetBorder(worksheet.Cells["I" + iFila.ToString()]);
+                    worksheet.Cells["J" + iFila.ToString()].Value = "";
+                    SetBorder(worksheet.Cells["J" + iFila.ToString()]);
+                    worksheet.Cells["K" + iFila.ToString()].Value = "";
+                    SetBorder(worksheet.Cells["K" + iFila.ToString()]);
                     worksheet.Cells["B" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
                     worksheet.Cells["C" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
                     worksheet.Cells["D" + iFila.ToString()].Style.Numberformat.Format = "$###,###,##0.00";
@@ -357,6 +369,8 @@ namespace AuroraPOS.Controllers
                     worksheet.Column(7).Width = 18;
                     worksheet.Column(8).Width = 18;
                     worksheet.Column(9).Width = 18;
+                    worksheet.Column(10).Width = 18;
+                    worksheet.Column(11).Width = 18;
 
                     string strNombre = "Reporte" + DateTime.Now.ToString("ddMMyyyy_HHmmss");
 
@@ -552,8 +566,6 @@ namespace AuroraPOS.Controllers
 
                 var comprobantes = _dbContext.OrderComprobantes.Where(s => s.OrderId == tran.Order.ID).ToList();
 
-
-
                 foreach (var comp in comprobantes)
                 {
                     var d = new SalesDetailReportModel();
@@ -584,6 +596,18 @@ namespace AuroraPOS.Controllers
                         }
 
                         d.ClientName = tran.Order.ClientName ?? "";
+
+                        if (tran.Order.CustomerId > 0)
+                        {
+                            var objClient = _dbContext.Customers.Where(s => s.ID == tran.Order.CustomerId).FirstOrDefault();
+
+                            if (objClient != null)
+                            {
+                                d.ClientName = objClient.Name;
+                                d.ClientRNC =  objClient.RNC;    
+                            }
+                        }
+                        
                         d.PayDate = tran.PaymentDate;
                         d.Amount = tran.Amount;
                         d.PaymentMethod = tran.Method;
@@ -628,6 +652,7 @@ namespace AuroraPOS.Controllers
 
                         d.PayDate = comp.CreatedDate;
                         d.ClientName = "";
+                        d.ClientRNC = "";
                         d.Amount = 0;
                         d.SubTotal = 0;
                         d.Tax = 0;
@@ -6576,6 +6601,7 @@ namespace AuroraPOS.Controllers
     public class SalesDetailReportModel
     {        
         public string ClientName { get; set; }
+        public string ClientRNC { get; set; }
         public DateTime PayDate { get; set; }
         public decimal SubTotal { get; set; }
         public decimal Amount { get; set; }

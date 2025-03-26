@@ -21,6 +21,54 @@
 	#div-area{
 		height:80px;
 	}
+
+	.keyboard-container {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.keyboard-grid-container {
+		display: grid;
+		grid-template-columns: repeat(3, 80px); /* Crea 4 columnas de 80px */
+		/* grid-template-rows: repeat(auto-fill, minmax(150px, auto)); /* Fila mínima de 20px */ 
+		overflow: hidden;
+		gap: 8px;
+	}
+
+	.keyboard-options-container {
+		height: 100%;
+		padding: 8px;
+		padding-top: 0px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		align-self: baseline;
+	}
+
+	.keyboard-grid-container > button {
+		padding: 0;
+	}
+
+	.drawer-total {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	@@media (max-width: 1180px) {
+		.keyboard-options-container
+		{
+			flex-direction: row;
+			padding-top: 8px;
+		}
+	}
+
+
 </style>
 
 <div class="area-content">
@@ -626,7 +674,7 @@
 <!-- Close Drawer -->
 <div class="modal fade" id="closedrawermodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
 	<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:3000px;margin:0 !important;">
-        <div class="modal-content" style="height:100vh;">
+        <div class="modal-content" style="height:100%;">
             <div class="modal-header">
                 <h5 class="smartbuton-modal-title">@ViewLocalizer["Close Drawer"]  #<span class="sequance"></span></h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -634,7 +682,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <div class="row" style="height: 100%;">
                     <div class="drawer-money-container col-3 p-3">
                         <table class="table drawer-money">
                             <thead class="table-light">
@@ -740,22 +788,48 @@
 							</tbody>
 						</table>
 					</div>
-                    <div class="col-4 p-3 drawer-total mt-3">
-                        <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Grand Total"]:</h5> <h5 class="text-success drawer-grand-total">$0.00</h5></div>
-                        <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Value"]:</h5> <h5 class="text-primary expected-total">$0.00</h5></div>
-                        <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy"]:</h5> <h5 class=" difference-total">$0.00</h5></div>
+					<div class="col-4 drawer-total">
+						<div>
 
-                        <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Tip"]:</h5> <h5 class="text-primary expected-tip">$0.00</h5></div>
-                        <div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy Tip"]:</h5> <h5 class=" difference-tip">$0.00</h5></div>
-                        <div class="pt-5">
+							<div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Grand Total"]:</h5> <h5 class="text-success drawer-grand-total">$0.00</h5></div>
+							<div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Value"]:</h5> <h5 class="text-primary expected-total">$0.00</h5></div>
+							<div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy"]:</h5> <h5 class=" difference-total">$0.00</h5></div>
 
-                            <div class="row">
+							<div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Expected Tip"]:</h5> <h5 class="text-primary expected-tip">$0.00</h5></div>
+							<div class="d-flex justify-content-between"><h5 class="text-secondary">@ViewLocalizer["Discrepancy Tip"]:</h5> <h5 class=" difference-tip">$0.00</h5></div>
+						</div>
+                        <div class="">
+							<div class="keyboard-container pb-2">
+								<div class="keyboard-grid-container">
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">7</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">8</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">9</button>
+
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">4</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">5</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">6</button>
+
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">1</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">2</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">3</button>
+
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">0</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">.</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">00</button>
+								</div>
+								<div class="keyboard-options-container">
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-outline-danger">&#8592</button>
+									<button type="button" class="drawer-keyboard btn-keyboard btn btn-outline-primary">C</button>
+								</div>
+							</div>
+
+							@*                           <div class="row">
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">7</button></div>
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">8</button></div>
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">9</button></div>
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-outline-danger">&#8592</button></div>
-                            </div>
-                            <div class="row">
+							</div>
+                             <div class="row">
                                 <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">4</button></div>
                                 <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">5</button></div>
                                 <div class="col  text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">6</button></div>
@@ -772,15 +846,20 @@
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">.</button></div>
                                 <div class="col text-center p-2"><button type="button" class="drawer-keyboard btn-keyboard btn btn-secondary">00</button></div>
                                 <div class="col text-center p-2"></div>
-                            </div>
+                            </div> *@
                         </div>
+
                     </div>
+					<div class="modal-footer justify-content-center">
+						<button id="drawer-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
+					</div>
                 </div>
             </div>
-            <div class="modal-footer justify-content-center">
+@*             <div class="modal-footer justify-content-center">
                 <button id="drawer-submit" type="button" class="btn btn-primary">@ViewLocalizer["Submit"]</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@ViewLocalizer["Cancel"]</button>
-            </div>
+            </div> *@
         </div>
     </div>
 </div>
