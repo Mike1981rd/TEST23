@@ -136,7 +136,7 @@
         .checkout-order-sum {
             height: 100%;
             width: 100%;
-            /*background: #171525;*/
+            background: #171525;
             border-radius: 4px;
 
             display: flex;
@@ -147,7 +147,7 @@
         .checkout-order-paymeth {
             height: 100%;
             width: 45%;
-            /*background: #171525;*/
+            background: #171525;
             border-radius: 4px;
             display: flex;
             flex-direction: column;
@@ -802,9 +802,9 @@
                             </div>
 
                             <div class="checkout-pay-qty-options checkout-pay-options-buttons">
-                                <button id="pay-cancel" class="btn flex-fill btn-default-calc checkout-pay-option bg-red" @Html.Raw(ViewBag.Refund == null || !ViewBag.Refund ? "" : "disabled") @Html.Raw(Model.Order.PaymentStatus == PaymentStatus.Partly ? "disabled" : "")>@ViewLocalizer["Cancel"]</button>
-                                <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #ff9f43c4;">@ViewLocalizer["Done"]</button>
-                                <button id="pay-exit" class="btn flex-fill btn-default-calc checkout-pay-option bg-black">@ViewLocalizer["Salvar"]</button>
+                                <button id="pay-cancel" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: rgba(255,255,255,0.2) !important;" @Html.Raw(ViewBag.Refund == null || !ViewBag.Refund ? "" : "disabled") @Html.Raw(Model.Order.PaymentStatus == PaymentStatus.Partly ? "disabled" : "")>@ViewLocalizer["Cancel"]</button>
+                                <button id="pay-exit" class="btn flex-fill btn-default-calc checkout-pay-option bg-black" style="background: rgba(255,255,255,0.2) !important;">@ViewLocalizer["Salvar"]</button>
+                                <button id="pay-done" class="btn flex-fill btn-default-calc checkout-pay-option" style="background: #b38337 !important">@ViewLocalizer["Done"]</button>
                             </div>
                         </div>
 
