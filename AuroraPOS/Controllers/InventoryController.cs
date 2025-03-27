@@ -3134,6 +3134,12 @@ namespace AuroraPOS.Controllers
                     newPurchaseOrder.NCF = model.NCF;
                     newPurchaseOrder.Term = model.Term;
                     newPurchaseOrder.OrderTime = DateTime.Now;
+                    try
+                    {
+                        var orderDate = DateTime.ParseExact(model.OrderDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                        newPurchaseOrder.OrderTime = orderDate;
+                    }
+                    catch { }
                     newPurchaseOrder.IsDiscountPercentItems = model.DiscountType == "%";
                     newPurchaseOrder.IsDiscountPercent = model.DiscountTypeTotal == "%";
                     newPurchaseOrder.Status = PurchaseOrderStatus.Pending;
@@ -3207,6 +3213,12 @@ namespace AuroraPOS.Controllers
                     existing.Warehouse = warehouse;
                     existing.NCF = model.NCF;
                     existing.Term = model.Term;
+                    try
+                    {
+                        var orderDate = DateTime.ParseExact(model.OrderDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                        existing.OrderTime = orderDate;
+                    }
+                    catch { }
                     existing.IsDiscountPercentItems = model.DiscountType == "%";
                     existing.IsDiscountPercent = model.DiscountTypeTotal == "%";
                     existing.Description = model.Description;

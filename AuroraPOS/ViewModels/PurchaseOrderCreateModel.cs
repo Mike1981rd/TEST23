@@ -5,6 +5,7 @@
 		public long PurchaseOrderId { get; set; }
 		public long SupplierID { get; set; }
 		public long WarehouseID { get; set; }
+		public string OrderDate { get; set; }
 		public string NCF { get; set; }
 		public string Term { get; set; }		
 		public decimal Shipping { get; set; }
