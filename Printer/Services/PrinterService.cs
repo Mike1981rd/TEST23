@@ -327,7 +327,7 @@ namespace Printer.Services
                 //ticketPrinter.AddImage(logo);
 
                 // 🔥 **Diseño según tipo de impresión**
-                if (type == 0 || type == 2)
+                if (type == 0 || type == 2 || type == 4)
                 {
                     ticketPrinter.AddLine("ORDEN", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine(preference.Name + "," + preference.Company, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
@@ -497,11 +497,15 @@ namespace Printer.Services
                 ticketPrinter.AddEmptyLine();
                 ticketPrinter.AddLine("--------------------------------------------------------");
                 ticketPrinter.AddEmptyLine();
+                // 🔥 **Impresión de Ítems según tipo de ticket**
+                if (type == 4)
+                {
+                    ticketPrinter.AddLine("Reimpresión", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddEmptyLine();
+                }
+                    // Imprimir
 
-
-                // Imprimir
-
-                ticketPrinter.Print(printerName);
+                    ticketPrinter.Print(printerName);
 
                 //cortar papel
                 string GS = Convert.ToString((char)29);
