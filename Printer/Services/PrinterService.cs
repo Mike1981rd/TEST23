@@ -65,7 +65,7 @@ namespace Printer.Services
                 StartTrayIcon();
 
                 // Configurar el Timer para ejecutar el método cada 1.5 segundos
-                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 15000); // Intervalo en milisegundos
+                _timer = new System.Threading.Timer(state => ConsultaImpresionEImprime(state), null, 0, 2000); // Intervalo en milisegundos
             }
             catch (Exception ex)
             {
@@ -336,25 +336,30 @@ namespace Printer.Services
                     ticketPrinter.AddLine("RNC:" + preference.RNC, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
 
-                    ticketPrinter.AddLine("CONSUMIDOR FINAL", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine(order.rnc, new Font("Arial", 8), TextAlign.Center);
+                    ticketPrinter.AddLine(order.tipoFactura, new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(order.factura, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt"), new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
 
-                    ticketPrinter.AddColumns(new[] { "Cliente:", order.customerName, "RNC:", order.customerRNC },
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+
+                    ticketPrinter.AddColumns(new[] { "Cliente:", order.customerName, "Mesa:", order.table },
                                  new[] { 50f, 90f, 50f, 90f },
                                  new Font("Arial", 8, FontStyle.Bold),
                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
 
-                    ticketPrinter.AddColumns(new[] { "Mesa:", order.table, "Orden:", order.order },
-                                             new[] { 50f, 90f, 50f, 90f },
-                                             new Font("Arial", 8, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
 
-                    ticketPrinter.AddColumns(new[] { "Camarero:", order.camarero },
-                        new[] { 80f, 150f },  // Aumento el espacio para el nombre del camarero
-                        new Font("Arial", 8, FontStyle.Bold),
-                        new[] { TextAlign.Left, TextAlign.Left });
+                    ticketPrinter.AddColumns(new[] { "RNC:", order.customerRNC, "Orden:", order.order },
+                                 new[] { 50f, 90f, 50f, 90f },
+                                 new Font("Arial", 8, FontStyle.Bold),
+                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
+
+                    ticketPrinter.AddColumns(new[] { "Factura:", order.factura, "Cajero:", order.cajero },
+                                 new[] { 50f, 90f, 50f, 90f },
+                                 new Font("Arial", 8, FontStyle.Bold),
+                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
+
+                    
 
                     ticketPrinter.AddEmptyLine();
 
@@ -401,6 +406,7 @@ namespace Printer.Services
                 }
                 else
                 {
+                    ticketPrinter.AddLine("--------------------------------------------------------");
                     // Impresión para Ticket de Orden normal
                     ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" },
                                              new[] { 110f, 30f, 60f, 60f },
@@ -411,17 +417,17 @@ namespace Printer.Services
 
                     foreach (PrintOrderItemModel item in order.items)
                     {
-                        decimal total = 0.0M;
+                        decimal total = 0.0M;                        
                         string amountString = Regex.Replace(item.amount, @"[^\d.,]", "").Trim();
                         if (decimal.TryParse(amountString, out decimal amount))
                         {
                             if (int.TryParse(item.qty, out int quantity))
                             {
-                                total = amount * quantity;
+                                total = amount * quantity;                                
                             }
                         }
 
-                        ticketPrinter.AddColumns(new[] { item.nombre, item.qty, amountString, total.ToString("C") },
+                        ticketPrinter.AddColumns(new[] { item.nombre, item.qty, amount.ToString("C"), total.ToString("C") },
                                                  new[] { 110f, 30f, 60f, 60f },
                                                  new Font("Arial", 7, FontStyle.Regular),
                                                  new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
@@ -437,37 +443,37 @@ namespace Printer.Services
                     // **Resumen de costos**
                     //ticketPrinter.AddColumns(new[] { "Alimentos:", "$" + order.subtotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
                     //ticketPrinter.AddColumns(new[] { "Alcohol:", "$" + order.alcoholTotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-                    ticketPrinter.AddColumns(new[] { "Sub Total:", $"${subtotal:F2}" },
-                         new[] { 110f, 60f },
-                         new Font("Arial", 5, FontStyle.Bold),
-                         new[] { TextAlign.Left, TextAlign.Right });
+                    ticketPrinter.AddColumns(new[] { "", "Sub Total:", subtotal.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 7, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "Descuento:", $"${discount:F2}" },
-                                             new[] { 110f, 60f },
+                    ticketPrinter.AddColumns(new[] {"", "Descuento:", discount.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
                                              new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Right });
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "ITBIS 18%:", $"${tax:F2}" },
-                                             new[] { 110f, 60f },
+                    ticketPrinter.AddColumns(new[] { "", "ITBIS 18%:", tax.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
                                              new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Right });
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "10% Propina:", $"${tip:F2}" },
-                                             new[] { 110f, 60f },
+                    ticketPrinter.AddColumns(new[] { "", "10% Propina:", tip.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
                                              new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Right });
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "Domicilio:", $"${delivery:F2}" },
-                                             new[] { 110f, 60f },
+                    ticketPrinter.AddColumns(new[] { "", "Domicilio:", delivery.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
                                              new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Right });
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
                     ticketPrinter.AddLine("--------------------------------------------------------");
 
-                    ticketPrinter.AddColumns(new[] { "Total:", $"${total2:F2}" },
-                                             new[] { 110f, 60f },
+                    ticketPrinter.AddColumns(new[] { "", "Total:", total2.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
                                              new Font("Arial", 7, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Right });
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
                     
 
