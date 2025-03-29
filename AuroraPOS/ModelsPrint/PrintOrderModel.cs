@@ -27,6 +27,9 @@ public class PrintOrderModel
     public string CustomerName { get; set; }
     public string CustomerAddress { get; set; }
     public string CustomerPhone { get; set; }
+    public string Factura { get; set; }
+    public string TipoFactura { get; set; }
+    public string Cajero { get; set; }
     public List<PrintOrderItemModel>? Items { get; set; }
     
 }

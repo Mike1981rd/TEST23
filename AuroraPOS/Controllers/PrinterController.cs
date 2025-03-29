@@ -215,7 +215,23 @@ namespace AuroraPOS.Controllers
                                 objPrintOrden.Propina =
                                     order.Propina.ToString("C", (CultureInfo)CultureInfo.InvariantCulture);
 
-
+                                if (transactions.Any())
+                                {
+                                    objPrintOrden.Cajero = transactions.First().CreatedBy;
+                                }
+                                
+                                if (order.OrderMode == OrderMode.Conduce && string.IsNullOrEmpty(order.ComprobanteNumber))
+                                {
+                                    var conduceCount = _dbContext.Orders.Where(s=>s.IsConduce).Count();
+                                    objPrintOrden.Factura =  "Conduce #" + conduceCount;
+                                    objPrintOrden.TipoFactura = "";
+                                }
+                                else
+                                {
+                                    objPrintOrden.Factura =  order.ComprobanteNumber;
+                                    objPrintOrden.TipoFactura = order.ComprobanteName;
+                                    
+                                }
 
                                 if (order.Delivery == null)
                                 {
