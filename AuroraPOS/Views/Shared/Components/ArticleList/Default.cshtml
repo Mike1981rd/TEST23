@@ -6,7 +6,7 @@
 
 <!-- Article Modal -->
 <div class="modal fade" id="listarticle" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" data-id="">
-	<div class="modal-dialog modal-lg modal-dialog-centered modal-simple" role="document">
+	<div class="modal-dialog modal-xl modal-simple" role="document">
         <div class="modal-content">
 @*             <div class="modal-header">
                 <h5 class="group-modal-title">@ViewLocalizer["Article List"]</h5>
@@ -21,42 +21,51 @@
 						@ViewLocalizer["Article List"]
 					</h4>
 				</div>
-                <div class="row">
-                    <div class="col-lg-6 col-sm-6 col-12">
+                <div class="row mb-6">
+                    <div class="">
                         <div class="form-group">
 							<label class="form-label">@ViewLocalizer["Supplier Filter"]</label>
                             <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10 supplier-body">
+								<div class="supplier-body" style="display: flex;flex-direction: row;width: 100%; gap: 8px;">
                                     <select id="article-purchase-supplier" class="select">
                                     </select>
+									<button id="all_supplier_in_articlelist" class="btn btn-primary">@ViewLocalizer["All Supplier"]</button>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-					<div class="col-lg-6 col-sm-6 col-12">
-						<button id="all_supplier_in_articlelist" class="btn btn-primary m-2">@ViewLocalizer["All Supplier"]</button>
-					</div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-						<div class="table-top">
-			<div class="search-set">
-				<div class="search-path">
-					<a class="btn btn-filter article-filter" id="filter_search">
-						<img src="/vendor/img/icons/filter.svg" alt="img">
-						<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
-					</a>
-				</div>
-				<div class="search-input">
-					<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
-					<div class="dataTables_filter"><label> <input id="filter-articlesearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]"..."></label></div>
-				</div>
-			</div>
+						<div class="table-top mb-6">
+							<div class="search-set" style="display: flex; align-items: center; gap: 8px;">
+								<div class="search-path" style="display: flex; align-items: center;">
+									<a class="btn btn-filter article-filter" id="filter_search" style="margin: 1px; padding: 1px;">
+										<img src="/vendor/img/icons/filter.svg" alt="img">
+										<span id="img_close_span"><img src='/vendor/img/icons/closes.svg' alt='img' id='img_close'></span>
+									</a>
+								</div>
+								<div class="search-input" style="display: flex; flex-direction: row; align-items: center; gap: 2px;">
+									<a class="btn btn-searchset" style="padding-right: 6px; padding-left: 6px;"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+									<div class="dataTables_filter"><label> <input id="filter-articlesearchtext" type="search" class="form-control" placeholder="@ViewLocalizer["Search"]" ..."></label></div>
+								</div>
+				@* 				<div class="search-path">
+									<a class="btn btn-filter article-filter" id="filter_search">
+										<img src="/vendor/img/icons/filter.svg" alt="img">
+										<span><img src="/vendor/img/icons/closes.svg" alt="img"></span>
+									</a>
+								</div>
+								<div class="search-input">
+									<a class="btn btn-searchset"><img src="/vendor/img/icons/search-white.svg" alt="img"></a>
+									<div class="dataTables_filter"><label> <input id="filter-articlesearchtext" type="search" class="form-control form-control-sm" placeholder="@ViewLocalizer["Search"]"..."></label></div>
+								</div> *@
+							</div>
 			
 		</div>
 		<!-- /Filter -->
 		<div class="card" id="filter_inputs">
-			<div class="card-body pb-0">
+			<div class="card-body">
 				<div class="row">
 					<div class="col-lg col-sm-6 col-12">
 						<div class="form-group brand-body">
@@ -86,7 +95,7 @@
 		</div>
 		<br />
 		<!-- /Filter -->
-						<div class="card-datatable table-responsive w-100" style="max-height:700px;">
+						<div class="card-datatable table-responsive w-100">
                             <table id="article-list" class="table">
 								<thead class="table-light">
                                     <tr>
@@ -157,6 +166,27 @@
 				$("#filter-articlesubcategory").val("").change();
 			}
 		});
+
+		var filterVisible = true;
+
+		$("#filter_search").click(function () {
+			// Alternar la visibilidad de la tarjeta de filtros
+			$("#filter_inputs").toggle();
+
+			// Cambiar el estado del botón y el icono
+			if (filterVisible) {
+				$(this).removeClass("setclose");
+				$("#img_close").remove();
+			} else {
+				$(this).addClass("setclose");
+				$(this).find("#img_close").attr("src", "/vendor/img/icons/closes.svg");
+				var img = "<img src='/vendor/img/icons/closes.svg' alt='img' id='img_close'>";
+				$("#img_close_span").append(img);
+			}
+
+			// Alternar el estado de visibilidad
+			filterVisible = !filterVisible;
+		});
 	});
 
 	function LoadSupplier() {
@@ -218,9 +248,9 @@
             success: function (data, textStatus, jqXHR) {
 				$("#filter-articlecategory").empty();
 				$("#filter-articlecategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-				for(var i =0; i < data.length; i++)
+				for(var i =0; i < data.valor.length; i++)
 				{
-					var d = data[i];
+					var d = data.valor[i];
 					$("#filter-articlecategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#filter-articlecategory").select2({
