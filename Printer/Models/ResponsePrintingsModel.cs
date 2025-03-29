@@ -57,6 +57,9 @@ namespace Printer.Models
         public string? customerName { get; set; }
         public string? customerAddress { get; set; }
         public string? customerPhone { get; set; }
+        public string? factura { get; set; }
+        public string? tipoFactura { get; set; }
+        public string? cajero { get; set; }
         public List<PrintOrderItemModel>? items { get; set; }
 
     }
