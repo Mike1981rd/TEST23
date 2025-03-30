@@ -349,43 +349,43 @@
                                 </div>
                             </div>
                             <div class="card-body row pt-3">
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 1</label>
                                     <input class="product-price1 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 2</label>
                                     <input class="product-price2 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 3</label>
                                     <input class="product-price3 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 4</label>
                                     <input class="product-price4 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 5</label>
                                     <input class="product-price5 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 6</label>
                                     <input class="product-price6 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 7</label>
                                     <input class="product-price7 form-control" type="text">
                                 </div>
-                                <div class="col-lg-1 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 8</label>
                                     <input class="product-price8 form-control" type="text">
                                 </div>
-                                <div class="col-lg-2 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
                                     <input class="product-cost form-control" readonly type="text">
                                 </div>
-                                <div class="col-lg-2 col-sm-3 col-3 form-group">
+                                <div class="col">
                                     <label class="form-label">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
                                     <input class="product-cost-barcode form-control" readonly type="text">
                                 </div>
@@ -510,7 +510,21 @@
         </div>
         <!-- /Second column -->
     </div>
+        <!-- Add Product -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+
+            <div class="d-flex flex-column justify-content-center">
+
+            </div>
+            <div class="d-flex align-content-center flex-wrap gap-4">
+                <a id="submit-product2" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light">@ViewLocalizer["Submit"]</a>
+                <a id="cancel" href="/Menu/ProductList" class="btn btn-label-secondary waves-effect">@ViewLocalizer["Cancel"]</a>
+            </div>
+
+        </div>
 </div>
+
+
 
   </div>
   </div>
@@ -770,6 +784,10 @@
     });
 
     $("#submit-product").click(function () {
+        SubmitProduct();
+    })
+
+    $("#submit-product2").click(function () {
         SubmitProduct();
     })
 
@@ -1070,6 +1088,8 @@
                                             for (var j = 0; j < size.items.length; j++) {
                                                 var data1 = size.items[j];
 
+
+
                                                 if (data1.type == 0) {
                                                     html2 += `
                                                                 <tr class="article-item" data-id="${data1.article.id}" data-type='0' data-itemid="">
@@ -1201,128 +1221,145 @@
                         <div class="accordion accordion-flush p-2 product-item-container"   data-id="${id}" id="accordionFlushExample-${id}">
                                     <div class="serving-size-item1">
                                         <div class="accordion-header" id="flush-headingOne-${id}">
-                                        <div class="d-flex">
-                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${id}" type="text" style="font-size:25px; margin: 0px;">${size.servingSizeName}</h1>
+                                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
+                                            <h1 class="product-serving-size pr-5" value="Medium" data-id="${id}" type="text" style="font-size:25px; margin: 0px; margin-right: 40px">${size.servingSizeName}</h1>
 
-                                            <div class="px-2 pl-5 form-group d-flex">
+                                            <div class="px-2 pl-5 form-group">
                                                     ${def}
                                             </div>
-                                            <div class="px-2 d-flex form-group">
+                                            <div class="px-2 d-flex form-group" style="display: flex; flex-direction: row;">
                                                 <label class="mx-2 pt-2 form-label">@ViewLocalizer["Order"]</label>
                                                 <input class="servingsize-order form-control" type="number" value="${size.order}">
                                             </div>
                                             <div class="px-2 form-group">
-                                                        <a href="javascript:void(0);" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-${id}" aria-expanded="false" aria-controls="flush-collapseOne-${id}">Recipe</a>
+                                                <a href="javascript:void(0);" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-${id}" aria-expanded="false" aria-controls="flush-collapseOne-${id}">Recipe</a>
                                             </div>
-                                                  <div class="px-2 form-group">
-                                                    <a href="javascript:void(0);" class="btn-remove-servingsize btn btn-danger" data-bs-toggle="collapse" >Remove</a>
-                                                    </div>
+                                            <div class="form-group">
+                                                <a href="javascript:void(0);" class="btn-remove-servingsize btn btn-danger" data-bs-toggle="collapse" >Remove</a>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 1</label>
+                                                <input class="product-price1 form-control" type="number" value="${size.price[0]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 2</label>
+                                                <input class="product-price2 form-control" type="number" value="${size.price[1]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 3</label>
+                                                <input class="product-price3 form-control" type="number" value="${size.price[2]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 4</label>
+                                                <input class="product-price4 form-control" type="number" value="${size.price[3]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 5</label>
+                                                <input class="product-price5 form-control" type="number" value="${size.price[4]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 6</label>
+                                                <input class="product-price6 form-control" type="number" value="${size.price[5]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 7</label>
+                                                <input class="product-price7 form-control" type="number" value="${size.price[6]}">
+                                            </div>
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Price"] 8</label>
+                                                <input class="product-price8 form-control" type="number" value="${size.price[7]}">
+                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 1</label>
-                                                            <input class="product-price1 form-control" type="number" value="${size.price[0]}">
+                                            <div class="col-lg form-group">
+                                                <label class="form-label">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
+                                                <input class="product-cost form-control" readonly type="number">
                                             </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 2</label>
-                                                            <input class="product-price2 form-control" type="number" value="${size.price[1]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 3</label>
-                                                        <input class="product-price3 form-control" type="number" value="${size.price[2]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 4</label>
-                                                            <input class="product-price4 form-control" type="number" value="${size.price[3]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 5</label>
-                                                        <input class="product-price5 form-control" type="number" value="${size.price[4]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 6</label>
-                                                        <input class="product-price6 form-control" type="number" value="${size.price[5]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 7</label>
-                                                            <input class="product-price7 form-control" type="number" value="${size.price[6]}">
-                                            </div>
-                                            <div class="col-lg-1 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Price"] 8</label>
-                                                        <input class="product-price8 form-control" type="number" value="${size.price[7]}">
-                                            </div>
-                                            <div class="col-lg-2 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
-                                                    <input class="product-cost form-control" readonly type="number">
-                                            </div>
-                                            <div class="col-lg-2 col-sm-3 col-3 form-group">
-                                                <label>@ViewLocalizer["Prod. Cost Barcode"]</label>
-                                                        <input class="product-cost-barcode form-control" readonly type="number">
+                                            <div class="col form-group">
+                                                <label class="form-label">@ViewLocalizer["Prod. Cost Barcode"]</label>
+                                                <input class="product-cost-barcode form-control" readonly type="number">
                                             </div>
                                         </div>
                                     </div>
-                                        <div id="flush-collapseOne-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-${id}" data-bs-parent="#accordionFlushExample-${id}">
-                                        <div class="accordion-body">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                                <button data-id="${id}" class="add-article-modal btn btn-submit me-2 p-2">Add Article</button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                                    <button data-id="${id}" class="add-subrecipe-modal btn btn-submit me-2 p-2">Add Sub Recipe</button>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                    <div class="">
-                                                                    <button data-id="${id}" class="add-product-modal btn btn-submit me-2 p-2">Add Product</button>
-                                                    </div>
-                                                </div>
-                                                    <div class="col-lg-3 col-sm-4 col-4 p-3">
-                                                        <div class="">
-                                                                        <button data-id="${id}" class="btn-print-recipe btn btn-submit me-2 p-2">Print recipe</button>
+                                    <br><br>
+                                    <div class="card" style="background: rgba(0,0,0,0.1)">
+                                        <div class="card-body">
+                                            <div id="flush-collapseOne-${id}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-${id}" data-bs-parent="#accordionFlushExample-${id}">
+                                                <div class="accordion-body">
+                                                    <div class="row" style="display:flex; justify-content: space-evenly">
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                <button data-id="${id}" class="add-article-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Article</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                <button data-id="${id}" class="add-subrecipe-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Sub Recipe</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                <button data-id="${id}" class="add-product-modal btn btn-primary waves-effect waves-light me-2 p-2">Add Product</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-sm-4 col-4 p-3">
+                                                            <div class="">
+                                                                <button data-id="${id}" class="btn-print-recipe btn btn-primary waves-effect waves-light me-2 p-2">Print recipe</button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                            </div>
-                                            <div class="row pt-2">
-                                                <div class="table-responsive" style="min-height: 200px; overflow: auto">
-                                                    <table class="table purchase-item">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <th>@ViewLocalizer["Name"]</th>
-                                                                <th>@ViewLocalizer["Type"]</th>
-                                                                <th>@ViewLocalizer["Brand"]</th>
-                                                                <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
-                                                                <th>@ViewLocalizer["Unit"]	</th>
-                                                                <th>@ViewLocalizer["Price"]	</th>
-                                                                <th>@ViewLocalizer["Sub Total"]</th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="item-list-${id}">` + html2;
+                                                    <div class="row pt-2">
+                                                        <div class="table-responsive" style="min-height: 200px; overflow: auto">
+                                                            <table class="table purchase-item">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th>@ViewLocalizer["Name"]</th>
+                                                                        <th>@ViewLocalizer["Type"]</th>
+                                                                        <th>@ViewLocalizer["Brand"]</th>
+                                                                        <th style="max-width:100px;">  @ViewLocalizer["QTY"]  </th>
+                                                                        <th>@ViewLocalizer["Unit"]	</th>
+                                                                        <th>@ViewLocalizer["Price"]	</th>
+                                                                        <th>@ViewLocalizer["Sub Total"]</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="item-list-${id}">` + html2;
                                             html += `</tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-lg-12 justify-content-center">
-                                                    <div class="total-order">
-                                                        <ul>
-                                                            <li class="total">
-                                                                <h4>@ViewLocalizer["Total"]</h4>
-                                                                <h5 class="po-total">$ 0.00</h5>
-                                                            </li>
-                                                            <li class="total">
-                                                                <h4>Precio Venta Producto</h4>
-                                                                <h5 class="po-price1" data-price='${size.price[1]}'>$ ${size.price[1]}</h5>
-                                                            </li>
-                                                            <li class="total">
-                                                                <h4>Precio de Venta Sugerido</h4>
-                                                                <h5 class="po-price-suggested">$ 0.00</h5>
-                                                            </li>
-                                                        </ul>
-                                                        <div class="card-body">
+                                                <div class="col-lg-12 justify-content-center align-items-center">
+                                                    <div class="total-order d-flex col justify-content-center align-items-center" style="display: flex; flex-direction: column;">
+                                                        <table style="border-collapse: collapse;">
+                                                            <tr>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                    <label class="form-label">@ViewLocalizer["Total"]</label>
+                                                                </td>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                    <label class="po-total">$ 0.00</label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                    <label class="form-label">Precio Venta Producto</label>
+                                                                </td>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                    <label class="po-price1" data-price='${size.price[1]}'>$ ${size.price[1]}</label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: left; background-color: rgba(1, 1, 1, 0.1); vertical-align: middle;">
+                                                                    <label class="form-label">Precio de Venta Sugerido</label>
+                                                                </td>
+                                                                <td style="border: 1px solid rgba(1, 1, 1, 0.15); padding: 8px; text-align: right; background-color: rgba(0, 0, 0, 0); vertical-align: middle;">
+                                                                    <label class="po-price-suggested">$ 0.00</label>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <div class="card-body" style="width: 100%">
                                                             <input type="text" class="price-suggest-percent js-range-slider irs--modern" name="my_range" value="" />
                                                         </div>
                                                     </div>
@@ -1333,7 +1370,10 @@
                                     </div>
                                 </div>
                             </div>
-                `
+
+                    </div>
+                </div>
+            `
                                             $(".serving-size-container").append(html);
                                             UpdateItems(id);
 
@@ -2402,7 +2442,7 @@
                                                 <a href="javascript:void(0);" class="btn-remove-servingsize btn btn-danger" data-bs-toggle="collapse" >Remove</a>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row mb-2">
                                             <div class="col-lg form-group">
                                                 <label class="form-label">@ViewLocalizer["Price"] 1</label>
                                                 <input class="product-price1 form-control" type="text">

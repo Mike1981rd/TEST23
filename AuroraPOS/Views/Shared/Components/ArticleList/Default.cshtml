@@ -309,7 +309,7 @@
                 {
                     'data': 'action', 'name': 'action',
                     render: function (data, type, row) {
-                        return "<div class='me-3 icons-box d-inline-block' onclick='SelectArticle(" + JSON.stringify(row) + ")'><span class='icon'><span class='fa fa-plus'></span></span></div></div>";
+                        return "<div class='me-3 icons-box d-inline-block' onclick='SelectArticle(" + JSON.stringify(row) + ")' style='cursor: pointer;'><span class='icon'><span class='fa fa-plus'></span></span></div></div>";
                     },
                 },
                 { "data": "name", "name": "name", "autoWidth": true },
