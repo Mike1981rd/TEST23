@@ -188,8 +188,8 @@
 			success: function (data, textStatus, jqXHR) {
 				$("#filter-productcategory").empty();
 				$("#filter-productcategory").append("<option value='' selected>@ViewLocalizer["Choose category"]</option>")
-				for (var i = 0; i < data.length; i++) {
-					var d = data[i];
+				for (var i = 0; i < data.valor.length; i++) {
+					var d = data.valor[i];
 					$("#filter-productcategory").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#filter-productcategory").select2({

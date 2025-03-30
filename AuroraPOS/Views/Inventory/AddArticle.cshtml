@@ -1065,6 +1065,11 @@
 			var status = $("#article-status").val() == "1";
 			var deplete = parseInt($("#article-deplete").val());
 			var saftystock = parseInt($("#article-saftystock").val());
+
+			if(!saftystock) {
+				saftystock = 0;
+			}
+
 			var description = $("#article-description").val();
 			if (!category) category = 0;
 			if (!subcategory) subcategory = 0;
