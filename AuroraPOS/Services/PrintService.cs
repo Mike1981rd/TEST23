@@ -13,12 +13,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using OpenTK.Input;
 using Org.BouncyCastle.Asn1.X509;
 using System;
+using System.Collections;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace AuroraPOS.Services
 {
@@ -260,6 +263,14 @@ namespace AuroraPOS.Services
             if (defaultPrinter != null && defaultPrinter.Printer != null)
             {
                 // 🚀 **Generar un nuevo job de impresión en la base de datos**
+
+                var lstItemsIds = new List<long>();
+
+                foreach (var item in items)
+                {
+                    lstItemsIds.Add(item.ID);
+                }
+                
                 var objPrint = new PrinterTasks
                 {
                     ObjectID = OrderID,
@@ -267,8 +278,38 @@ namespace AuroraPOS.Services
                     Type = (int)PrinterTasksType.TicketCocina, // Tipo de impresión para cocina
                     PhysicalName = defaultPrinter.Printer.PhysicalName,
                     StationId = stationId,
-                    SucursalId = station.IDSucursal
+                    SucursalId = station.IDSucursal,
+                    Items = JsonConvert.SerializeObject(lstItemsIds)
                 };
+                
+                //string json = JsonConvert.SerializeObject(items);
+                //items = JsonConvert.DeserializeObject<List<OrderItem>>(json);
+
+                /*
+                foreach (var printerItem in printerItems)
+                        {
+                            DataSet ds = new DataSet("general");
+                            ds.Tables.Add("general");
+                            ds.Tables[0].Columns.Add("f_nombre");
+                            ds.Tables[0].Columns.Add("f_Qty");
+                            ds.Tables[0].Columns.Add("f_opciones");
+                            var pitems = printerItem.Value.OrderBy(s => s.CourseID);
+                            long course = 0;
+                            foreach (var item in pitems)
+                            {
+                                Debug.WriteLine(item.Name);
+                                Debug.WriteLine(item.Qty);
+
+                                if (course != item.CourseID)
+                                {
+                                    DataRow dr1 = ds.Tables[0].NewRow();
+                    dr1["f_nombre"] = " - " + item.Course;
+                            dr1["f_nombre"] = (char)10 + "       *** " + item.Course.ToUpper() + " *** " + (char)10;
+
+
+                            ds.Tables[0].Rows.Add(dr1);
+                            course = item.CourseID;
+                    }*/
 
                 _dbContext.PrinterTasks.Add(objPrint);
                 _dbContext.SaveChanges(); // Guardar el job en la BD
@@ -988,7 +1029,17 @@ namespace AuroraPOS.Services
                         var objPrint = new PrinterTasks();
                         objPrint.ObjectID = OrderID;
                         objPrint.Status = (int)PrinterTasksStatus.Pendiente;
-                        objPrint.Type = (int)PrinterTasksType.TicketPaymentSummary;
+
+                        if (reprint)
+                        {
+                            objPrint.Type = (int)PrinterTasksType.TicketPaymentSummaryCopy;    
+                        }
+                        else
+                        {
+                            
+                            objPrint.Type = (int)PrinterTasksType.TicketPaymentSummary;
+                        }
+                        
                         objPrint.PhysicalName = defaultPrinter.Printer.PhysicalName;
                         objPrint.StationId = stationId;
                         objPrint.SucursalId = station.IDSucursal;

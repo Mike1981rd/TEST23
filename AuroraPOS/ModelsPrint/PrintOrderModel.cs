@@ -30,6 +30,10 @@ public class PrintOrderModel
     public string Factura { get; set; }
     public string TipoFactura { get; set; }
     public string Cajero { get; set; }
+    public string Metodo { get; set; }
+    public string Cantidaddp { get; set; }
+    public string OrderType { get; set; }
+    public string Nfc { get; set; }
     public List<PrintOrderItemModel>? Items { get; set; }
     
 }
