@@ -359,13 +359,13 @@ namespace Printer.Services
                                  new Font("Arial", 8, FontStyle.Bold),
                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
 
-                    
+
 
                     ticketPrinter.AddEmptyLine();
 
                     ticketPrinter.AddEmptyLine();
                 }
-                else if (type == 1)
+                else if (type == 1 && type != 5)
                 {
                     ticketPrinter.AddLine("COCINA", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine($"#{order.order}", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
@@ -391,7 +391,7 @@ namespace Printer.Services
                     string currentCategory = "";
                     foreach (var item in order.items)
                     {
-                       
+
 
                         ticketPrinter.AddColumns(new[] { item.qty, item.nombre },
                                                  new[] { 30f, 200f },
@@ -404,116 +404,200 @@ namespace Printer.Services
                         }
                     }
                 }
-                else
+                else if (type != 5)
                 {
-                    ticketPrinter.AddLine("--------------------------------------------------------");
-                    // Impresión para Ticket de Orden normal
-                    ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" },
-                                             new[] { 110f, 30f, 60f, 60f },
-                                             new Font("Arial", 7, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
-
-                    ticketPrinter.AddLine("--------------------------------------------------------");
-
-                    foreach (PrintOrderItemModel item in order.items)
                     {
-                        decimal total = 0.0M;                        
-                        string amountString = Regex.Replace(item.amount, @"[^\d.,]", "").Trim();
-                        if (decimal.TryParse(amountString, out decimal amount))
-                        {
-                            if (int.TryParse(item.qty, out int quantity))
-                            {
-                                total = amount * quantity;                                
-                            }
-                        }
-
-                        ticketPrinter.AddColumns(new[] { item.nombre, item.qty, amount.ToString("C"), total.ToString("C") },
+                        ticketPrinter.AddLine("--------------------------------------------------------");
+                        // Impresión para Ticket de Orden normal
+                        ticketPrinter.AddColumns(new[] { "Descripción", "Cant.", "Precio", "Total" },
                                                  new[] { 110f, 30f, 60f, 60f },
-                                                 new Font("Arial", 7, FontStyle.Regular),
+                                                 new Font("Arial", 7, FontStyle.Bold),
                                                  new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+
+                        ticketPrinter.AddLine("--------------------------------------------------------");
+
+                        foreach (PrintOrderItemModel item in order.items)
+                        {
+                            decimal total = 0.0M;
+                            string amountString = Regex.Replace(item.amount, @"[^\d.,]", "").Trim();
+                            if (decimal.TryParse(amountString, out decimal amount))
+                            {
+                                if (int.TryParse(item.qty, out int quantity))
+                                {
+                                    total = amount * quantity;
+                                }
+                            }
+
+                            ticketPrinter.AddColumns(new[] { item.nombre, item.qty, amount.ToString("C"), total.ToString("C") },
+                                                     new[] { 110f, 30f, 60f, 60f },
+                                                     new Font("Arial", 7, FontStyle.Regular),
+                                                     new[] { TextAlign.Left, TextAlign.Center, TextAlign.Right, TextAlign.Right });
+                        }
+                        ticketPrinter.AddLine("--------------------------------------------------------");
+                        decimal subtotal = decimal.TryParse(CleanCurrency(order.subtotal), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal sub) ? sub : 0M;
+                        decimal discount = decimal.TryParse(CleanCurrency(order.descuento), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal disc) ? disc : 0M;
+                        decimal tax = decimal.TryParse(CleanCurrency(order.tax), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal t) ? t : 0M;
+                        decimal tip = decimal.TryParse(CleanCurrency(order.propina), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal tipAmount) ? tipAmount : 0M;
+                        decimal delivery = decimal.TryParse(CleanCurrency(order.delivery), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal del) ? del : 0M;
+                        decimal total2 = decimal.TryParse(CleanCurrency(order.total), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal tot) ? tot : 0M;
+
+                        // **Resumen de costos**
+                        //ticketPrinter.AddColumns(new[] { "Alimentos:", "$" + order.subtotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
+                        //ticketPrinter.AddColumns(new[] { "Alcohol:", "$" + order.alcoholTotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
+                        ticketPrinter.AddColumns(new[] { "", "Sub Total:", subtotal.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 7, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                        ticketPrinter.AddColumns(new[] { "", "Descuento:", discount.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 5, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                        ticketPrinter.AddColumns(new[] { "", "ITBIS 18%:", tax.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 5, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                        ticketPrinter.AddColumns(new[] { "", "10% Propina:", tip.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 5, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                        ticketPrinter.AddColumns(new[] { "", "Domicilio:", delivery.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 5, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                        ticketPrinter.AddLine("--------------------------------------------------------");
+
+                        ticketPrinter.AddColumns(new[] { "", "Total:", total2.ToString("C") },
+                                                 new[] { 110f, 80f, 70f },
+                                                 new Font("Arial", 7, FontStyle.Bold),
+                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+
+
+
+
+                        ticketPrinter.AddEmptyLine();
+
+                        // **Detalles de pago**
+                        //ticketPrinter.AddColumns(new[] { "Pagado:", "$" + order..ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
+                        //ticketPrinter.AddColumns(new[] { "Cambio:", "$" + order.change.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
+                        //ticketPrinter.AddColumns(new[] { "Forma:", order.paymentMethod }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
+
+
                     }
-                    ticketPrinter.AddLine("--------------------------------------------------------");
-                    decimal subtotal = decimal.TryParse(CleanCurrency(order.subtotal), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal sub) ? sub : 0M;
-                    decimal discount = decimal.TryParse(CleanCurrency(order.descuento), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal disc) ? disc : 0M;
-                    decimal tax = decimal.TryParse(CleanCurrency(order.tax), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal t) ? t : 0M;
-                    decimal tip = decimal.TryParse(CleanCurrency(order.propina), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal tipAmount) ? tipAmount : 0M;
-                    decimal delivery = decimal.TryParse(CleanCurrency(order.delivery), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal del) ? del : 0M;
-                    decimal total2 = decimal.TryParse(CleanCurrency(order.total), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal tot) ? tot : 0M;
-
-                    // **Resumen de costos**
-                    //ticketPrinter.AddColumns(new[] { "Alimentos:", "$" + order.subtotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-                    //ticketPrinter.AddColumns(new[] { "Alcohol:", "$" + order.alcoholTotal.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-                    ticketPrinter.AddColumns(new[] { "", "Sub Total:", subtotal.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 7, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] {"", "Descuento:", discount.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] { "", "ITBIS 18%:", tax.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] { "", "10% Propina:", tip.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] { "", "Domicilio:", delivery.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 5, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddLine("--------------------------------------------------------");
-
-                    ticketPrinter.AddColumns(new[] { "", "Total:", total2.ToString("C") },
-                                             new[] { 110f, 80f, 70f },
-                                             new Font("Arial", 7, FontStyle.Bold),
-                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
-
-                    
-
-
 
                     ticketPrinter.AddEmptyLine();
+                    ticketPrinter.AddLine("Le Atendió: " + order.camarero, new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
 
-                    // **Detalles de pago**
-                    //ticketPrinter.AddColumns(new[] { "Pagado:", "$" + order..ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-                    //ticketPrinter.AddColumns(new[] { "Cambio:", "$" + order.change.ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-                    //ticketPrinter.AddColumns(new[] { "Forma:", order.paymentMethod }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
-
-                  
-                }
-
-                ticketPrinter.AddEmptyLine();
-                ticketPrinter.AddLine("Le Atendió: " + order.camarero, new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
-
-                ticketPrinter.AddEmptyLine();
-                ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
-                ticketPrinter.AddEmptyLine();
-                ticketPrinter.AddLine("--------------------------------------------------------");
-                ticketPrinter.AddEmptyLine();
-                // 🔥 **Impresión de Ítems según tipo de ticket**
-                if (type == 4)
-                {
-                    ticketPrinter.AddLine("Reimpresión", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
-                }
+                    ticketPrinter.AddLine("¡Gracias por su compra!", new Font("Arial", 10, FontStyle.Italic), TextAlign.Center);
+                    ticketPrinter.AddEmptyLine();
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddEmptyLine();
+                    //  **Impresión de Ítems según tipo de ticket**
+                    if (type == 4)
+                    {
+                        ticketPrinter.AddLine("Reimpresión", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
+                        ticketPrinter.AddEmptyLine();
+                    }
                     // Imprimir
 
                     ticketPrinter.Print(printerName);
 
-                //cortar papel
-                string GS = Convert.ToString((char)29);
-                string ESC = Convert.ToString((char)27);
-                string COMMAND = "";
-                COMMAND = ESC + "@";
-                COMMAND += GS + "V" + (char)48;
-                RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
+                    //cortar papel
+                    string GS = Convert.ToString((char)29);
+                    string ESC = Convert.ToString((char)27);
+                    string COMMAND = "";
+                    COMMAND = ESC + "@";
+                    COMMAND += GS + "V" + (char)48;
+                    RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
+                }
+                else if (type == 5)
+                {
+                    // Encabezado
+                    ticketPrinter.AddEmptyLine();
+                    ticketPrinter.AddLine("Cuadre de Caja", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("----------------------------------");
+
+                    // Fecha y Cajero
+                    ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy"), new Font("Arial", 9), TextAlign.Left);
+                    ticketPrinter.AddLine("Cajero: " + order.cajero, new Font("Arial", 9, FontStyle.Bold), TextAlign.Left);
+                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("----------------------------------");
+
+                    // Resumen transacciones
+                    ticketPrinter.AddColumns(new[] { "Efectivo:", order.efectivo },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddColumns(new[] { "Visa:", order.visa },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddColumns(new[] { "CxC:", order.cxc },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddEmptyLine();
+
+                    ticketPrinter.AddColumns(new[] { "Conte Físico:", order.conteoFisico },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9, FontStyle.Bold),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddColumns(new[] { "Sistema:", order.totalSistema },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddColumns(new[] { "Diferencia:", order.diferencia },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9, FontStyle.Bold),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("Desglose de Efectivo", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine("");
+
+                    // Encabezado de tabla
+                    ticketPrinter.AddColumns(new[] { "Denominación", "Cantidad" },
+                                            new[] { 110f, 80f },
+                                            new Font("Arial", 9, FontStyle.Bold),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+
+                    // Detalles del desglose
+                    foreach (var item in order.efectivoDesglose)
+                    {
+                        ticketPrinter.AddColumns(new[] { item.Denominacion, item.Cantidad.ToString() },
+                                                new[] { 110f, 80f },
+                                                new Font("Arial", 10),
+                                                new[] { TextAlign.Left, TextAlign.Right });
+                    }
+
+                    ticketPrinter.AddEmptyLine();
+
+                    // Imprimir
+
+                    ticketPrinter.Print(printerName);
+
+                    //cortar papel
+                    string GS = Convert.ToString((char)29);
+                    string ESC = Convert.ToString((char)27);
+                    string COMMAND = "";
+                    COMMAND = ESC + "@";
+                    COMMAND += GS + "V" + (char)48;
+                    RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
+                }
+
             }
             catch (Exception ex)
             {
