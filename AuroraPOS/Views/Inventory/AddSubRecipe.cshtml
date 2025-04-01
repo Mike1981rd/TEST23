@@ -1688,7 +1688,10 @@
         var allDiscount = 0;
         $("#item-list tr").each(function (i, e) {
             var qty = parseFloat($(this).find(".item-qty").val());
-            if (!qty) qty = "";
+            if (isNaN(qty)) {
+                qty = 0;
+            }
+            //if (!qty) qty = "";
             $(this).find(".item-qty").val(qty.toFixed(2));
 
             var unitCost = parseFloatCorrect($(this).find(".item-payunit option:selected").data("cost"));
@@ -1702,7 +1705,7 @@
            
             if (itemPrice > 0)
             {
-                itemPrice = itemPrice / performance * 100;
+                itemPrice = (itemPrice * performance / 100);
                 $(this).find(".item-price").val(itemPrice.toFixed(4));
                 var subTotal = qty * itemPrice;
                 $(this).find(".item-subtotal").text(subTotal.toFixed(4));

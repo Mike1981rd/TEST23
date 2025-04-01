@@ -907,7 +907,7 @@
                                             </td>
                                             <td>
                                                 <div class=" select-container">
-                                                    <select class="item-payunit form-control form-control-sm">
+                                                    <select class="select item-payunit form-control form-control-sm">
                                                         <option value="">@ViewLocalizer["Choose unit"]</option>
                                                         `
                                             for (var i = 0; i < data1.item.items.length; i++) {
@@ -1015,7 +1015,7 @@
                     </td>
                     <td>
                         <div class=" select-container">
-                            <select class="item-payunit form-control form-control-sm">
+                            <select class="select item-payunit form-control form-control-sm">
                                     <option value="">>@ViewLocalizer["Choose unit"]</option>
                                 `
                 for (var i = 0; i < data1.item.items.length; i++) {
@@ -1346,7 +1346,7 @@
                                 </td>
                                 <td>
                                     <div class=" select-container">
-                                        <select class="item-payunit form-control form-control-sm">
+                                            <select id="select-unit-${data.id}" class="select item-payunit form-control form-control-sm">
                                             <option value="0">@ViewLocalizer["Choose unit"]</option>
                                         `
                     for (var i = 0; i < data.items.length; i++) {
@@ -1382,6 +1382,7 @@
                             `;
                     $("#item-list").append(html);
                     $("#item-list").last().find(".item-payunit").change();
+                    $("#select-unit-"+ data.id).select2();
                     var ntr = $("#item-list tr").last();
                     $.ajax({
                         url: "/Setting/GetActiveTaxList?type=2",
