@@ -507,6 +507,11 @@
 
         }
 
+        .product-item-kiosk:focus {
+            /* background: #434e64 !important; */
+            background: rgba(255,255,255,0.0) !important;
+        }
+
         .product-title {
             text-align: center;
             font-size: 18px;
@@ -976,6 +981,10 @@
             border: 1px solid #ccc;
             background-color: #1d1d1d;
             color: #fff;
+        }
+
+        #order-item-list {
+            padding-right: 0;
         }
     </style>
 </head>
@@ -6558,6 +6567,12 @@
                     $("#subcategory-panel-main").append(html);
                 }
 
+                if(data.length > 1) {
+                    $(".sub-category").show();
+                } else {
+                    $(".sub-category").hide();
+
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
