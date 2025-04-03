@@ -25,4 +25,5 @@ public enum PrinterTasksType
     TicketCocina = 1,
     TicketPaymentSummary = 2,
     TicketPaymentSummaryCopy = 4,
+    TicketCloseDrawerSummary = 5,
 }

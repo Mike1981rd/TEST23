@@ -9,4 +9,5 @@ public class PrintJobModel
     public long StationId { get; set; }   
     public long SucursalId { get; set; }
     public PrintOrderModel printJobOrder { get; set; }
+    public string ObjectData { get; set; }   
 }

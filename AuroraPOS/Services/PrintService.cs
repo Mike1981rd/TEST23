@@ -1487,7 +1487,8 @@ namespace AuroraPOS.Services
 
 		}
 
-
+        
+        
 
 		public bool PrintCloseDrawerSummary(long stationId, CloseDrawerPrinterModel model)
         {
@@ -1505,23 +1506,35 @@ namespace AuroraPOS.Services
                     try
                     {
 
-                        DataSet ds = new DataSet("general");
+                        /*DataSet ds = new DataSet("general");
                         ds.Tables.Add("general");
                         ds.Tables[0].Columns.Add("f_nombre");
                         ds.Tables[0].Columns.Add("f_Qty");
-                        ds.Tables[0].Columns.Add("f_amt", typeof(float));
+                        ds.Tables[0].Columns.Add("f_amt", typeof(float));*/
+
+                        var objResult = new CloseDrawerSummary();
+                        objResult.denominations = new List<PCDSDenominations>();
+                        objResult.formaPagos = new List<PCDSFormaPago>();
 
                         decimal subTotal = 0;
                         foreach (var d in model.Denominations)
                         {
+                            var auxDenomination = new PCDSDenominations();
+                            auxDenomination.name = "$" + d.Name;
+                            auxDenomination.qty = d.Qty;
+                            auxDenomination.amt = d.Amount.ToString("0.00", CultureInfo.CurrentCulture);
+                            objResult.denominations.Add(auxDenomination);
+                                
                             subTotal += d.Amount;
-                            DataRow dr = ds.Tables[0].NewRow();
+                            /*DataRow dr = ds.Tables[0].NewRow();
                             dr["f_nombre"] = d.Name;
                             dr["f_Qty"] = d.Qty;
                             dr["f_amt"] = d.Amount;
-                            ds.Tables[0].Rows.Add(dr);
+                            ds.Tables[0].Rows.Add(dr);*/
 
                         }
+                        
+                        
 
                         //-----------generando el reporte de cuadre de caja-----------//
                         /*
@@ -1536,6 +1549,12 @@ namespace AuroraPOS.Services
                         Report1.SetParameterValue("empresa", preference.Name);
                         Report1.SetParameterValue("cajero", model.UserName);
                         Report1.SetParameterValue("total", subTotal);
+                        */
+                         
+                        objResult.titulo="CUADRE DE CAJA";
+                        objResult.empresa=preference.Name;
+                        objResult.cajero=model.UserName;
+                        objResult.total=subTotal;
 
                         //--------------formas de pago-------------//
 
@@ -1544,16 +1563,31 @@ namespace AuroraPOS.Services
 
                         foreach (var p in model.PMethods)
                         {
-                            forma_pago += p.Name + (char)10;
-                            forma_pago_valor += p.Amount.ToString("0.00", CultureInfo.CurrentCulture) + (char)10;
+                            var auxFormaPago = new PCDSFormaPago();
+                            auxFormaPago.formaPago = p.Name;
+                            auxFormaPago.valor = p.Amount.ToString("0.00", CultureInfo.CurrentCulture);
+                            objResult.formaPagos.Add(auxFormaPago);
+                            //forma_pago += p.Name + (char)10;
+                            //forma_pago_valor += p.Amount.ToString("0.00", CultureInfo.CurrentCulture) + (char)10;
 
                         }
-                        if (forma_pago.Length > 0)
+                        /*if (forma_pago.Length > 0)
                         {
                             forma_pago = forma_pago.Substring(0, forma_pago.Length - 1);
                             forma_pago_valor = forma_pago_valor.Substring(0, forma_pago_valor.Length - 1);
 
-                        }
+                        }*/
+                        
+                        //objResult.formaPago=forma_pago;
+                        //objResult.formaPagoValor=forma_pago_valor;
+                        
+                        objResult.grandTotal=model.GrandTotal.ToString("0.00", CultureInfo.CurrentCulture);
+                        objResult.expectedTotal=model.TransTotal.ToString("0.00", CultureInfo.CurrentCulture);
+                        objResult.discrepancy=model.TransDifference.ToString("0.00", CultureInfo.CurrentCulture);
+                        objResult.expectedTipTotal=model.TipTotal.ToString("0.00", CultureInfo.CurrentCulture);
+                        objResult.tipDiscrepancy=model.TipDifference.ToString("0.00", CultureInfo.CurrentCulture);
+
+                        /*
 
                         Report1.SetParameterValue("forma_pago", forma_pago);
                         Report1.SetParameterValue("forma_pago_valor", forma_pago_valor);
@@ -1573,6 +1607,20 @@ namespace AuroraPOS.Services
 
                         GuardaImpresion(nombre, ".fpx", stream.ToArray(), defaultPrinter.Printer.PhysicalName, stationID.ToString(), 1 + station.PrintCopy, 1, station.IDSucursal, false);
                         */
+                        
+                        var objPrint = new PrinterTasks
+                        {
+                            ObjectID = 0,
+                            Status = (int)PrinterTasksStatus.Pendiente,
+                            Type = (int)PrinterTasksType.TicketCloseDrawerSummary, // Tipo de impresión para cocina
+                            PhysicalName = defaultPrinter.Printer.PhysicalName,
+                            StationId = stationId,
+                            SucursalId = station.IDSucursal,
+                            Items = JsonConvert.SerializeObject(objResult)
+                        };
+                        
+                        _dbContext.PrinterTasks.Add(objPrint);
+                        _dbContext.SaveChanges();
                     }
                     catch { }
                 }
