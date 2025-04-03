@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using System.Globalization;
+using System.Data;
 
 namespace Printer.Services
 {
@@ -217,12 +218,13 @@ namespace Printer.Services
                     {
                         foreach (var objImpresion in respuesta.lista)
                         {
-                            var order = objImpresion.printJobOrder;
+                            PrintOrderModel? order = objImpresion.printJobOrder;
+                            string objectData = objImpresion.objectData;
 
                             // 🔥 Detectar tipo de impresión
-                          
 
-                            await PrintToPrinter(objImpresion.physicalName, order, objImpresion.type);
+
+                            await PrintToPrinter(objImpresion.physicalName, order, objImpresion.type, objectData);
 
                             // Actualizar estado de impresión a "Impreso"
                             var body = new StringContent(
@@ -285,7 +287,7 @@ namespace Printer.Services
             }
         }
 
-        private async Task PrintToPrinter(string printerName, PrintOrderModel order, int type)
+        private async Task PrintToPrinter(string printerName, PrintOrderModel? order, int type, string objectData)
         {
             try
             {
@@ -329,15 +331,15 @@ namespace Printer.Services
                 // 🔥 **Diseño según tipo de impresión**
                 if (type == 0 || type == 2 || type == 4)
                 {
-                    ticketPrinter.AddLine("ORDEN", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine(preference.Name + "," + preference.Company, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(order.titulo, new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(preference.Company, new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine(preference.Address1, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddLine("Tel." + preference.Phone, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddLine("RNC:" + preference.RNC, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
 
                     ticketPrinter.AddLine(order.tipoFactura, new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine(order.factura, new Font("Arial", 8), TextAlign.Center);
+                    ticketPrinter.AddLine(order.nfc, new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt"), new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
 
@@ -354,10 +356,15 @@ namespace Printer.Services
                                  new Font("Arial", 8, FontStyle.Bold),
                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
 
-                    ticketPrinter.AddColumns(new[] { "Factura:", order.factura, "Cajero:", order.cajero },
+                    ticketPrinter.AddColumns(new[] {  "Cajero:", order.cajero, "", "" },
                                  new[] { 50f, 90f, 50f, 90f },
                                  new Font("Arial", 8, FontStyle.Bold),
                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });
+
+                    /*ticketPrinter.AddColumns(new[] { "Factura:", order.factura, "Cajero:", order.cajero },
+                                 new[] { 50f, 90f, 50f, 90f },
+                                 new Font("Arial", 8, FontStyle.Bold),
+                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Left, TextAlign.Left });*/
 
 
 
@@ -367,9 +374,9 @@ namespace Printer.Services
                 }
                 else if (type == 1 && type != 5)
                 {
-                    ticketPrinter.AddLine("COCINA", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(order.titulo, new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine($"#{order.order}", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine(order.delivery.ToUpper(), new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine(order.orderType.ToUpper(), new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddEmptyLine();
                     ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt"), new Font("Arial", 8), TextAlign.Center);
                     ticketPrinter.AddLine("--------------------------------------------------------");
@@ -402,7 +409,18 @@ namespace Printer.Services
                         {
                             ticketPrinter.AddLine(item.opciones, new Font("Arial", 7, FontStyle.Italic), TextAlign.Left);
                         }
+                       
+                        if(string.IsNullOrEmpty(item.qty))
+                        {
+                            ticketPrinter.AddLine(" ");
+                            ticketPrinter.AddLine(" ");
+                        }
                     }
+
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+
+                    ticketPrinter.AddEmptyLine();
                 }
                 else if (type != 5)
                 {
@@ -449,25 +467,33 @@ namespace Printer.Services
                                                  new Font("Arial", 7, FontStyle.Bold),
                                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
+                    if (discount > 0)
+                    {
                         ticketPrinter.AddColumns(new[] { "", "Descuento:", discount.ToString("C") },
-                                                 new[] { 110f, 80f, 70f },
-                                                 new Font("Arial", 5, FontStyle.Bold),
-                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                    }
+                    
 
-                        ticketPrinter.AddColumns(new[] { "", "ITBIS 18%:", tax.ToString("C") },
-                                                 new[] { 110f, 80f, 70f },
-                                                 new Font("Arial", 5, FontStyle.Bold),
-                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                    ticketPrinter.AddColumns(new[] { "", "ITBIS 18%:", tax.ToString("C") },
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
                         ticketPrinter.AddColumns(new[] { "", "10% Propina:", tip.ToString("C") },
                                                  new[] { 110f, 80f, 70f },
                                                  new Font("Arial", 5, FontStyle.Bold),
                                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
+                    if (delivery > 0)
+                    {
                         ticketPrinter.AddColumns(new[] { "", "Domicilio:", delivery.ToString("C") },
-                                                 new[] { 110f, 80f, 70f },
-                                                 new Font("Arial", 5, FontStyle.Bold),
-                                                 new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                    }
+                    
 
                         ticketPrinter.AddLine("--------------------------------------------------------");
 
@@ -476,11 +502,25 @@ namespace Printer.Services
                                                  new Font("Arial", 7, FontStyle.Bold),
                                                  new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
 
+                    ticketPrinter.AddEmptyLine();
+
+                    ticketPrinter.AddColumns(new[] { "", "Pagado:", "$" + order.cantidaddp },
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                    ticketPrinter.AddColumns(new[] { "", "Cambio:", "$" + order.devuelto },
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+                    ticketPrinter.AddColumns(new[] { "", "Forma:", order.metodo },
+                                             new[] { 110f, 80f, 70f },
+                                             new Font("Arial", 5, FontStyle.Bold),
+                                             new[] { TextAlign.Left, TextAlign.Left, TextAlign.Right });
+
+                    ticketPrinter.AddEmptyLine();
 
 
-
-
-                        ticketPrinter.AddEmptyLine();
+                    
 
                         // **Detalles de pago**
                         //ticketPrinter.AddColumns(new[] { "Pagado:", "$" + order..ToString("0.00") }, new[] { 110f, 60f }, new Font("Arial", 7, FontStyle.Bold), new[] { TextAlign.Left, TextAlign.Right });
@@ -504,99 +544,93 @@ namespace Printer.Services
                         ticketPrinter.AddLine("Reimpresión", new Font("Arial", 8, FontStyle.Bold), TextAlign.Center);
                         ticketPrinter.AddEmptyLine();
                     }
-                    // Imprimir
-
-                    ticketPrinter.Print(printerName);
-
-                    //cortar papel
-                    string GS = Convert.ToString((char)29);
-                    string ESC = Convert.ToString((char)27);
-                    string COMMAND = "";
-                    COMMAND = ESC + "@";
-                    COMMAND += GS + "V" + (char)48;
-                    RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
+                    
                 }
                 else if (type == 5)
                 {
+
+                    // Deserializar JSON y guardar en caché
+                    var objCloseDrawer = JsonSerializer.Deserialize<CloseDrawerSummary>(objectData);
+
                     // Encabezado
                     ticketPrinter.AddEmptyLine();
-                    ticketPrinter.AddLine("Cuadre de Caja", new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
-                    ticketPrinter.AddLine("----------------------------------");
-                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine(objCloseDrawer.titulo, new Font("Arial", 12, FontStyle.Bold), TextAlign.Center);
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
 
                     // Fecha y Cajero
                     ticketPrinter.AddLine("Fecha: " + DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy"), new Font("Arial", 9), TextAlign.Left);
-                    ticketPrinter.AddLine("Cajero: " + order.cajero, new Font("Arial", 9, FontStyle.Bold), TextAlign.Left);
-                    ticketPrinter.AddLine("----------------------------------");
-                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("Cajero: " + objCloseDrawer.cajero, new Font("Arial", 9, FontStyle.Bold), TextAlign.Left);
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    
 
-                    // Resumen transacciones
-                    ticketPrinter.AddColumns(new[] { "Efectivo:", order.efectivo },
-                                            new[] { 110f, 80f },
+                    foreach (var objFormaPago in objCloseDrawer.formaPagos)
+                    {
+                        ticketPrinter.AddColumns(new[] { objFormaPago.formaPago, "$" + objFormaPago.valor },
+                                            new[] { 110f, 150f },
+                                            new Font("Arial", 9),
+                                            new[] { TextAlign.Left, TextAlign.Right });
+                    }
+
+                  
+
+                    ticketPrinter.AddColumns(new[] { "Conte Físico:", "$" + objCloseDrawer.grandTotal },
+                                            new[] { 110f, 150f },
                                             new Font("Arial", 9),
                                             new[] { TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "Visa:", order.visa },
-                                            new[] { 110f, 80f },
+                    ticketPrinter.AddColumns(new[] { "Sistema:", "$" + objCloseDrawer.expectedTotal },
+                                            new[] { 110f, 150f },
                                             new Font("Arial", 9),
                                             new[] { TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddColumns(new[] { "CxC:", order.cxc },
-                                            new[] { 110f, 80f },
+                    ticketPrinter.AddColumns(new[] { "Diferencia:", "$" + objCloseDrawer.discrepancy },
+                                            new[] { 110f, 150f },
                                             new Font("Arial", 9),
                                             new[] { TextAlign.Left, TextAlign.Right });
 
-                    ticketPrinter.AddEmptyLine();
-
-                    ticketPrinter.AddColumns(new[] { "Conte Físico:", order.conteoFisico },
-                                            new[] { 110f, 80f },
-                                            new Font("Arial", 9, FontStyle.Bold),
-                                            new[] { TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] { "Sistema:", order.totalSistema },
-                                            new[] { 110f, 80f },
-                                            new Font("Arial", 9),
-                                            new[] { TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddColumns(new[] { "Diferencia:", order.diferencia },
-                                            new[] { 110f, 80f },
-                                            new Font("Arial", 9, FontStyle.Bold),
-                                            new[] { TextAlign.Left, TextAlign.Right });
-
-                    ticketPrinter.AddLine("----------------------------------");
-                    ticketPrinter.AddLine("----------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
                     ticketPrinter.AddLine("Desglose de Efectivo", new Font("Arial", 10, FontStyle.Bold), TextAlign.Center);
                     ticketPrinter.AddLine("");
 
                     // Encabezado de tabla
                     ticketPrinter.AddColumns(new[] { "Denominación", "Cantidad" },
-                                            new[] { 110f, 80f },
+                                            new[] { 110f, 150f },
                                             new Font("Arial", 9, FontStyle.Bold),
                                             new[] { TextAlign.Left, TextAlign.Right });
 
+                    ticketPrinter.AddLine("");
+
                     // Detalles del desglose
-                    foreach (var item in order.efectivoDesglose)
+                    foreach (var objDenominacion in objCloseDrawer.denominations)
                     {
-                        ticketPrinter.AddColumns(new[] { item.Denominacion, item.Cantidad.ToString() },
-                                                new[] { 110f, 80f },
+                        ticketPrinter.AddColumns(new[] { objDenominacion.name, objDenominacion.qty.ToString() },
+                                                new[] { 110f, 150f },
                                                 new Font("Arial", 10),
                                                 new[] { TextAlign.Left, TextAlign.Right });
                     }
 
                     ticketPrinter.AddEmptyLine();
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddLine("--------------------------------------------------------");
+                    ticketPrinter.AddEmptyLine();
 
-                    // Imprimir
-
-                    ticketPrinter.Print(printerName);
-
-                    //cortar papel
-                    string GS = Convert.ToString((char)29);
-                    string ESC = Convert.ToString((char)27);
-                    string COMMAND = "";
-                    COMMAND = ESC + "@";
-                    COMMAND += GS + "V" + (char)48;
-                    RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
+                  
                 }
+
+                // Imprimir
+
+                ticketPrinter.Print(printerName);
+
+                //cortar papel
+                string GS = Convert.ToString((char)29);
+                string ESC = Convert.ToString((char)27);
+                string COMMAND = "";
+                COMMAND = ESC + "@";
+                COMMAND += GS + "V" + (char)48;
+                RawPrinterHelper.SendStringToPrinter(printerName, COMMAND);
 
             }
             catch (Exception ex)

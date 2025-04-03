@@ -28,6 +28,7 @@ namespace Printer.Models
         public long stationId { get; set; }
         public long sucursalId { get; set; }
         public PrintOrderModel printJobOrder { get; set; }
+        public string objectData { get; set; }
     }
 
     public class PrintOrderModel
@@ -60,7 +61,13 @@ namespace Printer.Models
         public string? factura { get; set; }
         public string? tipoFactura { get; set; }
         public string? cajero { get; set; }
+        public string? cantidaddp { get; set; }
+        public string? metodo { get; set; }
+        public string? orderType { get; set; }
+        public string? nfc { get; set; }
         public List<PrintOrderItemModel>? items { get; set; }
+
+        
 
     }
 
