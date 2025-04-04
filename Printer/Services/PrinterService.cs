@@ -407,7 +407,11 @@ namespace Printer.Services
 
                         if (!string.IsNullOrEmpty(item.opciones))
                         {
-                            ticketPrinter.AddLine(item.opciones, new Font("Arial", 7, FontStyle.Italic), TextAlign.Left);
+                            //ticketPrinter.AddLine(item.opciones, new Font("Arial", 7, FontStyle.Italic), TextAlign.Left);
+                            ticketPrinter.AddColumns(new[] { "-", item.opciones },
+                                                 new[] { 30f, 200f },
+                                                 new Font("Arial", 7, FontStyle.Italic),
+                                                 new[] { TextAlign.Center, TextAlign.Left });
                         }
                        
                         if(string.IsNullOrEmpty(item.qty))
