@@ -859,6 +859,11 @@
         
         .order-client {
             margin-left: 4px;
+            overflow: hidden;         
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            text-overflow: ellipsis;
         }
 
         .divide-modal-header {
@@ -887,6 +892,7 @@
 
         .divide-item {
             background: none;
+            overflow: hidden;
         }
 
         .divide-item-info {
@@ -985,6 +991,16 @@
 
         #order-item-list {
             padding-right: 0;
+        }
+
+        #order-info {
+            display: flex;
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .answer-item.active:hover {
+            background: black !important;
         }
     </style>
 </head>
@@ -1135,9 +1151,15 @@
 
                         </a>
                         <div class="more-menu" id="more-menu" style="display: none;">
-                            <div class="button-icon-container">
+@*                             <div class="button-icon-container">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#fff" d="M18 30h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1-2-2v-6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v6a2 2 0 0 1-2 2v7a2 2 0 0 1-2 2m-5-18a.94.94 0 0 0-1 1v6h2v9h4v-9h2v-6a.94.94 0 0 0-1-1zm3-3a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2" stroke-width="1" stroke="#fff" /></svg>
-                                <button id="order-info" class="btn btn-nostyle">@ViewLocalizer["Client Info"]</button>
+                                <button id="order-info" class="btn btn-nostyle">@ViewLocalizer["Search"]</button>
+                            </div> *@
+                            <div class="button-icon-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                    <path fill="#fff" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" stroke-width="0.5" stroke="#fff" />
+                                </svg>
+                                <button class="search-product btn btn-nostyle">@ViewLocalizer["Search"]</button>
                             </div>
                             @if (discountType != "item" && @Model.OrderMode != OrderMode.Divide)
                             {
@@ -1153,15 +1175,15 @@
                             @if (Model.Status != OrderStatus.Temp && Model.OrderType == OrderType.DiningRoom)
                             {
                                 <div class="button-icon-container">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 3h5v5M8 3H3v5" /><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3m12 6l6-6" /></g></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 100 100"><path fill="currentColor" d="M4.727 1.062L0 5.738l9.351 9.455l4.727-4.676Zm14.027 14.182l-4.727 4.676l9.352 9.453l4.727-4.678zm14.028 14.178l-4.726 4.676l9.351 9.453l4.727-4.676z" color="currentColor" stroke-width="2.5" stroke="currentColor"/><path fill="currentColor" d="M43.012 8.948a6 6 0 0 0-1.938-.294a5.3 5.3 0 0 0-1.466.232L52.901 52.4L8.57 42.154c-.907 3.926 2.787 10.107 8.283 11.378l38.485 8.843l3.881 10.718c-3.788-.293-7.142 3.19-8.192 6.35c-.894 2.835-.855 6.103.142 9.366c.996 3.262 2.789 5.993 5.114 7.845c2.326 1.852 5.405 2.853 8.385 1.943c13.461-5.073 3.564-26.363.78-34.355c9.877 1.708 31.332 9.816 34.352-3.303c.701-3.036-.511-6.036-2.52-8.228c-2.009-2.191-4.856-3.79-8.179-4.557c-3.323-.769-6.454-.913-9.353.505s-6.29 4.41-5.788 7.895c-.004.24.007.479.02.718l-10.957-2.993l-11.484-37.78c-1.172-3.835-5.75-6.661-8.527-7.551M87.79 53.82c2.271.525 4.126 1.65 5.202 2.824s1.327 2.181 1.14 2.987c-.186.805-.852 1.596-2.334 2.179c-1.481.582-3.642.78-5.913.254c-2.272-.525-4.126-1.653-5.201-2.827c-1.076-1.173-1.332-2.176-1.145-2.982c.186-.805.855-1.596 2.336-2.178c.741-.291 1.651-.49 2.66-.546a11.7 11.7 0 0 1 3.255.289M59.758 78.669c.557.115 1.186.418 1.887.976c1.245.992 2.499 2.76 3.18 4.99c.68 2.23.632 4.4.154 5.92c-.479 1.517-1.22 2.236-2.011 2.477c-.791.242-1.813.06-3.058-.932s-2.496-2.763-3.177-4.992c-.68-2.23-.632-4.4-.154-5.92c.479-1.517 1.221-2.238 2.012-2.48q.297-.092.636-.095q.254-.001.531.056" color="currentColor" stroke-width="2.5" stroke="currentColor"/></svg>
 
                                     <button id="order-split" class="btn btn-nostyle">@ViewLocalizer["Split"]</button>
                                 </div>
                             }
-                            <div class="button-icon-container">
+@*                             <div class="button-icon-container">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="#fff"><path d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" /><path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" /></g></svg>
                                 <button id="btn-change-visual-mode" class="btn btn-nostyle" onclick="changeVisualMode();">@ViewLocalizer["Visual Mode"]</button>
-                            </div>
+                            </div> *@
                         </div>
                     </div>
 
@@ -3765,11 +3787,20 @@
                                     if (item.seatNum > 0) seat = item.seatNum;
 
                                     html += `<div class="divide-item" data-itemid="${item.id}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
-                                                    <div class="row">
-                                                       <span class="col-2">#${seat}</span>
-                                                       <span class="col-7">${item.name}</span>
-                                                       <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
-                                                                 </div><div class="item-modifiers">`
+                                                        <div class="divide-item-info">
+                                                            <div>
+                                                                <span class="">#${seat}</span>
+                                                                <span class="">${item.name}</span>
+                                                            </div>
+                                                           <span class="divide-item-qty">${item.qty.toFixed(2)}</span>
+                                                       </div><div class="item-modifiers">`
+
+                                    // html += `<div class="divide-item" data-itemid="${item.id}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
+                                    //                 <div class="row">
+                                    //                    <span class="col-2">#${seat}</span>
+                                    //                    <span class="col-7">${item.name}</span>
+                                    //                    <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
+                                    //                              </div><div class="item-modifiers">`
                                     // questions
                                     if (item.questions && item.questions.length > 0) {
                                         html += `<div class=" w-100">`;
@@ -3987,11 +4018,20 @@
                                 if (item.seatNum > 0) seat = item.seatNum;
 
                                 html += `<div class="divide-item" data-itemid="${item.id}" data-promotion="${item.hasPromotion}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
-                                                <div class="row">
-                                                   <span class="col-2">#${seat}</span>
-                                                   <span class="col-7">${item.name}</span>
-                                                   <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
-                                                               </div><div class="item-modifiers">`
+                                                        <div class="divide-item-info">
+                                                            <div>
+                                                                <span class="">#${seat}</span>
+                                                                <span class="">${item.name}</span>
+                                                            </div>
+                                                           <span class="divide-item-qty">${item.qty.toFixed(2)}</span>
+                                                       </div><div class="item-modifiers">`
+
+                                // html += `<div class="divide-item" data-itemid="${item.id}" data-promotion="${item.hasPromotion}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
+                                //                 <div class="row">
+                                //                    <span class="col-2">#${seat}</span>
+                                //                    <span class="col-7">${item.name}</span>
+                                //                    <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
+                                //                                </div><div class="item-modifiers">`
                                 // questions
                                 if (item.questions && item.questions.length > 0) {
                                     html += `<div class=" w-100">`;
@@ -5979,11 +6019,20 @@
                             if (item.seatNum > 0) seat = item.seatNum;
 
                             html += `<div class="divide-item" data-itemid="${item.id}" data-promotion="${item.hasPromotion}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
-                                                        <div class="row">
-                                                           <span class="col-2">#${seat}</span>
-                                                           <span class="col-7">${item.name}</span>
-                                                           <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
-                                                                    </div><div class="item-modifiers">`
+                                                        <div class="divide-item-info">
+                                                            <div>
+                                                                <span class="">#${seat}</span>
+                                                                <span class="">${item.name}</span>
+                                                            </div>
+                                                           <span class="divide-item-qty">${item.qty.toFixed(2)}</span>
+                                                       </div><div class="item-modifiers">`
+
+                            // html += `<div class="divide-item" data-itemid="${item.id}" data-promotion="${item.hasPromotion}" data-name="${item.name}" data-seat="${item.seatNum}" data-qty="${item.qty}">
+                            //                             <div class="row">
+                            //                                <span class="col-2">#${seat}</span>
+                            //                                <span class="col-7">${item.name}</span>
+                            //                                <span class="col-3 divide-item-qty">${item.qty.toFixed(2)}</span>
+                            //                                         </div><div class="item-modifiers">`
                             // questions
                             if (item.questions && item.questions.length > 0) {
                                 html += `<div class=" w-100">`;
