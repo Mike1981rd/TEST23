@@ -1,7 +1,7 @@
 {
-  "name": "Alfa POS",
-  "short_name": "Alfa POS",
-  "description": "Alfa POS PWA",
+  "name": "Aurora POS",
+  "short_name": "Aurora POS",
+  "description": "Aurora POS PWA",
   "icons": [
     {
       "src": "/icon192.png",

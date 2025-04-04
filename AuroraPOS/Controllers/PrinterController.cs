@@ -116,10 +116,13 @@ namespace AuroraPOS.Controllers
                         foreach (var printerItem in printerItems)
                         {
                             var objPrintJob = new PrintJobModel();
+                            
+                            var objRealPrinter = station.Printers.FirstOrDefault(s => s.PrinterChannel == printerItem.Key);
+                            
                             //objPrintJob.printJobOrders = new List<PrintOrderModel>();
                             objPrintJob.Id = objPending.ID;
                             objPrintJob.Type = objPending.Type.Value;
-                            objPrintJob.PhysicalName = objPending.PhysicalName;
+                            objPrintJob.PhysicalName = objRealPrinter.Printer.PhysicalName;
                             objPrintJob.StationId = objPending.StationId.HasValue ? objPending.StationId.Value : -1;
                             objPrintJob.SucursalId = objPending.SucursalId.HasValue ? objPending.SucursalId.Value : -1;
                             objPrintJob.ObjectId = objPending.ObjectID.HasValue ? objPending.ObjectID.Value : -1;
