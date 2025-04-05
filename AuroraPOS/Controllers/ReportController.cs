@@ -1591,7 +1591,7 @@ namespace AuroraPOS.Controllers
             {
                 try
                 {
-                    toDate = DateTime.ParseExact(to, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                    toDate = DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 }
                 catch { }
             }
@@ -1600,7 +1600,7 @@ namespace AuroraPOS.Controllers
             {
                 try
                 {
-                    fromDate = DateTime.ParseExact(from, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                    fromDate = DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 }
                 catch { }
             }
