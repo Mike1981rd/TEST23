@@ -164,7 +164,7 @@
 						<div class="form-group">
 							<div class="col">
 								<label class="form-label">@ViewLocalizer["Sucursal"]</label>
-								<div class="d-flex justify-content-between search-id-group" style="gap: 10px">
+								<div class="d-flex justify-content-between search-id-group" style="gap: 10px; width: fit-content">
 									<select id="station-branch" class="form-select">
 										<option>@ViewLocalizer["Choose sucursal"]</option>
 										@foreach (var b in branchs)
@@ -408,7 +408,7 @@
 		LoadMenu();
 		LoadWarehouse();
 		LoadPreparetypes();
-
+		$("#station-branch").select2();
 		$(".reordertable tbody").sortable();
 
 		$(".add-area").click(function () {
