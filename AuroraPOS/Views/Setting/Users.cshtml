@@ -193,7 +193,7 @@
 
 								<div class="col-md-6 mb-3" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
 									<label>@ViewLocalizer["Companies"]</label>
-									<select id="user-companies" class="form-control tagging select" multiple>
+									<select id="user-companies" class="form-control select" multiple>
 										<option value="">Choose company</option>
 										@foreach (var r in companies)
 										{
@@ -244,7 +244,7 @@
     <!-- / Content -->
 
     <div class="content-backdrop fade"></div>
-	<script>
+    <script>
 		$(document).ready(function () {
 
 			$("#user-list").DataTable({
@@ -606,7 +606,12 @@
 			if (@(ViewBag.CurrentCompany != null ? "true" : "false") == true) {
 				$('#user-companies option[value="' + @ViewBag.CurrentCompany + '"]').attr("selected", "selected");
 				$("#user-companies").select2("destroy");
-				$("#user-companies").select2();
+				//$("#user-companies").select2();
+				$("#user-companies").wrap('<div class="position-relative"></div>').select2({
+					minimumResultsForSearch: -1,
+					width: '100%',
+					dropdownParent: $("#user-companies").parent()
+				});
 			}
 
 
@@ -656,7 +661,12 @@
 						}
 
 						$("#user-companies").select2("destroy");
-						$("#user-companies").select2();
+						//$("#user-companies").select2();
+						$("#user-companies").wrap('<div class="position-relative"></div>').select2({
+							minimumResultsForSearch: -1,
+							width: '100%',
+							dropdownParent: $("#user-companies").parent()
+						});
 
 						if (customer.user.profileImage == "") {
 							$("#productimg").attr("src", "/vendor/img/product/noimage.png");
