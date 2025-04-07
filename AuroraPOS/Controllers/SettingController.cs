@@ -963,10 +963,9 @@ namespace AuroraPOS.Controllers
                 existingUser.IsActive = true;
                 _dbCentralContext.Users.Add(existingUser);
                 _dbCentralContext.SaveChanges();
-                
 
-				foreach(var company in lstEmpresas)
-				{					
+				foreach (var company in lstEmpresas)
+				{
 					_dbCentralContext.UserCompanies.Add(new UserCompany()
 					{
 						Id = _dbCentralContext.UserCompanies.Max(m => m.Id) + 1,
@@ -984,6 +983,7 @@ namespace AuroraPOS.Controllers
                 existingUser.Pin = objUsuario.Pin;
                 existingUser.Username = objUsuario.Username;
                 existingUser.IsActive = objUsuario.IsActive;
+                _dbCentralContext.Users.Update(existingUser);
                 _dbCentralContext.SaveChanges();
 
                 var existCompanys = _dbCentralContext.UserCompanies.Where(s => s.UserId == existingUser.Id).ToList();
@@ -992,21 +992,21 @@ namespace AuroraPOS.Controllers
 
 				_dbCentralContext.SaveChanges();
 
-                foreach (var company in lstEmpresas)
-                {
+				foreach (var company in lstEmpresas)
+				{
 					var exist = existCompanys.FirstOrDefault(s => s.CompanyId == company);
 					if (exist == null)
 					{
-                        _dbCentralContext.UserCompanies.Add(new UserCompany()
-                        {
-	                        Id = _dbCentralContext.UserCompanies.Max(m => m.Id) + 1,
-                            User = existingUser,
-                            CompanyId = company,
-                        });
-                    }                
-                }
+						_dbCentralContext.UserCompanies.Add(new UserCompany()
+						{
+							Id = _dbCentralContext.UserCompanies.Max(m => m.Id) + 1,
+							User = existingUser,
+							CompanyId = company,
+						});
+					}
+				}
 
-                _dbCentralContext.SaveChanges();
+				_dbCentralContext.SaveChanges();
             }
 
    //         //Agregamos las nuevas
