@@ -1195,7 +1195,7 @@ namespace AuroraPOS.Controllers
                     CategoryId = s.Category.ID,
                     Barcode = s.Barcode,
                     IsActive = s.IsActive,
-
+                    Precio = s.Price[0]
                 });
               
                 
@@ -2208,7 +2208,8 @@ namespace AuroraPOS.Controllers
             public string CategoryName { get; set; }
             public long CategoryId { get; set; }
             public string Barcode { get; set; }
-            public bool IsActive { get; set; }            
+            public bool IsActive { get; set; }    
+            public decimal Precio { get; set; }
         }
 
 		#endregion

@@ -38,6 +38,7 @@
 							<th>@ViewLocalizer["Name"] </th>
 							<th>@ViewLocalizer["Category"] </th>
 							<th>@ViewLocalizer["Printer"] </th>
+							<th>@ViewLocalizer["Precio"] </th>
 							<th>@ViewLocalizer["Status"]</th>
 						</tr>
 						</thead>
@@ -101,7 +102,8 @@
 			"url": "/Menu/GetProductList",
 			"type": "POST",
 			"datatype": "json",
-			"complete": function () {
+			"complete": function (data) {
+				console.log(data);
 				$( ".imgzoom" ).each(function() {
 					$(this).on( "mouseenter", function() {
 						var popupContent = document.createElement("div");
@@ -160,6 +162,7 @@
 			{ "data": "name", "name": "name", "autoWidth": true },
 			{ "data": "categoryName", "name": "categoryName", "autoWidth": true },
 			{ "data": "printer", "name": "printer", "autoWidth": true },
+			{ "data": "precio", "name": "precio", "autoWidth": true },
 			{
 				'data': 'status', 'name': 'isActive',
 				render: function (data, type, row) {
