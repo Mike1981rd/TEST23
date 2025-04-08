@@ -2626,8 +2626,13 @@
                         </h4>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <a onclick="AddCustomer()" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Customer"]</a>
+                        <div style="display: flex; flex-direction: row; gap: 8px;">
+                            <div class="">
+                                <a onclick="AddCustomer()" href="javascript:void(0);" class="btn btn-primary waves-effect waves-light"><i class="fa fa-plus me-2"></i>@ViewLocalizer["Add Customer"]</a>
+                            </div>
+                            <div class="">
+                                <a onclick="SelectCustomer(null,true)" href="javascript:void(0);" class="btn btn-danger waves-effect waves-light"><i class="fa fa-minus me-2"></i>@ViewLocalizer["Remover cliente"]</a>
+                            </div>
                         </div>
                         <div class="col-12">
                             <div class="card-datatable table-responsive w-100" style="max-height:400px;">
