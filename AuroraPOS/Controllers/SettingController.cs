@@ -465,7 +465,7 @@ namespace AuroraPOS.Controllers
                 ////Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    customerData = customerData.Where(m => m.Name.ToLower().Contains(searchValue.ToLower()) || m.Phone.ToLower().Contains(searchValue.ToLower()) || m.Address1.ToLower().Contains(searchValue.ToLower()));
+                    customerData = customerData.Where(m => m.Name.ToLower().Contains(searchValue.ToLower()) || m.Phone.ToLower().Contains(searchValue.ToLower()) || m.RNC.ToLower().Contains(searchValue.ToLower()) || m.Address1.ToLower().Contains(searchValue.ToLower()));
                 }
 
                 //total number of rows count   
