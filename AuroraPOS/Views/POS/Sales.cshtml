@@ -1002,6 +1002,11 @@
         .answer-item.active:hover {
             background: black !important;
         }
+
+        button.btn-menu {
+            height: 100%;
+            padding: 15px;
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -2642,6 +2647,7 @@
                                             <th>@ViewLocalizer["Action"]</th>                                            
                                             <th>@ViewLocalizer["Name"] </th>
                                             <th>@ViewLocalizer["Phone"] </th>
+                                            <th>@ViewLocalizer["RNC"] </th>
                                             <th>@ViewLocalizer["Dirección"]</th>
                                         </tr>
                                     </thead>
@@ -7248,8 +7254,9 @@
             },
             { "data": "name", "name": "name", "autoWidth": true },
             { "data": "phone", "name": "phone", "autoWidth": true },
+            { "data": "rnc", "name": "rnc", "autoWidth": true },
             { "data": "address1", "name": "Dirección", "autoWidth": true },
-        ]
+        ],
     });
 
     $("#edit-customer").click(function () {
