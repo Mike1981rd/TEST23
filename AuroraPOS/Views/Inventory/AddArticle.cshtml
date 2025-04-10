@@ -35,7 +35,21 @@
                     <h4 class="mb-1">@ViewLocalizer["Create Article"]</h4>
                     <p class="mb-0">@ViewLocalizer["Add/Update Article"]</p>
                 </div>
-                
+				<div class="d-flex align-items-center justify-content-end gap-4">
+					<a @* id="submit2" *@ href="javascript:void(0);" class="submit2 btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Submit"]</a>
+
+					@if (ViewBag.ArticleID > 0)
+					{
+						<input type="number" hidden class="form-control" id="article-id" placeholder="Article ID" value="@ViewBag.ArticleID" data-articleid="@ViewBag.ArticleID">
+						<a @* id="submit3" *@ href="javascript:void(0);" class="submit3 btn btn-primary waves-effect waves-light me-2">@ViewLocalizer["Add Product"]</a>
+					}
+					else
+					{
+						<a @* id="submit3" *@ href="javascript:void(0);" class="submit3 btn btn-primary waves-effect waves-light me-2 hidden">@ViewLocalizer["Add Product"]</a>
+					}
+
+					<a id="cancel" href="/Inventory/ArticleList" class="btn btn-label-secondary waves-effect me-2">@ViewLocalizer["Complete"]</a>
+				</div>
 
             </div>
 
@@ -1029,9 +1043,164 @@
 			window.location.replace("/Inventory/ArticleList");
 		})
 
+		$(".submit3").click(function () {
+			ShowAddProduct();
+		})
+
 		$("#submit3").click(function () {
 			ShowAddProduct();
 		})
+
+		$(".submit2").click(function () {
+			//$("#confirmModal").modal("hide");
+
+			$(this).hide();
+			var name = $("#article-name").val();
+			if (!name || name == "") {
+				toastr.warning("@ViewLocalizer["Please input the name."]", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var category = parseInt($("#article-category").val());
+			if (!category || category == 0) {
+				toastr.warning("Seleccione la categoría.", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var category = parseInt($("#article-category").val());
+			var subcategory = parseInt($("#article-subcategory").val());
+			var tax = parseInt($("#article-tax").val());
+			var brand = parseInt($("#article-brand").val());
+			var performance = parseFloatCorrect($("#article-performance").val());
+			var min = parseFloatCorrect($("#article-min").val());
+			var max = parseFloatCorrect($("#article-max").val());
+			var minunit = parseInt($("#min-unit").val());
+			var maxunit = parseInt($("#max-unit").val());
+			var photo = $("#productimg").data("color");
+			var defaultunit = parseInt($("#default-unit").val());
+			var scannerunit = parseInt($("#scanner-unit").val());
+			var barcode = $("#article-barcode").val();
+			var status = $("#article-status").val() == "1";
+			var deplete = parseInt($("#article-deplete").val());
+			var saftystock = parseInt($("#article-saftystock").val());
+
+			if(!saftystock) {
+				saftystock = 0;
+			}
+
+			var description = $("#article-description").val();
+			if (!category) category = 0;
+			if (!subcategory) subcategory = 0;
+			if (!tax) tax = 0;
+			if (!brand) brand = 0;
+			if (!performance) performance = 0;
+			if (!min) min = 0;
+			if (!max) max = 0;
+			if (!minunit) minunit = 0;
+			if (!maxunit) maxunit = 0;
+			if (!defaultunit) defaultunit = 0;
+			if (!scannerunit) scannerunit = 0;
+
+			var suppliers = [];
+			var primarySupplier = 0;
+			$(".article-supplier tr").each(function () {
+				var supplierid = $(this).data("supplierid");
+				suppliers.push(supplierid);
+				if ($(this).find(".primary-supplier").prop("checked")) {
+					primarySupplier = supplierid;
+				}
+			})
+
+			if (primarySupplier == 0) {
+				toastr.warning("Seleccione la primary supplido.", { showMethod: "fadeIn", hideMethod: "fadeOut", timeOut: 2e3 })
+				return;
+			}
+
+			var itemunits = [];
+			$("#unit-body tr").each(function () {
+				var num = $(this).find(".unit-num").text();
+				var name = $(this).find(".unit-name  option:selected").text();
+				var unitid = parseInt($(this).find(".unit-name").val());
+				var label = $(this).find(".unit-label").text();
+				var rate = parseFloatCorrect($(this).find(".unit-rate").val());
+				var cost = parseFloatCorrect($(this).find(".unit-cost").val());
+				var codbar = $(this).find(".unit-codbar").val();
+				var pay = parseFloatCorrect($(this).find(".unit-pay").val());
+				var price = parseFloatCorrect($(this).find(".unit-price").val());
+
+				if (!rate) rate = 0;
+				if (!pay) pay = 0;
+				if (!cost) cost = 0;
+				if (!unitid) unitid = 0;
+				var item =
+				{
+					UnitID: unitid,
+					Name: name,
+					Number: num,
+					Rate: rate,
+					Cost: cost,
+					CodeBar: codbar,
+					PayItem: pay,
+					Price: price
+				}
+
+				itemunits.push(item);
+			})
+
+			var data = {
+				ID: $("#article-id").data("articleid"),
+				Name: name,
+				CategoryID: category,
+				SubCategoryID: subcategory,
+				BrandID: brand,
+				TaxID: tax,
+				Performance: performance,
+				MinQty: min,
+				MaxQty: max,
+				ImageUpload: photo,
+				MaxUnitID: maxunit,
+				MinUnitID: minunit,
+				DefaultUnitID: defaultunit,
+				ScannerUnit: scannerunit,
+				IsActive: status,
+				DepleteCondition: deplete,
+				SaftyStock: saftystock,
+				Suppliers: suppliers,
+				ItemUnits: itemunits,
+				Barcode: barcode,
+				primarySupplier: primarySupplier,
+				Description: description
+			}
+
+			$.ajax({
+				url: "/Inventory/EditArticle",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json;',
+				dataType: 'json',
+				success: function (data, textStatus, jqXHR) {
+					if (data.status == 0) {
+						toastr.success("@ViewLocalizer["The article was saved successfully."]", {});
+						$("#submit3").removeClass("hidden");
+
+						SaveAccountItems(3, data.id, function () {
+
+							$('#addproductmodal').data('articleid', data.id);
+							//$("#confirmModal").modal("show");
+						})
+					}
+					else if (data.status == 2) {
+						toastr.error("@ViewLocalizer["The name should be unique."]", {})
+					}
+					else {
+						toastr.error("@ViewLocalizer["Failed to update the article."]", {})
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})
+				}
+			});
+		});
 
 		$("#submit2").click(function () {
 			//$("#confirmModal").modal("hide");
