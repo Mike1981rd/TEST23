@@ -90,7 +90,7 @@
               <input type="checkbox" class="form-check-input" id="epropina-kiosk">
             </div>
           </div>
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6" hidden>
             <label class="form-label" for="modalEditUserLanguage">@ViewLocalizer["Status"]</label>
             <div class="position-relative"><div class="position-relative"><select id="epropina-status"  class="select form-select">
               <option value="1"> @ViewLocalizer["Active"]</option>
@@ -212,8 +212,8 @@
 
                     console.log(propina);
                     // Asignación de valores a los campos correspondientes
-                    $("#epropina-name").val(propina.taxName);
-                    $("#epropina-value").val(propina.taxValue);
+                    $("#epropina-name").val(propina.propinaName);
+                    $("#epropina-value").val(propina.propinaValue);
 
                     // Estado de "Activo"
                     if (propina.isActive) {
