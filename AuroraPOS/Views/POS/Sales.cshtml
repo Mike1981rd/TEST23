@@ -6533,7 +6533,12 @@
                             `
                     $("#group-panel-main").append(html);
 
+                }
 
+                if(data.length > 1) {
+                    $(".primary-menu-tab").show();
+                } else {
+                    $(".primary-menu-tab").hide();
                 }
 
             },

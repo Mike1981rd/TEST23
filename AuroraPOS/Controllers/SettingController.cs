@@ -58,7 +58,7 @@ namespace AuroraPOS.Controllers
             var customer = _dbContext.Customers.Include(s => s.Voucher).FirstOrDefault(s => s.ID == customerId);
 			ViewBag.Customer = customer;
 			var deliveryZone = _dbContext.DeliveryZones.FirstOrDefault(s => s.IsActive && s.ID == customer.DeliveryZoneID);
-			ViewBag.DeliveryZone = deliveryZone.Name;
+			ViewBag.DeliveryZone = deliveryZone?.Name;
 			//var voucher = _dbContext.Vouchers.FirstOrDefault(s => s.IsActive && s.ID == customer.Voucher.).ToList();
             return View();
 		}
@@ -2425,8 +2425,9 @@ namespace AuroraPOS.Controllers
 		[HttpPost]
 		public JsonResult GetPropina(int id)
 		{
-			var propina = _dbContext.Taxs.FirstOrDefault(s => s.ID == id);
-			return Json(propina);
+			var propina = _dbContext.Propinas.FirstOrDefault(s => s.ID == id);
+			//var propina = _dbContext.Taxs.FirstOrDefault(s => s.ID == id);
+            return Json(propina);
 		}
 
 		[HttpPost]
