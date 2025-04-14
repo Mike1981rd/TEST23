@@ -97,7 +97,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcode">@ViewLocalizer["Taxes"]</label>
-                                    <select multiple id="product-taxes" class="form-control  select">
+                                    <select multiple id="product-taxes" class="impuestos-precios form-control  select">
                                         @foreach (var t in taxs)
                                         {
                                             <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
@@ -109,7 +109,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="ecommerce-product-barcotaggingde">@ViewLocalizer["Propinas"]</label>
-                                    <select multiple id="product-propinas" class="form-control  select">
+                                    <select multiple id="product-propinas" class="propinas-precios form-control  select">
                                         @foreach (var t in propinas)
                                         {
                                             <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
@@ -351,43 +351,46 @@
                             <div class="card-body row pt-3">
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 1</label>
-                                    <input class="product-price1 form-control" type="text">
+                                    <input class="product-price1 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 2</label>
-                                    <input class="product-price2 form-control" type="text">
+                                    <input class="product-price2 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 3</label>
-                                    <input class="product-price3 form-control" type="text">
+                                    <input class="product-price3 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 4</label>
-                                    <input class="product-price4 form-control" type="text">
+                                    <input class="product-price4 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 5</label>
-                                    <input class="product-price5 form-control" type="text">
+                                    <input class="product-price5 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 6</label>
-                                    <input class="product-price6 form-control" type="text">
+                                    <input class="product-price6 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 7</label>
-                                    <input class="product-price7 form-control" type="text">
+                                    <input class="product-price7 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Price"] 8</label>
-                                    <input class="product-price8 form-control" type="text">
+                                    <input class="product-price8 form-control" type="text" disabled>
                                 </div>
                                 <div class="col">
                                     <label class="form-label">@ViewLocalizer["Prod. Cost Restaurant"] (%)</label>
                                     <input class="product-cost form-control" readonly type="text">
                                 </div>
-                                <div class="col">
-                                    <label class="form-label">@ViewLocalizer["Prod. Cost Barcode"] (%)</label>
-                                    <input class="product-cost-barcode form-control" readonly type="text">
+                                <div class="col pt-5">
+                                    <label class="form-label"></label>
+                                    <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#modalPrecios">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zM11 20h1.975l.35-2.65q.775-.2 1.438-.587t1.212-.938l2.475 1.025l.975-1.7l-2.15-1.625q.125-.35.175-.737T17.5 12t-.05-.787t-.175-.738l2.15-1.625l-.975-1.7l-2.475 1.05q-.55-.575-1.212-.962t-1.438-.588L13 4h-1.975l-.35 2.65q-.775.2-1.437.588t-1.213.937L5.55 7.15l-.975 1.7l2.15 1.6q-.125.375-.175.75t-.05.8q0 .4.05.775t.175.75l-2.15 1.625l.975 1.7l2.475-1.05q.55.575 1.213.963t1.437.587zm1.05-4.5q1.45 0 2.475-1.025T15.55 12t-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12t1.013 2.475T12.05 15.5M12 12"/></svg>
+                                    </button>
+                                    @* <input class="product-cost-barcode form-control" readonly type="text"> *@
                                 </div>
                             </div>
 
@@ -771,6 +774,349 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalPrecios" tabindex="-1" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalScrollableTitle">Calcular precios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 1</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base1" data-num="1">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total1" data-num="1">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="1">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 2</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base2" data-num="2">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select">
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select">
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total2" data-num="2">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="2">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 3</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base3" data-num="3">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total3" data-num="3">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="3">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 4</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base4" data-num="4">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total4" data-num="4">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="4">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 5</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base5" data-num="5">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total5" data-num="5">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="5">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 6</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base6" data-num="6">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total6" data-num="6">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="6">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 7</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base7" data-num="7">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select" >
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select" >
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total7" data-num="7">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="7">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                    <div class="row mb-2">
+                        <label style="text-wrap: nowrap; font-weight: bold;">@ViewLocalizer["Price"] 8</label>
+                    </div>
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div class="col">
+                            <label class="form-label" style="text-wrap: nowrap;">@ViewLocalizer["Price"] base</label>
+                            <input class="precio-base form-control" type="text" id="precio-base8" data-num="8">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Impuesto</label>
+                            <select multiple class="impuestos-precios form-control  select">
+                                @foreach (var t in taxs)
+                                {
+                                    <option value="@t.ID" data-valor="@t.TaxValue">@t.TaxName - @t.TaxValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Propina</label>
+                            <select multiple class="propinas-precios form-control  select">
+                                @foreach (var t in propinas)
+                                {
+                                    <option value="@t.ID" data-valor="@t.PropinaValue">@t.PropinaName - @t.PropinaValue %</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label">=</label>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Total</label>
+                            <input class="precio-total form-control" type="text" id="precio-total8" data-num="8">
+                        </div>
+                        <div class="col pt-5" style="justify-content: center;align-items: center;display: flex;">
+                            <label class="form-label"></label>
+                            <button id="apply-button" type="button" class="aplicar-precio-btn btn btn-primary waves-effect waves-light" data-num="8">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @{
     @await Component.InvokeAsync("Accounting", new { })
 }
@@ -992,6 +1338,122 @@
         console.log("Nuevo color de texto:", this.value);
     });
 
+    function updatePreciosSelect(taxes, propinas) {
+        $('.impuestos-precios').each((i, el) => {
+            $(el).val(taxes).change();
+        });
+        
+        $('.propinas-precios').each((i, el) => {
+           $(el).val(propinas).change();
+        });
+    }
+
+    let actualizando = false;
+
+    $('.impuestos-precios').on('change', function () {
+        if (actualizando) return;
+
+        actualizando = true;
+        let taxes = $(this).val();
+
+        $('.impuestos-precios').each((i, el) => {
+            if ($(el).val() !== taxes) {
+                $(el).val(taxes).trigger('change');
+            }
+        });
+
+        $('.precio-base').each((i, el) => {
+            if ($(el).val() !== taxes) {
+                $(el).trigger('change');
+            }
+        });
+
+        actualizando = false;
+    });
+
+    $('.propinas-precios').on('change', function () {
+        if (actualizando) return;
+
+        actualizando = true;
+        let propinas = $(this).val();
+
+        $('.propinas-precios').each((i, el) => {
+            if ($(el).val() !== propinas) {
+                $(el).val(propinas).trigger('change');
+            }
+        });
+
+        $('.precio-base').each((i, el) => {
+            if ($(el).val() !== propinas) {
+                $(el).trigger('change');
+            }
+        });
+
+        actualizando = false;
+    });
+
+    function addTotalPriceValue(precios) {
+        for(let i = 0; i < precios.length; i++) {
+            $('#precio-total' + (i + 1)).val(precios[i]).trigger('change');
+            console.log("aa: " + precios[i]);
+        }
+    }
+
+    $('.precio-total').on('change', function () {
+        
+        let num = $(this).data("num");
+        let total = parseFloatCorrect($(this).val());
+        let tasaTotal = 0;
+
+        $('#product-taxes option:selected').each(function () {
+            let valor = parseFloatCorrect($(this).data('valor')) / 100;
+            tasaTotal += valor;
+        });
+
+        $('#product-propinas option:selected').each(function () {
+            let valor = parseFloatCorrect($(this).data('valor')) / 100;
+            tasaTotal += valor;
+        });
+
+        const precioBaseValue = total / (1 + tasaTotal);
+
+        //console.log(total + " - " + taxes + " - " + propinas + " = " + precioBaseValue + ", " + num);
+
+        $('#precio-base' + num).val(precioBaseValue);
+    });
+
+    $('.precio-base').on('change', function () {
+        
+        let num = $(this).data("num");
+        let base = parseFloatCorrect($(this).val());
+        let taxes = 0;
+        let propinas = 0;
+
+        $('#product-taxes option:selected').each(function () {
+            let valor = parseFloatCorrect($(this).data('valor')); 
+            valor = valor / 100;
+            taxes += valor * base;
+        });
+
+        $('#product-propinas option:selected').each(function () {
+            let valor = parseFloatCorrect($(this).data('valor')); 
+            valor = valor / 100;
+            propinas += valor * base;
+        });
+
+        const precioTotalValue = base + taxes + propinas;
+
+        //console.log(base + " + " + taxes + " + " + propinas + " = " + precioTotalValue + ", " + num);
+
+        $('#precio-total' + num).val(precioTotalValue);
+    });
+
+    $('.aplicar-precio-btn').on('click', function () {
+        const num = $(this).data("num");
+        let total = parseFloatCorrect($('#precio-total' + num).val());
+        console.log("num: " + num + ", total: " + total);
+        $(".product-price" + num).val(total);
+    });
 
         if (@ViewBag.ProductID != 0) {
             $.ajax({
@@ -1034,6 +1496,9 @@
                             propinas.push("" + data.propinas[i].id);
                         }
                         $("#product-propinas").val(propinas).change();
+
+                        updatePreciosSelect(taxes, propinas);
+
                         var pchannels = [];
                         for (var i = 0; i < data.printerChannels.length; i++) {
                             pchannels.push("" + data.printerChannels[i].id);
@@ -1402,6 +1867,10 @@
                             $("#no-serving-size").find(".product-price6").val(data.price[5]);
                             $("#no-serving-size").find(".product-price7").val(data.price[6]);
                             $("#no-serving-size").find(".product-price8").val(data.price[7]);
+
+                            addTotalPriceValue(data.price);
+                            //console.log("b");
+
                             if (data.recipeItems) {
                                 for (var i = 0; i < data.recipeItems.length; i++) {
                                     var item = data.recipeItems[i];
@@ -2208,13 +2677,13 @@
         var container = $(this).closest(".product-item-container");
         var val = parseFloat($(this).val());
         if (val > 0) {
-            container.find(".product-price2").val(val);
-            container.find(".product-price3").val(val);
-            container.find(".product-price4").val(val);
-            container.find(".product-price5").val(val);
-            container.find(".product-price6").val(val);
-            container.find(".product-price7").val(val);
-            container.find(".product-price8").val(val);
+            // container.find(".product-price2").val(val);
+            // container.find(".product-price3").val(val);
+            // container.find(".product-price4").val(val);
+            // container.find(".product-price5").val(val);
+            // container.find(".product-price6").val(val);
+            // container.find(".product-price7").val(val);
+            // container.find(".product-price8").val(val);
             var id = container.data("id");
 
             container.find(".po-price1").data("price", val);
