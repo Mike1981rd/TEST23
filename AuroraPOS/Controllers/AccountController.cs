@@ -22,12 +22,12 @@ namespace AuroraPOS.Controllers
 	{
         private readonly ISessionBasedCaptcha _captcha;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ICentralService _centralService;
+        //private readonly ICentralService _centralService;
         private readonly IUserService _userService;
         private readonly AppDbContext _dbContext;
-        public AccountController(IUserService userService, ICentralService centralService, ExtendedAppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISessionBasedCaptcha captcha)
+        public AccountController(IUserService userService, /*ICentralService centralService,*/ ExtendedAppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISessionBasedCaptcha captcha)
 		{
-            _centralService = centralService;
+            //_centralService = centralService;
             _userService = userService;
             _dbContext = dbContext._context;
             _httpContextAccessor = httpContextAccessor;
@@ -240,7 +240,7 @@ namespace AuroraPOS.Controllers
                 }
             }           
 
-            var userCentral = _centralService.GetAllowedUser(request.UserName);
+            /*var userCentral = _centralService.GetAllowedUser(request.UserName);
 			if (userCentral == null)
 			{
 				ModelState.AddModelError("UserName" , "User not found");
@@ -277,7 +277,7 @@ namespace AuroraPOS.Controllers
                     option.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Append("db", request.Database, option);
                 }
-            }
+            }*/
 
             //Si llego hasta aqui es que la validacion anterior fue exitosa, y recuperamos al usuario
             var user = _userService.GetAllowedUser(request.UserName);
@@ -327,7 +327,7 @@ namespace AuroraPOS.Controllers
         {
             try
             {
-                ModelsCentral.User userCentral = null;
+                /*ModelsCentral.User userCentral = null;
                 try
                 {
                     userCentral = _centralService.GetAllowedUserByPin(request.Password);
@@ -348,11 +348,13 @@ namespace AuroraPOS.Controllers
                 if (!lstCompanies.Any())
                 {
                     return Ok(new { status = 2 });
-                }
+                }*/
+                
+                
 
                 CookieOptions option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(1);
-                Response.Cookies.Append("db", lstCompanies.First().Database, option);
+                //Response.Cookies.Append("db", lstCompanies.First().Database, option);
 
 
                 var station = _dbContext.Stations.FirstOrDefault(s => "" + s.ID == request.UserName);
@@ -362,7 +364,7 @@ namespace AuroraPOS.Controllers
                 }
 
 
-                var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
+                var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Pin == request.Password);
                 if (user == null)
                 {
                     return Ok(new { status = 1 });
@@ -431,7 +433,7 @@ namespace AuroraPOS.Controllers
         [Route("/Account/POSKitchenLogin")]
         public async Task<IActionResult> POSKitchenLogin([FromBody] LoginViewModel request)
         {
-            ModelsCentral.User userCentral = null;
+            /*ModelsCentral.User userCentral = null;
             try
             {
                 userCentral = _centralService.GetAllowedUserByPin(request.Password);
@@ -452,11 +454,11 @@ namespace AuroraPOS.Controllers
             if (!lstCompanies.Any())
             {
                 return Json(new { status = 2 });
-            }
+            }*/
 
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(1);
-            Response.Cookies.Append("db", lstCompanies.First().Database, option);
+            //Response.Cookies.Append("db", lstCompanies.First().Database, option);
 
 
             var kitchen = _dbContext.Kitchen.FirstOrDefault(s => "" + s.ID == request.UserName);
@@ -466,7 +468,7 @@ namespace AuroraPOS.Controllers
             }
 
 
-            var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
+            var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Pin == request.Password);
             if (user == null)
             {
                 return Json(new { status = 1 });

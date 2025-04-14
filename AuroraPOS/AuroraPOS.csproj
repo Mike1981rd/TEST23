@@ -10,6 +10,7 @@
   <ItemGroup>
     <Content Remove="Views\Report\PercentCostReport.cshtml" />
     <Content Remove="wwwroot\vendor\js\site.js" />
+    <Content Remove="ModelsCentral\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,7 +56,6 @@
     <Folder Include="wwwroot\uploads\images\" />
     <Folder Include="wwwroot\vendor\img\areas\" />
     <Folder Include="wwwroot\vendor\img\areaobjects\" />
-    <Folder Include="ModelsCentral\" />
     <Folder Include="Security\" />
     <Folder Include="Views\Delivery\" />
   </ItemGroup>
@@ -64,6 +64,7 @@
     <None Remove="ModelsCentral\" />
     <None Remove="Security\" />
     <None Remove="Views\Delivery\" />
+    <None Remove="ModelsCentral\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -84,5 +85,14 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ModelsCentral\**" />
+    <Compile Remove="Services\CentralService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="ModelsCentral\**" />
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ public partial class DbAlfaCentralContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         // connect to postgres with connection string from app settings
-        options.UseNpgsql(AppConfiguration.Get().GetConnectionString("AlfaCentralDatabase"));        
+        //options.UseNpgsql(AppConfiguration.Get().GetConnectionString("AlfaCentralDatabase"));        
     }        
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

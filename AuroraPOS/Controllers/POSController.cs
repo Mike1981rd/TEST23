@@ -28,7 +28,7 @@ using Org.BouncyCastle.Asn1.X509;
 using System.Globalization;
 using iText.StyledXmlParser.Css.Resolve;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 using SixLabors.ImageSharp;
 using System.Text.Json;
 //using FastReport;
@@ -276,7 +276,7 @@ namespace AuroraPOS.Controllers
 		public JsonResult GetArea(long areaID)
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var area = objPOSCore.GetArea(areaID,Request.Cookies["db"]);
+            var area = objPOSCore.GetArea(areaID);
             return Json( new { area });
             
             /*  ------- Codigo Original --------
@@ -350,7 +350,7 @@ namespace AuroraPOS.Controllers
             //         }
 
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var areas = objPOSCore.GetAreasInStation(station, Request.Cookies["db"]);
+            var areas = objPOSCore.GetAreasInStation(station);
 
             if (station == null)
 			{
@@ -368,12 +368,12 @@ namespace AuroraPOS.Controllers
             try
             {
 				var stationID = int.Parse(GetCookieValue("StationID")); // HttpContext.Session.GetInt32("StationID");
-                var db = Request.Cookies["db"];
+                //var db = Request.Cookies["db"];
 
                 var req = new AreaObjectsInAreaRequest();
                 req.StationId = stationID;
                 req.AreaId = areaID;
-                req.Db = db;
+                //req.Db = db;
 
                 AreaObjects resultado = objPOSCore.GetAreaObjectsInArea(req);
 
@@ -562,7 +562,7 @@ namespace AuroraPOS.Controllers
                 }
             }
             if (kichenItems.Count > 0)
-                _printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
+                _printService.PrintKitchenItems(stationID, order.ID, kichenItems);
             var hold = order.Items.FirstOrDefault(s => s.Status == OrderItemStatus.HoldManually || s.Status == OrderItemStatus.HoldAutomatic);
             if (hold == null && order.Status == OrderStatus.Hold)
             {
@@ -1232,7 +1232,7 @@ namespace AuroraPOS.Controllers
             try
             {
                 var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-                var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, Request.Cookies["db"]);
+                var menuProductList = objPOSCore.GetMenuProductList(subCategoryId);
 
                 if (menuProductList != null)
                 {
@@ -1292,11 +1292,11 @@ namespace AuroraPOS.Controllers
                 foreach (var objProduct in products)
                 {
 
-                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png");
+                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product", objProduct.Product.ID.ToString() + ".png");
                     if (System.IO.File.Exists(pathFile))
                     {
                         var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                        objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                        objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", "files", "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                     }
                     else
                     {
@@ -1874,11 +1874,11 @@ namespace AuroraPOS.Controllers
                         foreach (var objAnswer in objQuestion.Answers) {                            
 
                             //Obtenemos las urls de las imagenes
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", objAnswer.Product.ID.ToString() + ".png");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product", objAnswer.Product.ID.ToString() + ".png");
                             if (System.IO.File.Exists(pathFile))
                             {
                                 var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                                objAnswer.Product.Photo = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", objAnswer.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                                objAnswer.Product.Photo = Path.Combine(_baseURL, "localfiles", "files", "product", objAnswer.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                             }
                             else
                             {
@@ -2539,7 +2539,7 @@ namespace AuroraPOS.Controllers
 						}
 					}
 					//var stationID = int.Parse(GetCookieValue("StationID"));
-					_printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
+					_printService.PrintKitchenItems(stationID, order.ID, kichenItems);
 				}
 
 				_dbContext.SaveChanges();
@@ -3792,7 +3792,7 @@ namespace AuroraPOS.Controllers
 
 			_dbContext.SaveChanges();
             //var stationID = int.Parse(GetCookieValue("StationID"));
-            _printService.PrintKitchenItems(stationID, orderItem.Order.ID, new List<OrderItem>() { orderItem}, Request.Cookies["db"]);
+            _printService.PrintKitchenItems(stationID, orderItem.Order.ID, new List<OrderItem>() { orderItem});
 
             return Json(new {status = 0});
 		}
@@ -4676,15 +4676,15 @@ namespace AuroraPOS.Controllers
                 {
                     foreach (var item in paymentMethods)
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod", item.ID.ToString() + ".png");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod", item.ID.ToString() + ".png");
                         if (System.IO.File.Exists(pathFile))
                         {
                             var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                            item.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                            item.Image = Path.Combine(_baseURL, "localfiles","files", "paymentmethod", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                         }
                         else
                         {
-                            item.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", "empty.png");
+                            item.Image = Path.Combine(_baseURL, "localfiles", "files", "paymentmethod", "empty.png");
                         }
                     }
                 }
@@ -5311,7 +5311,7 @@ namespace AuroraPOS.Controllers
                     }
                     _dbContext.SaveChanges();
 
-                    _printService.PrintPaymentSummary(stationID, nOrder.ID, Request.Cookies["db"], model.SeatNum, 0, false);
+                    _printService.PrintPaymentSummary(stationID, nOrder.ID, model.SeatNum, 0, false);
                     return Json(new { status = 0 });
                 }
                 else if (model.DividerId > 0 && (order.PaymentStatus == PaymentStatus.DividerPaid || order.Status == OrderStatus.Paid))
@@ -5444,7 +5444,7 @@ namespace AuroraPOS.Controllers
                     }
                     _dbContext.SaveChanges();
 
-                    _printService.PrintPaymentSummary(stationID, nOrder.ID, Request.Cookies["db"], 0, model.DividerId, false);
+                    _printService.PrintPaymentSummary(stationID, nOrder.ID, 0, model.DividerId, false);
                     return Json(new { status = 0 });
                     }
                     
@@ -5509,7 +5509,7 @@ namespace AuroraPOS.Controllers
 
                     _dbContext.SaveChanges();                    
 
-                    _printService.PrintPaymentSummary(stationID, model.OrderId, Request.Cookies["db"], 0, 0, false);
+                    _printService.PrintPaymentSummary(stationID, model.OrderId, 0, 0, false);
 
                     return Json(new { status = 0 });
                 }
@@ -5541,7 +5541,7 @@ namespace AuroraPOS.Controllers
 
             try
             {
-                _printService.PrintCxCSummary(stationID, model.ReferenceIds, Request.Cookies["db"], 0, 0, false);
+                _printService.PrintCxCSummary(stationID, model.ReferenceIds, 0, 0, false);
             }
             catch (Exception ex)
             {
@@ -6040,7 +6040,7 @@ namespace AuroraPOS.Controllers
                 //_dbContext.SaveChanges();
                 //var stationID = int.Parse(GetCookieValue("StationID"));
                 if (kichenItems.Count > 0)
-                    _printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
+                    _printService.PrintKitchenItems(stationID, order.ID, kichenItems);
 
 
                 var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
@@ -6052,7 +6052,7 @@ namespace AuroraPOS.Controllers
                     order.Status = OrderStatus.Paid;
 					
 					_dbContext.SaveChanges();
-					_printService.PrintPaymentSummary(stationID, order.ID, Request.Cookies["db"], 0, 0, false);
+					_printService.PrintPaymentSummary(stationID, order.ID, 0, 0, false);
 					return Json(new { status = 5 });
                 }
                 else
@@ -6323,7 +6323,7 @@ namespace AuroraPOS.Controllers
 
                 //var stationID = int.Parse(GetCookieValue("StationID"));
                 if (kichenItems.Count > 0)
-                    _printService.PrintKitchenItems(stationID, order.ID, kichenItems, Request.Cookies["db"]);
+                    _printService.PrintKitchenItems(stationID, order.ID, kichenItems);
 
 
                 var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
@@ -7681,7 +7681,7 @@ namespace AuroraPOS.Controllers
             if (DivideNum > 0)
                 items = order.Items.Where(s => s.DividerNum == DivideNum).ToList();
 
-            _printService.PrintOrder(stationID, OrderID, DivideNum, 0, Request.Cookies["db"]);
+            _printService.PrintOrder(stationID, OrderID, DivideNum, 0);
 
             foreach (var item in items)
             {
@@ -7707,7 +7707,7 @@ namespace AuroraPOS.Controllers
 				if (Seat > 0)
 					items = order.Items.Where(s => s.SeatNum == Seat).ToList();
 
-				_printService.PrintOrder(stationID, OrderID, 0, Seat, Request.Cookies["db"]);
+				_printService.PrintOrder(stationID, OrderID, 0, Seat);
 
 				foreach (var item in items)
 				{
@@ -7752,7 +7752,7 @@ namespace AuroraPOS.Controllers
 
                     foreach(var d in divides)
                     {
-                        _printService.PrintOrder(stationID, OrderID, d, 0, Request.Cookies["db"]);
+                        _printService.PrintOrder(stationID, OrderID, d, 0);
                     }
                 }
 			}
@@ -7772,9 +7772,9 @@ namespace AuroraPOS.Controllers
             try
             {
                 var stationID = int.Parse(GetCookieValue("StationID"));
-                var db = Request.Cookies["db"];
+                //var db = Request.Cookies["db"];
 
-                int status = objPOSCore.ReprintOrder(OrderID, stationID, db);
+                int status = objPOSCore.ReprintOrder(OrderID, stationID);
 
             }
             catch
@@ -7803,7 +7803,7 @@ namespace AuroraPOS.Controllers
 			try
 			{
 				var stationID = int.Parse(GetCookieValue("StationID"));
-				_printService.PrintPaymentSummary(stationID, cxcID, Request.Cookies["db"], 0, 0, true);
+				_printService.PrintPaymentSummary(stationID, cxcID, 0, 0, true);
 			}
 			catch
 			{
@@ -8518,7 +8518,7 @@ namespace AuroraPOS.Controllers
 
                 if (items.Count > 0)
                 {
-                    _printService.PrintKitchenOrderItems(kitchenID, realorder.ID, items, "");
+                    _printService.PrintKitchenOrderItems(kitchenID, realorder.ID, items);
                 }
             }
             return Json(new { status = 0 });

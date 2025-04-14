@@ -27,12 +27,12 @@ namespace AuroraPOS.Services
 {
     public interface IPrintService
     {
-        void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items, string empresa);
-        bool PrintOrder(long stationId, long OrderID, int DivideNum, int SeatNum, string empresa);
-        bool PrintPaymentSummary(long stationId, long OrderID, string empresa, int SeatNum, int DividerNum, bool reprint);
-        bool PrintCxCSummary(long stationId, List<long> ReferenceIds, string empresa, int SeatNum, int DividerNum, bool reprint);
+        void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items);
+        bool PrintOrder(long stationId, long OrderID, int DivideNum, int SeatNum);
+        bool PrintPaymentSummary(long stationId, long OrderID, int SeatNum, int DividerNum, bool reprint);
+        bool PrintCxCSummary(long stationId, List<long> ReferenceIds, int SeatNum, int DividerNum, bool reprint);
         bool PrintCloseDrawerSummary(long stationId, CloseDrawerPrinterModel model);
-        void PrintKitchenOrderItems(long kitchenId, long OrderID, List<OrderItem> items, string empresa);
+        void PrintKitchenOrderItems(long kitchenId, long OrderID, List<OrderItem> items);
         bool PrintRecibo(long stationId, long ReciboID, string empresa, bool reprint);
 
 
@@ -239,7 +239,7 @@ namespace AuroraPOS.Services
         }
 
 
-        public void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items, string empresa)
+        public void PrintKitchenItems(long stationId, long OrderID, List<OrderItem> items)
         {
             var order = _dbContext.Orders
                 .Include(s => s.Station).ThenInclude(s => s.Printers)
@@ -484,7 +484,7 @@ namespace AuroraPOS.Services
 
         //}
 
-        public void PrintKitchenOrderItems(long kitchenId, long OrderID, List<OrderItem> items, string empresa)
+        public void PrintKitchenOrderItems(long kitchenId, long OrderID, List<OrderItem> items)
         {
             if (!Directory.Exists("temp1"))
                 Directory.CreateDirectory("temp1");
@@ -682,7 +682,7 @@ namespace AuroraPOS.Services
             return result;
         }
 
-        public bool PrintOrder(long stationId, long OrderID, int DivideNum, int SeatNum, string empresa)
+        public bool PrintOrder(long stationId, long OrderID, int DivideNum, int SeatNum)
         {
             var preference = _dbContext.Preferences.First();
             var order = _dbContext.Orders.Include(s => s.Taxes).Include(s => s.Table).Include(s => s.Propinas).Include(s => s.Discounts).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Taxes).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Propinas).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Product).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Questions).Include(s => s.Items.Where(s => !s.IsDeleted)).ThenInclude(s => s.Discounts).Include(s => s.Seats).ThenInclude(s => s.Items.Where(s => !s.IsDeleted)).FirstOrDefault(o => o.ID == OrderID);
@@ -929,7 +929,7 @@ namespace AuroraPOS.Services
 
         }
 
-        public bool PrintPaymentSummary(long stationId, long OrderID, string empresa, int SeatNum = 0, int DividerNum = 0, bool reprint = false)
+        public bool PrintPaymentSummary(long stationId, long OrderID, int SeatNum = 0, int DividerNum = 0, bool reprint = false)
         {
 
             var preference = _dbContext.Preferences.First();
@@ -1207,7 +1207,7 @@ namespace AuroraPOS.Services
             return false;
         }
 
-		public bool PrintCxCSummary(long stationId, List<long> ReferenceIds, string empresa, int SeatNum = 0, int DividerNum = 0, bool reprint = false)
+		public bool PrintCxCSummary(long stationId, List<long> ReferenceIds, int SeatNum = 0, int DividerNum = 0, bool reprint = false)
         {
 			var preference = _dbContext.Preferences.First();
 			var cxcList = _dbContext.OrderTransactions.Include(ot => ot.Order).Where(ot => ReferenceIds.Contains(ot.ReferenceId)).ToList();

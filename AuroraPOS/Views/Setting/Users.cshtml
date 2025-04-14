@@ -1,11 +1,11 @@
-﻿@using AuroraPOS.ModelsCentral;
+﻿@*using AuroraPOS.ModelsCentral;*@
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 	var roles = (List<Role>)ViewBag.Roles;
-	var companies = (List<Company>)ViewBag.Companies;
+	//var companies = (List<Company>)ViewBag.Companies;
 }
 
 
@@ -191,7 +191,7 @@
 									</select>
 								</div>
 
-								<div class="col-md-6 mb-3" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
+								@*<div class="col-md-6 mb-3" style='@Html.Raw(User.Identity.GetName().ToLower()!="admin" ? "display:none" : "")'>
 									<label>@ViewLocalizer["Companies"]</label>
 									<select id="user-companies" class="form-control select" multiple>
 										<option value="">Choose company</option>
@@ -200,7 +200,7 @@
 											<option value="@r.Id">@r.Name</option>
 										}
 									</select>
-								</div>
+								</div>*@
 							</div>
 
 							<!-- Sección de Foto -->
@@ -519,7 +519,7 @@
 					ZipCode: zipcode,
 					ProfileImage: photo,
 					RoleIds: $("#user-roles").val(),
-					CompanyIds: $("#user-companies").val(),
+					//CompanyIds: $("#user-companies").val(),
 					IsActive: active == "1"
 				}
 
@@ -601,9 +601,9 @@
 			$("#user-status").val(1).change();
 
 			$("#user-roles option:selected").removeAttr("selected");
-			$("#user-companies option:selected").removeAttr("selected");
+			@*$("#user-companies option:selected").removeAttr("selected");*@
 
-			if (@(ViewBag.CurrentCompany != null ? "true" : "false") == true) {
+			@*if (@(ViewBag.CurrentCompany != null ? "true" : "false") == true) {
 				$('#user-companies option[value="' + @ViewBag.CurrentCompany + '"]').attr("selected", "selected");
 				$("#user-companies").select2("destroy");
 				//$("#user-companies").select2();
@@ -612,7 +612,7 @@
 					width: '100%',
 					dropdownParent: $("#user-companies").parent()
 				});
-			}
+			}*@
 
 
 			$("#adduser").data("id", 0);
@@ -650,7 +650,7 @@
 
 						//$("#user-companies").val([]);
 
-						$("#user-companies option:selected").removeAttr("selected");
+						@*$("#user-companies option:selected").removeAttr("selected");
 						//$("#user-companies option").removeAttr("data-select2-id");
 						$("#user-companies").val([]).change();
 
@@ -666,7 +666,7 @@
 							minimumResultsForSearch: -1,
 							width: '100%',
 							dropdownParent: $("#user-companies").parent()
-						});
+						});*@
 
 						if (customer.user.profileImage == "") {
 							$("#productimg").attr("src", "/vendor/img/product/noimage.png");

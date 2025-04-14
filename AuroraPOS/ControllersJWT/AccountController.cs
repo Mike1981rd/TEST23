@@ -23,12 +23,12 @@ public class AccountController : Controller
 {
     private readonly ISessionBasedCaptcha _captcha;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ICentralService _centralService;
+    //private readonly ICentralService _centralService;
     private readonly IUserService _userService;
     private readonly AppDbContext _dbContext;
-    public AccountController(IUserService userService, ICentralService centralService, ExtendedAppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISessionBasedCaptcha captcha)
+    public AccountController(IUserService userService, /*ICentralService centralService,*/ ExtendedAppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISessionBasedCaptcha captcha)
     {
-        _centralService = centralService;
+        //_centralService = centralService;
         _userService = userService;
         _dbContext = dbContext._context;
         _httpContextAccessor = httpContextAccessor;
@@ -69,7 +69,7 @@ public class AccountController : Controller
 
         try
         {
-            ModelsCentral.User userCentral = null;
+            /*ModelsCentral.User userCentral = null;
             try
             {
                 userCentral = _centralService.GetAllowedUserByPin(request.pin);
@@ -94,7 +94,7 @@ public class AccountController : Controller
                 return Ok(objResponse);
             }
 
-            objResponse.db = lstCompanies.First().Database;
+            objResponse.db = lstCompanies.First().Database;*/
 
             var station = _dbContext.Stations.FirstOrDefault(s => "" + s.ID == request.stationId);
             if (station == null)
@@ -104,7 +104,7 @@ public class AccountController : Controller
             }
 
 
-            var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Username == userCentral.Username);
+            var user = _dbContext.User.Include(s => s.Roles).ThenInclude(s => s.Permissions).FirstOrDefault(s => s.Pin == request.pin);
             if (user == null)
             {
                 objResponse.status = 1;

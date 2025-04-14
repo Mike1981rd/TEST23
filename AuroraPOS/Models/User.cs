@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 
 namespace AuroraPOS.Models
 {

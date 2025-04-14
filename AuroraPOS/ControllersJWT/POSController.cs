@@ -193,7 +193,7 @@ public class POSController : Controller
     public JsonResult GetArea(long areaID)
     {
         var objPOSCore = new POSCore(_userService, _dbContext,_printService, _context);
-        var area = objPOSCore.GetArea(areaID,"AlfaPrimera");
+        var area = objPOSCore.GetArea(areaID);
         return Json( new { area });
     }
 
@@ -279,14 +279,14 @@ public class POSController : Controller
     
     [HttpGet("GetMenuProductList")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetMenuProductList(long subCategoryId, string db)
+    public JsonResult GetMenuProductList(long subCategoryId)
     {
         var response = new GetMenuProductListResponse();
 
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var menuProductList = objPOSCore.GetMenuProductList(subCategoryId, db);
+            var menuProductList = objPOSCore.GetMenuProductList(subCategoryId);
 
             if (menuProductList != null)
             {
@@ -332,13 +332,13 @@ public class POSController : Controller
 
     [HttpGet("GetAreasInStation")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public JsonResult GetAreasInStation(int stationID, string db)
+    public JsonResult GetAreasInStation(int stationID)
     {
         var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationID);
 
         //Obtenemos las urls de las imagenes
         var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-        var areas = objPOSCore.GetAreasInStation(station, db);
+        var areas = objPOSCore.GetAreasInStation(station);
 
         if (station == null)
         {
@@ -989,7 +989,7 @@ public class POSController : Controller
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var payModel = objPOSCore.Pay(model, request.StationId, request.db);
+            var payModel = objPOSCore.Pay(model, request.StationId);
 
             if (payModel != null)
             {
@@ -1024,7 +1024,7 @@ public class POSController : Controller
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var payDoneModel = objPOSCore.PayDone(model, request.StationId, request.db);
+            var payDoneModel = objPOSCore.PayDone(model, request.StationId);
 
             response.Valor = payDoneModel;
             response.Success = true;
@@ -1136,7 +1136,7 @@ public class POSController : Controller
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var sendOrder = objPOSCore.SendOrder(request.OrderId, request.StationId, request.db);
+            var sendOrder = objPOSCore.SendOrder(request.OrderId, request.StationId);
 
             response.Valor = sendOrder;
             response.Success = true;
@@ -1159,7 +1159,7 @@ public class POSController : Controller
         try
         {
             var objPOSCore = new POSCore(_userService, _dbContext, _printService, _context);
-            var wasPrinted = objPOSCore.PrintOrder(request.OrderId, request.StationId, request.db);
+            var wasPrinted = objPOSCore.PrintOrder(request.OrderId, request.StationId);
 
             return Json(new { Status = true, Valor = wasPrinted, Error = "" });
 
@@ -1530,11 +1530,11 @@ public class POSController : Controller
 
         try
         {
-            int status = objPOSCore.ReprintOrder(request.orderId, request.stationId, request.db);
+            int status = objPOSCore.ReprintOrder(request.orderId, request.stationId);
 
             response.Success = true;
             response.status = status;
-            response.Message = "La consulta se realizÃ³ correctamente";
+            response.Message = "La consulta se realizada correctamente";
         }
         catch (Exception e)
         {

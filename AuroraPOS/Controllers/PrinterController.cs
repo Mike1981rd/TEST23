@@ -10,7 +10,7 @@ using AuroraPOS.Hubs;
 using Microsoft.AspNetCore.SignalR;
 //using FastReport;
 using Microsoft.EntityFrameworkCore;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
@@ -24,7 +24,7 @@ namespace AuroraPOS.Controllers
         private readonly PrinterService _printerService;
         private AppDbContext _dbContext;
         private readonly IHttpContextAccessor _context;
-        private readonly DbAlfaCentralContext _dbCentralContext;
+        //private readonly DbAlfaCentralContext _dbCentralContext;
 
         public PrinterController(PrinterService printerService, AppDbContext dbContext)
         {

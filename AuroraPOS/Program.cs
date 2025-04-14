@@ -2,7 +2,7 @@ using AuroraPOS.Data;
 using AuroraPOS.Models;
 using AuroraPOS.Permissions;
 using AuroraPOS.Services;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -36,7 +36,7 @@ builder.Services.AddSession(options =>
     });
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddDbContext<DbAlfaCentralContext>();
+//builder.Services.AddDbContext<DbAlfaCentralContext>();
 
 //AUTH Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -68,7 +68,7 @@ builder.Services.AddAuthentication(x => {
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<ICentralService, CentralService>();
+//builder.Services.AddTransient<ICentralService, CentralService>();
 builder.Services.AddTransient<IPrintService, PrintService>();
 builder.Services.AddTransient<UserResolverService>();
 builder.Services.AddTransient<ExtendedAppDbContext>();

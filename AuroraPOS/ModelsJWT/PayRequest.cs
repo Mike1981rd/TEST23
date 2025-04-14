@@ -8,6 +8,6 @@
         public int OrderId { get; set; }
         public int SeatNum { get; set; }
         public int StationId { get; set; }
-        public string db {  get; set; }
+        
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AuroraPOS.Data;
 using AuroraPOS.Models;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 using AuroraPOS.Security;
 using AuroraPOS.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +35,7 @@ namespace AuroraPOS.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private AppDbContext _dbContext;
         private readonly IHttpContextAccessor _context;
-        private readonly DbAlfaCentralContext _dbCentralContext;
+        //private readonly DbAlfaCentralContext _dbCentralContext;
         private readonly IUserService _userService;
 
         public SettingController(ExtendedAppDbContext dbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor context, IUserService userService)
@@ -43,7 +43,7 @@ namespace AuroraPOS.Controllers
             _dbContext = dbContext._context;
             _context = context;
             _hostingEnvironment = hostingEnvironment;
-            _dbCentralContext = new DbAlfaCentralContext();
+            //_dbCentralContext = new DbAlfaCentralContext();
             _userService = userService;
         }
 
@@ -145,16 +145,16 @@ namespace AuroraPOS.Controllers
                 var _baseURL = $"https://{request.Host}";
                 if (data!=null && data.Any()) {
 					foreach(var item in data) {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod", item.ID.ToString() + ".png");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod", item.ID.ToString() + ".png");
                         if (System.IO.File.Exists(pathFile))
                         {
                             var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                            item.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
+                            item.Image = Path.Combine(_baseURL, "localfiles", "files", "paymentmethod", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
                         }
                         else
                         {
-                            item.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", "empty.png");
+                            item.Image = Path.Combine(_baseURL, "localfiles", "files", "paymentmethod", "empty.png");
                         }
                     }
 				}
@@ -174,17 +174,17 @@ namespace AuroraPOS.Controllers
 			var pmethod = _dbContext.PaymentMethods.FirstOrDefault(s=>s.ID == id);
 
             //Obtenemos la URL de la imagen del archivo            
-            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod", pmethod.ID.ToString() + ".png");
+            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod", pmethod.ID.ToString() + ".png");
             var request = _context.HttpContext.Request;
             var _baseURL = $"https://{request.Host}";
             if (System.IO.File.Exists(pathFile))
             {
                 var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                pmethod.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", pmethod.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                pmethod.Image = Path.Combine(_baseURL, "localfiles", "files", "paymentmethod", pmethod.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
             }
 			else {                
-                pmethod.Image = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "paymentmethod", "empty.png");
+                pmethod.Image = Path.Combine(_baseURL, "localfiles", "files", "paymentmethod", "empty.png");
             }
 
             return Json(pmethod);
@@ -213,7 +213,7 @@ namespace AuroraPOS.Controllers
 
 					//Guardamos la imagen del archivo
 					if (!string.IsNullOrEmpty(request.ImageUpload) && !request.ImageUpload.Contains("http:") && !request.ImageUpload.Contains("https:")) {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"],"paymentmethod");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files","paymentmethod");
 
                         if (!Directory.Exists(pathFile))
                         {
@@ -234,7 +234,7 @@ namespace AuroraPOS.Controllers
                     {
                         try
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod");
                             pathFile = Path.Combine(pathFile, existing.ID.ToString() + ".png");
                             System.IO.File.Delete(pathFile);
                         }
@@ -270,7 +270,7 @@ namespace AuroraPOS.Controllers
                     //Guardamos la imagen del archivo
                     if (!string.IsNullOrEmpty(request.ImageUpload) && !request.ImageUpload.Contains("http:") && !request.ImageUpload.Contains("https:"))
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod");
 
                         if (!Directory.Exists(pathFile))
                         {
@@ -290,7 +290,7 @@ namespace AuroraPOS.Controllers
                     {
                         try
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "paymentmethod");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "paymentmethod");
                             pathFile = Path.Combine(pathFile, existing.ID.ToString() + ".png");
                             System.IO.File.Delete(pathFile);
                         }
@@ -689,10 +689,10 @@ namespace AuroraPOS.Controllers
 
         public IActionResult Users()
 		{
-			var objCentral = new AuroraPOS.Services.CentralService();
+			//var objCentral = new AuroraPOS.Services.CentralService();
             
 			ViewBag.Roles = _dbContext.Role.Where(s=>!s.IsDeleted).ToList();
-			ViewBag.Companies = objCentral.GetAllCompanies();
+			//ViewBag.Companies = objCentral.GetAllCompanies();
 
 
 			// Obtener totales de usuarios
@@ -705,11 +705,11 @@ namespace AuroraPOS.Controllers
 			ViewBag.TotalUsuariosActivos = totalUsuariosActivos;
 			ViewBag.TotalUsuariosInactivos = totalUsuariosInactivos;
 
-			if (User.Identity.GetName().ToLower() != "admin")
+			/*if (User.Identity.GetName().ToLower() != "admin")
 			{
 				var lstCompanies = objCentral.GetAllCompanies();
 				ViewBag.CurrentCompany = (from m in lstCompanies where m.Database==GetCookieValue("db") select m.Id).FirstOrDefault() ;
-			}
+			}*/
 			
 			
 			
@@ -790,7 +790,7 @@ namespace AuroraPOS.Controllers
             var objModel = new UserAuxiliar();
             objModel.user = _dbContext.User.Include(s => s.Roles).FirstOrDefault(s => s.ID == userId);
 
-            var objCentral = new AuroraPOS.Services.CentralService();
+            /*var objCentral = new AuroraPOS.Services.CentralService();
             var lstCompanies = objCentral.GetAllowedCompanies(objModel.user.Username);
             foreach (var c in lstCompanies)
             {
@@ -800,7 +800,7 @@ namespace AuroraPOS.Controllers
                     var company = lstCompanies.FirstOrDefault(s => s.Id == r.Id);
                     objModel.companies.Add(company);
                 }
-            }            
+            }       */     
 
             return Json(objModel);
         }
@@ -858,7 +858,7 @@ namespace AuroraPOS.Controllers
 
 			        _dbContext.SaveChanges();
 
-			        ActualizaEmpresaUsuario(existing, request.CompanyIds, oldUsername);
+			        //ActualizaEmpresaUsuario(existing, request.CompanyIds, oldUsername);
 
 			        return Json(new { status = 0 });
 		        }
@@ -906,7 +906,7 @@ namespace AuroraPOS.Controllers
 			        _dbContext.User.Add(existing);
 			        _dbContext.SaveChanges();
 
-			        ActualizaEmpresaUsuario(existing, request.CompanyIds);
+			        //ActualizaEmpresaUsuario(existing, request.CompanyIds);
 
 			        return Json(new { status = 0 });
 		        }
@@ -920,7 +920,7 @@ namespace AuroraPOS.Controllers
             return Json(new { status = 1 });
         }
 
-		private void ActualizaEmpresaUsuario(Models.User objUsuario, List<long> lstEmpresas, string oldUsername="")
+		/*private void ActualizaEmpresaUsuario(Models.User objUsuario, List<long> lstEmpresas, string oldUsername="")
 		{
 			var objCentral = new Services.CentralService();
 
@@ -1118,7 +1118,7 @@ namespace AuroraPOS.Controllers
    //         //Volvemos a dejar la base de datos inicial
    //         _dbContext.DBForce = cookieRequest;         
 
-        }
+        }*/
 
         [HttpPost]
         public JsonResult DeleteUser(long userId)

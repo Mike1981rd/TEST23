@@ -920,14 +920,14 @@ namespace AuroraPOS.Controllers
             var product = _dbContext.Products.Include(s=>s.Category).Include(s=>s.SubCategory).Include(s=>s.Taxes).Include(s=>s.Propinas).Include(s=>s.PrinterChannels).Include(s=>s.RecipeItems).Include(s=>s.ServingSizes).Include(s=>s.Questions.OrderBy(s=>s.DisplayOrder)).FirstOrDefault(s=>s.ID == productID);
 
             //Obtenemos la URL de la imagen del archivo            
-            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", product.ID.ToString() + ".png");
+            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product", product.ID.ToString() + ".png");
             var request = _context.HttpContext.Request;
             var _baseURL = $"https://{request.Host}";
             if (System.IO.File.Exists(pathFile))
             {
                 var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                product.Photo = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                product.Photo = Path.Combine(_baseURL, "localfiles", "files", "product", product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
             }
             else
             {
@@ -1261,12 +1261,12 @@ namespace AuroraPOS.Controllers
                 {
                     foreach (var item in data)
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product", item.ID.ToString() + ".png");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product", item.ID.ToString() + ".png");
                         if (System.IO.File.Exists(pathFile))
                         {
                             var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                            item.Photo = (string?) Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "product", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
+                            item.Photo = (string?) Path.Combine(_baseURL, "localfiles", "files", "product", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
                         }
                         else
                         {
@@ -1325,7 +1325,7 @@ namespace AuroraPOS.Controllers
                         //Guardamos la imagen del archivo
                         if (!string.IsNullOrEmpty(model.ImageUpload) && !model.ImageUpload.Contains("http:") && !model.ImageUpload.Contains("https:"))
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product");
 
                             if (!Directory.Exists(pathFile))
                             {
@@ -1343,7 +1343,7 @@ namespace AuroraPOS.Controllers
 
                         }else if (string.IsNullOrEmpty(model.ImageUpload)) {
                             try { 
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product");                           
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product");                           
                             pathFile = Path.Combine(pathFile, existing.ID.ToString() + ".png");
                             System.IO.File.Delete(pathFile);
                             }
@@ -1650,7 +1650,7 @@ namespace AuroraPOS.Controllers
                         //Guardamos la imagen del archivo
                         if (!string.IsNullOrEmpty(model.ImageUpload) && !model.ImageUpload.Contains("http:") && !model.ImageUpload.Contains("https:"))
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product");
 
                             if (!Directory.Exists(pathFile))
                             {
@@ -1671,7 +1671,7 @@ namespace AuroraPOS.Controllers
                         {
                             try
                             {
-                                string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "product");
+                                string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product");
                                 pathFile = Path.Combine(pathFile, existing.ID.ToString() + ".png");
                                 System.IO.File.Delete(pathFile);
                             }
@@ -3104,18 +3104,18 @@ namespace AuroraPOS.Controllers
             //Obtenemos la URL de la imagen del archivo       
             
             //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area", area.ID.ToString() + ".png");
-            string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Request.Cookies["db"] + "/area/" + area.ID.ToString() + ".png";
+            string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + "files" + "/area/" + area.ID.ToString() + ".png";
             var request = _context.HttpContext.Request;
             var _baseURL = $"https://{request.Host}";
             if (System.IO.File.Exists(pathFile))
             {
                 var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                area.BackImage = _baseURL + "/localfiles/" + Request.Cookies["db"] + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+                area.BackImage = _baseURL + "/localfiles/" + "files" + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
             }
             else
             {
-                area.BackImage = _baseURL + "/localfiles/" + Request.Cookies["db"] + "/area/" + "empty.png";
+                area.BackImage = _baseURL + "/localfiles/" + "files" + "/area/" + "empty.png";
             }
 
             return Json(area);
@@ -3132,16 +3132,16 @@ namespace AuroraPOS.Controllers
             {
                 foreach (var item in areas)
                 {
-                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png");
+                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area", item.ID.ToString() + ".png");
                     if (System.IO.File.Exists(pathFile))
                     {
                         var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                        item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
+                        item.BackImage = Path.Combine(_baseURL, "localfiles", "files", "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
                     }
                     else
                     {
-                        item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "area", "empty.png");
+                        item.BackImage = Path.Combine(_baseURL, "localfiles", "files", "area", "empty.png");
                     }
                 }
             }
@@ -3223,7 +3223,7 @@ namespace AuroraPOS.Controllers
                 //Guardamos la imagen del archivo
                 if (!string.IsNullOrEmpty(area.ImageUpload) && !area.ImageUpload.Contains("http:") && !area.ImageUpload.Contains("https:"))
                 {
-                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area");
+                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area");
 
                     if (!Directory.Exists(pathFile))
                     {
@@ -3244,7 +3244,7 @@ namespace AuroraPOS.Controllers
                 {
                     try
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area");
                         pathFile = Path.Combine(pathFile, area.ID.ToString() + ".png");
                         System.IO.File.Delete(pathFile);
                     }
@@ -3270,7 +3270,7 @@ namespace AuroraPOS.Controllers
                 //Guardamos la imagen del archivo
                 if (!string.IsNullOrEmpty(area.ImageUpload) && !area.ImageUpload.Contains("http:") && !area.ImageUpload.Contains("https:"))
                 {
-                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area");
+                    string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area");
 
                     if (!Directory.Exists(pathFile))
                     {
@@ -3291,7 +3291,7 @@ namespace AuroraPOS.Controllers
                 {
                     try
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "area");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area");
                         pathFile = Path.Combine(pathFile, existing.ID.ToString() + ".png");
                         System.IO.File.Delete(pathFile);
                     }
@@ -3334,7 +3334,7 @@ namespace AuroraPOS.Controllers
                     //Guardamos la imagen del archivo
                     if (!string.IsNullOrEmpty(areaObj.ImageUpload) && !areaObj.ImageUpload.Contains("http:") && !areaObj.ImageUpload.Contains("https:"))
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject");
 
                         if (!Directory.Exists(pathFile))
                         {
@@ -3355,7 +3355,7 @@ namespace AuroraPOS.Controllers
                     {
                         try
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject");
                             pathFile = Path.Combine(pathFile, areaObj.ID.ToString() + ".png");
                             System.IO.File.Delete(pathFile);
                         }
@@ -3403,7 +3403,7 @@ namespace AuroraPOS.Controllers
                     //Guardamos la imagen del archivo
                     if (!string.IsNullOrEmpty(areaObj.ImageUpload) && !areaObj.ImageUpload.Contains("http:") && !areaObj.ImageUpload.Contains("https:"))
                     {
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject");
 
                         if (!Directory.Exists(pathFile))
                         {
@@ -3424,7 +3424,7 @@ namespace AuroraPOS.Controllers
                     {
                         try
                         {
-                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject");
+                            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject");
                             pathFile = Path.Combine(pathFile, areaObj.ID.ToString() + ".png");
                             System.IO.File.Delete(pathFile);
                         }
@@ -3453,13 +3453,13 @@ namespace AuroraPOS.Controllers
                 foreach (var item in area.AreaObjects)
                 {
                     //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png");
-                    string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png";
+                    string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + "files" + "/areaobject/" + item.ID.ToString() + ".png";
                     if (System.IO.File.Exists(pathFile))
                     {
                         var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);                        
 
                         //item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second); ;
-                        item.BackImage = _baseURL + "/localfiles/" + Request.Cookies["db"] + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second ;
+                        item.BackImage = _baseURL + "/localfiles/" + "files" + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second ;
                     }
                     else
                     {
@@ -3476,7 +3476,7 @@ namespace AuroraPOS.Controllers
             var areaObj = _dbContext.AreaObjects.FirstOrDefault(s => s.ID == objectID);
 
             //Obtenemos la URL de la imagen del archivo            
-            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", areaObj.ID.ToString() + ".png");
+            string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject", areaObj.ID.ToString() + ".png");
             var request = _context.HttpContext.Request;
             var _baseURL = $"https://{request.Host}";
             if (System.IO.File.Exists(pathFile))
@@ -3485,7 +3485,7 @@ namespace AuroraPOS.Controllers
 
                 var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
 
-                areaObj.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", areaObj.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                areaObj.BackImage = Path.Combine(_baseURL, "localfiles", "files", "areaobject", areaObj.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
             }
             else
             {

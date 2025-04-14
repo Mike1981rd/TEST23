@@ -14,7 +14,7 @@ using AuroraPOS.ModelsJWT;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using AuroraPOS.ViewModels;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 using System.Globalization;
 
 namespace AuroraPOS.Core;
@@ -34,7 +34,7 @@ public class POSCore
         _printService = printService;
     }
 
-    public Area? GetArea(long areaID, string db)
+    public Area? GetArea(long areaID)
     {
         var request = _context.HttpContext.Request;
         var _baseURL = $"https://{request.Host}";
@@ -42,16 +42,16 @@ public class POSCore
         var area = _dbContext.Areas.Include(s => s.AreaObjects.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == areaID);
 
         //Obtenemos la URL de la imagen del archivo            
-        string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png";
+        string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + "files" + "/area/" + area.ID.ToString() + ".png";
 
         if (System.IO.File.Exists(pathFile))
         {
             var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-            area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+            area.BackImage = _baseURL + "/localfiles/" + "files" + "/area/" + area.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
         }
         else
         {
-            area.BackImage = _baseURL + "/localfiles/" + db + "/area/" + "empty.png";
+            area.BackImage = _baseURL + "/localfiles/" + "files" + "/area/" + "empty.png";
         }
 
         //Obtenemos las urls de las imagenes            
@@ -59,11 +59,11 @@ public class POSCore
         {
             foreach (var item in area.AreaObjects)
             {
-                pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "areaobject", item.ID.ToString() + ".png");
+                pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "areaobject", item.ID.ToString() + ".png");
                 if (System.IO.File.Exists(pathFile))
                 {
                     var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                    item.BackImage = Path.Combine(_baseURL, "localfiles", db, "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                    item.BackImage = Path.Combine(_baseURL, "localfiles", "files", "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                 }
                 else
                 {
@@ -192,7 +192,7 @@ public class POSCore
         return orderItem;
     }
 
-    public List<Area> GetAreasInStation(Station station, string db)
+    public List<Area> GetAreasInStation(Station station)
     {
         var request = _context.HttpContext.Request;
         var _baseURL = $"https://{request.Host}";
@@ -200,11 +200,11 @@ public class POSCore
         {
             foreach (var item in station.Areas)
             {
-                var pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "area", item.ID.ToString() + ".png");
+                var pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "area", item.ID.ToString() + ".png");
                 if (System.IO.File.Exists(pathFile))
                 {
                     var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                    item.BackImage = Path.Combine(_baseURL, "localfiles", db, "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                    item.BackImage = Path.Combine(_baseURL, "localfiles", "files", "area", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                 }
                 else
                 {
@@ -229,12 +229,12 @@ public class POSCore
             foreach (var item in area.AreaObjects)
             {
                 //string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png");
-                string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + Arearequest.Db + "/areaobject/" + item.ID.ToString() + ".png";
+                string pathFile = Environment.CurrentDirectory + "/wwwroot" + "/localfiles/" + "files" + "/areaobject/" + item.ID.ToString() + ".png";
                 if (System.IO.File.Exists(pathFile))
                 {
                     var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
                     //item.BackImage = Path.Combine(_baseURL, "localfiles", Request.Cookies["db"], "areaobject", item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
-                    item.BackImage = _baseURL + "/localfiles/" + Arearequest.Db + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
+                    item.BackImage = _baseURL + "/localfiles/" + "files" + "/areaobject/" + item.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second;
                 }
                 else
                 {
@@ -303,7 +303,7 @@ public class POSCore
             var time1 = (int)(DateTime.Now - order.OrderTime).TotalMinutes;
             if (kichenItems.Count > 0)
             {
-                _printService.PrintKitchenItems(Arearequest.StationId, order.ID, kichenItems, Arearequest.Db);
+                _printService.PrintKitchenItems(Arearequest.StationId, order.ID, kichenItems);
             }
             result.Add(new StationOrderModel()
             {
@@ -590,7 +590,7 @@ public class POSCore
         return new List<MenuSubCategory>();
     }
 
-    public List<MenuProduct>? GetMenuProductList(long subCategoryId, string db)
+    public List<MenuProduct>? GetMenuProductList(long subCategoryId)
     {
         var group = _dbContext.MenuSubCategoris?.Include(s => s.Products).ThenInclude(s => s.Product).FirstOrDefault(s => s.ID == subCategoryId);
 
@@ -608,11 +608,11 @@ public class POSCore
                     foreach (var objProduct in products)
                     {
 
-                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", db, "product", objProduct.Product.ID.ToString() + ".png");
+                        string pathFile = Path.Combine(Environment.CurrentDirectory, "wwwroot", "localfiles", "files", "product", objProduct.Product.ID.ToString() + ".png");
                         if (System.IO.File.Exists(pathFile))
                         {
                             var fechaModificacion = System.IO.File.GetLastWriteTime(pathFile);
-                            objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", db, "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
+                            objProduct.Product.Photo = Path.Combine(_baseURL, "localfiles", "files", "product", objProduct.Product.ID.ToString() + ".png?v=" + fechaModificacion.Minute + fechaModificacion.Second);
                         }
                         else
                         {
@@ -845,7 +845,7 @@ public class POSCore
         return orderItemsInCheckout;
     }
 
-    public POSCorePayModel Pay(ApplyPayModel model, int stationId, string db)
+    public POSCorePayModel Pay(ApplyPayModel model, int stationId)
     {
         var paymodel = new POSCorePayModel();
         var order = GetOrder(model.OrderId);
@@ -1007,7 +1007,7 @@ public class POSCore
             model.Amount = model.Amount * method.Tasa;
 
             if (kichenItems.Count > 0)
-                _printService.PrintKitchenItems(stationId, order.ID, kichenItems, db);
+                _printService.PrintKitchenItems(stationId, order.ID, kichenItems);
 
 
             var transactions = _dbContext.OrderTransactions.Where(s => s.Order == order);
@@ -1019,7 +1019,7 @@ public class POSCore
                 order.Status = OrderStatus.Paid;
 
                 _dbContext.SaveChanges();
-                _printService.PrintPaymentSummary(stationId, order.ID, db, 0, 0, false);
+                _printService.PrintPaymentSummary(stationId, order.ID, 0, 0, false);
                 paymodel.Status = 5;
 
                 return paymodel;
@@ -1202,7 +1202,7 @@ public class POSCore
         return paymodel;
     }
 
-    public bool PayDone(ApplyPayModel model, int stationId, string db)
+    public bool PayDone(ApplyPayModel model, int stationId)
     {
         var objSettingCore = new SettingsCore(_userService, _dbContext, _context);
         var station = _dbContext.Stations.Include(s => s.Areas.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == stationId);
@@ -1307,7 +1307,7 @@ public class POSCore
                 }
                 _dbContext.SaveChanges();
 
-                _printService.PrintPaymentSummary(stationId, nOrder.ID, db, model.SeatNum, 0, false);
+                _printService.PrintPaymentSummary(stationId, nOrder.ID, model.SeatNum, 0, false);
                 return false;
             }
             else if (model.DividerId > 0 && (order.PaymentStatus == PaymentStatus.DividerPaid || order.Status == OrderStatus.Paid))
@@ -1440,7 +1440,7 @@ public class POSCore
                     }
                     _dbContext.SaveChanges();
 
-                    _printService.PrintPaymentSummary(stationId, nOrder.ID, db, 0, model.DividerId, false);
+                    _printService.PrintPaymentSummary(stationId, nOrder.ID,  0, model.DividerId, false);
                     return false;
                 }
 
@@ -1507,7 +1507,7 @@ public class POSCore
 
                 _dbContext.SaveChanges();
 
-                _printService.PrintPaymentSummary(stationId, model.OrderId, db, 0, 0, false);
+                _printService.PrintPaymentSummary(stationId, model.OrderId,  0, 0, false);
 
                 return false;
             }
@@ -2619,7 +2619,7 @@ public class POSCore
         return true;
     }
 
-    public bool SendOrder(long orderId, int stationId, string db, DateTime? saveDate = null)
+    public bool SendOrder(long orderId, int stationId, DateTime? saveDate = null)
     {
         var objSettingCore = new SettingsCore(_userService, _dbContext, _context);
 
@@ -2685,7 +2685,7 @@ public class POSCore
                 }
             }
             //var stationID = int.Parse(GetCookieValue("StationID"));
-            _printService.PrintKitchenItems(stationId, order.ID, kichenItems, db);
+            _printService.PrintKitchenItems(stationId, order.ID, kichenItems);
         }
 
         _dbContext.SaveChanges();
@@ -2700,7 +2700,7 @@ public class POSCore
 
                 if (objStation.ImprimirPrecuentaDelivery)
                 {
-                    PrintOrderFunc(order.ID, stationId, db);
+                    PrintOrderFunc(order.ID, stationId);
                 }
             }
         }
@@ -2733,7 +2733,7 @@ public class POSCore
         return true;
     }
 
-    public void PrintOrderFunc(long OrderID, int stationId, string db, int DivideNum = 0)
+    public void PrintOrderFunc(long OrderID, int stationId, int DivideNum = 0)
     {
         var order = _dbContext.Orders.Include(s => s.Items.Where(s => !s.IsDeleted)).FirstOrDefault(s => s.ID == OrderID);
         if (order.Items.Count == 0)
@@ -2748,7 +2748,7 @@ public class POSCore
         if (DivideNum > 0)
             items = order.Items.Where(s => s.DividerNum == DivideNum).ToList();
 
-        _printService.PrintOrder(stationId, OrderID, DivideNum, 0, db);
+        _printService.PrintOrder(stationId, OrderID, DivideNum, 0);
 
         foreach (var item in items)
         {
@@ -2758,11 +2758,11 @@ public class POSCore
         _dbContext.SaveChanges();
     }
 
-    public bool PrintOrder(long OrderId, int stationId, string db, int DivideNum = 0)
+    public bool PrintOrder(long OrderId, int stationId, int DivideNum = 0)
     {
         try
         {
-            PrintOrderFunc(OrderId, stationId, db, DivideNum);
+            PrintOrderFunc(OrderId, stationId,  DivideNum);
 
         }
         catch
@@ -2952,9 +2952,9 @@ public class POSCore
         return status;
     }
 
-    public int ReprintOrder(long orderID, int stationID, string db)
+    public int ReprintOrder(long orderID, int stationID)
     {
-        _printService.PrintPaymentSummary(stationID, orderID, db, 0, 0, true);
+        _printService.PrintPaymentSummary(stationID, orderID,  0, 0, true);
 
         return 0;
     }

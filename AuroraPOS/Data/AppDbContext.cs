@@ -12,7 +12,7 @@ namespace AuroraPOS.Data
         private readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IConfiguration Configuration;
 		public string CurrentUser;
-        public string DBForce;
+        //public string DBForce;
         public AppDbContext(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
 		{
 			Configuration = configuration;
@@ -70,7 +70,7 @@ namespace AuroraPOS.Data
 		{
             string strDatabase = "AlfaPrimera";
 
-            if (!string.IsNullOrEmpty(DBForce))
+            /*if (!string.IsNullOrEmpty(DBForce))
 			{
 				strDatabase = DBForce;
 
@@ -90,7 +90,7 @@ namespace AuroraPOS.Data
 		                strDatabase = cookieRequest;		                
 	                }
                 }
-            }			
+            }		*/	
 
             // connect to postgres with connection string from app settings
             options.UseNpgsql(Configuration.GetConnectionString(strDatabase));

@@ -28,7 +28,7 @@ using Org.BouncyCastle.Asn1.X509;
 using System.Globalization;
 using iText.StyledXmlParser.Css.Resolve;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using AuroraPOS.ModelsCentral;
+//using AuroraPOS.ModelsCentral;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

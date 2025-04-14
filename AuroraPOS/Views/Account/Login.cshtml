@@ -6,7 +6,7 @@
 @{
     Layout = null;
 
-    var lstDatos = new List<KeyValuePair<string, string>>();
+    /*var lstDatos = new List<KeyValuePair<string, string>>();
     var Central = new CentralService();
 
     if (Model.UserName != null)
@@ -19,7 +19,7 @@
         }
     }
 
-    var SelectDatabase = new SelectList(lstDatos, "Key", "Value");
+    var SelectDatabase = new SelectList(lstDatos, "Key", "Value");*/
 }
 
 
@@ -224,7 +224,7 @@
         <!-- Formulario de Inicio de Sesión -->
            <form  method="post" asp-controller="Account" asp-action="Login">
           @Html.AntiForgeryToken()  <!-- Token anti-falsificación -->
-                        @if (Model.SelectDatabase)
+                        @*@if (Model.SelectDatabase)
                         {
                             @Html.HiddenFor(model => model.SelectDatabase)
                             @Html.HiddenFor(model => model.UserName)
@@ -238,7 +238,7 @@
                             </div>
                         }
                         else
-                        {
+                        {*@
 
                             <div class="form-login">
                                 <label>@ViewLocalizer["Username"]</label>
@@ -283,7 +283,7 @@
                         
 
                        
-                        }
+                        @*}*@
 
 
                         <button class="btn btn-primary d-grid w-100" href="javascript:void(0);">@ViewLocalizer["Entrar"]</button>
