@@ -9,7 +9,7 @@
         padding: 5px;
     }
     #group-panel-main {
-        overflow:auto;
+        /* overflow:auto; */
         gap:10px;
     }
     .group-item {
@@ -29,7 +29,7 @@
 
     
     #category-panel{
-        height: 30vh;
+        /* height: 30vh; */
         padding: 5px;
     }
 
@@ -49,10 +49,14 @@
     }
     #subcategory-panel{
         padding: 5px;
+        overflow: auto;
+        padding-left: 15px;
     }
 
     #subcategory-panel-main{
         overflow: auto;
+        width: 400px;
+        height: 150px;
     }
     .subcategory-item{
         padding: 5px;
@@ -132,6 +136,10 @@
     .edit-icon img {
         filter: brightness(0) invert(1);
     }
+
+	.prod {
+		cursor: pointer;
+	}
 
 </style>
 
@@ -699,7 +707,7 @@
                 {
                     'data': 'action', 'name': 'action',
                     render: function (data, type, row) {
-                        return `<span class='me-3 icons-box d-inline-block' href='javascript:void(0);' onclick="SelectProduct('` + row.id + `')"><span class='icon'><span class='fa fa-plus'></span></span></span>`;
+                        return `<span class='me-3 icons-box d-inline-block prod' href='javascript:void(0);' onclick="SelectProduct('` + row.id + `')"><span class='icon'><span class='fa fa-plus'></span></span></span>`;
                     },
                 },
                 {
