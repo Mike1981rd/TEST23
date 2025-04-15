@@ -197,6 +197,9 @@
 					$("#filter-supplier").append("<option value='" + d.id + "'>" + d.name + "</option>")
 				}
 				$("#filter-supplier").select2();
+
+			$("#filter-status").val("1").change();
+
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				toastr.error("@ViewLocalizer["There was an error in processing the request."]", {})

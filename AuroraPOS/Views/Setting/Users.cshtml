@@ -8,6 +8,11 @@
 	var companies = (List<Company>)ViewBag.Companies;
 }
 
+<style>
+	.select2-container--open {
+		z-index: 9999 !important;
+	}
+</style>
 
 <div class="content-wrapper">
 
@@ -81,7 +86,15 @@
             <div class="card-header border-bottom">
                 <h4>@ViewLocalizer["User List"]</h4>
                 <h6>@ViewLocalizer["Manage users"]</h6>
-                
+				<div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
+					<div class="col-md-4">
+						<select id="filter-status" class="form-select text-capitalize">
+							<option value="">@ViewLocalizer["Elegir estado"]</option>
+							<option value="1">@ViewLocalizer["Active"]</option>
+							<option value="0">@ViewLocalizer["Inactive"]</option>
+						</select>
+					</div>
+				</div>
             </div>
             <div class="card-datatable table-responsive">
                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
@@ -246,8 +259,21 @@
     <div class="content-backdrop fade"></div>
     <script>
 		$(document).ready(function () {
+			$("#user-status").select2();
 
-			$("#user-list").DataTable({
+			$("#filter-status").on("change", function () {
+				FilterUser();
+			});
+
+			function FilterUser() {
+				var status = $("#filter-status").val();
+
+				usertable.columns(4).search(status);
+
+				usertable.draw();
+			}
+
+			var usertable = $("#user-list").DataTable({
 				"processing": true, // for show progress bar
 				"serverSide": true, // for process server side
 				"filter": true, // this is for disable filter (search box)

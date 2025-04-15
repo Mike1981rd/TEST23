@@ -52,8 +52,6 @@
 <!-- /product list -->
 <script>
 	$(document).ready(function(){
-		LoadCategory();
-		
 		$("#filter-searchtext").on("change keyup", function(){
 			FilterProduct();
 		});
@@ -69,6 +67,8 @@
 				$("#filter-category").val("").change();
 			}
 		});
+
+		LoadCategory();
 	});
 	function getCookie(cname) {
 		let name = cname + "=";
@@ -359,6 +359,8 @@
 				if (brand && brand !== "") {
 					$("#filter-category").val(brand).trigger("change");
 				}
+			$("#filter-status").val("1").change();
+
 			},
 			error: function () {
 				toastr.error('@ViewLocalizer["There was an error in processing the request."]');

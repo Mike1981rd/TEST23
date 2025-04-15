@@ -758,10 +758,25 @@ namespace AuroraPOS.Controllers
                     }
                     catch { }
                 }
+
+                var status = Request.Form["columns[4][search][value]"].FirstOrDefault();
                 ////Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
                     customerData = customerData.Where(m => m.FullName.Contains(searchValue));
+                }
+
+                if (status == "1")
+                {
+                    customerData = customerData.Where(s => s.IsActive);
+                }
+                else
+                {
+                    if (status == "0")
+                    {
+                        customerData = customerData.Where(s => s.IsActive == false);
+                    }
+
                 }
 
                 //total number of rows count   
