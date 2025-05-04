@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 <!DOCTYPE html>
 <html lang="en"
@@ -272,7 +272,7 @@
 
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons ti ti-book"></i>
-                            <div data-i18n=" Inventario"> Inventario</div>
+                          <div data-i18n=" Inventario"> Inventario</div>
 
                         </a>
                         <ul class="menu-sub">
@@ -537,6 +537,65 @@
 
                     <li class="menu-item ">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons ti ti-calculator"></i>
+                            <div data-i18n="Contabilidad">Contabilidad</div>
+                        </a>
+                        <ul class="menu-sub">
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ACCOUNTING.View")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Accounting/Index" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Contabilidad"]">
+                                        @ViewLocalizer["Contabilidad"]
+                                    </div>
+                                </a>
+                            </li>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ACCOUNTING.Catalog")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Accounting/Catalog" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Catalogo de Cuentas"]">
+                                        @ViewLocalizer["Catalogo de Cuentas"]
+                                    </div>
+                                </a>
+                            </li>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ACCOUNTING.Entries")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Accounting/Entries" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Asientos Contables"]">
+                                        @ViewLocalizer["Asientos Contables"]
+                                    </div>
+                                </a>
+                            </li>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ACCOUNTING.JournalBook")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Accounting/JournalBook" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Libro de Diario"]">
+                                        @ViewLocalizer["Libro de Diario"]
+                                    </div>
+                                </a>
+                            </li>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, "Permission.ACCOUNTING.Links")).Result.Succeeded)
+                            {
+                            <li class="menu-item ">
+                                <a href="/Accounting/Links" class="menu-link">
+                                    <div data-i18n="@ViewLocalizer["Enlaces Contables"]">
+                                        @ViewLocalizer["Enlaces Contables"]
+                                    </div>
+                                </a>
+                            </li>
+                            }
+                        </ul>
+                    </li>
+
+                    <li class="menu-item ">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons ti ti-file-dollar"></i>
                             <div data-i18n="Reportes"> Reportes</div>
 
@@ -758,7 +817,7 @@
             id="layout-navbar">
             <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
               <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="ti ti-menu-2 ti-md"></i>
+                <i class="ti menu-toggle-icon d-none d-xl-block align-middle"></i>
               </a>
             </div>
 
@@ -1044,7 +1103,7 @@
                               </div>
                             </div>
                             <div class="flex-grow-1">
-                              <h6 class="mb-1 small">Whoo! You have new order 🛒</h6>
+                              <h6 class="small mb-1">Whoo! You have new order 🛒</h6>
                               <small class="mb-1 d-block text-body">ACME Inc. made new order $1,154</small>
                               <small class="text-muted">1 day ago</small>
                             </div>

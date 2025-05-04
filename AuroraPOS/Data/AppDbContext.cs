@@ -1,4 +1,4 @@
-﻿using AuroraPOS.Models;
+using AuroraPOS.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -31,6 +31,30 @@ namespace AuroraPOS.Data
         protected override void OnModelCreating(ModelBuilder builder)
 		{
 			builder.ApplyUtcDateTimeConverter();//Put before seed data and after model creation
+            // Seed admin role
+            builder.Entity<Role>().HasData(new Role
+            {
+                ID = 1,
+                RoleName = "Admin",
+                Priority = 1
+            });
+            // Seed admin user
+            builder.Entity<User>().HasData(new User
+            {
+                ID = 1,
+                Username = "admin",
+                Password = "admin123", // Cambia esto si usas hash
+                Pin = "1234",
+                Type = UserType.Admin,
+                FullName = "Administrador",
+                Email = "admin@aurora.com",
+                PhoneNumber = "0000000000",
+                ProfileImage = "",
+                Address = "",
+                City = "",
+                State = "",
+                ZipCode = ""
+            });
 		}
 		public override int SaveChanges()
 		{
